@@ -1,10 +1,13 @@
 import { Component, OnInit } from '@angular/core';
+import { DisplayParcelleInfoComponent } from './display-parcelle-info/display-parcelle-info.component';
+
 import * as L from 'leaflet';
 
 @Component({
   selector: 'app-map',
   templateUrl: './map.component.html',
-  styleUrls: ['./map.component.scss']
+  styleUrls: ['./map.component.scss'],
+  imports: [ DisplayParcelleInfoComponent ]
 })
 export class MapComponent implements OnInit {
 
@@ -12,7 +15,7 @@ export class MapComponent implements OnInit {
 
   ngOnInit(): void {
     const map = L.map('map', {
-      center: [51.505, -0.09],
+      center: [43.600, 1.433],
       zoom: 13
     });
 
