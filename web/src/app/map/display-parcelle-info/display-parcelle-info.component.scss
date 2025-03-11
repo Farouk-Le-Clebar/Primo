@@ -1,0 +1,34 @@
+.display-info-global-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 20%;
+    height: 100%;
+}
+
+.display-info-container {
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+    height: 95%;
+    background-color: #1F1F1F;
+    border-radius: 15px;
+    border: #6A50A7 solid 2px;
+}
+
+.display-info-title-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 5%;
+    width: 100%;
+}
+
+.display-info-logo {
+    width: 40%;
+    margin-right: 10px;
+}
