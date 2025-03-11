@@ -1,0 +1,72 @@
+.login-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: var(--bg-color);
+}
+
+.container {
+    width: 18vw;
+    padding: 2%;
+    background-color: var(--container-bg);
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    text-align: center;
+}
+
+.container div {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.sign-in {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.sign-in a {
+    color: var(--text-color);
+    text-decoration: none;
+    margin-left: 0.5vw;
+    margin-top: 0.5vw;
+}
+
+.sign-in a:hover {
+    color: var(--text-color);
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.sign-in p {
+    color: var(--text-color);
+    margin-top: 0.5vw;
+}
+
+label {
+    color: var(--text-color);
+}
+
+input {
+    width: 94%;
+    padding: 8px;
+    border: 1px solid var(--text-color);
+    border-radius: 5px;
+    background-color: var(--bg-color);
+}
+
+input[type="submit"] {
+    width: 40%;
+    background-color: var(--button-bg);
+    color: var(--text-color);
+    cursor: pointer;
+    border: none;
+    padding: 10px;
+    transition: background 0.3s;
+}
+
+input[type="submit"]:hover {
+    background-color: var(--button-hover);
+}
