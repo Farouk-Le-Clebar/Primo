@@ -15,3 +15,14 @@
     --button-bg: #8067B7;
     --button-hover: #6A50A7;
 }
+
+@font-face {
+  font-family: 'InterMedium';
+  src: url('/assets/fonts/Inter_18pt-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+}
+
+body {
+  font-family: 'InterMedium', sans-serif;
+}
