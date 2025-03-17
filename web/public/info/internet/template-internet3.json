@@ -1,0 +1,11 @@
+{
+  "broadband": {
+    "available": true,
+    "speed_mbps": 50,
+    "type": "DSL"
+  },
+  "mobile_data": {
+    "available": true,
+    "speed_mbps": 75
+  }
+}

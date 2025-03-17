@@ -1,0 +1,23 @@
+{
+  "public_transport": {
+    "bus": {
+      "available": true,
+      "lines": [10, 18],
+      "frequency_minutes": 20
+    },
+    "metro": {
+      "available": false,
+      "lines": [],
+      "frequency_minutes": 0
+    },
+    "tram": {
+      "available": true,
+      "lines": [6, 14],
+      "frequency_minutes": 10
+    }
+  },
+  "train_station": {
+    "available": true,
+    "distance_km": 5
+  }
+}

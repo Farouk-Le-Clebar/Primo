@@ -1,0 +1,22 @@
+{
+  "crime_index": 6.2,
+  "common_crimes": ["Robbery", "Assault", "Drug Trafficking"],
+  "crime_trends": {
+    "increasing": true,
+    "decreasing": false,
+    "stable": false
+  },
+  "safety_level": "Low",
+  "recent_incidents": [
+    {
+      "date": "2025-03-12",
+      "type": "Robbery",
+      "description": "Armed robbery reported at a local convenience store."
+    },
+    {
+      "date": "2025-03-05",
+      "type": "Drug Trafficking",
+      "description": "Police discovered an illegal drug shipment."
+    }
+  ]
+}

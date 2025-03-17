@@ -1,0 +1,16 @@
+{
+  "soil_pollution": {
+    "presence": true,
+    "pollutant_type": "Hydrocarbons",
+    "pollution_level": "Low"
+  },
+  "air_quality": {
+    "index": 2,
+    "main_pollutants": ["PM10"]
+  },
+  "water_pollution": {
+    "presence": true,
+    "pollutant_type": "Microplastics",
+    "pollution_level": "Moderate"
+  }
+}

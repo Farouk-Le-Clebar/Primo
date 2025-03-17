@@ -1,0 +1,8 @@
+{
+  "average_price": 1800,
+  "price_trends": {
+    "increasing": false,
+    "decreasing": true,
+    "stable": false
+  }
+}
