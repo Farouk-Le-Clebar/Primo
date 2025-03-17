@@ -1,0 +1,45 @@
+.parcel-list-element {
+    display: flex;
+    flex-direction: row;
+    padding: 2vh;
+    border-bottom: 0.5px solid #7A7A7A;
+    align-items: center;
+}
+
+.parcel-list-element:hover {
+    background-color: #272727;
+}
+
+.parcel-list-element-image {
+    padding-right: 2vh;
+}
+
+.parcel-list-element-text {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-right: 5vh;
+}
+
+.parcel-list-element-text-ID {
+    padding-right: 16vh;
+}
+
+.parcel-list-element-text-price {
+    padding-right: 10vh;
+}
+
+.parcel-list-element-del:hover {
+    cursor: pointer;
+}
+
+.parcel-list-element-star {
+    padding-right: 0.5vh;
+}
+
+.parcel-list-element-stars-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding-right: 3vh;
+}
