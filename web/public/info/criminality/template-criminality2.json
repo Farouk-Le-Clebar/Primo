@@ -1,0 +1,22 @@
+{
+  "crime_index": 3.8,
+  "common_crimes": ["Theft", "Vandalism"],
+  "crime_trends": {
+    "increasing": false,
+    "decreasing": true,
+    "stable": false
+  },
+  "safety_level": "Moderate",
+  "recent_incidents": [
+    {
+      "date": "2025-03-15",
+      "type": "Vandalism",
+      "description": "Broken windows reported at a school."
+    },
+    {
+      "date": "2025-03-02",
+      "type": "Theft",
+      "description": "Bicycle theft in a public park."
+    }
+  ]
+}

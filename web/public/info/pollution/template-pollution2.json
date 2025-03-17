@@ -1,0 +1,16 @@
+{
+  "soil_pollution": {
+    "presence": false,
+    "pollutant_type": null,
+    "pollution_level": null
+  },
+  "air_quality": {
+    "index": 7,
+    "main_pollutants": ["NO2", "SO2", "O3"]
+  },
+  "water_pollution": {
+    "presence": true,
+    "pollutant_type": "Nitrates",
+    "pollution_level": "High"
+  }
+}
