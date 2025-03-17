@@ -1,0 +1,16 @@
+{
+  "natural_risks": {
+    "floods": {
+      "flood_zone": true,
+      "frequency": "High"
+    },
+    "land_movements": {
+      "unstable_zone": false,
+      "type": "None"
+    },
+    "earthquakes": {
+      "seismic_zone": true,
+      "maximum_recorded_intensity": 4.8
+    }
+  }
+}
