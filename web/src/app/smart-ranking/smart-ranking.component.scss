@@ -1,0 +1,144 @@
+.smart-ranking-page {
+    background-color: black;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-family: 'InterMedium', sans-serif;
+}
+
+.smart-ranking-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.smart-ranking-favourites {
+    padding-top: 3vh;
+}
+
+.smart-ranking-list {
+    background-color: #1A1A1A;
+    height: 84.7vh;
+    border-radius: 9px;
+    margin-right: 10vh;
+    width: 50vw;
+}
+
+.smart-ranking-list h1 {
+    color: white;
+    font-size: 3.5vh;
+    padding: 1vh;
+    padding-right: 5vh;
+    padding-left: 5vh;
+    padding-top: 5vh;
+    font-weight: 500;
+}
+
+.smart-ranking-list p {
+    color: #62646C;
+    font-size: 2vh;
+    padding-right: 5vh;
+    padding-left: 5vh;
+}
+
+.smart-ranking-list-titles {
+    display: flex;
+    flex-direction: row;
+    padding-right: 5vh;
+    padding-left: 5vh;
+    border: #62646C;
+    background-color: #272727;
+    margin-top: 2vh;
+    height: 4vh;
+    border-top: 0.5px solid #7A7A7A;
+    border-bottom: 0.5px solid #7A7A7A;
+    justify-content: space-around;
+}
+
+.smart-ranking-list-titles h2 {
+    color: #ADADAD;
+    font-size: 2vh;
+    font-weight: 500;
+    padding: 1vh;
+}
+
+.smart-ranking-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: right;
+    align-items: center;
+    margin-top: 15vh;
+    border-top: 0.5px solid #7A7A7A;
+}
+
+.smart-ranking-criterias-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: left;
+    padding: 1vh;
+    margin-right: 4vh;
+}
+
+.smart-ranking-criterias {
+    display: flex;
+    flex-direction: row;
+    background-color: #313131;
+    border-radius: 3px;
+    margin: 2vh;
+    width: 15vw;
+    height: 8vh;
+}
+
+.smart-ranking-criterias:hover {
+    background-color: #3D3D3D;
+    cursor: pointer;
+}
+
+.smart-ranking-criterias h3 {
+    color: white;
+    font-size: 2vh;
+    font-weight: 500;
+    width: 9.5vw;
+}
+
+.smart-ranking-criterias h4 {
+    color: #62646C;
+    font-size: 1.5vh;
+    font-weight: 500;
+
+}
+
+.smart-ranking-criterias-img {
+    padding: 1vh;
+    width: 3vh;
+}
+
+.smart-ranking-compare {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-top: 2vh;
+    background-color: #FFFFFF;
+    color: black;
+    width: 15vw;
+    height: 8vh;
+    border-radius: 3px;
+    margin: 2vh;
+}
+
+.smart-ranking-compare:hover {
+    background-color: #F2F2F2;
+    cursor: pointer;
+}
+
+.smart-ranking-compare h3 {
+    font-size: 2vh;
+    padding: 1vh;
+    font-weight: 500;
+}

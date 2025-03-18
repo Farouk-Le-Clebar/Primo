@@ -1,0 +1,23 @@
+name: Primo main Mirroring
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+env:
+  SOURCE_REPO: "git@github.com:Farouk-Le-Clebar/PoC-Primo.git"
+  DEST_REPO: "git@github.com:EpitechPromo2027/G-EIP-600-TLS-6-1-eip-louis.huguet.git"
+
+jobs:
+  git-sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: git-sync
+        uses: wei/git-sync@v3
+        with:
+          source_repo: ${{ env.SOURCE_REPO }}
+          source_branch: "main"
+          destination_repo: ${{ env.DEST_REPO }}
+          destination_branch: "main"
+          ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
