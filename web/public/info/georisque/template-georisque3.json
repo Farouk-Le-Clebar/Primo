@@ -1,0 +1,16 @@
+{
+  "natural_risks": {
+    "floods": {
+      "flood_zone": true,
+      "frequency": "Low"
+    },
+    "land_movements": {
+      "unstable_zone": true,
+      "type": "Soil Erosion"
+    },
+    "earthquakes": {
+      "seismic_zone": true,
+      "maximum_recorded_intensity": 6.1
+    }
+  }
+}

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 
 @Component({
   selector: 'app-display-parcelle-info',
@@ -7,5 +7,15 @@ import { Component } from '@angular/core';
   styleUrl: './display-parcelle-info.component.scss'
 })
 export class DisplayParcelleInfoComponent {
+  @Input() parcelleId!: string;
 
+  ngOnInit(): void {
+    console.log(this.parcelleId);
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['parcelleId']) {
+      
+    }
+  }
 }

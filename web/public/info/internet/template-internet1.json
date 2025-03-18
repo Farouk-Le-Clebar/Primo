@@ -1,0 +1,11 @@
+{
+  "broadband": {
+    "available": true,
+    "speed_mbps": 200,
+    "type": "Fiber"
+  },
+  "mobile_data": {
+    "available": true,
+    "speed_mbps": 100
+  }
+}

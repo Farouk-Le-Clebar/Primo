@@ -1,0 +1,12 @@
+{
+  "energy_class": "E",
+  "energy_consumption_kwh_m2_per_year": 250,
+  "greenhouse_gas_emissions_kg_co2_per_year": 40,
+  "heating_type": "Wood",
+  "insulation_quality": "Average",
+  "renewable_energy_sources": {
+    "solar_panels": false,
+    "geothermal": false,
+    "wind_turbines": false
+  }
+}

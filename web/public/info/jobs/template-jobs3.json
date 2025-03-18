@@ -1,0 +1,12 @@
+{
+  "total_employees": 70000,
+  "sector_distribution": {
+    "Technology": 50,
+    "Healthcare": 20,
+    "Finance": 10,
+    "Construction": 5,
+    "Retail": 8,
+    "Education": 5,
+    "Other": 2
+  }
+}

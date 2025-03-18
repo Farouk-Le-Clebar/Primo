@@ -1,0 +1,16 @@
+{
+  "soil_pollution": {
+    "presence": true,
+    "pollutant_type": "Pesticides",
+    "pollution_level": "Moderate"
+  },
+  "air_quality": {
+    "index": 3,
+    "main_pollutants": ["PM2.5", "CO"]
+  },
+  "water_pollution": {
+    "presence": false,
+    "pollutant_type": null,
+    "pollution_level": null
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "energy_class": "B",
+  "energy_consumption_kwh_m2_per_year": 120,
+  "greenhouse_gas_emissions_kg_co2_per_year": 15,
+  "heating_type": "Gas",
+  "insulation_quality": "Excellent",
+  "renewable_energy_sources": {
+    "solar_panels": true,
+    "geothermal": true,
+    "wind_turbines": false
+  }
+}
