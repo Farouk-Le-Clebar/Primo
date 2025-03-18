@@ -26,14 +26,12 @@
 }
 
 .basic-info-parcelle {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 4%;
     height: 30%;
-    width: 90%;
-    border-radius: 10px;
-    background-color: rgb(0, 0, 0);
-}
-
-.price-info-parcelle {
-    height: 12.5%;
     width: 90%;
     border-radius: 10px;
     background-color: rgb(0, 0, 0);
@@ -67,4 +65,118 @@
     width: 49.5%;
     border-radius: 10px;
     background-color: rgb(0, 0, 0);
+}
+
+.city-district-container {
+    display: flex;
+    flex-direction: row;
+    gap: 5%;
+    height: 27%;
+    width: 90%;
+    justify-content: center;
+}
+
+.city-district {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 49.5%;
+    border-radius: 5px;
+    background-color: #12171D;
+}
+
+.basic-info {
+    width: 90%;
+    height: 27%;
+    background-color: #12171D;
+    border-radius: 5px;
+}
+
+.city-container {
+    display: flex;
+    align-items: center;
+    border-bottom: #1F1F1F solid 1px;
+    width: 100%;
+    height: 50%;
+    display: flex;
+    align-items: center;
+}
+
+.city-value-container {
+    display: flex;
+    width: 100%;
+    height: 50%;
+    align-items: center;
+}
+
+.city-text {
+    color: #FFFFFF;
+    font-size: 1em;
+    font-weight: bold;
+    margin-left: 5%;
+}
+.city-value-text {
+    color: #CED8E1;
+    font-size: 0.8em;
+    margin-left: 5%;
+}
+
+.price-text {
+    color: #FFFFFF;
+    font-size: 1em;
+    font-weight: bold;
+    margin-left: 5%;
+}
+
+.price-text-container {
+    display: flex;
+    width: 50%;
+    height: 100%;
+    align-items: center;
+    height: 100%;
+    padding-left: 2%;
+}
+
+.price-info-parcelle {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 12.5%;
+    width: 90%;
+    border-radius: 10px;
+    background-color: rgb(0, 0, 0);
+}
+
+.chart-graphic {
+    width: 100%;
+    height: 50%;
+}
+
+.price-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    height: 50%;
+}
+
+.price-value-container {
+    height: 100%;
+    width: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.price-value-green-bubble {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-left: 4%;
+    padding-right: 4%;
+    background-color: #37BC9B;
+    height: 55%;
+    border-radius: 5px;
 }

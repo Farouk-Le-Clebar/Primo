@@ -3,10 +3,53 @@
         <img src="logo/PrimoTitle.png" alt="PrimoTitle" class="display-info-logo" />
     </div>
     <div class="basic-info-parcelle">
-        <p style="color: white">{{ parcelleId }}</p>
+        <div class="city-district-container">
+            <div class="city-district">
+                <div class="city-container">
+                    <p class="city-text">Ville</p>
+                </div>
+                <div class="city-value-container">
+                    <p class="city-value-text">{{ adress.City }}</p>
+                </div>
+            </div>
+            <div class="city-district">
+                <div class="city-container">
+                    <p class="city-text">Quartier</p>
+                </div>
+                <div class="city-value-container">
+                    <p class="city-value-text">{{ adress.District }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="basic-info">
+            <div class="city-container">
+                <p class="city-text">Taille <span style="color: #CED8E1">(m2)</span></p>
+            </div>
+            <div class="city-value-container">
+                <p class="city-value-text">{{ adress.Size }}</p>
+            </div>
+        </div>
+        <div class="basic-info">
+            <div class="city-container">
+                <p class="city-text">Identifiant cadastral</p>
+            </div>
+            <div class="city-value-container">
+                <p class="city-value-text">{{ parcelleId }}</p>
+            </div>
+        </div>
     </div>
     <div class="price-info-parcelle">
-        
+        <div class="price-container">
+            <div class="price-text-container">
+                <p class="price-text">Prix m2</p>
+            </div>
+            <div class="price-value-container">
+                <div class="price-value-green-bubble">
+                    <p style="color: black; font-weight: bold; font-size: 1em;">{{ price.average_price }} €</p>
+                </div>
+            </div>
+        </div>
+        <img src="chart-graphic.png" alt="chart-graphic" class="chart-graphic" />
     </div>
     <div class="interest-info-parcelle">
         
