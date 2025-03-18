@@ -1,15 +1,11 @@
-<div class="parcel-list-element">
+<div class="parcel-list-element parcel-list-grid">
     <img src="smart-ranking/parcelicon.svg" class="parcel-list-element-image" />
-        <div class="parcel-list-element-text">
-            <p class="parcel-list-element-text-ID">Parcelle n° 75105 AB 0123</p>
-            <p class="parcel-list-element-text-price">100 €/m²</p>
-        </div>
-        <div class="parcel-list-element-stars-container">
+    <p class="parcel-list-element-text-ID">{{ parcelId }}</p>
+    <p class="parcel-list-element-text-price">{{ price }}</p>
+    <div class="parcel-list-element-stars-container">
+        <ng-container *ngFor="let star of [].constructor(starCount); let i = index">
             <img src="smart-ranking/star.svg" class="parcel-list-element-star" />
-            <img src="smart-ranking/star.svg" class="parcel-list-element-star" />
-            <img src="smart-ranking/star.svg" class="parcel-list-element-star" />
-            <img src="smart-ranking/star.svg" class="parcel-list-element-star" />
-            <img src="smart-ranking/star.svg" class="parcel-list-element-star" />
-        </div>
-        <img src="smart-ranking/del.svg" class="parcel-list-element-del" />
+        </ng-container>
+    </div>
+    <img src="smart-ranking/del.svg" class="parcel-list-element-del" />
 </div>

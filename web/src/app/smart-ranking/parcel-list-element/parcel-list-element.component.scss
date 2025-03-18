@@ -1,45 +1,43 @@
 .parcel-list-element {
     display: flex;
-    flex-direction: row;
     padding: 2vh;
     border-bottom: 0.5px solid #7A7A7A;
     align-items: center;
 }
 
 .parcel-list-element:hover {
-    background-color: #272727;
+    background-color: #313131;
+}
+
+.parcel-list-grid {
+    display: grid;
+    grid-template-columns: 55px 1.7fr 0.7fr 100px 0.5fr;
+    align-items: center;
+    gap: 2vh;
 }
 
 .parcel-list-element-image {
-    padding-right: 2vh;
+    width: 40px;
+    height: 40px;
 }
 
-.parcel-list-element-text {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    margin-right: 5vh;
-}
-
-.parcel-list-element-text-ID {
-    padding-right: 16vh;
-}
-
+.parcel-list-element-text-ID,
 .parcel-list-element-text-price {
-    padding-right: 10vh;
-}
-
-.parcel-list-element-del:hover {
-    cursor: pointer;
-}
-
-.parcel-list-element-star {
-    padding-right: 0.5vh;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .parcel-list-element-stars-container {
     display: flex;
-    flex-direction: row;
-    align-items: center;
-    padding-right: 3vh;
+    justify-content: left;
+    margin-left: 7vh;
+}
+
+.parcel-list-element-star {
+    padding-right: 0.3vh;
+}
+
+.parcel-list-element-del {
+    cursor: pointer;
+    margin-left: 7vh;
 }

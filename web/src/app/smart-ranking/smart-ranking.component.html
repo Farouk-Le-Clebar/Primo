@@ -10,20 +10,22 @@
                 <h2>Note</h2>
             </div>
             <div class="smart-ranking-list-elements">
-                <app-parcel-list-element></app-parcel-list-element>
-                <app-parcel-list-element></app-parcel-list-element>
-                <app-parcel-list-element></app-parcel-list-element>
-                <app-parcel-list-element></app-parcel-list-element>
+                <app-parcel-list-element 
+                    *ngFor="let parcel of parcels"
+                    [parcelId]="parcel.parcelId"
+                    [price]="parcel.price"
+                    [starCount]="parcel.starCount">
+                </app-parcel-list-element>
             </div>
             <div class="smart-ranking-buttons">
                 <div class="smart-ranking-criterias">
                     <div class="smart-ranking-criterias-text">
                         <h3>Vos critères</h3>
-                        <h4>20 critères selectionnés</h4>
+                        <h4>20 critères sélectionnés</h4>
                     </div>
                     <img src="smart-ranking/criter.svg" class="smart-ranking-criterias-img" />
                 </div>
-                <div class="smart-ranking-compare">
+                <div class="smart-ranking-compare" (click)="generateRanking()">
                     <h3>Générer le classement</h3>
                     <img src="smart-ranking/gener.svg" class="smart-ranking-criterias-gener" />
                 </div>
