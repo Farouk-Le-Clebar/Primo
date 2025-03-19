@@ -1,7 +1,4 @@
 <div class="display-info-container">
-    <div class="display-info-title-container">
-        <img src="logo/PrimoTitle.png" alt="PrimoTitle" class="display-info-logo" />
-    </div>
     <div *ngIf="parcelleSelected; else unSelected" class="informations-container">
         <div class="basic-info-parcelle">
             <div class="city-district-container">
@@ -91,7 +88,10 @@
     <ng-template #unSelected>
         <div class="informations-container">
             <div class="unselected-container">
-                <p class="unselected-text">Sélectionnez une parcelle pour voir les informations !</p>
+                <p *ngIf="!zoomAnimation; else noZoomAnimation" class="unselected-text">Sélectionnez une parcelle pour voir les informations !</p>
+                <ng-template #noZoomAnimation>
+                    <p class="unselected-text">Notre IA a trouvé <span style="color: rgba(201, 184, 0, 0.903);">4</span> parcelles qui pourraient correspondre à vos critères.</p>
+                </ng-template>
             </div>
         </div>
     </ng-template>
