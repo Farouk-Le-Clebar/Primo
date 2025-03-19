@@ -23,6 +23,20 @@
   font-style: normal;
 }
 
+@font-face {
+  font-family: 'UberBold';
+  src: url('/fonts/UberMoveBold.otf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'UberMedium';
+  src: url('/fonts/UberMoveMedium.otf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+}
+
 body {
   font-family: 'InterMedium', sans-serif;
   background-color: black;
