@@ -1,8 +1,60 @@
-<div class="favorit-page">
+<div class="favorit-selected-page">
     <div class="favorit-navbar">
         <app-navbar></app-navbar>
     </div>
-    <div class="favorit-navbar-elements-container">
-        <img src={{this.parcelSource}} class="favorit-navbar-img"/>
+    <div class="favorit-selected-container">
+        <div class="favorit-selected-details">
+            <img src="favorit/Group 57.svg" class="favorit-selected-map" />
+            <div class="favorit-selected-apagnan">
+                <div class="favorit-selected-infos">
+                    <h1>Parcelle n° 75105 AB 0123</h1>
+                    <div class="favorit-selected-infos-adress">
+                        <img src="favorit/parcellePin.svg" class="favorit-selected-infos-adress-pin" />
+                        <p>34 Boulevard Saint-Germain, 75005 Paris, France</p>
+                    </div>
+                    <div class="favorit-selected-infos-stars">
+                        <img src="favorit/star.svg" class="favorit-selected-infos-stars-star" />
+                        <img src="favorit/star.svg" class="favorit-selected-infos-stars-star" />
+                        <img src="favorit/star.svg" class="favorit-selected-infos-stars-star" />
+                        <img src="favorit/star.svg" class="favorit-selected-infos-stars-star" />
+                        <img src="favorit/emptyStar.svg" class="favorit-selected-infos-stars-star" />
+                        <p>4/5</p>
+                    </div>
+                </div>
+                <div class="favorit-selected-price-surface">
+                    <div class="favorit-selected-surface">
+                        <h2>Surface</h2>
+                        <p>Surface en m² de la parcelle</p>
+                        <h1>438 m²</h1>
+                    </div>
+                    <div class="favorit-selected-price">
+                        <h2>Prix m²</h2>
+                        <p>Estimation du prix au m² de la parcelle</p>
+                        <h1>13 571 €</h1>
+                    </div>
+                </div>
+        </div>
+        </div>
+        <div class="favorit-selected-stats-row">
+            <img src="favorit/Group 66.svg" class="favorit-selected-stats" />
+            <img src="favorit/Group 67.svg" class="favorit-selected-stats" />
+            <img src="favorit/Group 68.svg" class="favorit-selected-stats" />
+            <img src="favorit/Group 69.svg" class="favorit-selected-stats" />
+            <img src="favorit/Group 70.svg" class="favorit-selected-stats" />
+            <img src="favorit/Group 71.svg" class="favorit-selected-stats" />
+            <img src="favorit/Group 72.svg" class="favorit-selected-stats" />
+        </div>
+        <div class="favorit-selected-AI-sales">
+            <div class="favorit-selected-AI">
+                <h2>Commentaire de l'IA Primo</h2>
+                <h3>Un résumé de la parcelle selon vos critères grâce à l'intelligence artificielle de Primo.</h3>
+                <p>{{ displayedText }}</p>
+            </div>
+            <div class="favorit-selected-sales">
+                <h2>Historique des ventes</h2>
+                <h3>Regroupe toutes les transactions connues d’une parcelle</h3>
+                <img src="favorit/Group 101.svg" class="favorit-selected-sales-img" />
+            </div>
+        </div>
     </div>
 </div>
