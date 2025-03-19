@@ -39,22 +39,19 @@ export class MapComponent implements OnInit {
 
     this.parcelleLayerGroup = L.layerGroup().addTo(this.map);
     this.batimentLayerGroup = L.layerGroup().addTo(this.map);
+    this.loadPolygons();
 
-    this.map.on('tileload', () => {
-      console.log('Tile loaded');
-    });
-
-    this.map.whenReady(() => {
-      this.map.flyTo([43.65583714209635, 0.5733537389936271], 18, {
-        duration: 3,
+    setTimeout(() => {
+      this.map.on('tileload', () => {
+        console.log('Tile loaded');
       });
-    });
-
-    this.map.on('zoomend', () => {
-      if (this.map.getZoom() === 18) {
-        this.loadPolygons();
-      }
-    });
+    
+      this.map.whenReady(() => {
+        this.map.flyTo([43.65583714209635, 0.5733537389936271], 18, {
+          duration: 3,
+        });
+      });
+    }, 1000);
 
     fetch('cadastre-32013-parcelles.json')
       .then(response => response.json())
@@ -80,8 +77,6 @@ export class MapComponent implements OnInit {
   }
 
   private loadPolygons(): void {
-    this.updateVisibleLayers();
-
     this.map.on('moveend', () => this.updateVisibleLayers());
     this.map.on('zoomend', () => this.updateVisibleLayers());
   }
