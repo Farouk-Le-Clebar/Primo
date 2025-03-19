@@ -1,9 +1,24 @@
 <div class="navbar">
-    <img src="logo/PrimoTitle.png" class="navbar-logo" />
-    <div class="navbar-buttons">
-        <a routerLink="/" class="navbar-button">Accueil</a>
-        <a routerLink="/map" class="navbar-button">Carte</a>
-        <a routerLink="/contact" class="navbar-button">Contact</a>
-        <a routerLink="/login" class="navbar-button-login">Connexion</a>
+    <div class="navbar-logo-container">
+        <button class="navbar-logo-button" (click)="onHomeClick()">
+            <img src="logo/Logo.svg" class="navbar-logo" />
+        </button>
+    </div>
+    <div class="navbar-search-container">
+        <button class="navbar-search-button" (click)="onSearchClick()">
+            <img src="navbar/searchBarButton.svg" class="navbar-search-img"/>
+        </button>
+    </div>
+    <div class="navbar-menu-container">
+        <button class="navbar-menu-favorit-button" (click)="onFavoritesClick()">
+            <img src="navbar/favoritButton.svg" class="navbar-menu-favorit-icon"/>
+        </button>
+        <button class="navbar-menu-map-button" (click)="onMapClick()">
+            <img src="navbar/mapButton.svg" class="navbar-menu-map-icon"/>
+        </button>
+        <button class="navbar-menu-user-button">
+            <img src="navbar/userButton.svg" class="navbar-menu-user-icon"/>
+        </button>
     </div>
 </div>
+<hr class="navbar-seperator"/>
