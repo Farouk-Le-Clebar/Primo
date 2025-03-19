@@ -31,24 +31,27 @@
 
 .navbar-search-container {
     display: flex;
-    width: 70%;
+    width: 55%;
     height: 100%;
-    justify-content: center;
+    justify-content: flex-end;
     align-items: center;
+}
+
+.navbar-menu-search-button {
+    display: flex;
 }
 
 .navbar-menu-container {
     display: flex;
-    width: 15%;
+    width: 30%;
     height: 100%;
     justify-content: flex-end;
     align-items: center;
-    margin-right: 1%;
 }
 
 .navbar-menu-user-button {
     display: flex;
-    width: 27%;
+    width: 12%;
     height: 100%;
     border: none;
     justify-content: center;
@@ -65,7 +68,7 @@
 
 .navbar-menu-map-button {
     display: flex;
-    width: 20%;
+    width: 10%;
     height: 100%;
     border: none;
     justify-content: center;
@@ -76,7 +79,18 @@
 
 .navbar-menu-favorit-button {
     display: flex;
-    width: 20%;
+    width: 10%;
+    height: 100%;
+    border: none;
+    justify-content: center;
+    cursor: pointer;
+    align-items: center;
+    background: transparent;
+}
+
+.navbar-menu-search-button {
+    display: flex;
+    width: 50%;
     height: 100%;
     border: none;
     justify-content: center;
@@ -94,6 +108,8 @@
     cursor: pointer;
     align-items: center;
     background: transparent;
+    margin-right: 4%;
+
 }
 
 .navbar-search-img {
