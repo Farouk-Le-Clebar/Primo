@@ -2,17 +2,19 @@ import { Component, OnInit } from '@angular/core';
 import { DisplayParcelleInfoComponent } from './display-parcelle-info/display-parcelle-info.component';
 import * as L from 'leaflet';
 import { ActivatedRoute } from '@angular/router';
+import { NavbarComponent } from '../navbar/navbar.component';
 
 @Component({
   selector: 'app-map',
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss'],
-  imports: [ DisplayParcelleInfoComponent ]
+  imports: [ DisplayParcelleInfoComponent, NavbarComponent ]
 })
 export class MapComponent implements OnInit {
 
   parcelleNbr: string = '';
-
+  zoomAnimation: boolean = true;
+  
   private map!: L.Map;
   private parcelleLayerGroup!: L.LayerGroup;
   private batimentLayerGroup!: L.LayerGroup;
@@ -20,8 +22,7 @@ export class MapComponent implements OnInit {
   private geojsonBatiments: any = null;
   private selectedParcelles: { [key: string]: L.Polygon } = {};
   private highlightedIds = [""];
-  zoomAnimation: boolean = true;
-
+  
   constructor(private route: ActivatedRoute) { }
 
   ngOnInit(): void {

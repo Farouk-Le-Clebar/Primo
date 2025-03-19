@@ -22,6 +22,7 @@ import * as templateCrime3 from '../../../assets/info/criminality/template-crimi
 })
 export class DisplayParcelleInfoComponent {
   @Input() parcelleId!: string;
+  @Input() zoomAnimation: boolean = false;
 
   constructor(private router: Router) {}
 
@@ -36,6 +37,7 @@ export class DisplayParcelleInfoComponent {
 
   ngOnInit(): void {
     console.log(this.parcelleId);
+    console.log(this.zoomAnimation);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
