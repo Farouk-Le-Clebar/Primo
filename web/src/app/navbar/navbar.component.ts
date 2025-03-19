@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-navbar',
-  imports: [],
+  imports: [MatTooltipModule],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.scss'
 })
@@ -24,5 +25,9 @@ export class NavbarComponent {
 
   onHomeClick() {
     this.router.navigate(['/']);
+  }
+
+  onUserClick() {
+    this.router.navigate(['/profile']);
   }
 }

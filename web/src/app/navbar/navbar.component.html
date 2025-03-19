@@ -10,13 +10,16 @@
         </button>
     </div>
     <div class="navbar-menu-container">
-        <button class="navbar-menu-favorit-button" (click)="onFavoritesClick()">
+        <button class="navbar-menu-search-button" (click)="onSearchClick()">
+            <img src="navbar/search.svg" class="navbar-menu-search-icon"/>
+        </button>
+        <button class="navbar-menu-favorit-button" (click)="onFavoritesClick()" mat-button matTooltip="Parcelle favorite">
             <img src="navbar/favoritButton.svg" class="navbar-menu-favorit-icon"/>
         </button>
-        <button class="navbar-menu-map-button" (click)="onMapClick()">
+        <button class="navbar-menu-map-button" (click)="onMapClick()" mat-button matTooltip="Carte interactive">
             <img src="navbar/mapButton.svg" class="navbar-menu-map-icon"/>
         </button>
-        <button class="navbar-menu-user-button">
+        <button class="navbar-menu-user-button" (click)="onUserClick()">
             <img src="navbar/userButton.svg" class="navbar-menu-user-icon"/>
         </button>
     </div>

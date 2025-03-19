@@ -5,11 +5,13 @@ import { DisplayParcelleInfoComponent } from './map/display-parcelle-info/displa
 import { HomeComponent } from './home/home.component';
 import { FavoritListComponent } from './favorit-list/favorit-list.component';
 import { FavoritSelectedComponent } from './favorit-selected/favorit-selected.component';
+import { ProfileComponent } from './profile/profile.component';
 
 export const routes: Routes = [
   { path: 'map', component: MapComponent },
   { path: 'login', component: LoginComponent },
   { path: '', component: HomeComponent },
   { path: 'favorit', component: FavoritListComponent },
-  { path: 'favoritSelected', component: FavoritSelectedComponent }
+  { path: 'favoritSelected', component: FavoritSelectedComponent },
+  { path: 'profile', component: ProfileComponent }
 ];
