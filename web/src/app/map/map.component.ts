@@ -24,7 +24,7 @@ export class MapComponent implements OnInit {
   ngOnInit(): void {
     this.map = L.map('map', {
       center: [43.65583714209635, 0.5733537389936271],
-      zoom: 50,
+      zoom: 10,
       zoomControl: false,
       attributionControl: false,
       dragging: false,
@@ -39,15 +39,25 @@ export class MapComponent implements OnInit {
 
     this.parcelleLayerGroup = L.layerGroup().addTo(this.map);
     this.batimentLayerGroup = L.layerGroup().addTo(this.map);
+    this.loadPolygons();
+
+    setTimeout(() => {
+      this.map.on('tileload', () => {
+        console.log('Tile loaded');
+      });
+    
+      this.map.whenReady(() => {
+        this.map.flyTo([43.65583714209635, 0.5733537389936271], 18, {
+          duration: 3,
+        });
+      });
+    }, 1000);
 
     fetch('cadastre-32013-parcelles.json')
       .then(response => response.json())
       .then(data => {
         if (data && data.features) {
           this.geojsonParcelles = data;
-          this.updateVisibleLayers();
-          this.map.on('moveend', () => this.updateVisibleLayers());
-          this.map.on('zoomend', () => this.updateVisibleLayers());
         } else {
           console.error('Aucune donnée GeoJSON disponible pour les parcelles');
         }
@@ -59,12 +69,16 @@ export class MapComponent implements OnInit {
       .then(data => {
         if (data && data.features) {
           this.geojsonBatiments = data;
-          this.updateVisibleLayers();
         } else {
           console.error('Aucune donnée GeoJSON disponible pour les bâtiments');
         }
       })
       .catch(error => console.error('Erreur lors de la récupération des données GeoJSON des bâtiments:', error));
+  }
+
+  private loadPolygons(): void {
+    this.map.on('moveend', () => this.updateVisibleLayers());
+    this.map.on('zoomend', () => this.updateVisibleLayers());
   }
 
   private updateVisibleLayers(): void {

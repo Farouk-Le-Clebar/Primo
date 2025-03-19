@@ -9,7 +9,6 @@ import { FavoritSelectedComponent } from './favorit-selected/favorit-selected.co
 export const routes: Routes = [
   { path: 'map', component: MapComponent },
   { path: 'login', component: LoginComponent },
-  { path: 'display', component: DisplayParcelleInfoComponent },
   { path: '', component: HomeComponent },
   { path: 'favorit', component: FavoritListComponent },
   { path: 'favoritSelected', component: FavoritSelectedComponent }
