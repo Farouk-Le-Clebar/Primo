@@ -1,0 +1,189 @@
+.page-global-wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    height: 100vh;
+}
+
+.page-content-container {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.page-title-container {
+    display: flex;
+    flex-direction: column;
+    width: 95%;
+    height: 15%;
+    justify-content: center;
+    padding-left: 5%;
+}
+
+.page-title {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: white;    
+}
+
+.page-description {
+    font-size: 1em;
+    color: #B5B5B5;
+}
+
+.selected-criters-container {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+}
+
+.selected-criters-list {
+    width: 90%;
+    height: 85%;
+}
+
+.list-header-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    height: 10%;
+    border-radius: 10px 10px 0 0;
+    background-color: #272727;
+}
+
+.header-categorie-text {
+    color: #ADADAD;
+    font-size: 1.25em;
+}
+
+.list-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 90%;
+}
+
+.list-elem-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    height: 12.5%;
+    border-bottom: 1px solid #272727;
+}
+
+.list-elem-container:hover {
+    background-color: #2727278a;
+}
+
+.color-identifier-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 5%;
+    height: 100%;
+}
+
+.color-identifier {
+    width: 2vw;
+    height: 2vw;
+    border-radius: 15%;
+    background-color: #0A9396;
+}
+
+.categorie-container {
+    display: flex;
+    align-items: center;
+    width: 15%;
+    height: 100%;
+}
+
+.categorie-text {
+    color: white;
+}
+
+.critere-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32%;
+    height: 100%;
+}
+
+.plage-valeurs-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32%;
+    height: 100%;
+}
+
+.edit-delete-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20%;
+    width: 16%;
+    height: 100%;
+}
+
+.categorie-title-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 20%;
+    height: 100%;
+}
+
+.critere-title-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32%;
+    height: 100%;
+}
+
+.edit-delete-button {
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.edit-delete-button:hover {
+    transform: scale(1.1);
+}
+
+.bottom-button-container {
+    width: 90%;
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 5%;
+}
+
+.bottom-button-text {
+    font-size: 1.25em;
+    color: white;
+}
+
+.bottom-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    gap: 5%;
+    width: 17.5%;
+    height: 60%;
+    border-radius: 10px;
+    background-color: #1A1A1A;
+    border: none;
+    cursor: pointer;
+}
+
+.bottom-button:hover {
+    transform: scale(1.03);
+}
