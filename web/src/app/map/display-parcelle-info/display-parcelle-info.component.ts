@@ -1,4 +1,5 @@
 import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
 import * as templateAdress1 from '../../../assets/info/adress/template-adress1.json';
@@ -22,6 +23,8 @@ import * as templateCrime3 from '../../../assets/info/criminality/template-crimi
 export class DisplayParcelleInfoComponent {
   @Input() parcelleId!: string;
 
+  constructor(private router: Router) {}
+
   parcelleSelected: boolean = false;
   adress: any = {};
   price: any = {};
@@ -34,7 +37,7 @@ export class DisplayParcelleInfoComponent {
   ngOnInit(): void {
     console.log(this.parcelleId);
   }
-  
+
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['parcelleId'].currentValue == "") {
       this.parcelleSelected = false;
@@ -47,5 +50,9 @@ export class DisplayParcelleInfoComponent {
       this.price = this.priceList[Math.floor(Math.random() * this.priceList.length)];
       this.crime = this.crimeList[Math.floor(Math.random() * this.crimeList.length)];
     }
+  }
+
+  onClick() {
+    this.router.navigate(["/favoritSelected"]);
   }
 }
