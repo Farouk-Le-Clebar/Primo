@@ -1,0 +1,48 @@
+<div class="favorit-page">
+    <div class="favorit-navbar">
+        <app-navbar></app-navbar>
+    </div>
+    <div class="favorit-container">
+        <div class="favorit-left-container">
+            <div class="favorit-left-list-containter">
+                <div class="favorit-left-list-text-container">
+                    <div class="favorit-left-list-title-container">
+                        <h1 class="favorit-list-title-text">Classement Intelligent des Parcelles</h1>
+                        <img src="favorit/numberFavorit.svg" class="favorit-list-title-img"/>
+                    </div>
+                    <h1 class="favorit-list-subtitle-text">
+                        Comparez vos parcelles favorites en fonction de vos critères personnalisés et obtenez un classement par note pour identifier celle qui vous convient le mieux en un coup d'œil.
+                    </h1>
+                </div>
+                <div class="favorit-left-list-elements-container">
+                    <div class="favorit-list-titles">
+                        <h2 class="favorit-list-titles-text">Identifiant de parcelle</h2>
+                        <h2 class="favorit-list-titles-text">Prix €/m²</h2>
+                        <h2 class="favorit-list-titles-text">Note</h2>
+                    </div>
+                    <div class="favorit-list-elements">
+                        <app-parcel-list-element 
+                            *ngFor="let parcel of parcels"
+                            [parcelId]="parcel.parcelId"
+                            [price]="parcel.price"
+                            [starCount]="parcel.starCount">
+                        </app-parcel-list-element>
+                    </div>
+                </div> 
+            </div>
+        </div>
+        <div class="favorit-right-container">
+            <div class="favorit-right-img-container">
+                <img src="favorit/mapPinned.svg" class="favorit-list-img" (click)="onMapClick()"/>
+            </div>
+            <div class="favorit-right-button-container">
+                <button class="favorit-right-button-criteres">
+                    <img src="favorit/criterestxt.svg" class="favorit-right-button-criteres-img"/>
+                </button>
+                <button class="favorit-right-button-generer" (click)="generateRanking()">
+                    <img src="favorit/generer.svg" class="favorit-right-button-generer-img"/>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
