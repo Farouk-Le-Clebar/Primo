@@ -12,11 +12,11 @@ export class NavbarComponent {
   constructor(private router: Router) { }
 
   onSearchClick() {
-    this.router.navigate(['/search']);
+    this.router.navigate(['/critersSearching']);
   }
 
   onMapClick() {
-    this.router.navigate(['/map']);
+    this.router.navigate(['/map'], { queryParams: { zoomAnimation: 'false' } });
   }
 
   onFavoritesClick() {

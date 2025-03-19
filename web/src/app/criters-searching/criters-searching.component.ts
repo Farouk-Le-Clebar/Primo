@@ -13,6 +13,6 @@ export class CritersSearchingComponent {
   constructor(private router: Router) {}
 
   onClick() {
-    this.router.navigate(["/map"]);
+    this.router.navigate(['/map'], { queryParams: { zoomAnimation: 'true' } });
   }
 }
