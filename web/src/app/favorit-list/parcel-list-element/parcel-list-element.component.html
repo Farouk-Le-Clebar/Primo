@@ -1,0 +1,11 @@
+<div class="parcel-list-element parcel-list-grid" (click)="onParcelClick()">
+    <img src="smart-ranking/parcelicon.svg" class="parcel-list-element-image" />
+    <p class="parcel-list-element-text-ID">{{ parcelName }}</p>
+    <p class="parcel-list-element-text-price">{{ price }}</p>
+    <div class="parcel-list-element-stars-container">
+        <ng-container *ngFor="let star of [].constructor(starCount); let i = index">
+            <img src="favorit/star.svg" class="parcel-list-element-star" />
+        </ng-container>
+    </div>
+    <img src="smart-ranking/del.svg" class="parcel-list-element-del" />
+</div>

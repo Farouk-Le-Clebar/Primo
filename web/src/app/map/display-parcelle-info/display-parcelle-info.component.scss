@@ -6,34 +6,25 @@
     background-color: #1F1F1F;
     border-radius: 15px;
     box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.648);
-    align-items: center;
-    gap: 2%;
 }
 
-.display-info-title-container {
+.informations-container {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 7.5%;
     width: 100%;
-    border-radius: 15px;
-    box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.455);
-}
-
-.display-info-logo {
-    width: 40%;
-    margin-right: 10px;
+    height: 100%;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 3%;
 }
 
 .basic-info-parcelle {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 4%;
     height: 30%;
-    width: 90%;
-    border-radius: 10px;
-    background-color: rgb(0, 0, 0);
-}
-
-.price-info-parcelle {
-    height: 12.5%;
     width: 90%;
     border-radius: 10px;
     background-color: rgb(0, 0, 0);
@@ -55,16 +46,230 @@
     justify-content: center;
 }
 
-.crims-info-parcelle {
+.transports-info-parcelle {
     height: 100%;
-    width: 49.5%;
+    width: 39.5%;
     border-radius: 10px;
     background-color: rgb(0, 0, 0);
 }
 
-.transports-info-parcelle {
+.city-district-container {
+    display: flex;
+    flex-direction: row;
+    gap: 5%;
+    height: 27%;
+    width: 90%;
+    justify-content: center;
+}
+
+.city-district {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     height: 100%;
     width: 49.5%;
+    border-radius: 5px;
+    background-color: #12171D;
+}
+
+.basic-info {
+    width: 90%;
+    height: 27%;
+    background-color: #12171D;
+    border-radius: 5px;
+}
+
+.city-container {
+    display: flex;
+    align-items: center;
+    border-bottom: #1F1F1F solid 1px;
+    width: 100%;
+    height: 50%;
+    display: flex;
+    align-items: center;
+}
+
+.city-value-container {
+    display: flex;
+    width: 100%;
+    height: 50%;
+    align-items: center;
+}
+
+.city-text {
+    color: #FFFFFF;
+    font-size: 1em;
+    font-weight: bold;
+    margin-left: 5%;
+}
+.city-value-text {
+    color: #CED8E1;
+    font-size: 0.8em;
+    margin-left: 5%;
+}
+
+.price-text {
+    color: #FFFFFF;
+    font-size: 1em;
+    font-weight: bold;
+    margin-left: 5%;
+}
+
+.price-text-container {
+    display: flex;
+    width: 50%;
+    height: 100%;
+    align-items: center;
+    height: 100%;
+    padding-left: 2%;
+}
+
+.price-info-parcelle {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 12.5%;
+    width: 90%;
     border-radius: 10px;
     background-color: rgb(0, 0, 0);
+}
+
+.chart-graphic {
+    width: 100%;
+    object-fit: fill;
+}
+
+.chart-graphic-container {
+    width: 100%;
+    height: 60%;
+}
+
+.price-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    height: 40%;
+}
+
+.price-value-container {
+    height: 100%;
+    width: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.price-value-green-bubble {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-left: 4%;
+    padding-right: 4%;
+    background-color: #37BC9B;
+    height: 55%;
+    border-radius: 5px;
+}
+
+.crims-info-parcelle {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 59.5%;
+    border-radius: 10px;
+    background-color: rgb(0, 0, 0);
+}
+
+.crims-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    height: 30%;
+}
+
+.chart-crime {
+    width: 90%;
+    height: 70%;
+}
+
+.arrow {
+    width: 50%;
+}
+
+.crims-title-container {
+    display: flex;
+    align-items: center;
+    padding-left: 10%;
+    width: 75%;
+    height: 100%;
+}
+
+.arrow-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 25%;
+    height: 100%;
+}
+
+.see-more-button {
+    width: 90%;
+    height: 5%;
+    background-color: white;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+}
+
+.see-more-button:hover {
+    background-color: #E5E5E5;
+    transform: scale(1.01);
+}
+
+.see-more-text {
+    color: black;
+    font-size: 1em;
+    font-weight: bold;
+}
+
+.chart-interest {
+    width: 100%;
+    height: 65%;
+}
+
+.interest-title-container {
+    display: flex;
+    align-items: center;
+    padding-left: 5%;
+    width: 95%;
+    height: 30%;
+}
+
+.interest-info-parcelle {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 15%;
+    width: 90%;
+    border-radius: 10px;
+    background-color: rgb(0, 0, 0);
+}
+
+.unselected-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 86%;
+}
+
+.unselected-text {
+    color: white;
+    font-size: 1em;
+    font-weight: bold;
+    text-align: center;
 }

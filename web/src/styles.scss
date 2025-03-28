@@ -18,11 +18,29 @@
 
 @font-face {
   font-family: 'InterMedium';
-  src: url('/assets/fonts/Inter_18pt-Medium.ttf') format('truetype');
+  src: url('/fonts/Inter_18pt-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'UberBold';
+  src: url('/fonts/UberMoveBold.otf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'UberMedium';
+  src: url('/fonts/UberMoveMedium.otf') format('truetype');
   font-weight: 500;
   font-style: normal;
 }
 
 body {
   font-family: 'InterMedium', sans-serif;
+  background-color: black;
 }
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
