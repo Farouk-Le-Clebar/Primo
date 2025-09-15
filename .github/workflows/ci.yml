@@ -43,6 +43,10 @@ jobs:
       working-directory: ./back
       run: yarn install
     
+    - name: Run back tests
+      working-directory: ./back
+      run: yarn run test --coverage
+    
     - name: Build back
       working-directory: ./back
       run: yarn run build
