@@ -1,0 +1,45 @@
+name : CI
+
+on:
+  push:
+    branches: [ dev, main ]
+
+  pull_request:
+    branches: [ dev, main ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+
+#### FRONT-WEB ####
+    - name: Install frontend dependencies [WEB]
+      working-directory: ./web 
+      run: npm install
+
+    - name: Build frontend [WEB]
+      working-directory: ./web
+      run: npm run build
+
+#### BACK ####
+    - name: Install back dependencies
+      working-directory: ./back
+      run: npm install
+    
+    - name: Build back
+      working-directory: ./back
+      run: npm run build
