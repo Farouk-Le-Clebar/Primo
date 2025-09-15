@@ -24,22 +24,25 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
-        cache: 'npm'
+        cache: 'yarn'
+        cache-dependency-path: |
+          web/yarn.lock
+          back/yarn.lock
 
 #### FRONT-WEB ####
     - name: Install frontend dependencies [WEB]
       working-directory: ./web 
-      run: npm install
+      run: yarn install
 
     - name: Build frontend [WEB]
       working-directory: ./web
-      run: npm run build
+      run: yarn run build
 
 #### BACK ####
     - name: Install back dependencies
       working-directory: ./back
-      run: npm install
+      run: yarn install
     
     - name: Build back
       working-directory: ./back
-      run: npm run build
+      run: yarn run build
