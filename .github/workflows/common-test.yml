@@ -1,0 +1,44 @@
+name: Common Test
+
+on:
+    workflow_call:
+        inputs:
+            working-directory:
+                description: "Directory to run the commands in"
+                required: true
+                type: string
+            run-command:
+                description: "Command to run in the directory"
+                required: true
+                type: string
+            cache-lock-path:
+                description: "Lock file for yarn cache"
+                required: true
+                type: string
+
+jobs:
+    generic-job:
+        runs-on: ubuntu-latest
+
+        strategy:
+            matrix:
+                node-version: [22]
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Use Node.js ${{ matrix.node-version }}
+              uses: actions/setup-node@v4
+              with:
+                  node-version: ${{ matrix.node-version }}
+                  cache: "yarn"
+                  cache-dependency-path: ${{ inputs.cache-lock-path }}
+
+            - name: Install dependencies
+              working-directory: ${{ inputs.working-directory }}
+              run: yarn install
+
+            - name: Run custom command
+              working-directory: ${{ inputs.working-directory }}
+              run: ${{ inputs.run-command }}

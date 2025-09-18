@@ -1,0 +1,15 @@
+name: Back Unit Tests
+
+on:
+  push:
+    branches: [dev, main]
+  pull_request:
+    branches: [dev, main]
+
+jobs:
+  test:
+    uses: ./.github/workflows/common-test.yml
+    with:
+      working-directory: back
+      run-command: "yarn run test --coverage"
+      cache-lock-path: back/yarn.lock
