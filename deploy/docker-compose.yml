@@ -1,0 +1,50 @@
+services:
+  frontend:
+    build:
+      context: ../web
+      dockerfile: Dockerfile
+    container_name: primo-frontend
+    restart: unless-stopped
+    ports:
+      - "3001:80"
+    environment:
+      VITE_API_URL: "http://localhost:3000"
+      NGINX_BACKEND_URL: "http://backend:80"
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: ../back
+      dockerfile: Dockerfile
+    container_name: primo-backend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: 3000
+      MYSQL_HOST: mysql_db
+      MYSQL_PORT: 3306
+      MYSQL_USER: user_primo
+      MYSQL_PASSWORD: V3RyS3eCr3tP@ssw0rd
+      MYSQL_DATABASE: primo
+      JWT_SECRET: S3cReT
+    depends_on:
+      - mysql_db
+
+  mysql_db:
+    image: mysql:8.3
+    container_name: mysql_db
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: primo
+      MYSQL_USER: user_primo
+      MYSQL_PASSWORD: V3RyS3eCr3tP@ssw0rd
+      MYSQL_ROOT_PASSWORD: V3RyS3eCr3tP@ssw0rd
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:
