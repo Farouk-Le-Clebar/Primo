@@ -1,0 +1,22 @@
+server {
+  listen 80;
+  server_name primoServer;
+
+  root /usr/share/nginx/html;
+  index index.html index.htm;
+
+
+  location / {
+    try_files $uri $uri/ /index.html;
+  }
+
+  location = /env-config.js {
+    add_header Cache-Control "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0" always;
+  }
+
+
+  add_header X-Content-Type-Options nosniff;
+  add_header X-Frame-Options SAMEORIGIN;
+  add_header X-XSS-Protection "1; mode=block";
+}
+
