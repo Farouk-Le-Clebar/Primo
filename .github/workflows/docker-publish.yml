@@ -1,0 +1,37 @@
+name: Build & Push Docker Images
+
+on:
+  push:
+    branches: [dev, main]
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build & Push Frontend Image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./web
+          file: ./web/Dockerfile
+          push: true
+          tags: |
+            garoverr/primo-frontend:${{ github.ref == 'refs/heads/main' && 'latest' || 'dev' }}
+
+      - name: Build & Push Backend Image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./back
+          file: ./back/Dockerfile
+          push: true
+          tags: |
+            garoverr/primo-backend:${{ github.ref == 'refs/heads/main' && 'latest' || 'dev' }}
