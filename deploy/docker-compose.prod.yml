@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  frontend:
+    image: garoverr/primo-frontend:dev
+    ports:
+      - "80:80"
+    environment:
+      VITE_API_URL: "http://backend:3000"
+    depends_on:
+      - backend
+
+  backend:
+    image: garoverr/primo-backend:dev
+    ports:
+      - "3000:3000"   
+    environment:
+      MYSQL_HOST: mysql_db
+      MYSQL_PORT: 3306
+      MYSQL_USER: user_primo
+      MYSQL_PASSWORD: V3RyS3eCr3tP@ssw0rd
+      MYSQL_DATABASE: primo
+      JWT_SECRET: S3cReT
+    depends_on:
+      - mysql_db
+
+  mysql_db:
+    image: mysql:8.3
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: primo
+      MYSQL_USER: user_primo
+      MYSQL_PASSWORD: V3RyS3eCr3tP@ssw0rd
+      MYSQL_ROOT_PASSWORD: V3RyS3eCr3tP@ssw0rd
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:
