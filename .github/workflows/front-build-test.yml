@@ -1,0 +1,15 @@
+name: Front Build Test
+
+on:
+  push:
+    branches: [dev, main]
+  pull_request:
+    branches: [dev, main]
+
+jobs:
+  build:
+    uses: ./.github/workflows/common-test.yml
+    with:
+      working-directory: web
+      run-command: "yarn run build"
+      cache-lock-path: web/yarn.lock
