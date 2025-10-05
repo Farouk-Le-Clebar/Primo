@@ -1,9 +1,10 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { User } from './database/user.entity';
+import { AddokProxyMiddleware } from './api/addok/proxy.middleware';
 
 @Module({
   imports: [
@@ -25,5 +26,8 @@ import { User } from './database/user.entity';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
-
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(AddokProxyMiddleware).forRoutes('/addok');
+  }
+}
