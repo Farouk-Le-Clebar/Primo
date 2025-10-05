@@ -4,7 +4,7 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { User } from './database/user.entity';
-import { AddokProxyMiddleware } from './api/addok/proxy.middleware';
+import { AddokProxyMiddleware } from './api/addok.middleware';
 
 @Module({
   imports: [

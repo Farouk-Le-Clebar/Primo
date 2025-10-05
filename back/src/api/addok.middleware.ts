@@ -5,7 +5,7 @@ import { Request, Response, NextFunction } from 'express';
 @Injectable()
 export class AddokProxyMiddleware implements NestMiddleware {
   private proxy = createProxyMiddleware({
-    target: 'http://localhost:7878',
+    target: process.env.ADDOK_URL || 'http://localhost:7878',
     changeOrigin: true,
     pathRewrite: { '^/addok': '' },
   });
