@@ -1,7 +1,9 @@
+name: primo
+
 services:
   mysql:
     image: mysql:8.3
-    container_name: mysql
+    container_name: mysql_primo
     restart: always
     environment:
       MYSQL_DATABASE: primo
@@ -11,11 +13,11 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - mysql_data:/var/lib/mysql
+      - mysql_data:/var/lib/mysql/
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
-    container_name: phpmyadmin
+    container_name: phpmyadmin_primo
     restart: always
     environment:
       PMA_HOST: mysql
@@ -25,6 +27,29 @@ services:
       - "8080:80"
     depends_on:
       - mysql
+
+  addok:
+    image: etalab/addok
+    ports:
+    - "7878:7878"
+    volumes:
+    - ./addok-data/addok.conf:/etc/addok/addok.conf
+    - ./addok-data/addok.db:/data/addok.db
+    - ./logs:/logs
+    links:
+    - addok-redis:redis
+    environment:
+      WORKERS: 1
+      WORKER_TIMEOUT: 30
+      LOG_QUERIES: 1
+      LOG_NOT_FOUND: 1
+      SLOW_QUERIES: 200
+
+  addok-redis:
+    image: etalab/addok-redis
+    volumes:
+    - ./addok-data/dump.rdb:/data/dump.rdb
+
 
 volumes:
   mysql_data:
