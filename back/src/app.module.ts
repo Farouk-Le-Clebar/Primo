@@ -5,16 +5,19 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { User } from './database/user.entity';
 import { AddokProxyMiddleware } from './api/addok.middleware';
+import { ApicartoProxyMiddleware } from './api/apicarto.middleware';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-        isGlobal: true,
+      isGlobal: true,
     }),
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: process.env.MYSQL_HOST,
-      port: process.env.MYSQL_PORT ? parseInt(process.env.MYSQL_PORT, 10) : 3306,
+      port: process.env.MYSQL_PORT
+        ? parseInt(process.env.MYSQL_PORT, 10)
+        : 3306,
       username: process.env.MYSQL_USER,
       password: process.env.MYSQL_PASSWORD,
       database: process.env.MYSQL_DATABASE,
@@ -29,5 +32,6 @@ import { AddokProxyMiddleware } from './api/addok.middleware';
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(AddokProxyMiddleware).forRoutes('/addok');
+    consumer.apply(ApicartoProxyMiddleware).forRoutes('/apicarto');
   }
 }
