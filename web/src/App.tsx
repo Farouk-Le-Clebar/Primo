@@ -1,14 +1,20 @@
-import PrimoSvg from './assets/primo.svg?react'
+import { Routes, Route } from "react-router-dom";
+import Home from "./pages/home/Home";
+import Navbar from "./components/navbar/Navbar";
+import Footer from "./components/footer/Footer";
 
-const App = () => {
+function App() {
   return (
-    <div className="flex items-center justify-center h-screen w-screen bg-black">
-      <div className="flex items-center justify-center gap-3">
-        <p className="text-4xl font-bold text-white">Welcome on </p>
-        <PrimoSvg className="h-7 mt-2" />
-      </div>
-    </div>
-  )
+    <>
+      <Navbar />
+      <main>
+        <Routes>
+          <Route path="/" element={<Home />} />
+        </Routes>
+      </main>
+      <Footer />
+    </>
+  );
 }
 
-export default App
+export default App;
