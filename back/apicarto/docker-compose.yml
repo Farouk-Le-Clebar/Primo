@@ -1,0 +1,9 @@
+services:
+  apicarto:
+    image: ghcr.io/ignf/apicarto:v2.9.2_qlf
+    container_name: apicarto
+    restart: unless-stopped
+    ports:
+      - "6677:6677"
+    environment:
+      PORT: 6677

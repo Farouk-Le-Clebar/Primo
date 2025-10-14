@@ -50,6 +50,5 @@ services:
     volumes:
     - ./addok-data/dump.rdb:/data/dump.rdb
 
-
 volumes:
   mysql_data:
