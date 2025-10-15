@@ -2,7 +2,8 @@ import { Routes, Route, useLocation } from "react-router-dom";
 import Home from "./pages/home/Home";
 import Navbar from "./components/navbar/Navbar";
 import Footer from "./components/footer/Footer";
-import Search from "./pages/search/Search";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import SearchingBar from "./pages/search/SearchBar";
 
 function App() {
   const location = useLocation();
@@ -14,13 +15,17 @@ function App() {
     return location.pathname === p || location.pathname.startsWith(p + "/");
   });
 
+  const queryClient = new QueryClient();
+
   return (
     <>
       {shouldShowNavbar && <Navbar />}
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/search" element={<Search />} />
-      </Routes>
+      <QueryClientProvider client={queryClient}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/search" element={<SearchingBar />} />
+        </Routes>
+      </QueryClientProvider>
       {shouldShowNavbar && <Footer />}
     </>
   );
