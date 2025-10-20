@@ -59,7 +59,7 @@ services:
       - ./graphhopper-data:/data
       - ./config.gh.yml:/config.gh.yml
     command: >
-      --input /data/occitanie.osm.pbf
+      --input /data/france.osm.pbf
       --config /config.gh.yml
       --graph-cache /data/graph
 
