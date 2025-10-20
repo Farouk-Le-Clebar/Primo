@@ -1,6 +1,6 @@
 graphhopper:
 
-  datareader.file: /data/france.osm.pbf
+  datareader.file: /data/occitanie.osm.pbf
 
   graph.location: /data/graph
 

@@ -1,4 +1,4 @@
-name: primo
+name : primo
 
 services:
   mysql:
@@ -58,8 +58,10 @@ services:
     volumes:
       - ./graphhopper-data:/data
       - ./config.gh.yml:/config.gh.yml
+    environment:
+      JAVA_TOOL_OPTIONS: "-Xmx64G -Xms32G"
     command: >
-      --input /data/france.osm.pbf
+      --input /data/occitanie.osm.pbf
       --config /config.gh.yml
       --graph-cache /data/graph
 
