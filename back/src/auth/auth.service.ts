@@ -18,7 +18,13 @@ export class AuthService {
     if (existing) throw new UnauthorizedException('Email already used');
 
     const hashed = await bcrypt.hash(password, 10);
-    const user = this.userRepo.create({ email, password: hashed });
+    const user = this.userRepo.create({
+      email,
+      password: hashed,
+      firstName: '',
+      surName: '',
+      profilePicture: null,
+    });
     await this.userRepo.save(user);
     return { message: 'User registered successfully' };
   }
