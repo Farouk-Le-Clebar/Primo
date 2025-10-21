@@ -58,8 +58,6 @@ services:
     volumes:
       - ./graphhopper-data:/data
       - ./config.gh.yml:/config.gh.yml
-    environment:
-      JAVA_TOOL_OPTIONS: "-Xmx64G -Xms32G"
     command: >
       --input /data/occitanie.osm.pbf
       --config /config.gh.yml
