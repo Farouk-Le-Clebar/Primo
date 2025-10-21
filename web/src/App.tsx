@@ -5,15 +5,15 @@ import Footer from "./components/footer/Footer";
 
 function App() {
   return (
-    <>
+    <div className="">
       <Navbar />
       <main>
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Home />} />z
         </Routes>
       </main>
       <Footer />
-    </>
+    </div>
   );
 }
 
