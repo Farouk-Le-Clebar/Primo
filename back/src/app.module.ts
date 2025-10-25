@@ -7,6 +7,7 @@ import { User } from './database/user.entity';
 import { AddokProxyMiddleware } from './api/addok.middleware';
 import { ApicartoProxyMiddleware } from './api/apicarto.middleware';
 import { AuthModule } from './auth/auth.module';
+import { GeoModule } from './geo/geo.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { AuthModule } from './auth/auth.module';
     }),
     TypeOrmModule.forFeature([User]),
     AuthModule,
+    GeoModule,
   ],
   controllers: [AppController],
   providers: [AppService],
