@@ -1,14 +1,34 @@
-import PrimoSvg from './assets/primo.svg?react'
+import { Routes, Route, useLocation } from "react-router-dom";
+import Home from "./pages/home/Home";
+import Navbar from "./components/navbar/Navbar";
+import Footer from "./components/footer/Footer";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import SearchingBar from "./pages/search/SearchBar";
 
-const App = () => {
+function App() {
+  const location = useLocation();
+
+  const showNavbarOn = ["/"];
+
+  const shouldShowNavbar = showNavbarOn.some((p) => {
+    if (p === "/") return location.pathname === "/";
+    return location.pathname === p || location.pathname.startsWith(p + "/");
+  });
+
+  const queryClient = new QueryClient();
+
   return (
-    <div className="flex items-center justify-center h-screen w-screen bg-black">
-      <div className="flex items-center justify-center gap-3">
-        <p className="text-4xl font-bold text-white">Welcome on </p>
-        <PrimoSvg className="h-7 mt-2" />
-      </div>
-    </div>
-  )
+    <>
+      {shouldShowNavbar && <Navbar />}
+      <QueryClientProvider client={queryClient}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/search" element={<SearchingBar />} />
+        </Routes>
+      </QueryClientProvider>
+      {shouldShowNavbar && <Footer />}
+    </>
+  );
 }
 
-export default App
+export default App;

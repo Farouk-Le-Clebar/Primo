@@ -30,6 +30,7 @@ services:
 
   addok:
     image: etalab/addok
+    restart: always
     ports:
       - '7878:7878'
     volumes:
@@ -62,6 +63,15 @@ services:
       --input /data/occitanie.osm.pbf
       --config /config.gh.yml
       --graph-cache /data/graph
+      
+  apicarto:
+    image: ghcr.io/ignf/apicarto:v2.9.2_qlf
+    container_name: apicarto
+    restart: always
+    ports:
+      - "6677:6677"
+    environment:
+      PORT: 6677
 
 volumes:
   mysql_data:
