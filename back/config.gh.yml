@@ -1,0 +1,30 @@
+graphhopper:
+
+  datareader.file: /data/occitanie.osm.pbf
+
+  graph.location: /data/graph
+
+  profiles:
+    - name: car
+      custom_model_files: [car.json]
+
+  profiles_ch:
+    - profile: car
+
+  graph.encoded_values: car_access, car_average_speed, road_access
+
+  import.osm.ignored_highways: footway,construction,cycleway,path,steps
+
+server:
+  application_connectors:
+    - type: http
+      port: 8989
+      bind_host: 0.0.0.0
+  admin_connectors:
+    - type: http
+      port: 8990
+      bind_host: 0.0.0.0
+
+logging:
+  appenders:
+    - type: console
