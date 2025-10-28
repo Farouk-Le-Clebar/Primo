@@ -80,8 +80,8 @@ export default function Navbar() {
         />
       )}
 
-      {activeModal === "login" && <LoginModal email={email} onClose={closeModal} />}
-      {activeModal === "register" && <RegisterModal email={email} onClose={closeModal} />}
+      {activeModal === "login" && <LoginModal email={email} onClose={closeModal} onBack={() => setActiveModal("auth")} />}
+      {activeModal === "register" && <RegisterModal email={email} onClose={closeModal} onBack={() => setActiveModal("auth")}/>}
     </>
   );
 }

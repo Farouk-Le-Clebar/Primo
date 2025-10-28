@@ -5,12 +5,18 @@ import { AxiosError } from "axios";
 import UserInfo from "../../userPreview/UserPreview";
 import { Eye, EyeOff, ArrowLeft } from "lucide-react";
 
+import Button from "../../../ui/Button";
+import Input from "../../../ui/Input";
+import {BackgroundColors, TextColors}  from "../../../utils/colors"
+
 export default function LoginModal({ 
   onClose,
   email,
+  onBack,
 }: { 
   onClose: () => void;
   email: string;
+  onBack: () => void;
 }) {
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -52,30 +58,34 @@ export default function LoginModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center">
       <div className="absolute inset-0 bg-black/50" onClick={onClose}></div>
 
-      <div className="relative z-10 bg-white rounded-2xl shadow-2xl w-full max-w-md sm:max-w-lg md:max-w-xl p-6 sm:p-8 md:p-10 text-left animate-fade-in">
-        <h2 className="text-2xl sm:text-2xl font-UberMoveBold text-gray-800 mb-2">Heureux de vous revoir 👋</h2>
+      {/* Text Title and Desc */}
+      <div className="relative z-10 bg-white rounded-2xl shadow-2xl max-w-md sm:max-w-lg md:max-w-116 p-6 sm:p-8 md:p-10 text-left animate-fade-in">
+        <div>
+          <h2 className="text-2xl sm:text-2xl font-UberMoveBold text-gray-800 mb-2">Heureux de vous revoir 👋</h2>
+          <p className="text-gray-600 font-UberMoveMedium mb-6 text-sm sm:text-sm">
+              Connectez-vous à votre compte Primo pour retrouver vos projets, vos favoris et votre progression.
+              Saisissez simplement votre mot de passe ci-dessous.
+          </p>
 
-        <p className="text-gray-600 font-UberMoveMedium mb-6 text-sm sm:text-sm">
-            Connectez-vous à votre compte Primo pour retrouver vos projets, vos favoris et votre progression.
-            Saisissez simplement votre mot de passe ci-dessous.
-        </p>
+        </div>
+
         <div className="space-y-3 mt-8">
-        <UserInfo email={email} />
+          <UserInfo email={email} />
         </div>
         {/* Input Password */}
         <div className="space-y-1 mt-5 relative">
-          <h3 className="font-UberMoveMedium text-lg">Mot de passe</h3>
+          <h3 className="font-UberMoveMedium text-sm">Mot de passe</h3>
 
           <div className="relative">
-            <input
+            <Input
               type={showPassword ? "text" : "password"}
               placeholder="Entrez votre mot de passe"
+              onChange={setPassword}
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500"
+              className=""
             />
             <button
               type="button"
@@ -86,19 +96,40 @@ export default function LoginModal({
             </button>
           </div>
 
-          <button
-            onClick={handleConnect}
-            disabled={isPending}
-            className={`w-full mt-5 pl-4 pr-6 py-3 rounded-lg shadow-md transition-all duration-200 cursor-pointer ${
-              isPending
-                ? "bg-gray-400 cursor-not-allowed"
-                : "bg-green-600 text-white hover:bg-green-700 hover:shadow-lg"
-            }`}
-          >
-            {isPending ? "Connexion en cours..." : "Se connecter"}
-          </button>
+        {/* Button Connexion */}
+        <Button
+          onClick={handleConnect}
+          disabled={isPending}
+          isLoading={isPending}
+          textSize="text-md font-medium"
+          className={`mt-6`}
+          children={<>
+            <p>Se connecter</p>
+          </>
+          }
+        />
 
+        {/* Button Back */}
+        <Button
+          onClick={onBack}
+          disabled={isPending}
+          isLoading={isPending}
+          className={`mt-3`}
+          textSize="text-md font-normal"
+          textColor={TextColors.black}
+          backgroundColor={BackgroundColors.gray}
+          backgroundHoverColor={BackgroundColors.grayHover}
+          children={<>
+                      <ArrowLeft
+                        size={24}
+                        className="text-black opacity-0 -translate-x-2 transition-all duration-200 group-hover:opacity-100 group-hover:translate-x-0 group-hover:stroke-2"
+                      />
+                      <p className="mr-9">Retour</p>
+                    </>
+          }
+        />
 
+        {/* Text Error */}
           {errorMessage && (
             <p className="text-red-600 text-sm mt-2">{errorMessage}</p>
           )}

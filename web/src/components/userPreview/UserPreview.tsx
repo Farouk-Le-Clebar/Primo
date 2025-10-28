@@ -22,7 +22,7 @@ export default function UserInfo({ email }: { email: string }) {
             <img
             src={profileImage}
             alt="Photo de profil"
-            className="w-12 h-12 rounded-lg object-cover border border-gray-200"
+            className="w-10 h-10 rounded-lg object-cover border border-gray-200"
             />
         </div>
         <div>
@@ -30,7 +30,7 @@ export default function UserInfo({ email }: { email: string }) {
                 <p className="text-sm">{data.firstName || "Prénom"}</p>
                 <p className="text-sm">{data.surName || "Nom de famille"}</p>
             </div>
-            <p className="ml-3">{data.email}</p>
+            <p className="ml-3 text-sm">{data.email}</p>
         </div>
     </div>
   );
