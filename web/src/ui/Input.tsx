@@ -1,14 +1,31 @@
 import DateInput from "./DateInput";
+import {BorderColors, TextColors, FocusColors, PlaceholderColors}  from "../utils/colors";
 
 type InputProps = {
+    width?: string;
+    height?: string;
     placeholder?: string;
     value: string;
     onChange: (value: string) => void;
     className?: string;
     type?: string;
+    borderColor?: string;
+    textColor?: string;
+    focusColor?: string;
 }
 
-const Input = ({ placeholder = "Enter text", value, onChange, className = "", type = 'text' }: InputProps) => {
+const Input = ({ 
+    width = "w-full",
+    height,
+    placeholder = "Enter text",
+    value, onChange,
+    className = "",
+    type = 'text',
+    textColor = TextColors.gray,
+    borderColor = BorderColors.gray,
+    focusColor = FocusColors.green,
+    placeholderColor = PlaceholderColors.gray,
+}: InputProps) => {
     return (
         <>
             {type === 'date' ? (
@@ -30,7 +47,8 @@ const Input = ({ placeholder = "Enter text", value, onChange, className = "", ty
                     placeholder={placeholder}
                     value={value}
                     onChange={(e) => onChange(e.target.value)}
-                    className={`border border-gray-500 text-lg rounded-xl h-12 p-2 w-full focus:border-agendai focus:outline-none ${className}`}
+                    className={`
+                        ${width} ${height} px-4 py-2 pr-12 ${textColor} border ${borderColor} ${placeholderColor} rounded-lg focus:outline-none focus:ring-2 ${focusColor} ${className}`}
                     lang="fr"
                 />
             )}
