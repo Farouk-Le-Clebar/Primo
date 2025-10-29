@@ -1,4 +1,4 @@
-name : primo
+name: primo
 
 services:
   mysql:
