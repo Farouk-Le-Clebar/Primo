@@ -1,0 +1,44 @@
+graphhopper:
+
+  datareader.file: /data/picardie.osm.pbf
+
+  graph.location: /data/graph
+  
+  profiles:
+    - name: car
+      custom_model_files: [car.json]
+    - name: bike
+      custom_model_files: [bike.json]
+    - name: foot
+      custom_model_files: [foot.json]
+
+  profiles_ch:
+    - profile: car
+    - profile: bike
+    - profile: foot
+
+  graph.encoded_values: road_class, road_access, max_speed, car_access, bike_access, foot_access, car_average_speed, bike_priority, mtb_rating, hike_rating, roundabout, bike_average_speed, foot_priority, foot_average_speed
+
+
+  import.osm.ignored_highways: construction,steps
+
+
+  prepare.min_network_size: 200
+  prepare.subnetworks.threads: 1
+
+  # Autorise seulement les trajets intra-région 500km max
+  routing.non_ch.max_waypoint_distance: 500000 
+
+server:
+  application_connectors:
+    - type: http
+      port: 8989
+      bind_host: 0.0.0.0
+  admin_connectors:
+    - type: http
+      port: 8990
+      bind_host: 0.0.0.0
+
+logging:
+  appenders:
+    - type: console

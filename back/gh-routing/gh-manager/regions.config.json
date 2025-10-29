@@ -1,0 +1,381 @@
+{
+  "regions": [
+    {
+      "id": "occitanie",
+      "name": "Occitanie",
+      "bounds": {
+        "minLat": 42.33,
+        "maxLat": 45.05,
+        "minLon": -0.33,
+        "maxLon": 4.85
+      },
+      "dataPath": "./gh-routing/gh-data/occitanie",
+      "osmFile": "occitanie.osm.pbf",
+      "configFile": "config.yml",
+      "polyFile": "occitanie.poly",
+      "port": 8990,
+      "containerName": "graphhopper-occitanie"
+    },
+    {
+      "id": "paca",
+      "name": "Provence-Alpes-Côte d'Azur",
+      "bounds": {
+        "minLat": 43.0,
+        "maxLat": 45.13,
+        "minLon": 4.23,
+        "maxLon": 7.72
+      },
+      "dataPath": "./gh-routing/gh-data/paca",
+      "osmFile": "paca.osm.pbf",
+      "configFile": "config.yml",
+      "polyFile": "paca.poly",
+      "port": 8991,
+      "containerName": "graphhopper-paca"
+    },
+    {
+      "id": "idf",
+      "name": "Île-de-France",
+      "bounds": {
+        "minLat": 48.0,
+        "maxLat": 49.2,
+        "minLon": 1.5,
+        "maxLon": 3.5
+      },
+      "dataPath": "./gh-routing/gh-data/idf",
+      "osmFile": "idf.osm.pbf",
+      "configFile": "config.yml",
+      "polyFile": "idf.poly",
+      "port": 8992,
+      "containerName": "graphhopper-idf"
+    },
+    {
+      "id": "nouvelle-aquitaine",
+      "name": "Nouvelle-Aquitaine",
+      "bounds": {
+        "minLat": 42.78,
+        "maxLat": 46.80,
+        "minLon": -2.23,
+        "maxLon": 2.58
+      },
+      "dataPath": "./gh-routing/gh-data/nouvelle-aquitaine",
+      "osmFile": "nouvelle-aquitaine.osm.pbf",
+      "configFile": "config.yml",
+      "polyFile": "nouvelle-aquitaine.poly",
+      "port": 8993,
+      "containerName": "graphhopper-nouvelle-aquitaine"
+    },
+    {
+      "id": "basse-normandie",
+      "name": "Basse-Normandie",
+      "bounds": {
+        "minLat": 48.5,
+        "maxLat": 49.8,
+        "minLon": -1.8,
+        "maxLon": 0.2
+      },
+      "dataPath": "./gh-routing/gh-data/basse-normandie",
+      "osmFile": "basse-normandie.osm.pbf",
+      "configFile": "config.yml",
+      "polyFile": "basse-normandie.poly",
+      "port": 8994,
+      "containerName": "graphhopper-basse-normandie"
+    },
+    {
+      "id": "alsace",
+      "name": "Alsace",
+      "bounds": {
+        "minLat": 47.2,
+        "maxLat": 49.1,
+        "minLon": 6.0,
+        "maxLon": 8.2
+      },
+      "dataPath": "./gh-routing/gh-data/alsace",
+      "osmFile": "alsace.osm.pbf",
+      "configFile": "config.yml",
+      "polyFile": "alsace.poly",
+      "port": 8995,
+      "containerName": "graphhopper-alsace"
+    },
+    {
+      "id": "auvergne",
+      "name": "Auvergne",
+      "bounds": {
+        "minLat": 44.5,
+        "maxLat": 46.3,
+        "minLon": 2.5,
+        "maxLon": 5.5
+      },
+      "dataPath": "./gh-routing/gh-data/auvergne",
+      "osmFile": "auvergne.osm.pbf",
+      "configFile": "config.yml",
+      "polyFile": "auvergne.poly",
+      "port": 8996,
+      "containerName": "graphhopper-auvergne"
+    },
+    {
+      "id": "bourgogne",
+      "name": "Bourgogne",
+      "bounds": {
+        "minLat": 46.5,
+        "maxLat": 48.5,
+        "minLon": 2.5,
+        "maxLon": 5.5
+      },
+      "dataPath": "./gh-routing/gh-data/bourgogne",
+      "osmFile": "bourgogne.osm.pbf",
+      "configFile": "config.yml",
+      "polyFile": "bourgogne.poly",
+      "port": 8997,
+      "containerName": "graphhopper-bourgogne"
+    },
+    {
+      "id": "bretagne",
+      "name": "Bretagne",
+      "bounds": {
+        "minLat": 47.0,
+        "maxLat": 49.0,
+        "minLon": -5.5,
+        "maxLon": -1.5
+      },
+      "dataPath": "./gh-routing/gh-data/bretagne",
+      "osmFile": "bretagne.osm.pbf",
+      "configFile": "config.yml",
+      "polyFile": "bretagne.poly",
+      "port": 8998,
+      "containerName": "graphhopper-bretagne"
+    },
+    {
+      "id": "centre",
+      "name": "Centre-Val de Loire",
+      "bounds": {
+        "minLat": 46.5,
+        "maxLat": 48.5,
+        "minLon": 0.0,
+        "maxLon": 3.5
+      },
+      "dataPath": "./gh-routing/gh-data/centre",
+      "osmFile": "centre.osm.pbf",
+      "configFile": "config.yml",
+      "polyFile": "centre.poly",
+      "port": 8999,
+      "containerName": "graphhopper-centre"
+    },
+    {
+      "id": "corse",
+      "name": "Corse",
+      "bounds": {
+        "minLat": 41.3,
+        "maxLat": 43.0,
+        "minLon": 8.5,
+        "maxLon": 9.8
+      },
+      "dataPath": "./gh-routing/gh-data/corse",
+      "osmFile": "corse.osm.pbf",
+      "configFile": "config.yml",
+      "polyFile": "corse.poly",
+      "port": 8900,
+      "containerName": "graphhopper-corse"
+    },
+    {
+      "id": "bourgogne",
+      "name": "Bourgogne",
+      "bounds": {
+        "minLat": 46.5,
+        "maxLat": 48.5,
+        "minLon": 2.5,
+        "maxLon": 5.5
+      },
+      "dataPath": "./gh-routing/gh-data/bourgogne",
+      "osmFile": "bourgogne.osm.pbf",
+      "configFile": "config.yml",
+      "polyFile": "bourgogne.poly",
+      "port": 8901,
+      "containerName": "graphhopper-bourgogne-2"
+    },
+    {
+      "id": "champagne-ardenne",
+      "name": "Champagne-Ardenne",
+      "bounds": {
+        "minLat": 48.5,
+        "maxLat": 50.0,
+        "minLon": 3.5,
+        "maxLon": 5.5
+      },
+      "dataPath": "./gh-routing/gh-data/champagne-ardenne",
+      "osmFile": "champagne-ardenne.osm.pbf",
+      "configFile": "config.yml",
+      "polyFile": "champagne-ardenne.poly",
+      "port": 8902,
+      "containerName": "graphhopper-champagne-ardenne"
+    },
+    {
+      "id": "franche-comte",
+      "name": "Franche-Comté",
+      "bounds": {
+        "minLat": 46.5,
+        "maxLat": 49.0,
+        "minLon": 4.5,
+        "maxLon": 7.5
+      },
+      "dataPath": "./gh-routing/gh-data/franche-comte",
+      "osmFile": "franche-comte.osm.pbf",
+      "configFile": "config.yml",
+      "polyFile": "franche-comte.poly",
+      "port": 8903,
+      "containerName": "graphhopper-franche-comte"
+    },
+    {
+      "id": "languedoc-roussillon",
+      "name": "Languedoc-Roussillon",
+      "bounds": {
+        "minLat": 42.5,
+        "maxLat": 44.5,
+        "minLon": 2.0,
+        "maxLon": 4.5
+      },
+      "dataPath": "./gh-routing/gh-data/languedoc-roussillon",
+      "osmFile": "languedoc-roussillon.osm.pbf",
+      "configFile": "config.yml",
+      "polyFile": "languedoc-roussillon.poly",
+      "port": 8904,
+      "containerName": "graphhopper-languedoc-roussillon"
+    },
+    {
+      "id": "limousin",
+      "name": "Limousin",
+      "bounds": {
+        "minLat": 44.5,
+        "maxLat": 46.0,
+        "minLon": 0.5,
+        "maxLon": 3.0
+      },
+      "dataPath": "./gh-routing/gh-data/limousin",
+      "osmFile": "limousin.osm.pbf",
+      "configFile": "config.yml",
+      "polyFile": "limousin.poly",
+      "port": 8905,
+      "containerName": "graphhopper-limousin"
+    },
+    {
+      "id": "lorraine",
+      "name": "Lorraine",
+      "bounds": {
+        "minLat": 47.5,
+        "maxLat": 49.5,
+        "minLon": 5.0,
+        "maxLon": 7.5
+      },
+      "dataPath": "./gh-routing/gh-data/lorraine",
+      "osmFile": "lorraine.osm.pbf",
+      "configFile": "config.yml",
+      "polyFile": "lorraine.poly",
+      "port": 8906,
+      "containerName": "graphhopper-lorraine"
+    },
+    {
+      "id": "picardie",
+      "name": "Picardie",
+      "bounds": {
+        "minLat": 49.5,
+        "maxLat": 50.5,
+        "minLon": 1.5,
+        "maxLon": 3.5
+      },
+      "dataPath": "./gh-routing/gh-data/picardie",
+      "osmFile": "picardie.osm.pbf",
+      "configFile": "config.yml",
+      "polyFile": "picardie.poly",
+      "port": 8907,
+      "containerName": "graphhopper-picardie"
+    },
+    {
+      "id": "poitou-charentes",
+      "name": "Poitou-Charentes",
+      "bounds": {
+        "minLat": 45.5,
+        "maxLat": 47.5,
+        "minLon": -1.0,
+        "maxLon": 1.5
+      },
+      "dataPath": "./gh-routing/gh-data/poitou-charentes",
+      "osmFile": "poitou-charentes.osm.pbf",
+      "configFile": "config.yml",
+      "polyFile": "poitou-charentes.poly",
+      "port": 8908,
+      "containerName": "graphhopper-poitou-charentes"
+    },
+    {
+      "id": "rhones-alpes",
+      "name": "Rhône-Alpes",
+      "bounds": {
+        "minLat": 44.5,
+        "maxLat": 46.5,
+        "minLon": 3.0,
+        "maxLon": 6.5
+      },
+      "dataPath": "./gh-routing/gh-data/rhones-alpes",
+      "osmFile": "rhones-alpes.osm.pbf",
+      "configFile": "config.yml",
+      "polyFile": "rhones-alpes.poly",
+      "port": 8909,
+      "containerName": "graphhopper-rhones-alpes"
+    },
+    {
+      "id": "npdc",
+      "name": "Nord-Pas-de-Calais",
+      "bounds": {
+        "minLat": 50.0,
+        "maxLat": 51.5,
+        "minLon": 1.0,
+        "maxLon": 3.5
+      },
+      "dataPath": "./gh-routing/gh-data/npdc",
+      "osmFile": "npdc.osm.pbf",
+      "configFile": "config.yml",
+      "polyFile": "npdc.poly",
+      "port": 8910,
+      "containerName": "graphhopper-npdc"
+    },
+    {
+      "id": "haute-normandie",
+      "name": "Haute-Normandie",
+      "bounds": {
+        "minLat": 49.0,
+        "maxLat": 50.5,
+        "minLon": -1.5,
+        "maxLon": 0.5
+      },
+      "dataPath": "./gh-routing/gh-data/haute-normandie",
+      "osmFile": "haute-normandie.osm.pbf",
+      "configFile": "config.yml",
+      "polyFile": "haute-normandie.poly",
+      "port": 8911,
+      "containerName": "graphhopper-haute-normandie"
+    },
+    {
+      "id": "pays-de-la-loire",
+      "name": "Pays de la Loire",
+      "bounds": {
+        "minLat": 46.5,
+        "maxLat": 48.0,
+        "minLon": -2.5,
+        "maxLon": 0.5
+      },
+      "dataPath": "./gh-routing/gh-data/pays-de-la-loire",
+      "osmFile": "pays-de-la-loire.osm.pbf",
+      "configFile": "config.yml",
+      "polyFile": "pays-de-la-loire.poly",
+      "port": 8912,
+      "containerName": "graphhopper-pays-de-la-loire"
+    }
+
+  ],
+  "containerConfig": {
+    "image": "israelhikingmap/graphhopper:10.2",
+    "memory": 2147483648,
+    "shutdownTimeout": 30000,
+    "startupTimeout": 100000,
+    "healthCheckInterval": 2000,
+    "javaOpts": "-Xmx1536m -Xms1536m"
+  }
+}

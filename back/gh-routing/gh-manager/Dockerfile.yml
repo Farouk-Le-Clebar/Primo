@@ -1,0 +1,9 @@
+FROM israelhikingmap/graphhopper:10.2
+
+ENV JAVA_OPTS="-Xmx1536m -Xms1536m"
+
+WORKDIR /data
+
+EXPOSE 8989
+
+CMD ["--host", "0.0.0.0", "--port", "8989"]
