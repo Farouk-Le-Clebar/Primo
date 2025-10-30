@@ -1,8 +1,8 @@
 server {
   listen 5173;
-  server_name primoServer;
+  server_name primoLandingServer;
 
-  root /usr/share/nginx/html;
+  root /usr/share/nginx/html2;
   index index.html index.htm;
 
 
