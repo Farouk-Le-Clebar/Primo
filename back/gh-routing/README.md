@@ -14,3 +14,7 @@ Au premier lancement d'une requete de région, il y aura plus de temps car il fa
 ### Améliorations possibles
 
 - Centraliser les configurations dans un seul fichier JSON ou YAML pour éviter la duplication. (Script qui remplace le nom du fichier à config ou param internes ?)
+
+- Adapter les requetes & peut-etre se passer des fichiers .poly si on peut passer le département directement dans la requete à GraphHopper.
+
+- Ajouter des régions "préférées" pour les régions utilisées fréquemment afin de limiter les temps de charge.

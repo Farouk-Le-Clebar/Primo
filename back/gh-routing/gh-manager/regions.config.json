@@ -84,10 +84,10 @@
       "id": "alsace",
       "name": "Alsace",
       "bounds": {
-        "minLat": 47.2,
-        "maxLat": 49.1,
-        "minLon": 6.0,
-        "maxLon": 8.2
+        "minLat": 47.42,
+        "maxLat": 49.07,
+        "minLon": 6.84,
+        "maxLon": 8.23
       },
       "dataPath": "./gh-routing/gh-data/alsace",
       "osmFile": "alsace.osm.pbf",
@@ -148,10 +148,10 @@
       "id": "centre",
       "name": "Centre-Val de Loire",
       "bounds": {
-        "minLat": 46.5,
-        "maxLat": 48.5,
-        "minLon": 0.0,
-        "maxLon": 3.5
+        "minLat": 46.37,
+        "maxLat": 48.92,
+        "minLon": 0.07,
+        "maxLon": 3.13
       },
       "dataPath": "./gh-routing/gh-data/centre",
       "osmFile": "centre.osm.pbf",
@@ -164,10 +164,10 @@
       "id": "corse",
       "name": "Corse",
       "bounds": {
-        "minLat": 41.3,
-        "maxLat": 43.0,
-        "minLon": 8.5,
-        "maxLon": 9.8
+        "minLat": 41.33,
+        "maxLat": 43.03,
+        "minLon": 8.54,
+        "maxLon": 9.56
       },
       "dataPath": "./gh-routing/gh-data/corse",
       "osmFile": "corse.osm.pbf",
