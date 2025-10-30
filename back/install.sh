@@ -8,7 +8,6 @@ unzip -d addok-data addok-france-bundle.zip
 rm -rf addok-france-bundle.zip
 
 
-
 wget https://download.geofabrik.de/europe/france/midi-pyrenees-latest.osm.pbf -O gh-routing/gh-data/occitanie/occitanie.osm.pbf
 
 wget https://download.geofabrik.de/europe/france/alsace-latest.osm.pbf -O gh-routing/gh-data/alsace/alsace.osm.pbf
@@ -52,4 +51,3 @@ wget https://download.geofabrik.de/europe/france/corse-latest.osm.pbf -O gh-rout
 wget https://download.geofabrik.de/europe/france/languedoc-roussillon-latest.osm.pbf -O gh-routing/gh-data/languedoc-roussillon/languedoc-roussillon.osm.pbf
 
 wget https://download.geofabrik.de/europe/france/poitou-charentes-latest.osm.pbf -O gh-routing/gh-data/poitou-charentes/poitou-charentes.osm.pbf
-
