@@ -7,7 +7,7 @@ import { Eye, EyeOff, ArrowLeft } from "lucide-react";
 
 import Button from "../../../ui/Button";
 import Input from "../../../ui/Input";
-import {BackgroundColors, TextColors}  from "../../../utils/colors"
+import {BackgroundColors, TextColors}  from "../../../utils/Colors";
 
 export default function LoginModal({ 
   onClose,
