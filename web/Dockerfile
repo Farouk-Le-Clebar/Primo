@@ -6,12 +6,17 @@ RUN yarn install --frozen-lockfile
 COPY . .
 RUN yarn build
 
+
 FROM nginx:stable-alpine
 
 COPY --from=build /app/dist /usr/share/nginx/html
 
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY nginx.conf.template /etc/nginx/conf.d/default.conf.template
+
+COPY env-config.js.template /usr/share/nginx/html/env-config.js.template
+
+RUN apk add --no-cache gettext
+
 
 EXPOSE 80
-
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["sh", "-c", "envsubst '${VITE_API_URL} ${NGINX_BACKEND_URL}' < /usr/share/nginx/html/env-config.js.template > /usr/share/nginx/html/env-config.js && envsubst '${VITE_API_URL} ${NGINX_BACKEND_URL}' < /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf && exec nginx -g 'daemon off;'"]
