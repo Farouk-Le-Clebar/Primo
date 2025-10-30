@@ -12,6 +12,7 @@ type InputProps = {
     borderColor?: string;
     textColor?: string;
     focusColor?: string;
+    placeholderColor?: string;
 }
 
 const Input = ({ 
