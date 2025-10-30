@@ -6,7 +6,7 @@ import { Eye, EyeOff, ArrowLeft } from "lucide-react";
 
 import Button from "../../../ui/Button";
 import Input from "../../../ui/Input";
-import {BackgroundColors, TextColors}  from "../../../utils/Colors";
+import {BackgroundColors, TextColors}  from "../../../utils/colors";
 
 export default function RegisterModal({ 
   onClose,
