@@ -8,6 +8,7 @@ import { AddokProxyMiddleware } from './api/addok.middleware';
 import { ApicartoProxyMiddleware } from './api/apicarto.middleware';
 import { GraphhopperProxyMiddleware } from './api/graphhopper.middleware';
 import { AuthModule } from './auth/auth.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { AuthModule } from './auth/auth.module';
     }),
     TypeOrmModule.forFeature([User]),
     AuthModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],

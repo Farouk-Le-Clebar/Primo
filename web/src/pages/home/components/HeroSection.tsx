@@ -1,3 +1,5 @@
+import { ArrowUpRight } from "lucide-react";
+
 export default function HeroSection() {
   return (
     <section
@@ -19,8 +21,9 @@ export default function HeroSection() {
           Une plateforme pensée pour simplifier votre recherche et vous faire gagner du temps.
         </p>
         <div className="flex space-x-4 justify-center">
-          <button className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition">
-            Découvrir
+          <button className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition flex items-center gap-2">
+            Découvrir Primo
+            <ArrowUpRight size={18} className="mt-[1px]" />
           </button>
           <button className="border border-green-600 text-green-600 px-6 py-2 rounded-lg hover:bg-green-50 transition">
             En savoir plus

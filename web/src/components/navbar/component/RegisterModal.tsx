@@ -1,29 +1,41 @@
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { login } from "../../../requests/AuthRequests";
+import { register } from "../../../requests/AuthRequests";
 import { AxiosError } from "axios";
-import UserInfo from "../../userPreview/UserPreview";
 import { Eye, EyeOff, ArrowLeft } from "lucide-react";
 
 import Button from "../../../ui/Button";
 import Input from "../../../ui/Input";
 import {BackgroundColors, TextColors}  from "../../../utils/colors";
 
-export default function LoginModal({ 
+export default function RegisterModal({ 
   onClose,
-  email,
+  email: initialEmail,
   onBack,
 }: { 
   onClose: () => void;
   email: string;
   onBack: () => void;
 }) {
+  const [email, setEmail] = useState(initialEmail || "");
   const [password, setPassword] = useState("");
+
   const [errorMessage, setErrorMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
+  const getPasswordStrength = (password: string) => {
+    let score = 0;
+    if (password.length >= 8) score++;
+    if (/[A-Z]/.test(password)) score++;
+    if (/[^A-Za-z0-9]/.test(password)) score++;
+    return score;
+  };
+
+  const strength = getPasswordStrength(password);
+  const strengthColors = ["bg-red-500", "bg-yellow-500", "bg-green-500"];
+
   const { mutate, isPending } = useMutation({
-    mutationFn: () => login(email, password),
+    mutationFn: () => register(email, password),
     onSuccess: (data) => {
       if (typeof window !== "undefined" && window.localStorage) {
         try {
@@ -38,7 +50,10 @@ export default function LoginModal({
     },
     onError: (err: unknown) => {
       if (err instanceof AxiosError) {
-        if (err.response?.status === 401 || err.response?.data?.message === "Invalid credentials") {
+        if (
+          err.response?.status === 401 ||
+          err.response?.data?.message === "Invalid credentials"
+        ) {
           setErrorMessage("Le mot de passe est incorrect. Veuillez réessayer.");
         } else {
           setErrorMessage("Une erreur est survenue. Veuillez réessayer plus tard.");
@@ -58,27 +73,33 @@ export default function LoginModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
       <div className="absolute inset-0 bg-black/50" onClick={onClose}></div>
-
-      {/* Text Title and Desc */}
       <div className="relative z-10 bg-white rounded-2xl shadow-2xl max-w-md sm:max-w-lg md:max-w-116 p-6 sm:p-8 md:p-10 text-left animate-fade-in">
-        <div>
-          <h2 className="text-2xl sm:text-2xl font-UberMoveBold text-gray-800 mb-2">Heureux de vous revoir 👋</h2>
-          <p className="text-gray-600 font-UberMoveMedium mb-6 text-sm sm:text-sm">
-              Connectez-vous à votre compte Primo pour retrouver vos projets, vos favoris et votre progression.
-              Saisissez simplement votre mot de passe ci-dessous.
-          </p>
+        <h2 className="text-2xl sm:text-2xl font-UberMoveBold text-gray-800 mb-2">
+          Créez votre compte Primo 🌱
+        </h2>
 
+        <p className="text-gray-600 font-UberMoveMedium mb-6 text-sm sm:text-sm">
+          Il ne vous reste plus qu’une étape avant de rejoindre l’aventure Primo.
+          Entrez simplement votre mot de passe deux fois pour sécuriser votre compte et commencer votre expérience.
+        </p>
+
+        {/* Input Email */}
+        <div className="space-y-1 mt-4">
+          <h3 className="font-UberMoveMedium text-sm">Email</h3>
+            <Input
+              type="email"
+              placeholder="Entrez votre mot de passe"
+              onChange={setEmail}
+              value={email}
+              className=""
+            />
         </div>
 
-        <div className="space-y-3 mt-8">
-          <UserInfo email={email} />
-        </div>
         {/* Input Password */}
-        <div className="space-y-1 mt-5 relative">
+        <div className="space-y-1 mt-4 relative">
           <h3 className="font-UberMoveMedium text-sm">Mot de passe</h3>
-
           <div className="relative">
             <Input
               type={showPassword ? "text" : "password"}
@@ -96,6 +117,31 @@ export default function LoginModal({
             </button>
           </div>
 
+          {/* Horizontal progress bar */}
+          <div className="w-full h-2 bg-gray-200 rounded-full mt-3 overflow-hidden">
+            <div
+              className={`h-full transition-all duration-300 rounded-full ${
+                strength > 0 ? strengthColors[strength - 1] : "bg-gray-200"
+              }`}
+              style={{ width: `${(strength / 3) * 100}%` }}
+            ></div>
+          </div>
+
+          {/* List of criteria */}
+          <ul className="text-xs text-gray-600 mt-2 space-y-1">
+            <li className={password.length >= 8 ? "text-green-600" : ""}>
+              • Minimum 8 caractères
+            </li>
+            <li className={/[A-Z]/.test(password) ? "text-green-600" : ""}>
+              • 1 majuscule
+            </li>
+            <li className={/[^A-Za-z0-9]/.test(password) ? "text-green-600" : ""}>
+              • 1 caractère spécial
+            </li>
+          </ul>
+        </div>
+
+
         {/* Button Connexion */}
         <Button
           onClick={handleConnect}
@@ -104,7 +150,7 @@ export default function LoginModal({
           textSize="text-md font-medium"
           className={`mt-6`}
           children={<>
-            <p>Se connecter</p>
+            <p>Créez votre compte</p>
           </>
           }
         />
@@ -133,7 +179,6 @@ export default function LoginModal({
           {errorMessage && (
             <p className="text-red-600 text-sm mt-2">{errorMessage}</p>
           )}
-        </div>
       </div>
     </div>
   );
