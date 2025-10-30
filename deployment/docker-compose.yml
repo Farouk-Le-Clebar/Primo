@@ -1,8 +1,13 @@
 services:
+  landing:
+    image: garoverr/primo-landing:dev
+    ports:
+      - "80:80"
+
   frontend:
     image: garoverr/primo-frontend:dev
     ports:
-      - "80:80"
+      - "5173:5173"
     environment:
       VITE_API_URL: "http://localhost:3000"
     depends_on:
