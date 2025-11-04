@@ -1,4 +1,4 @@
-name: primo
+name : primo
 
 services:
   mysql:
@@ -11,7 +11,7 @@ services:
       MYSQL_PASSWORD: V3RyS3eCr3tP@ssw0rd
       MYSQL_ROOT_PASSWORD: V3RyS3eCr3tP@ssw0rd
     ports:
-      - "3306:3306"
+      - '3306:3306'
     volumes:
       - mysql_data:/var/lib/mysql/
 
@@ -24,7 +24,7 @@ services:
       PMA_USER: user_primo
       PMA_PASSWORD: V3RyS3eCr3tP@ssw0rd
     ports:
-      - "8080:80"
+      - '8080:80'
     depends_on:
       - mysql
 
@@ -32,13 +32,13 @@ services:
     image: etalab/addok
     restart: always
     ports:
-    - "7878:7878"
+      - '7878:7878'
     volumes:
-    - ./addok-data/addok.conf:/etc/addok/addok.conf
-    - ./addok-data/addok.db:/data/addok.db
-    - ./logs:/logs
+      - ./addok-data/addok.conf:/etc/addok/addok.conf
+      - ./addok-data/addok.db:/data/addok.db
+      - ./logs:/logs
     links:
-    - addok-redis:redis
+      - addok-redis:redis
     environment:
       WORKERS: 1
       WORKER_TIMEOUT: 30
@@ -49,8 +49,21 @@ services:
   addok-redis:
     image: etalab/addok-redis
     volumes:
-    - ./addok-data/dump.rdb:/data/dump.rdb
+      - ./addok-data/dump.rdb:/data/dump.rdb
 
+  graphhopper:
+    image: israelhikingmap/graphhopper:10.2
+    container_name: graphhopper
+    ports:
+      - "8989:8989"
+    volumes:
+      - ./graphhopper-data:/data
+      - ./config.gh.yml:/config.gh.yml
+    command: >
+      --input /data/occitanie.osm.pbf
+      --config /config.gh.yml
+      --graph-cache /data/graph
+      
   apicarto:
     image: ghcr.io/ignf/apicarto:v2.9.2_qlf
     container_name: apicarto

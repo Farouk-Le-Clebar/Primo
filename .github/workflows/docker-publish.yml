@@ -18,6 +18,15 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      - name: Build & Push Landing Page Image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./landing-page
+          file: ./landing-page/Dockerfile
+          push: true
+          tags: |
+            garoverr/primo-landing:${{ github.ref == 'refs/heads/main' && 'latest' || 'dev' }}
+
       - name: Build & Push Frontend Image
         uses: docker/build-push-action@v6
         with:
