@@ -1,0 +1,22 @@
+entryPoints:
+  web:
+    address: ":80"
+    http:
+      redirections:
+        entryPoint:
+          to: websecure
+          scheme: https
+  websecure:
+    address: ":443"
+
+providers:
+  docker:
+    exposedByDefault: false
+
+certificatesResolvers:
+  myresolver:
+    acme:
+      email: louis.huguet@epitech.eu
+      storage: /acme.json
+      httpChallenge:
+        entryPoint: web

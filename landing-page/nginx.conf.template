@@ -1,8 +1,8 @@
 server {
-  listen 5173;
+  listen 80;
   server_name primoLandingServer;
 
-  root /usr/share/nginx/html2;
+  root /usr/share/nginx/html;
   index index.html index.htm;
 
 
@@ -19,4 +19,3 @@ server {
   add_header X-Frame-Options SAMEORIGIN;
   add_header X-XSS-Protection "1; mode=block";
 }
-
