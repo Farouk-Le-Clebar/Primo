@@ -39,4 +39,23 @@ export interface ParcelMapProps {
   showSearchBar?: boolean;
 }
 
+export interface MapEventsProps {
+  onZoomChange: (zoom: number) => void;
+  onBoundsChange: (bounds: import("leaflet").LatLngBounds) => void;
+  onMapReady: (map: import("leaflet").Map) => void;
+  mapBounds: import("leaflet").LatLngBounds | null;
+}
+
+export interface MapMarkerProps {
+  position: [number, number] | null;
+  label: string;
+}
+
+export interface ParcelLayerProps {
+  geoJsonData: GeoJSONData | null;
+  displayedLevel: ZoomLevel;
+  refreshTrigger: number;
+  mapRef: React.MutableRefObject<import("leaflet").Map | null>;
+}
+
 export type GeoJSONData = GeoJSONFeatureCollection | GeoJSONFeature;

@@ -1,4 +1,4 @@
-import ParcelMap from "../../components/parcel-map/ParcelMap";
+import ParcelMap from "./components/ParcelMap";
 
 function SearchMap() {
   return (
