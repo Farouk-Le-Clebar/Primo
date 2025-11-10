@@ -34,7 +34,7 @@ services:
       - "traefik.http.routers.frontend.rule=Host(`app.primo-data.fr`)"
       - "traefik.http.routers.frontend.entrypoints=websecure"
       - "traefik.http.routers.frontend.tls.certresolver=myresolver"
-      - "traefik.http.services.frontend.loadbalancer.server.port=5173"
+      - "traefik.http.services.frontend.loadbalancer.server.port=80"
     depends_on:
       - backend
     networks:
