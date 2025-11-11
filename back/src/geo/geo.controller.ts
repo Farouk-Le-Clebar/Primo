@@ -5,6 +5,7 @@ import {
   Res,
   HttpException,
   HttpStatus,
+  InternalServerErrorException,
 } from '@nestjs/common';
 import type { Response } from 'express';
 import { GeoService } from './geo.service';
@@ -36,9 +37,8 @@ export class GeoController {
       res.setHeader('Cache-Control', 'public, max-age=86400');
       return res.json(data);
     } catch (error) {
-      throw new HttpException(
-        `Departement ${code} not found`,
-        HttpStatus.NOT_FOUND,
+      throw new InternalServerErrorException(
+        'Failed to fetch departement data',
       );
     }
   }
@@ -54,10 +54,7 @@ export class GeoController {
       res.setHeader('Cache-Control', 'public, max-age=86400');
       return res.json(data);
     } catch (error) {
-      throw new HttpException(
-        `Communes from departement ${departementCode} not found`,
-        HttpStatus.NOT_FOUND,
-      );
+      throw new InternalServerErrorException('Failed to fetch communes data');
     }
   }
 }
