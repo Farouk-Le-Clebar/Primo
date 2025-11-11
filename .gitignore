@@ -127,4 +127,5 @@ node_modules
 # graphHopper
 
 *.osm.pbf
-/default-gh 
+*.poly
+/default-gh
