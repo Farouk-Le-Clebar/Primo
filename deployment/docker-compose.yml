@@ -1,17 +1,47 @@
 services:
-  frontend:
-    image: garoverr/primo-frontend:dev
+  traefik:
+    image: traefik:v3.0
+    container_name: traefik
+    command:
+      - "--configFile=/traefik.yml"
     ports:
       - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./traefik.yml:/traefik.yml:ro
+      - ./acme.json:/acme.json
+    networks:
+      - web
+
+  landing:
+    image: garoverr/primo-landing:dev
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.landing.rule=Host(`primo-data.fr`)"
+      - "traefik.http.routers.landing.entrypoints=websecure"
+      - "traefik.http.routers.landing.tls.certresolver=myresolver"
+      - "traefik.http.services.landing.loadbalancer.server.port=80"
+    networks:
+      - web
+
+  frontend:
+    image: garoverr/primo-frontend:dev
     environment:
-      VITE_API_URL: "http://localhost:3000"
+      VITE_API_URL: "https://api.primo-data.fr"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.frontend.rule=Host(`app.primo-data.fr`)"
+      - "traefik.http.routers.frontend.entrypoints=websecure"
+      - "traefik.http.routers.frontend.tls.certresolver=myresolver"
+      - "traefik.http.services.frontend.loadbalancer.server.port=5173"
     depends_on:
       - backend
+    networks:
+      - web
 
   backend:
     image: garoverr/primo-backend:dev
-    ports:
-      - "3000:3000"
     environment:
       MYSQL_HOST: mysql_db
       MYSQL_PORT: 3306
@@ -19,13 +49,19 @@ services:
       MYSQL_PASSWORD: V3RyS3eCr3tP@ssw0rd
       MYSQL_DATABASE: primo
       JWT_SECRET: S3cReT
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.backend.rule=Host(`api.primo-data.fr`)"
+      - "traefik.http.routers.backend.entrypoints=websecure"
+      - "traefik.http.routers.backend.tls.certresolver=myresolver"
+      - "traefik.http.services.backend.loadbalancer.server.port=3000"
     depends_on:
       - mysql_db
+    networks:
+      - web
 
   mysql_db:
     image: mysql:8.3
-    ports:
-      - "3306:3306"
     environment:
       MYSQL_DATABASE: primo
       MYSQL_USER: user_primo
@@ -33,6 +69,12 @@ services:
       MYSQL_ROOT_PASSWORD: V3RyS3eCr3tP@ssw0rd
     volumes:
       - mysql_data:/var/lib/mysql
+    networks:
+      - web
 
 volumes:
   mysql_data:
+
+networks:
+  web:
+    driver: bridge

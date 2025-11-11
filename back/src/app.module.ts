@@ -8,6 +8,7 @@ import { AddokProxyMiddleware } from './api/addok.middleware';
 import { ApicartoProxyMiddleware } from './api/apicarto.middleware';
 import { AuthModule } from './auth/auth.module';
 import { GhRoutingModule } from './gh-routing/gh-routing.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { GhRoutingModule } from './gh-routing/gh-routing.module';
     }),
     TypeOrmModule.forFeature([User]),
     AuthModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],
