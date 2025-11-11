@@ -3,7 +3,7 @@ import Home from "./pages/home/Home";
 import Navbar from "./components/navbar/Navbar";
 import Footer from "./components/footer/Footer";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import SearchingBar from "./pages/search/SearchBar";
+import SearchMap from "./pages/search-map/SearchMap";
 
 function App() {
   const location = useLocation();
@@ -23,7 +23,7 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/search" element={<SearchingBar />} />
+          <Route path="/search" element={<SearchMap />} />
         </Routes>
       </QueryClientProvider>
       {shouldShowNavbar && <Footer />}
