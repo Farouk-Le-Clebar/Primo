@@ -22,9 +22,7 @@ export class GraphHopperProxyMiddleware implements NestMiddleware {
     this.loadConfiguration();
   }
 
-  /**
-   * Charge la configuration
-   */
+
   private loadConfiguration() {
     const configPath = path.join(
       process.cwd(),
@@ -43,9 +41,7 @@ export class GraphHopperProxyMiddleware implements NestMiddleware {
     }
   }
 
-  /**
-   * Point d'entrée du middleware
-   */
+
   async use(req: Request, res: Response, next: NextFunction) {
     try {
       const region = await this.determineRegion(req);
@@ -71,9 +67,7 @@ export class GraphHopperProxyMiddleware implements NestMiddleware {
     }
   }
 
-  /**
-   * Détermine quelle région utiliser
-   */
+
   private async determineRegion(req: Request): Promise<RegionConfig | null> {
     const regionIdFromHeader = req.headers['x-graphhopper-region'] as string;
     const regionIdFromQuery = req.query.regionId as string;
@@ -144,9 +138,7 @@ export class GraphHopperProxyMiddleware implements NestMiddleware {
     await this.switchRegion(region);
   }
 
-  /**
-   * Change de région
-   */
+
   private async switchRegion(region: RegionConfig): Promise<void> {
     if (this.isTransitioning) return;
 
