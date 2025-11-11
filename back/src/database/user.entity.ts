@@ -6,7 +6,10 @@ export class User {
   id: number;
 
   @Column({ type: 'varchar', nullable: false, default: '' })
-  username: string;
+  firstName: string;
+
+  @Column({ type: 'varchar', nullable: false, default: '' })
+  surName: string;
 
   @Column()
   email: string;
@@ -14,6 +17,6 @@ export class User {
   @Column()
   password: string;
 
-  @Column({ default: null })
-  profilePicture: string;
+  @Column({ type: 'varchar', nullable: true, default: null })
+  profilePicture: string | null;
 }
