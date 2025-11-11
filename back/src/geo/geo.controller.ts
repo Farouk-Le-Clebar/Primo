@@ -22,9 +22,8 @@ export class GeoController {
       res.setHeader('Cache-Control', 'public, max-age=86400');
       return res.json(data);
     } catch (error) {
-      throw new HttpException(
-        'Failed to fetch departements data',
-        HttpStatus.INTERNAL_SERVER_ERROR,
+      throw new InternalServerErrorException(
+        'Failed to fetch all departements data',
       );
     }
   }
@@ -38,7 +37,7 @@ export class GeoController {
       return res.json(data);
     } catch (error) {
       throw new InternalServerErrorException(
-        'Failed to fetch departement data',
+        'Failed to fetch departement with code ' + code,
       );
     }
   }
@@ -54,7 +53,9 @@ export class GeoController {
       res.setHeader('Cache-Control', 'public, max-age=86400');
       return res.json(data);
     } catch (error) {
-      throw new InternalServerErrorException('Failed to fetch communes data');
+      throw new InternalServerErrorException(
+        'Failed to fetch communes data for departement ' + departementCode,
+      );
     }
   }
 }
