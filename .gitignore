@@ -124,15 +124,7 @@ addok-data
 dist
 node_modules
 
-<<<<<<< HEAD
 # graphHopper
-
 *.osm.pbf
 *.poly
 /default-gh
-=======
-
-# graphhopper data
-*.osm.pbf
-/default-gh
->>>>>>> e051625 (ADD: prevent pushing useless files for gh)
