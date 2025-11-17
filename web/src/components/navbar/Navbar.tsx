@@ -1,4 +1,4 @@
-import SearchingBar from "../searchbar/SearchBar";
+import SearchingBar from "../search/SearchBar";
 import { Ellipsis, Settings } from 'lucide-react';
 import { useLocation } from "react-router-dom";
 

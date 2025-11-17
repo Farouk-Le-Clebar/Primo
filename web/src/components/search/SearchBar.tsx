@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { addOkRequest } from "../../request/addok";
+import { addOkRequest } from "../../requests/addok";
 import { useMutation } from "@tanstack/react-query";
+import { Search } from 'lucide-react';
 
 interface AddressFeature {
   geometry: {
@@ -59,14 +60,20 @@ const SearchBar = ({ onAddressSelect }: SearchBarProps) => {
   };
 
   return (
-    <div className="relative w-full">
-      <input
-        className="w-full rounded-xl h-10 p-2 border border-gray-400 focus:outline-none shadow-md bg-white"
-        type="text"
-        placeholder="Rechercher une adresse..."
-        value={address}
-        onChange={(e) => setAddress(e.target.value)}
-      />
+    <div className="flex w-full items-center">
+      <div className="relative w-full h-full">
+        {/* Search Icon */}
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-700 w-4 h-4" />
+
+        {/* Input */}
+        <input
+          className="w-full rounded-lg h-9 pl-10 pr-2 focus:outline-none shadow-[0_4px_4px_rgba(0,0,0,0.25)] bg-white text-sm"
+          type="text"
+          placeholder="Rechercher une adresse..."
+          value={address}
+          onChange={(e) => setAddress(e.target.value)}
+          />
+      </div>
       {selectedAddress.length > 0 && (
         <div className="absolute w-full flex flex-col border border-gray-300 rounded-xl bg-white mt-1 shadow-lg z-50 max-h-60 overflow-y-auto">
           {selectedAddress.map((feature, index) => (
