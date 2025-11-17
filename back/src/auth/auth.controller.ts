@@ -2,9 +2,10 @@ import {
   Body,
   Controller,
   Post,
-  UseGuards,
   Get,
   Request,
+  Headers,
+  UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
@@ -37,5 +38,14 @@ export class AuthController {
   @Get('profile')
   getProfile(@Request() req: AuthenticatedRequest) {
     return req.user;
+  }
+
+  @Get('verify')
+  async verifyToken(@Headers('authorization') authHeader: string) {
+    if (!authHeader || !authHeader.startsWith('Bearer '))
+      return { valid: false, error: 'No token provided' };
+
+    const token = authHeader.split(' ')[1];
+    return this.authService.verifyToken(token);
   }
 }

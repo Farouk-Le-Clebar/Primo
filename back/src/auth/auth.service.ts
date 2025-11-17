@@ -26,22 +26,55 @@ export class AuthService {
       profilePicture: null,
     });
     await this.userRepo.save(user);
+
     return { message: 'User registered successfully' };
   }
 
   async login(email: string, password: string) {
-    const user = await this.userRepo.findOne({ where: { email } });
+    const user = await this.userRepo.findOne({
+      where: { email },
+      select: [
+        'id',
+        'email',
+        'firstName',
+        'surName',
+        'profilePicture',
+        'password',
+      ],
+    });
     if (!user) throw new UnauthorizedException('Invalid credentials');
 
     const match = await bcrypt.compare(password, user.password);
     if (!match) throw new UnauthorizedException('Invalid credentials');
 
     const payload = { sub: user.id, email: user.email };
-    const token = this.jwtService.sign(payload);
-    return { access_token: token };
+    const accessToken = this.jwtService.sign(payload);
+
+    return {
+      access_token: accessToken,
+      user: {
+        id: user.id,
+        email: user.email,
+        firstName: user.firstName,
+        surName: user.surName,
+        profilePicture: user.profilePicture,
+      },
+    };
   }
 
   async validateUser(payload: { sub: number; email: string }) {
     return this.userRepo.findOne({ where: { id: payload.sub } });
+  }
+
+  // ✅ Vérification du token
+  async verifyToken(token: string) {
+    try {
+      const decoded = this.jwtService.verify(token);
+      const user = await this.validateUser({ sub: decoded.sub, email: decoded.email });
+      if (!user) throw new UnauthorizedException('User not found');
+      return { valid: true, user };
+    } catch (err) {
+      return { valid: false, error: 'Invalid or expired token' };
+    }
   }
 }
