@@ -1,14 +1,18 @@
-import PrimoSvg from './assets/primo.svg?react'
+import { Routes, Route } from "react-router-dom";
+import Layout from "./components/layout/layout";
 
-const App = () => {
+// PAGES imports
+import Dashboard from "./pages/dashboard/Dashboard";
+import Projects from "./pages/projects/Projects";
+
+export default function App() {
   return (
-    <div className="flex items-center justify-center h-screen w-screen bg-black">
-      <div className="flex items-center justify-center gap-3">
-        <p className="text-4xl font-bold text-white">Welcome on </p>
-        <PrimoSvg className="h-7 mt-2" />
-      </div>
-    </div>
-  )
+    <Routes>
+      <Route path="/" element={<Layout />}>
+        <Route index element={<Dashboard />} />  {/* / */}
+        <Route path="dashboard" element={<Dashboard />} />
+        <Route path="projects" element={<Projects />} />
+      </Route>
+    </Routes>
+  );
 }
-
-export default App

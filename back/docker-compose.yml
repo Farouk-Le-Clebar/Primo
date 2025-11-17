@@ -1,7 +1,9 @@
+name : primo
+
 services:
   mysql:
     image: mysql:8.3
-    container_name: mysql
+    container_name: mysql_primo
     restart: always
     environment:
       MYSQL_DATABASE: primo
@@ -9,22 +11,67 @@ services:
       MYSQL_PASSWORD: V3RyS3eCr3tP@ssw0rd
       MYSQL_ROOT_PASSWORD: V3RyS3eCr3tP@ssw0rd
     ports:
-      - "3306:3306"
+      - '3306:3306'
     volumes:
-      - mysql_data:/var/lib/mysql
+      - mysql_data:/var/lib/mysql/
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
-    container_name: phpmyadmin
+    container_name: phpmyadmin_primo
     restart: always
     environment:
       PMA_HOST: mysql
       PMA_USER: user_primo
       PMA_PASSWORD: V3RyS3eCr3tP@ssw0rd
     ports:
-      - "8080:80"
+      - '8080:80'
     depends_on:
       - mysql
+
+  addok:
+    image: etalab/addok
+    restart: always
+    ports:
+      - '7878:7878'
+    volumes:
+      - ./addok-data/addok.conf:/etc/addok/addok.conf
+      - ./addok-data/addok.db:/data/addok.db
+      - ./logs:/logs
+    links:
+      - addok-redis:redis
+    environment:
+      WORKERS: 1
+      WORKER_TIMEOUT: 30
+      LOG_QUERIES: 1
+      LOG_NOT_FOUND: 1
+      SLOW_QUERIES: 200
+
+  addok-redis:
+    image: etalab/addok-redis
+    volumes:
+      - ./addok-data/dump.rdb:/data/dump.rdb
+
+  graphhopper:
+    image: israelhikingmap/graphhopper:10.2
+    container_name: graphhopper
+    ports:
+      - "8989:8989"
+    volumes:
+      - ./graphhopper-data:/data
+      - ./config.gh.yml:/config.gh.yml
+    command: >
+      --input /data/occitanie.osm.pbf
+      --config /config.gh.yml
+      --graph-cache /data/graph
+      
+  apicarto:
+    image: ghcr.io/ignf/apicarto:v2.9.2_qlf
+    container_name: apicarto
+    restart: always
+    ports:
+      - "6677:6677"
+    environment:
+      PORT: 6677
 
 volumes:
   mysql_data:
