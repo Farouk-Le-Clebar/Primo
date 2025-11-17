@@ -28,10 +28,23 @@ import { UserModule } from './user/user.module';
       entities: [User],
       synchronize: true,
     }),
+    TypeOrmModule.forRoot({
+      name: 'postgis',
+      type: 'postgres',
+      host: process.env.POSTGIS_HOST || 'localhost',
+      port: process.env.POSTGIS_PORT
+        ? parseInt(process.env.POSTGIS_PORT, 10)
+        : 5432,
+      username: process.env.POSTGIS_USER,
+      password: process.env.POSTGIS_PASSWORD,
+      database: process.env.POSTGIS_DATABASE,
+      synchronize: false,
+    }),
     TypeOrmModule.forFeature([User]),
     AuthModule,
     GeoModule,
     UserModule,
+
   ],
   controllers: [AppController],
   providers: [AppService],
