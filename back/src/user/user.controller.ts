@@ -10,7 +10,7 @@ import {
 import type { Request } from 'express';
 import { CheckEmailDto } from './dto/check-email.dto';
 import { UserService } from './user.service';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { JwtAuthGuard } from '../guard/jwt-auth.guard';
 import { User } from '../database/user.entity';
 
 interface RequestWithUser extends Request {
