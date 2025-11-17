@@ -2,22 +2,14 @@ import {
   Body,
   Controller,
   Post,
-  UseGuards,
   Get,
+  UseGuards,
   Request,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
-import { JwtAuthGuard } from './jwt-auth.guard';
-import { Request as ExpressRequest } from 'express';
-
-interface AuthenticatedRequest extends ExpressRequest {
-  user?: {
-    id: number;
-    email: string;
-  };
-}
+import { JwtAuthGuard } from '../guard/jwt-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -35,7 +27,16 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @Get('profile')
-  getProfile(@Request() req: AuthenticatedRequest) {
+  getProfile(@Request() req) {
     return req.user;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('verify')
+  verifyToken(@Request() req) {
+    return { 
+      valid: true, 
+      user: req.user 
+    };
   }
 }
