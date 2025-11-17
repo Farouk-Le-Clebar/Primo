@@ -1,57 +1,55 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import * as bcrypt from 'bcrypt';
-import { JwtService } from '@nestjs/jwt';
 import { User } from '../database/user.entity';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(User)
-    private userRepo: Repository<User>,
+    private userRepository: Repository<User>,
     private jwtService: JwtService,
   ) {}
 
   async register(email: string, password: string) {
-    const existing = await this.userRepo.findOne({ where: { email } });
-    if (existing) throw new UnauthorizedException('Email already used');
+    const existingUser = await this.userRepository.findOne({ where: { email } });
+    if (existingUser) {
+      throw new UnauthorizedException('Email déjà utilisé');
+    }
 
-    const hashed = await bcrypt.hash(password, 10);
-    const user = this.userRepo.create({
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = this.userRepository.create({
       email,
-      password: hashed,
-      firstName: '',
-      surName: '',
-      profilePicture: null,
+      password: hashedPassword,
     });
-    await this.userRepo.save(user);
 
-    return { message: 'User registered successfully' };
+    await this.userRepository.save(user);
+
+    const { password: _, ...result } = user;
+    return result;
   }
 
   async login(email: string, password: string) {
-    const user = await this.userRepo.findOne({
+    const user = await this.userRepository.findOne({
       where: { email },
-      select: [
-        'id',
-        'email',
-        'firstName',
-        'surName',
-        'profilePicture',
-        'password',
-      ],
+      select: ['email', 'firstName', 'surName', 'profilePicture', 'password'],
     });
-    if (!user) throw new UnauthorizedException('Invalid credentials');
+    if (!user) {
+      throw new UnauthorizedException('Identifiants invalides');
+    }
 
-    const match = await bcrypt.compare(password, user.password);
-    if (!match) throw new UnauthorizedException('Invalid credentials');
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      throw new UnauthorizedException('Identifiants invalides');
+    }
 
     const payload = { sub: user.id, email: user.email };
-    const accessToken = this.jwtService.sign(payload);
+    const token = this.jwtService.sign(payload);
 
     return {
-      access_token: accessToken,
+      access_token: token,
       user: {
         id: user.id,
         email: user.email,
@@ -63,18 +61,14 @@ export class AuthService {
   }
 
   async validateUser(payload: { sub: number; email: string }) {
-    return this.userRepo.findOne({ where: { id: payload.sub } });
-  }
-
-  // ✅ Vérification du token
-  async verifyToken(token: string) {
-    try {
-      const decoded = this.jwtService.verify(token);
-      const user = await this.validateUser({ sub: decoded.sub, email: decoded.email });
-      if (!user) throw new UnauthorizedException('User not found');
-      return { valid: true, user };
-    } catch (err) {
-      return { valid: false, error: 'Invalid or expired token' };
+    const user = await this.userRepository.findOne({
+      where: { id: payload.sub },
+    });
+    if (!user) {
+      return null;
     }
+
+    const { password, ...result } = user;
+    return result;
   }
 }
