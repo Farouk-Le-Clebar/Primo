@@ -5,7 +5,7 @@ import {
   fetchCommunes,
   fetchDivisions,
   fetchParcelles,
-} from "../request/parcel-map";
+} from "../requests/parcel-map";
 
 export function boundsToPolygon(bounds: L.LatLngBounds) {
   const sw = bounds.getSouthWest();
