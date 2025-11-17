@@ -123,3 +123,4 @@ yarn-error.*
 addok-data
 dist
 node_modules
+back/data

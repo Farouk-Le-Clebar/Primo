@@ -12,6 +12,9 @@
   "dependencies": {
     "@reduxjs/toolkit": "^2.10.1",
     "@tailwindcss/vite": "^4.1.13",
+    "@types/leaflet": "^1.9.21",
+    "leaflet": "^1.9.4",
+    "react-leaflet": "^5.0.0",
     "@tanstack/react-query": "^5.90.3",
     "axios": "^1.12.2",
     "lucide-react": "^0.545.0",

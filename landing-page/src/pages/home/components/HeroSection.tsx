@@ -1,11 +1,12 @@
 import { ArrowUpRight } from "lucide-react";
+import backgroundWhite from "../../../assets/backgrounds/backgroundWhite.svg";
 
 export default function HeroSection() {
   return (
     <section
       className="h-screen flex flex-col justify-center items-center text-center bg-cover bg-center bg-no-repeat relative"
       style={{
-        backgroundImage: "url('/src/assets/backgrounds/backgroundWhite.svg')",
+        backgroundImage: `url(${backgroundWhite})`,
       }}
     >
       <div className="absolute inset-0 bg-white/60"></div>
