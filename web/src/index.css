@@ -2,33 +2,21 @@
 
 @font-face {
   font-family: UberMove;
-  src: url('./assets/fonts/UberMoveMedium.otf');
+  src: url('./assets/fonts/UberMoveMedium.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
 }
 
 @font-face {
   font-family: UberMoveBold;
-  src: url('./assets/fonts/UberMoveBold.otf');
+  src: url('./assets/fonts/UberMoveBold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
 }
 
 @theme {
   --font-UberMove: UberMove, "Fira Sans";
   --font-UberMoveBold: UberMoveBold, "Fira Sans";
-  --color-agendai: #ffc551;
-  --color-darker-agendai: #b08838;
-  --color-light-gray: #595959;
-  --color-darker-light-gray: #383838;
-  --color-dark-gray: #212121;
-  --color-darker-gray: #141414;
-  --color-custom-blue: #007bff;
-  --color-darker-custom-blue: #0056b3;
-  --color-custom-red: #ff4d4d;
-  --color-darker-custom-red: #b30000;
-  --color-custom-green: #28a745;
-  --color-darker-custom-green: #1e7e34;
-  --color-custom-purple: #6f42c1;
-  --color-darker-custom-purple: #5a32a3;
-  --color-custom-brown: #8b4513;
-  --color-darker-custom-brown: #5a2d00;
 }
 
 @keyframes fade-in {

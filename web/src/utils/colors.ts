@@ -1,14 +1,20 @@
 export const BackgroundColors = {
-    green : "bg-green-600",
-    greenHover : "hover:bg-green-700",
+    green : "bg-[#004526]",
+    greenHover : "hover:bg-[#046b3b]",
     gray : "bg-zinc-300",
     grayHover : "hover:bg-zinc-400",
+    white : "bg-white",
+    whiteHover : "hover:bg-gray-100",
+    red : "bg-[#D55F5A]",
+    redHover : "hover:bg-[#D55F5A]",
 }
 
 export const TextColors = {
     white : "text-white",
+    whiteHover : "hover:text-white",
     black : "text-black",
     gray : "text-gray-800",
+    red : "text-[#D55F5A]",
 }
 
 export const BorderColors = {
@@ -20,6 +26,6 @@ export const PlaceholderColors = {
 }
 
 export const FocusColors = {
-    green : "focus:ring-green-500",
+    green : "focus:ring-[#046b3b]",
 }
 
