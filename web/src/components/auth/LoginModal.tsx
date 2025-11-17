@@ -1,26 +1,29 @@
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { login } from "../../../requests/AuthRequests";
+import { login } from "../../requests/AuthRequests";
 import { AxiosError } from "axios";
-import UserInfo from "../../userPreview/UserPreview";
+import UserInfo from "../user/UserPreview";
 import { Eye, EyeOff, ArrowLeft } from "lucide-react";
 
-import Button from "../../../ui/Button";
-import Input from "../../../ui/Input";
-import {BackgroundColors, TextColors}  from "../../../utils/colors";
+import Button from "../../ui/Button";
+import Input from "../../ui/Input";
+import {BackgroundColors, TextColors}  from "../../utils/colors";
+import { useDispatch } from "react-redux";
+import { setUser } from "../../store/userSlice";
 
 export default function LoginModal({ 
-  onClose,
   email,
   onBack,
+  onClose,
 }: { 
-  onClose: () => void;
   email: string;
   onBack: () => void;
+  onClose: () => void;
 }) {
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const dispatch = useDispatch();
 
   const { mutate, isPending } = useMutation({
     mutationFn: () => login(email, password),
@@ -28,13 +31,17 @@ export default function LoginModal({
       if (typeof window !== "undefined" && window.localStorage) {
         try {
           localStorage.setItem("token", data.access_token);
+          if (data.user) {
+            dispatch(setUser(data.user));
+            window.location.reload();
+          }
+          onClose();
         } catch (err) {
           console.error("⚠️ Impossible d'accéder au localStorage :", err);
           return;
         }
       }
       setErrorMessage("");
-      onClose();
     },
     onError: (err: unknown) => {
       if (err instanceof AxiosError) {
@@ -58,9 +65,17 @@ export default function LoginModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="absolute inset-0 bg-black/50" onClick={onClose}></div>
-
+    <div className="fixed inset-0 z-50 flex items-center justify-center"
+      onKeyDown={(e) => {
+        if (e.key === "Enter") {
+          handleConnect();
+        }
+        if (e.key === "Escape") {
+          onClose();
+        }
+      }}
+      tabIndex={0}
+    >
       {/* Text Title and Desc */}
       <div className="relative z-10 bg-white rounded-2xl shadow-2xl max-w-md sm:max-w-lg md:max-w-116 p-6 sm:p-8 md:p-10 text-left animate-fade-in">
         <div>

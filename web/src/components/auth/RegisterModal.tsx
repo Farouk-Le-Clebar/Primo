@@ -1,27 +1,30 @@
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { register } from "../../../requests/AuthRequests";
+import { register } from "../../requests/AuthRequests";
 import { AxiosError } from "axios";
 import { Eye, EyeOff, ArrowLeft } from "lucide-react";
 
-import Button from "../../../ui/Button";
-import Input from "../../../ui/Input";
-import {BackgroundColors, TextColors}  from "../../../utils/colors";
+import Button from "../../ui/Button";
+import Input from "../../ui/Input";
+import {BackgroundColors, TextColors}  from "../../utils/colors";
+import { useDispatch } from "react-redux";
+import { setUser } from "../../store/userSlice";
 
 export default function RegisterModal({ 
-  onClose,
   email: initialEmail,
   onBack,
+  onClose,
 }: { 
-  onClose: () => void;
   email: string;
   onBack: () => void;
+  onClose: () => void;
 }) {
   const [email, setEmail] = useState(initialEmail || "");
   const [password, setPassword] = useState("");
 
   const [errorMessage, setErrorMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const dispatch = useDispatch();
 
   const getPasswordStrength = (password: string) => {
     let score = 0;
@@ -40,13 +43,16 @@ export default function RegisterModal({
       if (typeof window !== "undefined" && window.localStorage) {
         try {
           localStorage.setItem("token", data.access_token);
+          if (data.user) {
+            dispatch(setUser(data.user));
+          }
+          onClose();
         } catch (err) {
           console.error("⚠️ Impossible d'accéder au localStorage :", err);
           return;
         }
       }
       setErrorMessage("");
-      onClose();
     },
     onError: (err: unknown) => {
       if (err instanceof AxiosError) {
@@ -73,8 +79,17 @@ export default function RegisterModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
-      <div className="absolute inset-0 bg-black/50" onClick={onClose}></div>
+    <div className="fixed inset-0 z-50 flex items-center justify-center px-4"
+      onKeyDown={(e) => {
+        if (e.key === "Enter") {
+          handleConnect();
+        }
+        if (e.key === "Escape") {
+          onClose();
+        }
+      }}
+      tabIndex={0}
+    >
       <div className="relative z-10 bg-white rounded-2xl shadow-2xl max-w-md sm:max-w-lg md:max-w-116 p-6 sm:p-8 md:p-10 text-left animate-fade-in">
         <h2 className="text-2xl sm:text-2xl font-UberMoveBold text-gray-800 mb-2">
           Créez votre compte Primo 🌱
