@@ -1,6 +1,7 @@
 import { Outlet } from "react-router-dom";
 import Navbar from "../navbar/Navbar";
 import Sidebar from "../sidebar/Sidebar";
+import backgroundWhite from "../../assets/backgrounds/backgroundWhite.svg"
 
 export default function Layout() {
   return (
@@ -9,7 +10,7 @@ export default function Layout() {
       <div
         className="absolute inset-0 bg-cover bg-center z-0"
         style={{
-          backgroundImage: `url('/src/assets/backgrounds/backgroundWhite.svg')`,
+          backgroundImage: `url(${backgroundWhite})`,
         }}
       ></div>
 
