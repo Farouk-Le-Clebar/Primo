@@ -6,9 +6,9 @@ export default function Navbar() {
   const location = useLocation();
 
   const getPageName = (path: string) => {
-    const parts = path.split("/").filter(Boolean); // ex: "/settings/profile" -> ["settings", "profile"]
+    const parts = path.split("/").filter(Boolean);
     if (parts.length === 0) return "Home";
-    const page = parts[parts.length - 1]; // prend la dernière partie
+    const page = parts[parts.length - 1];
     return page.charAt(0).toUpperCase() + page.slice(1);
   };
 

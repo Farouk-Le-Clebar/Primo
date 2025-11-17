@@ -6,7 +6,7 @@ interface UserProfileProps {
     email?: string;
     profilePicture?: string;
     firstName?: string;
-    lastName?: string;
+    surName?: string;
   } | null;
 }
 
@@ -17,6 +17,11 @@ export default function UserProfile({ user }: UserProfileProps) {
     if (user) setUserData(user);
   }, [user]);
 
+  function truncate(str: string, max: number) {
+    if (!str) return "";
+    return str.length > max ? str.slice(0, max) + "..." : str;
+  }
+
   return (
     <div className="flex h-full w-full items-center gap-2">
       <img
@@ -26,8 +31,9 @@ export default function UserProfile({ user }: UserProfileProps) {
       />
       <div>
         <div className="text-sm font-semibold text-gray-800">
-          {userData?.firstName || "Prénom"} {userData?.lastName || "Nom"}
+          {truncate(`${userData?.firstName || ""} ${userData?.surName || ""}`, 13)}
         </div>
+
         <div className="text-xs text-gray-500">{userData?.email}</div>
       </div>
     </div>
