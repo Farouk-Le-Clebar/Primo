@@ -1,34 +1,18 @@
-import { Routes, Route, useLocation } from "react-router-dom";
-import Home from "./pages/home/Home";
-import Navbar from "./components/navbar/Navbar";
-import Footer from "./components/footer/Footer";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import SearchingBar from "./pages/search/SearchBar";
+import { Routes, Route } from "react-router-dom";
+import Layout from "./components/layout/layout";
 
-function App() {
-  const location = useLocation();
+// PAGES imports
+import Dashboard from "./pages/dashboard/Dashboard";
+import Projects from "./pages/projects/Projects";
 
-  const showNavbarOn = ["/"];
-
-  const shouldShowNavbar = showNavbarOn.some((p) => {
-    if (p === "/") return location.pathname === "/";
-    return location.pathname === p || location.pathname.startsWith(p + "/");
-  });
-
-  const queryClient = new QueryClient();
-
+export default function App() {
   return (
-    <>
-      {shouldShowNavbar && <Navbar />}
-      <QueryClientProvider client={queryClient}>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/search" element={<SearchingBar />} />
-        </Routes>
-      </QueryClientProvider>
-      {shouldShowNavbar && <Footer />}
-    </>
+    <Routes>
+      <Route path="/" element={<Layout />}>
+        <Route index element={<Dashboard />} />  {/* / */}
+        <Route path="dashboard" element={<Dashboard />} />
+        <Route path="projects" element={<Projects />} />
+      </Route>
+    </Routes>
   );
 }
-
-export default App;
