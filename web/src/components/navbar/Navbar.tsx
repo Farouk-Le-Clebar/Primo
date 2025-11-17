@@ -1,87 +1,46 @@
-import { useState } from "react";
-import { Menu, X } from "lucide-react";
-import Logo from "../../assets/logos/logoPrimoBlack.svg";
-import AuthEntryModal from "./component/AuthEntryModal";
-import RegisterModal from "./component/RegisterModal";
-import LoginModal from "./component/LoginModal";
+import SearchingBar from "../searchbar/SearchBar";
+import { Ellipsis, Settings } from 'lucide-react';
+import { useLocation } from "react-router-dom";
 
 export default function Navbar() {
-  const [activeModal, setActiveModal] = useState<"auth" | "login" | "register" | null>(null);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [email, setEmail] = useState("");
+  const location = useLocation();
 
-  const openModal = (modal: "auth" | "login" | "register") => setActiveModal(modal);
-  const closeModal = () => setActiveModal(null);
+  const getPageName = (path: string) => {
+    const parts = path.split("/").filter(Boolean); // ex: "/settings/profile" -> ["settings", "profile"]
+    if (parts.length === 0) return "Home";
+    const page = parts[parts.length - 1]; // prend la dernière partie
+    return page.charAt(0).toUpperCase() + page.slice(1);
+  };
+
+  const pageName = getPageName(location.pathname);
 
   return (
-    <>
-      <nav className="fixed top-0 left-0 w-full z-50 bg-white/60 backdrop-blur-md shadow-sm">
-        <div className="max-w-7xl mx-auto flex items-center justify-between px-4 md:px-8 py-4">
-          <div className="flex items-center gap-2">
-            <img src={Logo} alt="Logo" className="h-7 w-7" />
-            <span className="text-xl text-gray-800 font-medium">Primo.</span>
-          </div>
+    <nav className="flex w-full h-full items-center">
+      {/* DIV search bar */}
+      <div className="flex h-full items-center justify-start w-[75%] gap-10">
+        <div className="flex flex-col h-full w-35 justify-center">
+          <p className="text-xs text-white font-lg">Pages  / {pageName}</p>
+          <p className="text-xs text-white font-lg">{pageName}</p>
+        </div>
+        <div className="flex w-xl h-full items-center">
+          <SearchingBar />
+        </div>
+      </div>
 
-          <div className="hidden md:flex items-center gap-8">
-            <a href="#" className="text-gray-700 hover:text-green-600 transition-colors">Accueil</a>
-            <a href="#" className="text-gray-700 hover:text-green-600 transition-colors">À propos</a>
-            <a href="#" className="text-gray-700 hover:text-green-600 transition-colors">Fonctionnalités</a>
-            <a href="#" className="text-gray-700 hover:text-green-600 transition-colors">Services</a>
-          </div>
-
-          <div className="hidden md:flex">
-            <button
-              onClick={() => openModal("auth")}
-              className="bg-green-600 text-white px-5 py-2 rounded-lg shadow-md hover:bg-green-700 hover:shadow-lg transition-all duration-200"
-            >
-              Se connecter
-            </button>
-          </div>
-
-          <button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden flex items-center text-gray-800"
-          >
-            {isMenuOpen ? <X size={26} /> : <Menu size={26} />}
+      {/* DIV accound and buttons right  */}
+      <div className="flex h-full w-[26%] items-center justify-start">
+        <div className="flex h-full w-[70%] items-center justify-end gap-5">
+          <button className="text-white h-8 w-8 hover:bg-white hover:text-black transition justify-center items-center flex rounded-lg">
+            <Ellipsis size={20} />
+          </button>
+          <button className="text-white h-8 w-8 hover:bg-white hover:text-black transition justify-center items-center flex rounded-lg">
+            FR
+          </button>
+          <button className="text-white h-8 w-8 hover:bg-white hover:text-black transition justify-center items-center flex rounded-lg">
+            <Settings size={20} />
           </button>
         </div>
-
-        {isMenuOpen && (
-          <div className="md:hidden bg-white/90 backdrop-blur-md border-t border-gray-200">
-            <div className="flex flex-col items-center gap-4 py-4">
-              <a href="#" className="text-gray-700 hover:text-green-600">Accueil</a>
-              <a href="#" className="text-gray-700 hover:text-green-600">À propos</a>
-              <a href="#" className="text-gray-700 hover:text-green-600">Fonctionnalités</a>
-              <a href="#" className="text-gray-700 hover:text-green-600">Services</a>
-
-              <button
-                onClick={() => {
-                  setIsMenuOpen(false);
-                  openModal("auth");
-                }}
-                className="bg-green-600 text-white px-6 py-2 rounded-lg shadow-md hover:bg-green-700 transition-all duration-200"
-              >
-                Se connecter
-              </button>
-            </div>
-          </div>
-        )}
-      </nav>
-
-      {/* --- Gestion dynamique des modals --- */}
-      {activeModal === "auth" && (
-        <AuthEntryModal
-          onClose={closeModal}
-          setEmail={setEmail}
-          onEmailChecked={(exists) => {
-            closeModal();
-            setActiveModal(exists ? "login" : "register");
-          }}
-        />
-      )}
-
-      {activeModal === "login" && <LoginModal email={email} onClose={closeModal} onBack={() => setActiveModal("auth")} />}
-      {activeModal === "register" && <RegisterModal email={email} onClose={closeModal} onBack={() => setActiveModal("auth")}/>}
-    </>
+      </div>
+    </nav>
   );
 }
