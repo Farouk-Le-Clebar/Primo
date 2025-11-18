@@ -11,6 +11,8 @@ import { AuthModule } from './auth/auth.module';
 import { GeoModule } from './geo/geo.module';
 import { UserModule } from './user/user.module';
 
+
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -28,6 +30,7 @@ import { UserModule } from './user/user.module';
       entities: [User],
       synchronize: true,
     }),
+    
     TypeOrmModule.forRoot({
       name: 'postgis',
       type: 'postgres',
@@ -39,6 +42,7 @@ import { UserModule } from './user/user.module';
       password: process.env.POSTGIS_PASSWORD,
       database: process.env.POSTGIS_DATABASE,
       synchronize: false,
+      
     }),
     TypeOrmModule.forFeature([User]),
     AuthModule,
@@ -46,6 +50,7 @@ import { UserModule } from './user/user.module';
     UserModule,
 
   ],
+  
   controllers: [AppController],
   providers: [AppService],
 })
