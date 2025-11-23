@@ -10,6 +10,7 @@ import { GraphhopperProxyMiddleware } from './api/graphhopper.middleware';
 import { AuthModule } from './auth/auth.module';
 import { GeoModule } from './geo/geo.module';
 import { UserModule } from './user/user.module';
+import { PoiModule } from './pgpoi/poi.module';
 
 
 
@@ -48,7 +49,7 @@ import { UserModule } from './user/user.module';
     AuthModule,
     GeoModule,
     UserModule,
-
+    PoiModule,
   ],
   
   controllers: [AppController],
