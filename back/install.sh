@@ -1,5 +1,8 @@
 #!/bin/bash
 
+set -o allexport
+source ./.env
+set +o allexport
 
 # == Addock Data Download ==
 echo "Starting addock data download..."
@@ -8,18 +11,9 @@ wget https://adresse.data.gouv.fr/data/ban/adresses/latest/addok/addok-france-bu
 mkdir addok-data
 unzip -d addok-data addok-france-bundle.zip
 
-rm -rf addok-france-bundle.zip
+# rm -rf addok-france-bundle.zip
 
 echo "Addock data downloaded and extracted to addok-data/"
-
-# == GraphHopper Data Download ==
-echo "Starting GraphHopper data download..."
-mkdir graphhopper-data
-wget https://download.geofabrik.de/europe/france/midi-pyrenees-latest.osm.pbf -O graphhopper-data/occitanie.osm.pbf
-
-echo "GraphHopper data downloaded to graphhopper-data/"
-
-echo "Starting departements data download..."
 
 # == Departements Data Download ==
 set -e
@@ -96,7 +90,7 @@ FILTERED_FILE="france-pois-filtered.osm.pbf"
 
 
 filter_pois() {
-    echo "Filtrage des POI avec osmium..."
+    echo "POI filtering with osmium..."
     
     osmium tags-filter "$OSM_FILE" \
         nwr/amenity=hospital,pharmacy,school,college,university,library,cinema \
@@ -105,52 +99,79 @@ filter_pois() {
         -o "$FILTERED_FILE" \
         --overwrite
     
-    local original_size=$(du -h "$OSM_FILE" | cut -f1)
-    local filtered_size=$(du -h "$FILTERED_FILE" | cut -f1)
 
     echo "Filtered completed"
-    echo "Original size : $original_size"
-    echo "Filtered size : $filtered_size"
 }
 
-osm2pgsql \
+import_with_osm2pgsql() {
+    echo "Import with osm2pgsql..."
+
+    if [ ! -f "poi-filter.lua" ]; then
+        echo "The file poi-filter.lua is missing!"
+        echo "Create it with the content provided earlier"
+        exit 1
+    fi
+    
+    export PGPASSWORD="$POSTGIS_PASSWORD"
+    
+    osm2pgsql \
         --create \
         --slim \
         --drop \
         --cache 1000 \
         --number-processes $(nproc) \
-        --database "$DB_NAME" \
-        --username "$DB_USER" \
-        --host "$DB_HOST" \
-        --port "$DB_PORT" \
+        --database "$POSTGIS_DATABASE" \
+        --username "$POSTGIS_USER" \
+        --host "$POSTGIS_HOST" \
+        --port "$POSTGIS_PORT" \
         --output flex \
         --style poi-filter.lua \
         "$FILTERED_FILE"
 
-echo "PostGIS data setup completed."
+    echo "Import completed"
+}
 
-echo "Connect to the PostGIS database to verify the POI data has been imported with the command : 'SELECT * FROM planet_osm_point WHERE amenity IS NOT NULL;'"
-echo "Then, you can create the different indexes on the planet_osm_point table for better performance."
-echo "Create the following indexes as needed:"
-echo ''
-echo "CREATE INDEX idx_pois_geom ON pois_france USING GIST(geom);"
-echo ''
-echo "CREATE INDEX idx_pois_tags ON pois_france USING GIN(tags);"
-echo ''
-echo "CREATE INDEX idx_pois_hospital ON pois_france USING GIST(geom) 
-WHERE tags->>'amenity' = 'hospital';"
-echo ''
-echo "CREATE INDEX idx_pois_pharmacy ON pois_france USING GIST(geom) 
-WHERE tags->>'amenity' = 'pharmacy';"
-echo ''
-echo "CREATE INDEX idx_pois_school ON pois_france USING GIST(geom) 
-WHERE tags->>'amenity' IN ('school', 'college', 'university');"
-echo ''
-echo "CREATE INDEX idx_pois_supermarket ON pois_france USING GIST(geom) 
-WHERE tags->>'shop' = 'supermarket';"
-echo ''
-echo "CREATE INDEX idx_pois_cinema ON pois_france USING GIST(geom) 
-WHERE tags->>'amenity' = 'cinema';"
-echo ''
-echo "Finish by optimizing the table with the command :"
-echo "VACUUM ANALYZE pois_france;"
+
+create_indexes() {
+    echo "Creating indexes..."
+
+    export PGPASSWORD="$POSTGIS_PASSWORD"
+   
+   cat <<'EOF' | docker exec -i \
+        --env PGPASSWORD="$POSTGIS_PASSWORD" \
+        back_postgis_1 \
+        psql -v ON_ERROR_STOP=1 -U "$POSTGIS_USER" -d "$POSTGIS_DATABASE"
+
+CREATE INDEX IF NOT EXISTS idx_pois_tags ON pois_france USING GIN(tags);
+
+CREATE INDEX IF NOT EXISTS idx_pois_hospital ON pois_france USING GIST(geom) 
+WHERE tags->>'amenity' = 'hospital';
+
+CREATE INDEX IF NOT EXISTS idx_pois_pharmacy ON pois_france USING GIST(geom) 
+WHERE tags->>'amenity' = 'pharmacy';
+
+CREATE INDEX IF NOT EXISTS idx_pois_school ON pois_france USING GIST(geom) 
+WHERE tags->>'amenity' IN ('school', 'college', 'university');
+
+CREATE INDEX IF NOT EXISTS idx_pois_supermarket ON pois_france USING GIST(geom) 
+WHERE tags->>'shop' = 'supermarket';
+
+CREATE INDEX IF NOT EXISTS idx_pois_cinema ON pois_france USING GIST(geom) 
+WHERE tags->>'amenity' = 'cinema';
+
+VACUUM ANALYZE pois_france;
+
+EOF
+    echo "Indexes created successfully"
+ docker exec --env PGPASSWORD="$POSTGIS_PASSWORD" back_postgis_1 \
+        psql -U "$POSTGIS_USER" -d "$POSTGIS_DATABASE" -c "
+        SELECT indexname 
+        FROM pg_indexes 
+        WHERE tablename = 'pois_france';
+        "
+}
+
+filter_pois
+import_with_osm2pgsql
+create_indexes
+echo "PostGIS data setup completed."
