@@ -3,8 +3,6 @@ import {
   Get,
   Param,
   Res,
-  HttpException,
-  HttpStatus,
   InternalServerErrorException,
 } from '@nestjs/common';
 import type { Response } from 'express';
