@@ -1,0 +1,8 @@
+# Data Types : node = point, way = ligne/polygone
+# Format : osm_type, tag_key, data_type, flags
+
+node,way    amenity       text         linear
+node,way    shop          text         linear
+node,way    leisure       text         linear
+node,way    healthcare    text         linear
+node,way    name          text         linear
