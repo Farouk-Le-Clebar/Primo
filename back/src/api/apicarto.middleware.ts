@@ -5,7 +5,7 @@ import { Request, Response, NextFunction } from 'express';
 @Injectable()
 export class ApicartoProxyMiddleware implements NestMiddleware {
   private proxy = createProxyMiddleware({
-    target: process.env.APICARTO_URL || 'https://apicarto.ign.fr',
+    target: process.env.APICARTO_URL || 'http://localhost:6677',
     changeOrigin: true,
     pathRewrite: { '^/apicarto': '' },
   });
