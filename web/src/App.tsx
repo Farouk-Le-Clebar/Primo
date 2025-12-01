@@ -1,10 +1,9 @@
 import { Routes, Route } from "react-router-dom";
 import Layout from "./components/layout/layout";
 
-// PAGES imports
 import Dashboard from "./pages/dashboard/Dashboard";
 import Projects from "./pages/projects/Projects";
-import SearchMap from "./pages/search-map/SearchMap";
+import Map from "./pages/newMap/Map";
 
 export default function App() {
   return (
@@ -13,8 +12,8 @@ export default function App() {
         <Route index element={<Dashboard />} />  {/* / */}
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="projects" element={<Projects />} />
-        <Route path="search" element={<SearchMap />} />
       </Route>
+      <Route path="search" element={<Map />} />
     </Routes>
   );
 }
