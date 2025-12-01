@@ -2,24 +2,24 @@
 
 
 # == Addock Data Download ==
-echo "Starting addock data download..."
-wget https://adresse.data.gouv.fr/data/ban/adresses/latest/addok/addok-france-bundle.zip
+# echo "Starting addock data download..."
+# wget https://adresse.data.gouv.fr/data/ban/adresses/latest/addok/addok-france-bundle.zip
 
-mkdir addok-data
-unzip -d addok-data addok-france-bundle.zip
+# mkdir addok-data
+# unzip -d addok-data addok-france-bundle.zip
 
-rm -rf addok-france-bundle.zip
+# rm -rf addok-france-bundle.zip
 
-echo "Addock data downloaded and extracted to addok-data/"
+# echo "Addock data downloaded and extracted to addok-data/"
 
-# == GraphHopper Data Download ==
-echo "Starting GraphHopper data download..."
-mkdir graphhopper-data
-wget https://download.geofabrik.de/europe/france/midi-pyrenees-latest.osm.pbf -O graphhopper-data/occitanie.osm.pbf
+# # == GraphHopper Data Download ==
+# echo "Starting GraphHopper data download..."
+# mkdir graphhopper-data
+# wget https://download.geofabrik.de/europe/france/midi-pyrenees-latest.osm.pbf -O graphhopper-data/occitanie.osm.pbf
 
-echo "GraphHopper data downloaded to graphhopper-data/"
+# echo "GraphHopper data downloaded to graphhopper-data/"
 
-echo "Starting departements data download..."
+# echo "Starting departements data download..."
 
 # == Departements Data Download ==
 set -e
