@@ -1,6 +1,7 @@
 ---
 import { ArrowUpRight } from "lucide-react";
 import backgroundWhite from "../../../assets/backgrounds/backgroundWhite.svg?url";
+import { EXTERNAL_LINKS, CTA_TEXTS } from "../../../config/constants";
 ---
 
 <section
@@ -21,21 +22,21 @@ import backgroundWhite from "../../../assets/backgrounds/backgroundWhite.svg?url
     </p>
     <div class="flex space-x-4 justify-center">
       <a
-        href="https://app.primo-data.fr/"
+        href={EXTERNAL_LINKS.APP_URL}
         target="_blank"
         rel="noopener noreferrer"
         class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition flex items-center gap-2"
       >
-        Découvrir Primo
+        {CTA_TEXTS.DISCOVER_PRIMO}
         <ArrowUpRight size={18} className="mt-px" />
       </a>
       <a
-        href="https://docs.google.com/forms/d/e/1FAIpQLSdJmNDDhunKox0XS8WZWfG2Wof7ue87fxCvxv_ch98r98cA-g/viewform?usp=header"
+        href={EXTERNAL_LINKS.BETA_FORM}
         target="_blank"
         rel="noopener noreferrer"
         class="border border-green-600 text-green-600 px-6 py-2 rounded-lg hover:bg-green-50 transition"
       >
-        Accéder à la beta
+        {CTA_TEXTS.ACCESS_BETA}
       </a>
     </div>
   </div>

@@ -1,17 +1,18 @@
 import React from "react";
+import { EXTERNAL_LINKS, CTA_TEXTS } from "../../config/constants";
 
 interface CallToActionProps {
-  title: string;
-  description: string;
-  buttonText: string;
-  buttonLink: string;
+  title?: string;
+  description?: string;
+  buttonText?: string;
+  buttonLink?: string;
 }
 
 export const CallToAction: React.FC<CallToActionProps> = ({
-  title,
-  description,
-  buttonText,
-  buttonLink,
+  title = CTA_TEXTS.BETA_TITLE,
+  description = CTA_TEXTS.BETA_DESCRIPTION,
+  buttonText = CTA_TEXTS.BETA_BUTTON,
+  buttonLink = EXTERNAL_LINKS.BETA_FORM,
 }) => {
   return (
     <div className="not-prose my-12 p-8 bg-linear-to-br from-green-600 via-green-700 to-emerald-600 rounded-2xl shadow-xl text-white">

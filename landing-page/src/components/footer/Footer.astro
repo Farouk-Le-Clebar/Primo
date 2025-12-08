@@ -1,7 +1,7 @@
 ---
 import { Linkedin, Mail } from "lucide-react";
 import Logo from "../../assets/logos/logoPrimoWhite.svg?url";
-const currentYear = new Date().getFullYear();
+import { EXTERNAL_LINKS, NAV_ITEMS, SITE_META } from "../../config/constants";
 ---
 
 <footer class="bg-gray-900 text-white py-12">
@@ -18,7 +18,7 @@ const currentYear = new Date().getFullYear();
         </p>
         <div class="flex items-center gap-4">
           <a
-            href="https://www.linkedin.com/company/primo-data-app/"
+            href={EXTERNAL_LINKS.LINKEDIN}
             target="_blank"
             rel="noopener noreferrer"
             class="bg-gray-800 p-2 rounded-lg hover:bg-green-600 transition"
@@ -27,7 +27,7 @@ const currentYear = new Date().getFullYear();
             <Linkedin size={20} />
           </a>
           <a
-            href="mailto:contact@primo-data.fr"
+            href={EXTERNAL_LINKS.EMAIL}
             class="bg-gray-800 p-2 rounded-lg hover:bg-green-600 transition"
             aria-label="Email"
           >
@@ -39,38 +39,18 @@ const currentYear = new Date().getFullYear();
       <div>
         <h3 class="font-semibold text-lg mb-4">Navigation</h3>
         <ul class="space-y-2">
-          <li>
-            <a
-              href="#home"
-              class="text-gray-400 hover:text-green-500 transition"
-            >
-              Accueil
-            </a>
-          </li>
-          <li>
-            <a
-              href="#features"
-              class="text-gray-400 hover:text-green-500 transition"
-            >
-              Fonctionnalités
-            </a>
-          </li>
-          <li>
-            <a
-              href="#services"
-              class="text-gray-400 hover:text-green-500 transition"
-            >
-              Services
-            </a>
-          </li>
-          <li>
-            <a
-              href="#about"
-              class="text-gray-400 hover:text-green-500 transition"
-            >
-              À propos
-            </a>
-          </li>
+          {
+            NAV_ITEMS.map((item) => (
+              <li>
+                <a
+                  href={`#${item.id}`}
+                  class="text-gray-400 hover:text-green-500 transition"
+                >
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
         </ul>
       </div>
 
@@ -79,7 +59,7 @@ const currentYear = new Date().getFullYear();
         <ul class="space-y-2">
           <li>
             <a
-              href="https://docs.google.com/forms/d/e/1FAIpQLSdJmNDDhunKox0XS8WZWfG2Wof7ue87fxCvxv_ch98r98cA-g/viewform?usp=header"
+              href={EXTERNAL_LINKS.BETA_FORM}
               target="_blank"
               rel="noopener noreferrer"
               class="text-gray-400 hover:text-green-500 transition"
@@ -89,7 +69,7 @@ const currentYear = new Date().getFullYear();
           </li>
           <li>
             <a
-              href="https://www.linkedin.com/company/primo-data-app/"
+              href={EXTERNAL_LINKS.LINKEDIN}
               target="_blank"
               rel="noopener noreferrer"
               class="text-gray-400 hover:text-green-500 transition"
@@ -104,7 +84,7 @@ const currentYear = new Date().getFullYear();
     <div class="border-t border-gray-800 pt-8">
       <div class="flex flex-col md:flex-row justify-between items-center gap-4">
         <p class="text-gray-400 text-sm">
-          © {currentYear} Primo. Tous droits réservés.
+          © {SITE_META.CURRENT_YEAR} Primo. Tous droits réservés.
         </p>
         <div class="flex gap-6 text-sm">
           <a href="/" class="text-gray-400 hover:text-green-500 transition">
