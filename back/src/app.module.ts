@@ -6,8 +6,8 @@ import { ConfigModule } from '@nestjs/config';
 import { User } from './database/user.entity';
 import { AddokProxyMiddleware } from './api/addok.middleware';
 import { ApicartoProxyMiddleware } from './api/apicarto.middleware';
-import { GraphhopperProxyMiddleware } from './api/graphhopper.middleware';
 import { AuthModule } from './auth/auth.module';
+import { GeoServerProxyMiddleware } from './api/geoserver.middleware';
 import { GeoModule } from './geo/geo.module';
 import { UserModule } from './user/user.module';
 
@@ -40,6 +40,6 @@ export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(AddokProxyMiddleware).forRoutes('/addok');
     consumer.apply(ApicartoProxyMiddleware).forRoutes('/apicarto');
-    consumer.apply(GraphhopperProxyMiddleware).forRoutes('/gh');
+    consumer.apply(GeoServerProxyMiddleware).forRoutes('/geoserver');
   }
 }

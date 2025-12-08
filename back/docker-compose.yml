@@ -1,4 +1,4 @@
-name : primo
+name: primo
 
 services:
   mysql:
@@ -20,13 +20,60 @@ services:
     container_name: phpmyadmin_primo
     restart: always
     environment:
-      PMA_HOST: mysql
+      PMA_HOST: mysql 
       PMA_USER: user_primo
       PMA_PASSWORD: V3RyS3eCr3tP@ssw0rd
     ports:
       - '8080:80'
     depends_on:
       - mysql
+
+  # PostGIS pour stocker BD Topo
+  postgis:
+    platform: linux/amd64
+    image: postgis/postgis:15-3.4
+    container_name: postgis_primo
+    restart: always
+    environment:
+      POSTGRES_DB: bdtopo
+      POSTGRES_USER: geo_primo
+      POSTGRES_PASSWORD: G30S3cr3tP@ss
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgis_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U geo_primo -d bdtopo"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # GeoServer pour servir les données en WFS/WMS
+  geoserver:
+    platform: linux/amd64
+    image: kartoza/geoserver:2.24.0
+    container_name: geoserver_primo
+    restart: always
+    environment:
+      GEOSERVER_ADMIN_USER: admin
+      GEOSERVER_ADMIN_PASSWORD: geoserver_primo
+      INITIAL_MEMORY: 2G
+      MAXIMUM_MEMORY: 4G
+      STABLE_EXTENSIONS: wps,csw
+      COMMUNITY_EXTENSIONS: ""
+    ports:
+      - '8081:8080'
+    volumes:
+      - geoserver_data:/opt/geoserver/data_dir
+    depends_on:
+      postgis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/geoserver/web/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
   addok:
     image: etalab/addok
@@ -51,20 +98,9 @@ services:
     volumes:
       - ./addok-data/dump.rdb:/data/dump.rdb
 
-  graphhopper:
-    image: israelhikingmap/graphhopper:10.2
-    container_name: graphhopper
-    ports:
-      - "8989:8989"
-    volumes:
-      - ./graphhopper-data:/data
-      - ./config.gh.yml:/config.gh.yml
-    command: >
-      --input /data/occitanie.osm.pbf
-      --config /config.gh.yml
-      --graph-cache /data/graph
       
   apicarto:
+    platform: linux/amd64
     image: ghcr.io/ignf/apicarto:v2.9.2_qlf
     container_name: apicarto
     restart: always
@@ -75,3 +111,5 @@ services:
 
 volumes:
   mysql_data:
+  postgis_data:
+  geoserver_data:
