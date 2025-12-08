@@ -1,0 +1,110 @@
+---
+import { getCollection, getEntry } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../components/navbar/Navbar";
+import Footer from "../../components/footer/Footer.astro";
+import { ArrowLeft, Calendar, Tag } from "lucide-react";
+
+export async function getStaticPaths() {
+  const blogEntries = await getCollection("blog");
+  return blogEntries.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+
+const formattedDate = new Date(entry.data.date).toLocaleDateString("fr-FR", {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+});
+---
+
+<Layout
+  title={`${entry.data.title} - Primo Blog`}
+  description={entry.data.description}
+>
+  <div class="flex flex-col min-h-screen">
+    <Navbar client:load />
+
+    <main class="grow bg-gray-50">
+      <!-- Back Button -->
+      <div class="container mx-auto px-6 pt-24">
+        <a
+          href="/blog"
+          class="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 transition-colors"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          <span>Retour aux articles</span>
+        </a>
+      </div>
+
+      <!-- Article Header -->
+      <article class="container mx-auto px-6 py-12">
+        <div
+          class="max-w-4xl mx-auto bg-white rounded-xl shadow-sm p-8 md:p-12"
+        >
+          <header class="mb-12">
+            <h1
+              class="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight"
+            >
+              {entry.data.title}
+            </h1>
+
+            <div
+              class="flex flex-wrap items-center gap-4 text-gray-500 mb-6 pb-6 border-b border-gray-200"
+            >
+              <div class="flex items-center gap-2">
+                <Calendar className="w-5 h-5" />
+                <time class="text-sm">{formattedDate}</time>
+              </div>
+            </div>
+
+            <div class="flex flex-wrap gap-2 mb-8">
+              {
+                entry.data.tags.map((tag) => (
+                  <span class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium bg-blue-50 text-blue-700 rounded-full hover:bg-blue-100 transition-colors">
+                    <Tag className="w-3 h-3" />
+                    {tag}
+                  </span>
+                ))
+              }
+            </div>
+
+            <p
+              class="text-xl text-gray-600 leading-relaxed italic border-l-4 border-blue-500 pl-6 py-2"
+            >
+              {entry.data.description}
+            </p>
+          </header>
+
+          <!-- Article Content -->
+          <div
+            class="prose prose-lg max-w-none
+                      prose-headings:font-bold prose-headings:text-gray-900
+                      prose-h2:text-3xl prose-h2:mt-16 prose-h2:mb-6 prose-h2:pb-3 prose-h2:border-b prose-h2:border-gray-200
+                      prose-h3:text-2xl prose-h3:mt-10 prose-h3:mb-4 prose-h3:text-gray-800
+                      prose-p:text-gray-700 prose-p:leading-[1.8] prose-p:mb-6 prose-p:text-lg
+                      prose-a:text-blue-600 prose-a:font-medium prose-a:no-underline hover:prose-a:underline hover:prose-a:text-blue-700
+                      prose-strong:text-gray-900 prose-strong:font-bold
+                      prose-ul:my-8 prose-ul:space-y-3
+                      prose-ol:my-8 prose-ol:space-y-3
+                      prose-li:text-gray-700 prose-li:leading-relaxed prose-li:pl-2
+                      prose-li:marker:text-blue-500
+                      prose-code:text-blue-700 prose-code:bg-blue-50 prose-code:px-2 prose-code:py-1 prose-code:rounded prose-code:font-mono prose-code:text-sm
+                      prose-pre:bg-gray-900 prose-pre:text-gray-100 prose-pre:rounded-lg prose-pre:p-6
+                      prose-blockquote:border-l-4 prose-blockquote:border-blue-500 prose-blockquote:bg-blue-50 prose-blockquote:pl-6 prose-blockquote:py-4 prose-blockquote:my-8 prose-blockquote:italic prose-blockquote:text-gray-700
+                      prose-img:rounded-lg prose-img:shadow-md"
+          >
+            <Content />
+          </div>
+        </div>
+      </article>
+    </main>
+
+    <Footer />
+  </div>
+</Layout>

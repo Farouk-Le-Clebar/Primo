@@ -1,13 +1,14 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
 @font-face {
   font-family: UberMove;
-  src: url('./assets/fonts/UberMoveMedium.otf');
+  src: url("./assets/fonts/UberMoveMedium.otf");
 }
 
 @font-face {
   font-family: UberMoveBold;
-  src: url('./assets/fonts/UberMoveBold.otf');
+  src: url("./assets/fonts/UberMoveBold.otf");
 }
 
 @theme {

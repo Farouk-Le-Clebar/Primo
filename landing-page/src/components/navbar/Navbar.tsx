@@ -2,6 +2,11 @@ import Logo from "../../assets/logos/logoPrimoBlack.svg?url";
 
 export default function Navbar() {
   const scrollToSection = (sectionId: string) => {
+    if (window.location.pathname !== "/") {
+      window.location.href = `/#${sectionId}`;
+      return;
+    }
+
     const element = document.getElementById(sectionId);
     if (element) {
       element.scrollIntoView({ behavior: "smooth" });
@@ -12,10 +17,10 @@ export default function Navbar() {
     <>
       <nav className="fixed top-0 left-0 w-full z-50 bg-white/60 backdrop-blur-md shadow-sm">
         <div className="max-w-7xl mx-auto flex items-center justify-between px-4 md:px-8 py-4 gap-85">
-          <div className="flex items-center gap-2">
+          <a href="/" className="flex items-center gap-2">
             <img src={Logo} alt="Logo" className="h-7 w-7" />
             <span className="text-xl text-gray-800 font-medium">Primo.</span>
-          </div>
+          </a>
 
           <div className="hidden md:flex items-center gap-8 w-full">
             <button
@@ -42,6 +47,12 @@ export default function Navbar() {
             >
               À propos
             </button>
+            <a
+              href="/blog"
+              className="text-gray-700 hover:text-green-600 transition-colors"
+            >
+              Blog
+            </a>
           </div>
         </div>
       </nav>
