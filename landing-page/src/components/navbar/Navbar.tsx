@@ -41,18 +41,18 @@ export default function Navbar() {
             >
               Services
             </button>
-            <button
-              onClick={() => scrollToSection("about")}
-              className="text-gray-700 hover:text-green-600 transition-colors"
-            >
-              À propos
-            </button>
             <a
               href="/blog"
               className="text-gray-700 hover:text-green-600 transition-colors"
             >
               Blog
             </a>
+            <button
+              onClick={() => scrollToSection("about")}
+              className="text-gray-700 hover:text-green-600 transition-colors"
+            >
+              À propos
+            </button>
           </div>
         </div>
       </nav>
