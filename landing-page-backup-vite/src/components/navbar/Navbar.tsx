@@ -1,4 +1,4 @@
-import Logo from "../../assets/logos/logoPrimoBlack.svg?url";
+import Logo from "../../assets/logos/logoPrimoBlack.svg";
 
 export default function Navbar() {
   const scrollToSection = (sectionId: string) => {
