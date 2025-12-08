@@ -1,20 +1,20 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import Navbar from '../components/navbar/Navbar';
-import HeroSection from './home/components/_HeroSection';
-import FeaturesSection from './home/components/_FeaturesSection';
-import ServicesSection from './home/components/_ServicesSection';
-import AboutSection from './home/components/_AboutSection';
-import Footer from '../components/footer/Footer';
+import Layout from "../layouts/Layout.astro";
+import Navbar from "../components/navbar/Navbar";
+import HeroSection from "./home/components/_HeroSection.astro";
+import FeaturesSection from "./home/components/_FeaturesSection.astro";
+import ServicesSection from "./home/components/_ServicesSection.astro";
+import AboutSection from "./home/components/_AboutSection.astro";
+import Footer from "../components/footer/Footer.astro";
 ---
 
 <Layout title="Primo - Accueil">
-	<Navbar client:load />
-	<div class="flex flex-col">
-		<HeroSection client:visible />
-		<FeaturesSection client:visible />
-		<ServicesSection client:visible />
-		<AboutSection client:visible />
-		<Footer client:load />
-	</div>
+  <Navbar client:load />
+  <div class="flex flex-col">
+    <HeroSection />
+    <FeaturesSection />
+    <ServicesSection />
+    <AboutSection />
+    <Footer />
+  </div>
 </Layout>

@@ -29,7 +29,7 @@ export default function HeroSection() {
             className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition flex items-center gap-2"
           >
             Découvrir Primo
-            <ArrowUpRight size={18} className="mt-[1px]" />
+            <ArrowUpRight size={18} className="mt-px" />
           </a>
           <a
             href="https://docs.google.com/forms/d/e/1FAIpQLSdJmNDDhunKox0XS8WZWfG2Wof7ue87fxCvxv_ch98r98cA-g/viewform?usp=header"
