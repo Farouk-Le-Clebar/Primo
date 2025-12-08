@@ -1,0 +1,226 @@
+import {
+  Target,
+  TrendingUp,
+  Database,
+  Shield,
+  Sparkles,
+  Map,
+  Clock,
+  Users,
+} from "lucide-react";
+
+export default function AboutSection() {
+  return (
+    <section
+      id="about"
+      className="min-h-screen flex flex-col justify-center items-center py-16 md:py-20 bg-white"
+    >
+      <div className="max-w-7xl mx-auto px-4 md:px-8 w-full">
+        <div className="text-center mb-12 md:mb-16">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
+            À <span className="text-green-600">propos</span> de Primo
+          </h2>
+          <p className="text-gray-700 max-w-2xl mx-auto text-sm md:text-base">
+            Une plateforme innovante pour démocratiser l'accès aux informations
+            foncières
+          </p>
+        </div>
+
+        <div className="bg-linear-to-br from-green-50 to-white border border-green-100 rounded-xl p-6 md:p-8 lg:p-10 shadow-md mb-12">
+          <h3 className="text-xl md:text-2xl font-bold mb-4 text-center">
+            Notre Mission
+          </h3>
+          <p className="text-gray-700 text-base md:text-lg text-center max-w-4xl mx-auto leading-relaxed">
+            87% des Français considèrent l'environnement du logement comme un
+            critère décisif dans leur choix immobilier. Pourtant, ces
+            informations sont dispersées et difficiles d'accès.{" "}
+            <span className="text-green-600 font-semibold">
+              Primo centralise toutes les données essentielles sur une parcelle
+              en un clic
+            </span>
+            , permettant à chacun de prendre des décisions éclairées sans
+            naviguer entre une multitude de sites.
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-6 md:gap-8 lg:gap-12 mb-12">
+          <div>
+            <h3 className="text-xl md:text-2xl font-bold mb-6 flex items-center gap-2">
+              <Target className="text-green-600" size={28} />
+              Nos Forces
+            </h3>
+            <div className="space-y-4">
+              <div className="bg-white border border-green-50 rounded-xl p-4 md:p-6 shadow-sm hover:shadow-md transition-all duration-300 hover:border-green-200">
+                <div className="flex items-start gap-3">
+                  <Database
+                    className="text-green-600 shrink-0 mt-1"
+                    size={24}
+                  />
+                  <div>
+                    <h4 className="font-semibold text-base md:text-lg mb-2">
+                      Centralisation des données
+                    </h4>
+                    <p className="text-gray-600 text-sm md:text-base">
+                      Toutes les informations essentielles réunies sur une seule
+                      plateforme intuitive et accessible gratuitement.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white border border-green-50 rounded-xl p-4 md:p-6 shadow-sm hover:shadow-md transition-all duration-300 hover:border-green-200">
+                <div className="flex items-start gap-3">
+                  <Sparkles
+                    className="text-green-600 shrink-0 mt-1"
+                    size={24}
+                  />
+                  <div>
+                    <h4 className="font-semibold text-base md:text-lg mb-2">
+                      Assistant IA complet
+                    </h4>
+                    <p className="text-gray-600 text-sm md:text-base">
+                      Intelligence artificielle avancée avec architecture RAG
+                      pour des analyses précises et personnalisées.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white border border-green-50 rounded-xl p-4 md:p-6 shadow-sm hover:shadow-md transition-all duration-300 hover:border-green-200">
+                <div className="flex items-start gap-3">
+                  <Map className="text-green-600 shrink-0 mt-1" size={24} />
+                  <div>
+                    <h4 className="font-semibold text-base md:text-lg mb-2">
+                      Carte interactive intuitive
+                    </h4>
+                    <p className="text-gray-600 text-sm md:text-base">
+                      Interface simple et ergonomique pour visualiser et
+                      explorer toutes les parcelles cadastrales françaises.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white border border-green-50 rounded-xl p-4 md:p-6 shadow-sm hover:shadow-md transition-all duration-300 hover:border-green-200">
+                <div className="flex items-start gap-3">
+                  <Clock className="text-green-600 shrink-0 mt-1" size={24} />
+                  <div>
+                    <h4 className="font-semibold text-base md:text-lg mb-2">
+                      Gain de temps considérable
+                    </h4>
+                    <p className="text-gray-600 text-sm md:text-base">
+                      Plus besoin de consulter des dizaines de sites : tout est
+                      centralisé et accessible instantanément.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h3 className="text-xl md:text-2xl font-bold mb-6 flex items-center gap-2">
+              <TrendingUp className="text-green-600" size={28} />
+              Nos Opportunités
+            </h3>
+            <div className="space-y-4">
+              <div className="bg-white border border-green-50 rounded-xl p-4 md:p-6 shadow-sm hover:shadow-md transition-all duration-300 hover:border-green-200">
+                <div className="flex items-start gap-3">
+                  <Target className="text-green-600 shrink-0 mt-1" size={24} />
+                  <div>
+                    <h4 className="font-semibold text-base md:text-lg mb-2">
+                      Marché en croissance
+                    </h4>
+                    <p className="text-gray-600 text-sm md:text-base">
+                      L'intérêt pour l'immobilier et l'accès aux données
+                      foncières ne cesse de croître, particulièrement chez les
+                      jeunes acheteurs.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white border border-green-50 rounded-xl p-4 md:p-6 shadow-sm hover:shadow-md transition-all duration-300 hover:border-green-200">
+                <div className="flex items-start gap-3">
+                  <Users className="text-green-600 shrink-0 mt-1" size={24} />
+                  <div>
+                    <h4 className="font-semibold text-base md:text-lg mb-2">
+                      Peu de concurrence directe
+                    </h4>
+                    <p className="text-gray-600 text-sm md:text-base">
+                      Les concurrents se concentrent sur l'immobilier financier.
+                      Nous sommes les seuls à offrir une vision aussi complète
+                      et gratuite.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white border border-green-50 rounded-xl p-4 md:p-6 shadow-sm hover:shadow-md transition-all duration-300 hover:border-green-200">
+                <div className="flex items-start gap-3">
+                  <Sparkles
+                    className="text-green-600 shrink-0 mt-1"
+                    size={24}
+                  />
+                  <div>
+                    <h4 className="font-semibold text-base md:text-lg mb-2">
+                      Amélioration continue de l'IA
+                    </h4>
+                    <p className="text-gray-600 text-sm md:text-base">
+                      Les modèles d'IA évoluent rapidement, nous permettant
+                      d'améliorer constamment nos analyses et recommandations.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white border border-green-50 rounded-xl p-4 md:p-6 shadow-sm hover:shadow-md transition-all duration-300 hover:border-green-200">
+                <div className="flex items-start gap-3">
+                  <Shield className="text-green-600 shrink-0 mt-1" size={24} />
+                  <div>
+                    <h4 className="font-semibold text-base md:text-lg mb-2">
+                      Open Data croissant
+                    </h4>
+                    <p className="text-gray-600 text-sm md:text-base">
+                      De plus en plus de données publiques deviennent
+                      accessibles, enrichissant continuellement notre base
+                      d'informations.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-linear-to-r from-green-600 to-green-700 rounded-2xl p-8 md:p-12 text-white text-center shadow-xl">
+          <h3 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4">
+            Prêt à découvrir Primo ?
+          </h3>
+          <p className="text-base md:text-lg mb-6 md:mb-8 opacity-90 max-w-2xl mx-auto">
+            Rejoignez les milliers d'utilisateurs qui font confiance à Primo
+            pour leurs projets immobiliers
+          </p>
+          <div className="flex gap-4 justify-center flex-wrap">
+            <a
+              href="https://app.primo-data.fr/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-white text-green-600 px-6 md:px-8 py-3 rounded-xl font-semibold hover:bg-gray-100 transition-all hover:scale-105 text-sm md:text-base"
+            >
+              Accéder à la plateforme
+            </a>
+            <a
+              href="https://docs.google.com/forms/d/e/1FAIpQLSdJmNDDhunKox0XS8WZWfG2Wof7ue87fxCvxv_ch98r98cA-g/viewform?usp=header"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="border-2 border-white text-white px-6 md:px-8 py-3 rounded-xl font-semibold hover:bg-white hover:text-green-600 transition-all hover:scale-105 text-sm md:text-base"
+            >
+              Rejoindre la beta
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
