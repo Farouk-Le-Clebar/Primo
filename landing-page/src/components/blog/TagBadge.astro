@@ -1,0 +1,36 @@
+---
+export interface Props {
+  tag: string;
+  withIcon?: boolean;
+  variant?: "default" | "hover";
+}
+
+const { tag, withIcon = false, variant = "default" } = Astro.props;
+
+const variantClasses = {
+  default:
+    "px-3 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full",
+  hover:
+    "inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium bg-green-50 text-green-700 rounded-full hover:bg-green-100 transition-colors",
+};
+---
+
+<span class={variantClasses[variant]}>
+  {
+    withIcon && (
+      <svg
+        class="w-3 h-3"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
+        <line x1="7" y1="7" x2="7.01" y2="7" />
+      </svg>
+    )
+  }
+  {tag}
+</span>

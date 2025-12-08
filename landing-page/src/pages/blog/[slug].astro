@@ -1,9 +1,10 @@
 ---
 import { getCollection, getEntry } from "astro:content";
-import Layout from "../../layouts/Layout.astro";
-import Navbar from "../../components/navbar/Navbar";
-import Footer from "../../components/footer/Footer.astro";
-import { ArrowLeft, Calendar, Tag } from "lucide-react";
+import Layout from "@layouts/Layout.astro";
+import Navbar from "@components/navbar/Navbar";
+import Footer from "@components/footer/Footer.astro";
+import ArticleHeader from "@components/blog/ArticleHeader.astro";
+import { ArrowLeft } from "lucide-react";
 
 export async function getStaticPaths() {
   const blogEntries = await getCollection("blog");
@@ -15,12 +16,6 @@ export async function getStaticPaths() {
 
 const { entry } = Astro.props;
 const { Content } = await entry.render();
-
-const formattedDate = new Date(entry.data.date).toLocaleDateString("fr-FR", {
-  year: "numeric",
-  month: "long",
-  day: "numeric",
-});
 ---
 
 <Layout
@@ -47,39 +42,12 @@ const formattedDate = new Date(entry.data.date).toLocaleDateString("fr-FR", {
         <div
           class="max-w-4xl mx-auto bg-white rounded-xl shadow-sm p-8 md:p-12"
         >
-          <header class="mb-12">
-            <h1
-              class="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight"
-            >
-              {entry.data.title}
-            </h1>
-
-            <div
-              class="flex flex-wrap items-center gap-4 text-gray-500 mb-6 pb-6 border-b border-gray-200"
-            >
-              <div class="flex items-center gap-2">
-                <Calendar className="w-5 h-5" />
-                <time class="text-sm">{formattedDate}</time>
-              </div>
-            </div>
-
-            <div class="flex flex-wrap gap-2 mb-8">
-              {
-                entry.data.tags.map((tag) => (
-                  <span class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium bg-green-50 text-green-700 rounded-full hover:bg-green-100 transition-colors">
-                    <Tag className="w-3 h-3" />
-                    {tag}
-                  </span>
-                ))
-              }
-            </div>
-
-            <p
-              class="text-xl text-gray-600 leading-relaxed italic border-l-4 border-green-500 pl-6 py-2"
-            >
-              {entry.data.description}
-            </p>
-          </header>
+          <ArticleHeader
+            title={entry.data.title}
+            description={entry.data.description}
+            date={entry.data.date}
+            tags={entry.data.tags}
+          />
 
           <!-- Article Content -->
           <div

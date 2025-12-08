@@ -1,5 +1,5 @@
 import React from "react";
-import { EXTERNAL_LINKS, CTA_TEXTS } from "../../config/constants";
+import { EXTERNAL_LINKS, CTA_TEXTS } from "@config/constants";
 
 interface CallToActionProps {
   title?: string;
