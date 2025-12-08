@@ -1,10 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import Navbar from "../components/navbar/Navbar";
-import HeroSection from "./home/components/HeroSection.astro";
-import FeaturesSection from "./home/components/FeaturesSection.astro";
-import ServicesSection from "./home/components/ServicesSection.astro";
-import AboutSection from "./home/components/AboutSection.astro";
+import Home from "./home/Home.astro";
 import Footer from "../components/footer/Footer.astro";
 ---
 
@@ -13,11 +10,6 @@ import Footer from "../components/footer/Footer.astro";
   description="Accédez gratuitement aux données cadastrales, PLU, risques naturels et qualité de vie de n'importe quelle parcelle en France. Plateforme intuitive avec assistant IA."
 >
   <Navbar client:load />
-  <div class="flex flex-col">
-    <HeroSection />
-    <FeaturesSection />
-    <ServicesSection />
-    <AboutSection />
-    <Footer />
-  </div>
+  <Home />
+  <Footer />
 </Layout>
