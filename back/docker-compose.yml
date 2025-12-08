@@ -20,7 +20,7 @@ services:
     container_name: phpmyadmin_primo
     restart: always
     environment:
-      PMA_HOST: mysql 
+      PMA_HOST: mysql
       PMA_USER: user_primo
       PMA_PASSWORD: V3RyS3eCr3tP@ssw0rd
     ports:
@@ -28,7 +28,6 @@ services:
     depends_on:
       - mysql
 
-  # PostGIS pour stocker BD Topo
   postgis:
     platform: linux/amd64
     image: postgis/postgis:15-3.4
@@ -49,7 +48,6 @@ services:
       timeout: 5s
       retries: 5
 
-  # GeoServer pour servir les données en WFS/WMS
   geoserver:
     platform: linux/amd64
     image: kartoza/geoserver:2.24.0
@@ -98,7 +96,6 @@ services:
     volumes:
       - ./addok-data/dump.rdb:/data/dump.rdb
 
-      
   apicarto:
     platform: linux/amd64
     image: ghcr.io/ignf/apicarto:v2.9.2_qlf

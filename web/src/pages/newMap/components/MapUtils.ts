@@ -19,3 +19,12 @@ export type DataType = {
     city: FeatureCollection | null;
     divisions: FeatureCollection | null;
 };
+
+export const boundToBbox = (bounds: L.LatLngBounds) => {
+    return ([
+        bounds.getWest(),
+        bounds.getSouth(),
+        bounds.getEast(),
+        bounds.getNorth()
+    ].join(','));
+};

@@ -9,9 +9,8 @@ const MapBounds= ({ onChange }: MapBoundsProps) => {
         moveend: () => {
             const bounds = map.getBounds();
             onChange(bounds);
-        }
+        },
     });
-
     return null;
 }
 

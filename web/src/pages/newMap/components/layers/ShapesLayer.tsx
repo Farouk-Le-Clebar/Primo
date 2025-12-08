@@ -1,10 +1,11 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { fetchCity, fetchDepartements, fetchDivisions, fetchParcelles } from "../../../../requests/parcel-map";
+import { fetchDepartements, fetchDivisions, fetchParcelles } from "../../../../requests/parcel-map";
 import { useEffect } from "react";
-import { isFeatureCollection, MIN_ZOOM_FOR_CITY, MIN_ZOOM_FOR_DIVISION, MIN_ZOOM_FOR_PARCELLES, style, type DataType } from "../MapUtils";
+import { boundToBbox, isFeatureCollection, MIN_ZOOM_FOR_CITY, MIN_ZOOM_FOR_DIVISION, MIN_ZOOM_FOR_PARCELLES, style, type DataType } from "../MapUtils";
 import { boundsToGeoJSON } from "../../../../requests/apicarto";
 import { GeoJSON, useMap } from "react-leaflet";
 import { onEachFeature } from "./ShapesClick";
+import { getCityByBbox, getDepartementByBbox } from "../../../../requests/map";
 
 type ShapesLayerProps = {
     onCityBoundChange: (data: any) => void;
@@ -34,7 +35,7 @@ const ShapesLayer = ({
     const map = useMap();
     const { data } = useQuery({
         queryKey: ['departements'],
-        queryFn: fetchDepartements,
+        queryFn: () => fetchDepartements(),
     });
 
     useEffect(() => {
@@ -43,7 +44,7 @@ const ShapesLayer = ({
     }, [data]);
 
     const { mutate: departementsBoundsMutation } = useMutation({
-        mutationFn: fetchDepartements,
+        mutationFn: () => getDepartementByBbox(boundToBbox(mapBounds!)),
         onSuccess: (data) => {
             if (data && isFeatureCollection(data)) {
                 onDepartementsBoundChange(data);
@@ -73,7 +74,7 @@ const ShapesLayer = ({
     });
 
     const { mutate: cityBoundsMutation } = useMutation({
-        mutationFn: (geomPolygon: object) => fetchCity(geomPolygon),
+        mutationFn: () => getCityByBbox(boundToBbox(mapBounds!)),
         onSuccess: (data) => {
             if (data && isFeatureCollection(data)) {
                 onCityBoundChange(data);
@@ -113,7 +114,7 @@ const ShapesLayer = ({
             currentZoom >= MIN_ZOOM_FOR_CITY &&
             currentZoom < MIN_ZOOM_FOR_DIVISION &&
             (lastZoom > currentZoom || firstLayerRequest || lastZoom === currentZoom)) {
-            cityBoundsMutation(boundsToGeoJSON(mapBounds));
+            cityBoundsMutation();
             onFirstLayerRequestChange(false);
         }
 
@@ -128,6 +129,7 @@ const ShapesLayer = ({
         if (mapBounds &&
             currentZoom < MIN_ZOOM_FOR_CITY &&
             (lastZoom > currentZoom || firstLayerRequest || lastZoom === currentZoom)) {
+
             departementsBoundsMutation();
             onFirstLayerRequestChange(false);
         }
@@ -137,6 +139,7 @@ const ShapesLayer = ({
         <>
             {dataShape.departements && (
                 <GeoJSON
+                    key={JSON.stringify(dataShape.departements)}
                     data={dataShape.departements}
                     style={style}
                     onEachFeature={(feature, layer) => onEachFeature(feature, layer, map)}
