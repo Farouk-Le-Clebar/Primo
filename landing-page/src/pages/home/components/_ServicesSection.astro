@@ -1,5 +1,6 @@
 ---
 import { Code, Sparkles, Check } from "lucide-react";
+import ServiceCard from "../../../components/ui/ServiceCard.astro";
 ---
 
 <section
@@ -17,118 +18,42 @@ import { Code, Sparkles, Check } from "lucide-react";
     </div>
 
     <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-      <div
-        class="bg-white border border-green-100 rounded-xl p-6 md:p-8 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
-      >
-        <div class="bg-green-100 w-fit p-3 rounded-lg mb-4">
-          <Check className="text-green-600" size={32} />
-        </div>
-        <h3 class="text-xl md:text-2xl font-bold mb-2">Gratuit</h3>
-        <p class="text-gray-600 mb-6 text-sm md:text-base">
-          Pour tous les particuliers
-        </p>
+      <ServiceCard
+        icon={Check}
+        title="Gratuit"
+        subtitle="Pour tous les particuliers"
+        features={[
+          "Accès illimité à toutes les données",
+          "Carte interactive complète",
+          "Assistant IA basique",
+          "Site web et application mobile",
+        ]}
+      />
 
-        <ul class="space-y-3">
-          <li class="flex items-start gap-2">
-            <Check className="text-green-600 shrink-0 mt-1" size={20} />
-            <span class="text-gray-700">
-              Accès illimité à toutes les données
-            </span>
-          </li>
-          <li class="flex items-start gap-2">
-            <Check className="text-green-600 shrink-0 mt-1" size={20} />
-            <span class="text-gray-700"> Carte interactive complète </span>
-          </li>
-          <li class="flex items-start gap-2">
-            <Check className="text-green-600 shrink-0 mt-1" size={20} />
-            <span class="text-gray-700">Assistant IA basique</span>
-          </li>
-          <li class="flex items-start gap-2">
-            <Check className="text-green-600 shrink-0 mt-1" size={20} />
-            <span class="text-gray-700 text-sm md:text-base">
-              Site web et application mobile
-            </span>
-          </li>
-        </ul>
-      </div>
+      <ServiceCard
+        icon={Code}
+        title="API de base"
+        subtitle="Pour les développeurs"
+        features={[
+          "Accès à toutes nos données",
+          "Données actuelles et fiables",
+          "Documentation complète",
+          "Support technique",
+        ]}
+        highlighted={true}
+      />
 
-      <div
-        class="bg-linear-to-br from-green-50 to-white border-2 border-green-500 rounded-xl p-6 md:p-8 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 relative overflow-hidden"
-      >
-        <div
-          class="absolute top-0 right-0 w-32 h-32 bg-green-100 rounded-full -mr-16 -mt-16 opacity-50"
-        >
-        </div>
-        <div class="bg-green-100 w-fit p-3 rounded-lg mb-4 relative z-10">
-          <Code className="text-green-600" size={32} />
-        </div>
-        <h3 class="text-xl md:text-2xl font-bold mb-2 relative z-10">
-          API de base
-        </h3>
-        <p class="text-gray-600 mb-6 text-sm md:text-base relative z-10">
-          Pour les développeurs
-        </p>
-
-        <ul class="space-y-3 relative z-10">
-          <li class="flex items-start gap-2">
-            <Check className="text-green-600 shrink-0 mt-1" size={20} />
-            <span class="text-gray-700"> Accès à toutes nos données </span>
-          </li>
-          <li class="flex items-start gap-2">
-            <Check className="text-green-600 shrink-0 mt-1" size={20} />
-            <span class="text-gray-700"> Données actuelles et fiables </span>
-          </li>
-          <li class="flex items-start gap-2">
-            <Check className="text-green-600 shrink-0 mt-1" size={20} />
-            <span class="text-gray-700">Documentation complète</span>
-          </li>
-          <li class="flex items-start gap-2">
-            <Check className="text-green-600 shrink-0 mt-1" size={20} />
-            <span class="text-gray-700 text-sm md:text-base">
-              Support technique
-            </span>
-          </li>
-        </ul>
-      </div>
-
-      <div
-        class="bg-white border border-green-100 rounded-xl p-6 md:p-8 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
-      >
-        <div class="bg-green-100 w-fit p-3 rounded-lg mb-4">
-          <Sparkles className="text-green-600" size={32} />
-        </div>
-        <h3 class="text-xl md:text-2xl font-bold mb-2">API + IA</h3>
-        <p class="text-gray-600 mb-6 text-sm md:text-base">
-          Pour les professionnels
-        </p>
-
-        <ul class="space-y-3">
-          <li class="flex items-start gap-2">
-            <Check className="text-green-600 shrink-0 mt-1" size={20} />
-            <span class="text-gray-700 text-sm md:text-base">
-              Tout de l'API de base
-            </span>
-          </li>
-          <li class="flex items-start gap-2">
-            <Check className="text-green-600 shrink-0 mt-1" size={20} />
-            <span class="text-gray-700 text-sm md:text-base">
-              Accès à notre modèle d'IA
-            </span>
-          </li>
-          <li class="flex items-start gap-2">
-            <Check className="text-green-600 shrink-0 mt-1" size={20} />
-            <span class="text-gray-700 text-sm md:text-base">
-              Analyses et comparaisons avancées
-            </span>
-          </li>
-          <li class="flex items-start gap-2">
-            <Check className="text-green-600 shrink-0 mt-1" size={20} />
-            <span class="text-gray-700 text-sm md:text-base">
-              Réponses en langage naturel
-            </span>
-          </li>
-        </ul>
-      </div>
+      <ServiceCard
+        icon={Sparkles}
+        title="API + IA"
+        subtitle="Pour les professionnels"
+        features={[
+          "Tout de l'API de base",
+          "Accès à notre modèle d'IA",
+          "Analyses et comparaisons avancées",
+          "Réponses en langage naturel",
+        ]}
+      />
     </div>
 
     <div class="mt-8 md:mt-12 text-center">

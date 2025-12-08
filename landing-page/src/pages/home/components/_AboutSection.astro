@@ -10,6 +10,7 @@ import {
   Users,
 } from "lucide-react";
 import { EXTERNAL_LINKS, CTA_TEXTS } from "../../../config/constants";
+import InfoCard from "../../../components/ui/InfoCard.astro";
 ---
 
 <section
@@ -55,73 +56,29 @@ import { EXTERNAL_LINKS, CTA_TEXTS } from "../../../config/constants";
           Nos Forces
         </h3>
         <div class="space-y-4">
-          <div
-            class="bg-white border border-green-50 rounded-xl p-4 md:p-6 shadow-sm hover:shadow-md transition-all duration-300 hover:border-green-200"
-          >
-            <div class="flex items-start gap-3">
-              <Database className="text-green-600 shrink-0 mt-1" size={24} />
-              <div>
-                <h4 class="font-semibold text-base md:text-lg mb-2">
-                  Centralisation des données
-                </h4>
-                <p class="text-gray-600 text-sm md:text-base">
-                  Toutes les informations essentielles réunies sur une seule
-                  plateforme intuitive et accessible gratuitement.
-                </p>
-              </div>
-            </div>
-          </div>
+          <InfoCard
+            icon={Database}
+            title="Centralisation des données"
+            description="Toutes les informations essentielles réunies sur une seule plateforme intuitive et accessible gratuitement."
+          />
 
-          <div
-            class="bg-white border border-green-50 rounded-xl p-4 md:p-6 shadow-sm hover:shadow-md transition-all duration-300 hover:border-green-200"
-          >
-            <div class="flex items-start gap-3">
-              <Sparkles className="text-green-600 shrink-0 mt-1" size={24} />
-              <div>
-                <h4 class="font-semibold text-base md:text-lg mb-2">
-                  Assistant IA complet
-                </h4>
-                <p class="text-gray-600 text-sm md:text-base">
-                  Intelligence artificielle avancée avec architecture RAG pour
-                  des analyses précises et personnalisées.
-                </p>
-              </div>
-            </div>
-          </div>
+          <InfoCard
+            icon={Sparkles}
+            title="Assistant IA complet"
+            description="Intelligence artificielle avancée avec architecture RAG pour des analyses précises et personnalisées."
+          />
 
-          <div
-            class="bg-white border border-green-50 rounded-xl p-4 md:p-6 shadow-sm hover:shadow-md transition-all duration-300 hover:border-green-200"
-          >
-            <div class="flex items-start gap-3">
-              <Map className="text-green-600 shrink-0 mt-1" size={24} />
-              <div>
-                <h4 class="font-semibold text-base md:text-lg mb-2">
-                  Carte interactive intuitive
-                </h4>
-                <p class="text-gray-600 text-sm md:text-base">
-                  Interface simple et ergonomique pour visualiser et explorer
-                  toutes les parcelles cadastrales françaises.
-                </p>
-              </div>
-            </div>
-          </div>
+          <InfoCard
+            icon={Map}
+            title="Carte interactive intuitive"
+            description="Interface simple et ergonomique pour visualiser et explorer toutes les parcelles cadastrales françaises."
+          />
 
-          <div
-            class="bg-white border border-green-50 rounded-xl p-4 md:p-6 shadow-sm hover:shadow-md transition-all duration-300 hover:border-green-200"
-          >
-            <div class="flex items-start gap-3">
-              <Clock className="text-green-600 shrink-0 mt-1" size={24} />
-              <div>
-                <h4 class="font-semibold text-base md:text-lg mb-2">
-                  Gain de temps considérable
-                </h4>
-                <p class="text-gray-600 text-sm md:text-base">
-                  Plus besoin de consulter des dizaines de sites : tout est
-                  centralisé et accessible instantanément.
-                </p>
-              </div>
-            </div>
-          </div>
+          <InfoCard
+            icon={Clock}
+            title="Gain de temps considérable"
+            description="Plus besoin de consulter des dizaines de sites : tout est centralisé et accessible instantanément."
+          />
         </div>
       </div>
 
@@ -131,75 +88,29 @@ import { EXTERNAL_LINKS, CTA_TEXTS } from "../../../config/constants";
           Nos Opportunités
         </h3>
         <div class="space-y-4">
-          <div
-            class="bg-white border border-green-50 rounded-xl p-4 md:p-6 shadow-sm hover:shadow-md transition-all duration-300 hover:border-green-200"
-          >
-            <div class="flex items-start gap-3">
-              <Target className="text-green-600 shrink-0 mt-1" size={24} />
-              <div>
-                <h4 class="font-semibold text-base md:text-lg mb-2">
-                  Marché en croissance
-                </h4>
-                <p class="text-gray-600 text-sm md:text-base">
-                  L'intérêt pour l'immobilier et l'accès aux données foncières
-                  ne cesse de croître, particulièrement chez les jeunes
-                  acheteurs.
-                </p>
-              </div>
-            </div>
-          </div>
+          <InfoCard
+            icon={Target}
+            title="Marché en croissance"
+            description="L'intérêt pour l'immobilier et l'accès aux données foncières ne cesse de croître, particulièrement chez les jeunes acheteurs."
+          />
 
-          <div
-            class="bg-white border border-green-50 rounded-xl p-4 md:p-6 shadow-sm hover:shadow-md transition-all duration-300 hover:border-green-200"
-          >
-            <div class="flex items-start gap-3">
-              <Users className="text-green-600 shrink-0 mt-1" size={24} />
-              <div>
-                <h4 class="font-semibold text-base md:text-lg mb-2">
-                  Peu de concurrence directe
-                </h4>
-                <p class="text-gray-600 text-sm md:text-base">
-                  Les concurrents se concentrent sur l'immobilier financier.
-                  Nous sommes les seuls à offrir une vision aussi complète et
-                  gratuite.
-                </p>
-              </div>
-            </div>
-          </div>
+          <InfoCard
+            icon={Users}
+            title="Peu de concurrence directe"
+            description="Les concurrents se concentrent sur l'immobilier financier. Nous sommes les seuls à offrir une vision aussi complète et gratuite."
+          />
 
-          <div
-            class="bg-white border border-green-50 rounded-xl p-4 md:p-6 shadow-sm hover:shadow-md transition-all duration-300 hover:border-green-200"
-          >
-            <div class="flex items-start gap-3">
-              <Sparkles className="text-green-600 shrink-0 mt-1" size={24} />
-              <div>
-                <h4 class="font-semibold text-base md:text-lg mb-2">
-                  Amélioration continue de l'IA
-                </h4>
-                <p class="text-gray-600 text-sm md:text-base">
-                  Les modèles d'IA évoluent rapidement, nous permettant
-                  d'améliorer constamment nos analyses et recommandations.
-                </p>
-              </div>
-            </div>
-          </div>
+          <InfoCard
+            icon={Sparkles}
+            title="Amélioration continue de l'IA"
+            description="Les modèles d'IA évoluent rapidement, nous permettant d'améliorer constamment nos analyses et recommandations."
+          />
 
-          <div
-            class="bg-white border border-green-50 rounded-xl p-4 md:p-6 shadow-sm hover:shadow-md transition-all duration-300 hover:border-green-200"
-          >
-            <div class="flex items-start gap-3">
-              <Shield className="text-green-600 shrink-0 mt-1" size={24} />
-              <div>
-                <h4 class="font-semibold text-base md:text-lg mb-2">
-                  Open Data croissant
-                </h4>
-                <p class="text-gray-600 text-sm md:text-base">
-                  De plus en plus de données publiques deviennent accessibles,
-                  enrichissant continuellement notre base d'informations.
-                </p>
-              </div>
-            </div>
-          </div>
+          <InfoCard
+            icon={Shield}
+            title="Open Data croissant"
+            description="De plus en plus de données publiques deviennent accessibles, enrichissant continuellement notre base d'informations."
+          />
         </div>
       </div>
     </div>

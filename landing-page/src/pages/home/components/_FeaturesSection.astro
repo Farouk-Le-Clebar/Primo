@@ -1,5 +1,6 @@
 ---
 import { Search, BarChart3, Map } from "lucide-react";
+import FeatureItem from "../../../components/ui/FeatureItem.astro";
 ---
 
 <section
@@ -34,29 +35,17 @@ import { Search, BarChart3, Map } from "lucide-react";
         </p>
 
         <div class="space-y-4">
-          <div class="border-l-4 border-green-600 pl-4">
-            <h4 class="font-semibold text-lg mb-2 flex items-center gap-2">
-              <Search size={20} className="text-green-600" />
-              Recherche intelligente
-            </h4>
-            <p class="text-gray-600">
-              Définissez vos critères et notre IA vous suggère des zones
-              géographiques et parcelles adaptées à vos besoins. Réponses en
-              langage naturel avec justifications détaillées.
-            </p>
-          </div>
+          <FeatureItem
+            icon={Search}
+            title="Recherche intelligente"
+            description="Définissez vos critères et notre IA vous suggère des zones géographiques et parcelles adaptées à vos besoins. Réponses en langage naturel avec justifications détaillées."
+          />
 
-          <div class="border-l-4 border-green-600 pl-4">
-            <h4 class="font-semibold text-lg mb-2 flex items-center gap-2">
-              <BarChart3 size={20} className="text-green-600" />
-              Comparaison avancée
-            </h4>
-            <p class="text-gray-600">
-              Comparez plusieurs parcelles avec une notation automatique et des
-              commentaires personnalisés. L'IA explique pourquoi une parcelle
-              correspond mieux à vos critères.
-            </p>
-          </div>
+          <FeatureItem
+            icon={BarChart3}
+            title="Comparaison avancée"
+            description="Comparez plusieurs parcelles avec une notation automatique et des commentaires personnalisés. L'IA explique pourquoi une parcelle correspond mieux à vos critères."
+          />
         </div>
       </div>
 
