@@ -12,7 +12,7 @@ const Layers = () => {
     const [mapBounds, setMapBounds] = useState<L.LatLngBounds | null>(null);
     const [currentZoom, setCurrentZoom] = useState<number>(6);
     const [lastZoom, setLastZoom] = useState<number>(6);
-    const [firstLayerRequest, setFirstLayerRequest] = useState<boolean>(false);
+    const [firstLayerRequest, setFirstLayerRequest] = useState<boolean>(true);
     const [departementsBoundData, setDepartementsBoundData] = useState<FeatureCollection | null>(null);
     const [pacellesBoundData, setPacellesBoundData] = useState<FeatureCollection | null>(null);
     const [cityBoundData, setCityBoundData] = useState<FeatureCollection | null>(null);
@@ -62,7 +62,8 @@ const Layers = () => {
 
     return (
         <>
-            <TileLayer url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png" />
+            {/* https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png */}
+            <TileLayer url="https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}" />
             <MapBounds onChange={handleMapBoundsChange} />
             <ZoomHandler onZoomChange={handleZoomChange} />
             <ZoomControl position="topright" />
