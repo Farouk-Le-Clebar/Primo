@@ -1,0 +1,10 @@
+# robots.txt pour Primo
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://primo-data.fr/sitemap-index.xml
+Sitemap: https://primo-data.fr/sitemap-0.xml
+
+# Crawl-delay pour éviter la surcharge
+Crawl-delay: 1

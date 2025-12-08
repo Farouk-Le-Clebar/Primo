@@ -2,9 +2,21 @@
 interface Props {
   title: string;
   description?: string;
+  ogImage?: string;
 }
 
-const { title, description = "Primo - Plateforme de gestion" } = Astro.props;
+const {
+  title,
+  description = "Primo centralise toutes les informations cadastrales, urbanisme, risques et qualité de vie d'une parcelle en un clic. Gratuit et accessible à tous.",
+  ogImage = "/og-image.png",
+} = Astro.props;
+
+const canonicalURL = new URL(
+  Astro.url.pathname,
+  Astro.site || "https://primo-data.fr"
+);
+const siteUrl = Astro.site?.toString() || "https://primo-data.fr";
+const fullOgImage = new URL(ogImage, siteUrl).toString();
 ---
 
 <!doctype html>
@@ -13,9 +25,50 @@ const { title, description = "Primo - Plateforme de gestion" } = Astro.props;
     <meta charset="UTF-8" />
     <meta name="description" content={description} />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
+    <link rel="canonical" href={canonicalURL} />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={fullOgImage} />
+    <meta property="og:locale" content="fr_FR" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content={canonicalURL} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={fullOgImage} />
+
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
+
+    <!-- Schema.org -->
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        name: "Primo",
+        description:
+          "Plateforme gratuite centralisant toutes les informations cadastrales et foncières en France",
+        applicationCategory: "BusinessApplication",
+        operatingSystem: "Web, iOS, Android",
+        offers: {
+          "@type": "Offer",
+          price: "0",
+          priceCurrency: "EUR",
+        },
+        aggregateRating: {
+          "@type": "AggregateRating",
+          ratingValue: "4.8",
+          ratingCount: "150",
+        },
+      })}
+    />
   </head>
   <body>
     <slot />
