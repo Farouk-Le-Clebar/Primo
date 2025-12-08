@@ -4,6 +4,7 @@ import Layout from "@layouts/Layout.astro";
 import Navbar from "@components/navbar/Navbar";
 import Footer from "@components/footer/Footer.astro";
 import BlogCard from "@components/blog/BlogCard.astro";
+import SectionHeader from "@components/ui/SectionHeader.astro";
 
 const allBlogPosts = await getCollection("blog");
 
@@ -23,13 +24,11 @@ const sortedPosts = allBlogPosts.sort((a, b) => {
       <!-- Hero Section -->
       <section class="bg-linear-to-b from-green-50 to-white py-20">
         <div class="container mx-auto px-6">
-          <div class="max-w-3xl mx-auto text-center">
-            <h1 class="text-5xl font-bold text-gray-900 mb-6">Blog Primo</h1>
-            <p class="text-xl text-gray-600">
-              Insights, analyses et bonnes pratiques pour sécuriser et optimiser
-              vos données
-            </p>
-          </div>
+          <SectionHeader
+            title="Blog Primo"
+            description="Insights, analyses et bonnes pratiques pour sécuriser et optimiser vos données"
+            size="large"
+          />
         </div>
       </section>
 

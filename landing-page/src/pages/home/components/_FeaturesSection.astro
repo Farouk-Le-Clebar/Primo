@@ -2,6 +2,7 @@
 import { Search, BarChart3, Map } from "lucide-react";
 import FeatureItem from "@components/ui/FeatureItem.astro";
 import DataBadge from "@components/ui/DataBadge.astro";
+import SectionHeader from "@components/ui/SectionHeader.astro";
 ---
 
 <section
@@ -9,15 +10,11 @@ import DataBadge from "@components/ui/DataBadge.astro";
   class="min-h-screen flex flex-col justify-center items-center py-16 md:py-20 bg-white"
 >
   <div class="max-w-7xl mx-auto px-4 md:px-8 w-full">
-    <div class="text-center mb-12 md:mb-16">
-      <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
-        Nos <span class="text-green-600">Fonctionnalités</span>
-      </h2>
-      <p class="text-gray-700 max-w-2xl mx-auto text-sm md:text-base">
-        Une plateforme complète pour vous accompagner dans votre recherche
-        immobilière
-      </p>
-    </div>
+    <SectionHeader
+      title="Nos"
+      highlight="Fonctionnalités"
+      description="Une plateforme complète pour vous accompagner dans votre recherche immobilière"
+    />
 
     <div class="grid md:grid-cols-2 gap-6 md:gap-8 lg:gap-12">
       <div

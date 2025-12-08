@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { EXTERNAL_LINKS, CTA_TEXTS } from "@config/constants";
 import InfoCard from "@components/ui/InfoCard.astro";
+import SectionHeader from "@components/ui/SectionHeader.astro";
 ---
 
 <section
@@ -18,15 +19,11 @@ import InfoCard from "@components/ui/InfoCard.astro";
   class="min-h-screen flex flex-col justify-center items-center py-16 md:py-20 bg-white"
 >
   <div class="max-w-7xl mx-auto px-4 md:px-8 w-full">
-    <div class="text-center mb-12 md:mb-16">
-      <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
-        À <span class="text-green-600">propos</span> de Primo
-      </h2>
-      <p class="text-gray-700 max-w-2xl mx-auto text-sm md:text-base">
-        Une plateforme innovante pour démocratiser l'accès aux informations
-        foncières
-      </p>
-    </div>
+    <SectionHeader
+      title="À"
+      highlight="propos"
+      description="Une plateforme innovante pour démocratiser l'accès aux informations foncières"
+    />
 
     <div
       class="bg-linear-to-br from-green-50 to-white border border-green-100 rounded-xl p-6 md:p-8 lg:p-10 shadow-md mb-12"

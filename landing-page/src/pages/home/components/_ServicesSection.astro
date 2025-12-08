@@ -1,6 +1,7 @@
 ---
 import { Code, Sparkles, Check } from "lucide-react";
 import ServiceCard from "@components/ui/ServiceCard.astro";
+import SectionHeader from "@components/ui/SectionHeader.astro";
 ---
 
 <section
@@ -8,14 +9,11 @@ import ServiceCard from "@components/ui/ServiceCard.astro";
   class="min-h-screen flex flex-col justify-center items-center py-16 md:py-20 bg-linear-to-b from-white via-green-50/30 to-white"
 >
   <div class="max-w-7xl mx-auto px-4 md:px-8 w-full">
-    <div class="text-center mb-12 md:mb-16">
-      <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
-        Nos <span class="text-green-600">Services</span>
-      </h2>
-      <p class="text-gray-700 max-w-2xl mx-auto text-sm md:text-base">
-        Des solutions adaptées aux particuliers et aux professionnels
-      </p>
-    </div>
+    <SectionHeader
+      title="Nos"
+      highlight="Services"
+      description="Des solutions adaptées aux particuliers et aux professionnels"
+    />
 
     <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
       <ServiceCard
