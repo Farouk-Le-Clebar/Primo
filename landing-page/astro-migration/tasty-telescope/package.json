@@ -1,7 +1,8 @@
 {
-  "name": "tasty-telescope",
+  "name": "primo-landing-astro",
+  "private": true,
   "type": "module",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
@@ -15,6 +16,7 @@
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
     "astro": "^5.16.4",
+    "lucide-react": "^0.468.0",
     "react": "^19.2.1",
     "react-dom": "^19.2.1",
     "tailwindcss": "^4.1.17"
