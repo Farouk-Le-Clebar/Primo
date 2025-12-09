@@ -1,7 +1,13 @@
+import { useState } from "react";
+import { Menu, X } from "lucide-react";
 import Logo from "../../assets/logos/logoPrimoBlack.svg?url";
 
 export default function Navbar() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
   const scrollToSection = (sectionId: string) => {
+    setIsMenuOpen(false);
+
     if (window.location.pathname !== "/") {
       window.location.href = `/#${sectionId}`;
       return;
@@ -54,7 +60,53 @@ export default function Navbar() {
               À propos
             </button>
           </div>
+
+          <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="md:hidden text-gray-700 hover:text-green-600 transition-colors"
+            aria-label="Toggle menu"
+          >
+            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
         </div>
+
+        {isMenuOpen && (
+          <div className="md:hidden bg-white/95 backdrop-blur-md border-t border-gray-200">
+            <div className="flex flex-col px-4 py-4 space-y-4">
+              <button
+                onClick={() => scrollToSection("home")}
+                className="text-gray-700 hover:text-green-600 transition-colors text-left py-2"
+              >
+                Accueil
+              </button>
+              <button
+                onClick={() => scrollToSection("features")}
+                className="text-gray-700 hover:text-green-600 transition-colors text-left py-2"
+              >
+                Fonctionnalités
+              </button>
+              <button
+                onClick={() => scrollToSection("services")}
+                className="text-gray-700 hover:text-green-600 transition-colors text-left py-2"
+              >
+                Services
+              </button>
+              <a
+                href="/blog"
+                className="text-gray-700 hover:text-green-600 transition-colors text-left py-2"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Blog
+              </a>
+              <button
+                onClick={() => scrollToSection("about")}
+                className="text-gray-700 hover:text-green-600 transition-colors text-left py-2"
+              >
+                À propos
+              </button>
+            </div>
+          </div>
+        )}
       </nav>
     </>
   );
