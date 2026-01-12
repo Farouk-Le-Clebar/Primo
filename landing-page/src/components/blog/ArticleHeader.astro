@@ -1,0 +1,44 @@
+---
+import { Calendar } from "lucide-react";
+import TagBadge from "./TagBadge.astro";
+
+export interface Props {
+  title: string;
+  description: string;
+  date: string;
+  tags: string[];
+}
+
+const { title, description, date, tags } = Astro.props;
+
+const formattedDate = new Date(date).toLocaleDateString("fr-FR", {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+});
+---
+
+<header class="mb-12">
+  <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight">
+    {title}
+  </h1>
+
+  <div
+    class="flex flex-wrap items-center gap-4 text-gray-500 mb-6 pb-6 border-b border-gray-200"
+  >
+    <div class="flex items-center gap-2">
+      <Calendar className="w-5 h-5" />
+      <time class="text-sm">{formattedDate}</time>
+    </div>
+  </div>
+
+  <div class="flex flex-wrap gap-2 mb-8">
+    {tags.map((tag) => <TagBadge tag={tag} withIcon={true} variant="hover" />)}
+  </div>
+
+  <p
+    class="text-xl text-gray-600 leading-relaxed italic border-l-4 border-green-500 pl-6 py-2"
+  >
+    {description}
+  </p>
+</header>
