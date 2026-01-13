@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import profilePlaceholder from "../../assets/images/profile.svg";
+import profilePlaceholder from "../../assets/images/profile.png";
 
 interface UserProfileProps {
   user: {
@@ -31,7 +31,7 @@ export default function UserProfile({ user }: UserProfileProps) {
       />
       <div>
         <div className="text-sm font-semibold text-gray-800">
-          {truncate(`${userData?.firstName || ""} ${userData?.surName || ""}`, 13)}
+          {truncate(`${userData?.firstName || ""} ${userData?.surName || ""}`, 18)}
         </div>
 
         <div className="text-xs text-gray-500">{userData?.email}</div>
