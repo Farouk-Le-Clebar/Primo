@@ -1,11 +1,12 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { fetchDepartements, fetchDivisions, fetchParcelles } from "../../../../requests/parcel-map";
 import { useEffect } from "react";
-import { boundToBbox, isFeatureCollection, MIN_ZOOM_FOR_CITY, MIN_ZOOM_FOR_DIVISION, MIN_ZOOM_FOR_PARCELLES, style, type DataType } from "../MapUtils";
+import { boundToBbox, isFeatureCollection, MIN_ZOOM_FOR_CITY, MIN_ZOOM_FOR_DIVISION, MIN_ZOOM_FOR_PARCELLES, style, type DataType } from "../../../../utils/map";
 import { boundsToGeoJSON } from "../../../../requests/apicarto";
 import { GeoJSON, useMap } from "react-leaflet";
 import { onEachFeature } from "./ShapesClick";
 import { getCityByBbox, getDepartementByBbox } from "../../../../requests/map";
+import { useParcelle } from '../../../../context/ParcelleContext';
 
 type ShapesLayerProps = {
     onCityBoundChange: (data: any) => void;
@@ -33,6 +34,7 @@ const ShapesLayer = ({
     dataShape,
 }: ShapesLayerProps) => {
     const map = useMap();
+    const { setSelectedParcelle } = useParcelle();
     const { data } = useQuery({
         queryKey: ['departements'],
         queryFn: () => fetchDepartements(),
@@ -41,7 +43,31 @@ const ShapesLayer = ({
     useEffect(() => {
         if (data)
             onDepartementsBoundChange(data);
+        const geoJsonLayer = L.geoJSON(data, {
+        onEachFeature: (feature, layer) => {
+            onEachFeature(feature, layer, map, handleParcelleSelect);
+        },
+        style: {
+            fillOpacity: 0.2,
+            weight: 2
+        }
+        });
+
+        geoJsonLayer.addTo(map);
+
+        return () => {
+            map.removeLayer(geoJsonLayer);
+        };
     }, [data]);
+
+    const handleParcelleSelect = (bounds: L.LatLngBounds, feature: any, layer: L.Path) => {
+        console.log('🎯 Parcelle sélectionnée !', { bounds, feature });
+        setSelectedParcelle({
+            bounds,
+            feature,
+            layer
+        });
+    }
 
     const { mutate: departementsBoundsMutation } = useMutation({
         mutationFn: () => getDepartementByBbox(boundToBbox(mapBounds!)),
@@ -142,7 +168,7 @@ const ShapesLayer = ({
                     key={JSON.stringify(dataShape.departements)}
                     data={dataShape.departements}
                     style={style}
-                    onEachFeature={(feature, layer) => onEachFeature(feature, layer, map)}
+                    onEachFeature={(feature, layer) => onEachFeature(feature, layer, map, handleParcelleSelect)}
                 />
             )}
             {dataShape.parcelles && (
@@ -150,7 +176,7 @@ const ShapesLayer = ({
                     key={JSON.stringify(dataShape.parcelles)}
                     data={dataShape.parcelles}
                     style={style}
-                    onEachFeature={(feature, layer) => onEachFeature(feature, layer, map)}
+                    onEachFeature={(feature, layer) => onEachFeature(feature, layer, map, handleParcelleSelect)}
                 />
             )}
             {dataShape.city && (
@@ -158,7 +184,7 @@ const ShapesLayer = ({
                     key={JSON.stringify(dataShape.city)}
                     data={dataShape.city}
                     style={style}
-                    onEachFeature={(feature, layer) => onEachFeature(feature, layer, map)}
+                    onEachFeature={(feature, layer) => onEachFeature(feature, layer, map, handleParcelleSelect)}
                 />
             )}
             {dataShape.divisions && (
@@ -166,7 +192,7 @@ const ShapesLayer = ({
                     key={JSON.stringify(dataShape.divisions)}
                     data={dataShape.divisions}
                     style={style}
-                    onEachFeature={(feature, layer) => onEachFeature(feature, layer, map)}
+                    onEachFeature={(feature, layer) => onEachFeature(feature, layer, map, handleParcelleSelect)}
                 />
             )}
         </>

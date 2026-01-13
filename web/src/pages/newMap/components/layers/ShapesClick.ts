@@ -17,7 +17,12 @@ const hoverStyle = {
     weight: 3
 };
 
-export const onEachFeature = (feature: any, layer: L.Layer, map: L.Map) => {
+export const onEachFeature = (
+    feature: GeoJSON.Feature, 
+    layer: L.Layer, 
+    map: L.Map,
+    onParcelleSelect?: (bounds: L.LatLngBounds, feature: GeoJSON.Feature, layer: L.Path) => void
+) => {
     layer.on({
         click: (e: L.LeafletMouseEvent) => {
             if (selectedLayer === layer) {
@@ -46,6 +51,11 @@ export const onEachFeature = (feature: any, layer: L.Layer, map: L.Map) => {
                     e.target.setStyle(selectedStyle);
                     e.target.bindPopup(`Parcelle`).openPopup();
                     selectedLayer = e.target as L.Path;
+                    
+                    if (onParcelleSelect) {
+                        onParcelleSelect(bounds, feature, selectedLayer);
+                    }
+                    
                     return;
                 }
 

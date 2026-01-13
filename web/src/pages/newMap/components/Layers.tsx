@@ -5,7 +5,7 @@ import 'leaflet/dist/leaflet.css';
 import { useState } from 'react';
 import type { FeatureCollection } from 'geojson';
 import L from 'leaflet';
-import { MIN_ZOOM_FOR_CITY, MIN_ZOOM_FOR_DIVISION, MIN_ZOOM_FOR_PARCELLES } from "./MapUtils";
+import { MIN_ZOOM_FOR_CITY, MIN_ZOOM_FOR_DIVISION, MIN_ZOOM_FOR_PARCELLES } from "../../../utils/Map";
 import ShapesLayer from "./layers/ShapesLayer";
 
 const Layers = () => {
