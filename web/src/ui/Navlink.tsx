@@ -2,7 +2,7 @@ import { NavLink, useLocation } from "react-router-dom";
 import { ChevronRight } from "lucide-react";
 
 type CustomNavLinkProps = {
-  to?: string; // Optionnel maintenant pour autoriser les boutons
+  to?: string;
   label: string;
   icon?: React.ReactNode;
   rounded?: string;
@@ -11,7 +11,6 @@ type CustomNavLinkProps = {
   textColor?: string;
   textHoverColor?: string;
   onClick?: () => void;
-  // Nouvelles options pour le style Dropdown
   variant?: "default" | "danger"; 
   showChevronOnHover?: boolean;
   gap?: string;
@@ -35,7 +34,6 @@ export default function CustomNavLink({
   const isActive = to ? location.pathname === to : false;
   const isDanger = variant === "danger";
 
-  // Gestion des couleurs dynamique
   const colors = isDanger 
     ? "text-red-600 hover:bg-red-50 hover:text-red-700" 
     : `${isActive ? "bg-gray-100 text-black" : `bg-white ${textColor} hover:bg-gray-100 hover:${textHoverColor}`}`;
@@ -45,7 +43,6 @@ export default function CustomNavLink({
     ${rounded} font-medium ${className} ${colors} group
   `;
 
-  // Contenu intérieur du bouton/lien
   const content = (
     <>
       <div className={`flex items-center ${gap}`}>
@@ -55,7 +52,6 @@ export default function CustomNavLink({
         </span>
       </div>
 
-      {/* Logique du Chevron : soit permanent (isActive), soit au Hover (Dropdown) */}
       {showChevronOnHover ? (
         <ChevronRight 
           size={14} 
@@ -67,7 +63,6 @@ export default function CustomNavLink({
     </>
   );
 
-  // Si "to" est présent, on utilise NavLink, sinon un simple button
   if (to) {
     return (
       <NavLink to={to} onClick={onClick} className={sharedClasses}>
