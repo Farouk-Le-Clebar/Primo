@@ -1,4 +1,4 @@
-name: Front Build Test
+name: Front Build & Start Test
 
 on:
   push:
@@ -11,5 +11,8 @@ jobs:
     uses: ./.github/workflows/common-test.yml
     with:
       working-directory: web
-      run-command: "mkdir -p web && cd web && touch env-config.js && yarn run build"
+      run-command: |
+        yarn build
+        yarn preview --port 4173 &
+        sleep 5
       cache-lock-path: web/yarn.lock
