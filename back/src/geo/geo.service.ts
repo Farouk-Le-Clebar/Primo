@@ -1,6 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import * as fs from 'fs/promises';
 import * as path from 'path';
+import axios from 'axios';
+
+export interface PoiQueryParams {
+  bbox: string;
+  types?: string[];
+  zoom?: number;
+}
+
 
 interface GeoJSONFeature {
   type: string;
@@ -13,6 +21,9 @@ interface GeoJSONFeature {
 export class GeoService {
   private readonly dataPath = path.join(process.cwd(), 'data', 'departements');
   private cache: Map<string, any> = new Map();
+  private readonly geoserverUrl =
+    process.env.GEOSERVER_URL || 'http://localhost:8080/geoserver';
+  private readonly workspace = process.env.GEOSERVER_WORKSPACE || 'bdtopo';
 
   private readonly DEPARTEMENT_CODES = [
     '01',
@@ -193,7 +204,76 @@ export class GeoService {
     const fileContent = await fs.readFile(filePath, 'utf-8');
     const data = JSON.parse(fileContent);
 
+   
     this.cache.set(cacheKey, data);
     return data;
+  }
+
+  async getPois(params: PoiQueryParams): Promise<GeoJSONFeature> {
+    const { bbox, types, zoom = 10 } = params;
+
+    if (zoom < 12) {
+      return {
+        type: 'FeatureCollection',
+        features: [],
+      };
+    }
+
+    const maxFeatures = this.calculateMaxFeatures(zoom);
+
+    const wfsParams = new URLSearchParams({
+      service: 'WFS',
+      version: '2.0.0',
+      request: 'GetFeature',
+      typeName: `${this.workspace}:pois_france`,
+      outputFormat: 'application/json',
+      srsName: 'EPSG:4326',
+      bbox: `${bbox},EPSG:4326`,
+      maxFeatures: maxFeatures.toString(),
+    });
+
+    if (types && types.length > 0) {
+      const cqlFilter = types.map((type) => `type='${type}'`).join(' OR ');
+      wfsParams.append('cql_filter', cqlFilter);
+    }
+
+    try {
+      const url = `${this.geoserverUrl}/${this.workspace}/wfs?${wfsParams}`;
+      const response = await axios.get(url, {
+        timeout: 10000, // 10 secondes max
+      });
+
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching POI data from GeoServer:', error);
+      return {
+        type: 'FeatureCollection',
+        features: [],
+      };
+    }
+  }
+
+
+  async getAvailablePoiTypes(): Promise<
+    Array<{ type: string; category: string; count: number }>
+  > {
+    return [
+      { type: 'hospital', category: 'amenity', count: 2358 },
+      { type: 'pharmacy', category: 'amenity', count: 19094 },
+      { type: 'school', category: 'amenity', count: 61286 },
+      { type: 'college', category: 'amenity', count: 2915 },
+      { type: 'university', category: 'amenity', count: 1530 },
+      { type: 'supermarket', category: 'shop', count: 8000 },
+      { type: 'cinema', category: 'amenity', count: 2106 },
+      { type: 'library', category: 'amenity', count: 1200 },
+    ];
+  }
+
+
+  private calculateMaxFeatures(zoom: number): number {
+    if (zoom >= 16) return 500;
+    if (zoom >= 14) return 200;
+    if (zoom >= 12) return 100;
+    return 50;
   }
 }
