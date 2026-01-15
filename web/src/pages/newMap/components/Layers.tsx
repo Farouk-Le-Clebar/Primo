@@ -1,22 +1,41 @@
 import MapBounds from "./layers/MapBounds";
 import ZoomHandler from "./layers/ZoomHandler";
-import { TileLayer, ZoomControl } from 'react-leaflet';
-import 'leaflet/dist/leaflet.css';
-import { useState } from 'react';
-import type { FeatureCollection } from 'geojson';
-import L from 'leaflet';
-import { MIN_ZOOM_FOR_CITY, MIN_ZOOM_FOR_DIVISION, MIN_ZOOM_FOR_PARCELLES } from "./MapUtils";
+import { TileLayer, ZoomControl } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
+import { useState, useCallback } from "react";
+import type { FeatureCollection } from "geojson";
+import L from "leaflet";
+import {
+    MIN_ZOOM_FOR_CITY,
+    MIN_ZOOM_FOR_DIVISION,
+    MIN_ZOOM_FOR_PARCELLES,
+    MIN_ZOOM_FOR_POIS,
+} from "./MapUtils";
 import ShapesLayer from "./layers/ShapesLayer";
+import PoiLayer from "./layers/PoiLayer";
+import PoiWidget from "./layers/PoiWidget";
+import { POI_CONFIGS } from "./MapUtils";
 
 const Layers = () => {
     const [mapBounds, setMapBounds] = useState<L.LatLngBounds | null>(null);
     const [currentZoom, setCurrentZoom] = useState<number>(6);
     const [lastZoom, setLastZoom] = useState<number>(6);
     const [firstLayerRequest, setFirstLayerRequest] = useState<boolean>(true);
-    const [departementsBoundData, setDepartementsBoundData] = useState<FeatureCollection | null>(null);
-    const [pacellesBoundData, setPacellesBoundData] = useState<FeatureCollection | null>(null);
-    const [cityBoundData, setCityBoundData] = useState<FeatureCollection | null>(null);
-    const [divisionsBoundData, setDivisionsBoundData] = useState<FeatureCollection | null>(null);
+    const [departementsBoundData, setDepartementsBoundData] =
+        useState<FeatureCollection | null>(null);
+    const [pacellesBoundData, setPacellesBoundData] =
+        useState<FeatureCollection | null>(null);
+    const [cityBoundData, setCityBoundData] =
+        useState<FeatureCollection | null>(null);
+    const [divisionsBoundData, setDivisionsBoundData] =
+        useState<FeatureCollection | null>(null);
+
+    const [poisData, setPoisData] = useState<FeatureCollection | null>(null);
+    const [enabledPoiTypes, setEnabledPoiTypes] = useState<string[]>(
+        Object.entries(POI_CONFIGS)
+            .filter(([_, config]) => config.enabled)
+            .map(([key]) => key)
+    );
 
     const handleMapBoundsChange = (bounds: L.LatLngBounds) => {
         setMapBounds(bounds);
@@ -29,10 +48,16 @@ const Layers = () => {
         if (zoom < MIN_ZOOM_FOR_PARCELLES && pacellesBoundData) {
             setFirstLayerRequest(true);
         }
-        if ((zoom < MIN_ZOOM_FOR_CITY || zoom >= MIN_ZOOM_FOR_DIVISION) && cityBoundData) {
+        if (
+            (zoom < MIN_ZOOM_FOR_CITY || zoom >= MIN_ZOOM_FOR_DIVISION) &&
+            cityBoundData
+        ) {
             setFirstLayerRequest(true);
         }
-        if ((zoom < MIN_ZOOM_FOR_DIVISION || zoom >= MIN_ZOOM_FOR_PARCELLES) && divisionsBoundData) {
+        if (
+            (zoom < MIN_ZOOM_FOR_DIVISION || zoom >= MIN_ZOOM_FOR_PARCELLES) &&
+            divisionsBoundData
+        ) {
             setFirstLayerRequest(true);
         }
         if (zoom >= MIN_ZOOM_FOR_CITY && departementsBoundData) {
@@ -60,6 +85,16 @@ const Layers = () => {
         setFirstLayerRequest(data);
     };
 
+    const handlePoisChange = (data: FeatureCollection | null) => {
+        setPoisData(data);
+    };
+
+    const handleTogglePoi = useCallback((type: string, enabled: boolean) => {
+        setEnabledPoiTypes((prev) =>
+            enabled ? [...prev, type] : prev.filter((t) => t !== type)
+        );
+    }, []);
+
     return (
         <>
             {/* https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png */}
@@ -67,6 +102,11 @@ const Layers = () => {
             <MapBounds onChange={handleMapBoundsChange} />
             <ZoomHandler onZoomChange={handleZoomChange} />
             <ZoomControl position="topright" />
+            <PoiWidget
+                onTogglePoi={handleTogglePoi}
+                currentZoom={currentZoom}
+                minZoomForPois={MIN_ZOOM_FOR_POIS}
+            />
             <ShapesLayer
                 onCityBoundChange={handleCityBoundChange}
                 onDepartementsBoundChange={handleDepartementsBoundChange}
@@ -77,7 +117,19 @@ const Layers = () => {
                 currentZoom={currentZoom}
                 mapBounds={mapBounds}
                 firstLayerRequest={firstLayerRequest}
-                dataShape={{ departements: departementsBoundData, parcelles: pacellesBoundData, city: cityBoundData, divisions: divisionsBoundData }}
+                dataShape={{
+                    departements: departementsBoundData,
+                    parcelles: pacellesBoundData,
+                    city: cityBoundData,
+                    divisions: divisionsBoundData,
+                }}
+            />
+            <PoiLayer
+                onPoisChange={handlePoisChange}
+                mapBounds={mapBounds}
+                currentZoom={currentZoom}
+                enabledPoiTypes={enabledPoiTypes}
+                dataPois={{ pois: poisData }}
             />
         </>
     );
