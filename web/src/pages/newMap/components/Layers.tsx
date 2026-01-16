@@ -9,12 +9,11 @@ import {
     MIN_ZOOM_FOR_CITY,
     MIN_ZOOM_FOR_DIVISION,
     MIN_ZOOM_FOR_PARCELLES,
-    MIN_ZOOM_FOR_POIS,
 } from "./MapUtils";
 import ShapesLayer from "./layers/ShapesLayer";
 import PoiLayer from "./layers/PoiLayer";
 import PoiWidget from "./layers/PoiWidget";
-import { POI_CONFIGS } from "./MapUtils";
+import { MIN_ZOOM_FOR_POIS, POI_CONFIGS } from "./PoiConfig";
 
 const Layers = () => {
     const [mapBounds, setMapBounds] = useState<L.LatLngBounds | null>(null);
