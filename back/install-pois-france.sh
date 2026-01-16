@@ -10,7 +10,7 @@ echo "Setting up GEOSERVER data..."
 echo "Install osmium-tool and osm2pgsql if not already installed."
 echo "GEOSERVER container should be running !!"
 
-# wget https://download.geofabrik.de/europe/france-latest.osm.pbf -O france-latest.osm.pbf
+wget https://download.geofabrik.de/europe/france-latest.osm.pbf -O france-latest.osm.pbf
 
 OSM_FILE="france-latest.osm.pbf"
 FILTERED_FILE="france-pois-filtered.osm.pbf"
