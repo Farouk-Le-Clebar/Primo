@@ -99,7 +99,7 @@ EOF
         "
 }
 
-# filter_pois
+filter_pois
 import_with_osm2pgsql
 create_indexes
 echo "GEOSERVER data setup completed."
