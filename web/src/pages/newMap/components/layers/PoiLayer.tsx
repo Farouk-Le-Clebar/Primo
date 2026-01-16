@@ -1,15 +1,14 @@
 import { useMutation } from "@tanstack/react-query";
 import { useEffect } from "react";
-import { Marker, Popup, useMap } from "react-leaflet";
+import { Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 import { getPoisByBbox } from "../../../../requests/map";
-import {
-    boundToBbox,
-    getMaxFeaturesForZoom,
+import { getMaxFeaturesForZoom,
     MIN_ZOOM_FOR_POIS,
     POI_CONFIGS,
     type PoiType,
-} from "../MapUtils";
+} from "../PoiConfig";
+import { boundToBbox } from "../MapUtils";
 import type { FeatureCollection } from "geojson";
 
 type PoiLayerProps = {
@@ -27,9 +26,8 @@ const PoiLayer = ({
     enabledPoiTypes,
     dataPois,
 }: PoiLayerProps) => {
-    const map = useMap();
 
-    const { mutate: poisBoundsMutation, isPending } = useMutation({
+    const { mutate: poisBoundsMutation } = useMutation({
         mutationFn: ({
             bbox,
             types,
