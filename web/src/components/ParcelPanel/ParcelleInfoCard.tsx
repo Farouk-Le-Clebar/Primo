@@ -13,7 +13,6 @@ interface ParcelProperties {
 export const ParcelInfoCard = ({ properties }: { properties: ParcelProperties }) => {
   if (!properties) return null;
 
-  // Formatage de la surface
   const formatSurface = (m2: number) => {
     if (m2 >= 10000) {
       return `${(m2 / 10000).toFixed(2)} ha`;

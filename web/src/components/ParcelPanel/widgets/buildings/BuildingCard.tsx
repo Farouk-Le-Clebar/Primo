@@ -46,7 +46,6 @@ export const BuildingCard = ({ p, building, matMur, matToit, constructionYear }:
       </div>
     </div>
 
-    {/* Section Grille des mesures */}
     <div className="px-4 pb-4">
       <div className="grid grid-cols-2 gap-px bg-gray-100 border border-gray-100 rounded-lg overflow-hidden">
         <MetricItem icon={<Ruler size={12}/>} label="Hauteur" value={p.hauteur ? `${p.hauteur} m` : "-"} />
@@ -56,7 +55,6 @@ export const BuildingCard = ({ p, building, matMur, matToit, constructionYear }:
       </div>
     </div>
 
-    {/* Footer matériaux */}
     {(matMur || matToit || p.ids_rnb) && (
       <div className="px-4 py-3 bg-gray-50 border-t border-gray-100 flex flex-col gap-2 text-xs">
         <div className="grid grid-cols-2 gap-4">
@@ -69,7 +67,6 @@ export const BuildingCard = ({ p, building, matMur, matToit, constructionYear }:
   </div>
 );
 
-// Petits composants internes pour la lisibilité
 const MetricItem = ({ icon, label, value }: any) => (
   <div className="bg-white p-3 flex flex-col items-start group hover:bg-gray-50">
     <span className="flex items-center gap-1.5 text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">

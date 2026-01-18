@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { Building2 } from "lucide-react";
+
+// COMPONENTS
 import { Widget } from "../Widget";
 import { BuildingCard } from "./BuildingCard";
 import { getBuildingsByBbox } from "../../../../requests/parcel-info";
@@ -15,10 +17,30 @@ export default function BuildingsWidget({ feature }: ParcelWidgetProps) {
 
   useEffect(() => {
     if (!feature?.geometry) return;
+
     const departement = feature.properties?.code_dep || '75';
-    const bbox = Array.isArray(feature.bbox) ? feature.bbox.join(',') : feature.bbox || '';
-    mutate({ bbox, departement });
+    
+    const allCoords = feature.geometry.coordinates.flat(2);
+    
+    let minLng = Infinity;
+    let minLat = Infinity;
+    let maxLng = -Infinity;
+    let maxLat = -Infinity;
+
+    allCoords.forEach(([lng, lat]: [number, number]) => {
+      if (lng < minLng) minLng = lng;
+      if (lat < minLat) minLat = lat;
+      if (lng > maxLng) maxLng = lng;
+      if (lat > maxLat) maxLat = lat;
+    });
+
+    const bbox = `${minLng},${minLat},${maxLng},${maxLat}`;
+
+    if (minLng !== Infinity) {
+      mutate({ bbox, departement });
+    }
   }, [feature, mutate]);
+
 
   const buildings = data?.features || [];
   const badgeText = isPending ? "Chargement..." : 
