@@ -61,7 +61,6 @@ const ShapesLayer = ({
     }, [data]);
 
     const handleParcelleSelect = (bounds: L.LatLngBounds, feature: any, layer: L.Path) => {
-        console.log('🎯 Parcelle sélectionnée !', { bounds, feature });
         setSelectedParcelle({
             bounds,
             feature,

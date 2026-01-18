@@ -49,7 +49,6 @@ export const onEachFeature = (
 
                 if (distance < 50 && actualZoom >= 18) {
                     e.target.setStyle(selectedStyle);
-                    e.target.bindPopup(`Parcelle`).openPopup();
                     selectedLayer = e.target as L.Path;
                     
                     if (onParcelleSelect) {
