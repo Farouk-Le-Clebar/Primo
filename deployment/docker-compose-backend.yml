@@ -1,0 +1,136 @@
+services:
+  traefik-primo:
+    image: traefik:latest
+    container_name: traefik
+    command:
+      - "--configFile=/traefik.yml"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./traefik.yml:/traefik.yml:ro
+      - ./acme.json:/acme.json
+    networks:
+      - web
+
+  backend:
+    image: garoverr/primo-backend:latest
+    environment:
+      MYSQL_HOST: mysql_db
+      MYSQL_PORT: 3306
+      MYSQL_USER: user_primo
+      MYSQL_PASSWORD: V3RyS3eCr3tP@ssw0rd
+      MYSQL_DATABASE: primo
+      JWT_SECRET: S3cReT
+      ADDOK_URL: http://addok:7878
+      FRONT_URL: app.primo-data.fr
+      GEOSERVER_URL: http://geoserver:8080/geoserver
+
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.backend.rule=Host(`api.primo-data.fr`)"
+      - "traefik.http.routers.backend.entrypoints=websecure"
+      - "traefik.http.routers.backend.tls.certresolver=myresolver"
+      - "traefik.http.services.backend.loadbalancer.server.port=3000"
+    depends_on:
+      - mysql_db
+    networks:
+      - web
+
+  addok:
+    image: etalab/addok
+    restart: always
+    ports:
+      - '7878:7878'
+    volumes:
+      - ./addok-data/addok.conf:/etc/addok/addok.conf
+      - ./addok-data/addok.db:/data/addok.db
+      - ./logs:/logs
+    links:
+      - addok-redis:redis
+    environment:
+      WORKERS: 1
+      WORKER_TIMEOUT: 30
+      LOG_QUERIES: 1
+      LOG_NOT_FOUND: 1
+      SLOW_QUERIES: 200
+    networks:
+      - web
+
+  addok-redis:
+    image: etalab/addok-redis
+    volumes:
+      - ./addok-data/dump.rdb:/data/dump.rdb
+    networks:
+      - web
+
+  mysql_db:
+    image: mysql:8.3
+    environment:
+      MYSQL_DATABASE: primo
+      MYSQL_USER: user_primo
+      MYSQL_PASSWORD: V3RyS3eCr3tP@ssw0rd
+      MYSQL_ROOT_PASSWORD: V3RyS3eCr3tP@ssw0rd
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - web
+
+  postgis:
+    platform: linux/amd64
+    image: postgis/postgis:15-3.4
+    container_name: postgis_primo
+    restart: always
+    environment:
+      POSTGRES_DB: bdtopo
+      POSTGRES_USER: geo_primo
+      POSTGRES_PASSWORD: G30S3cr3tP@ss
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgis_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U geo_primo -d bdtopo"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - web
+
+  geoserver:
+    platform: linux/amd64
+    image: kartoza/geoserver:2.24.0
+    container_name: geoserver_primo
+    restart: always
+    environment:
+      GEOSERVER_ADMIN_USER: admin
+      GEOSERVER_ADMIN_PASSWORD: geoserver_primo
+      INITIAL_MEMORY: 2G
+      MAXIMUM_MEMORY: 4G
+      STABLE_EXTENSIONS: wps,csw
+      COMMUNITY_EXTENSIONS: ""
+    ports:
+      - '8080:8080'
+    volumes:
+      - geoserver_data:/opt/geoserver/data_dir
+    depends_on:
+      postgis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/geoserver/web/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    networks:
+      - web
+
+volumes:
+  mysql_data:
+  postgis_data:
+  geoserver_data:
+
+networks:
+  web:
+    driver: bridge

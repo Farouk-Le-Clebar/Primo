@@ -1,22 +1,17 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { fetchDepartements, fetchDivisions, fetchParcelles } from "../../../../requests/parcel-map";
-import { useEffect } from "react";
-import { boundToBbox, isFeatureCollection, MIN_ZOOM_FOR_CITY, MIN_ZOOM_FOR_DIVISION, MIN_ZOOM_FOR_PARCELLES, style, type DataType } from "../MapUtils";
-import { boundsToGeoJSON } from "../../../../requests/apicarto";
+import { useEffect, useMemo } from "react";
+import { boundToBbox, FRANCE_BBOX, isFeatureCollection, MIN_ZOOM_FOR_CITY, MIN_ZOOM_FOR_DIVISION, MIN_ZOOM_FOR_PARCELLES, style, type DataType } from "../MapUtils";
 import { GeoJSON, useMap } from "react-leaflet";
 import { onEachFeature } from "./ShapesClick";
-import { getCityByBbox, getDepartementByBbox } from "../../../../requests/map";
+import { getCityByBbox, getDepartementByBbox, getDivisionsByBboxAndDepartments, getParcellesByBboxAndDepartments } from "../../../../requests/map";
 
 type ShapesLayerProps = {
     onCityBoundChange: (data: any) => void;
     onDepartementsBoundChange: (data: any) => void;
     onDivisionsBoundChange: (data: any) => void;
     onPacellesBoundChange: (data: any) => void;
-    onFirstLayerRequestChange: (data: boolean) => void;
     mapBounds: L.LatLngBounds | null;
     currentZoom: number;
-    lastZoom: number;
-    firstLayerRequest: boolean;
     dataShape: DataType;
 };
 
@@ -25,25 +20,50 @@ const ShapesLayer = ({
     onDepartementsBoundChange,
     onDivisionsBoundChange,
     onPacellesBoundChange,
-    onFirstLayerRequestChange,
     mapBounds,
     currentZoom,
-    lastZoom,
-    firstLayerRequest,
     dataShape,
 }: ShapesLayerProps) => {
     const map = useMap();
-    const { data } = useQuery({
-        queryKey: ['departements'],
-        queryFn: () => fetchDepartements(),
+
+    const { data: allDepartements } = useQuery({ // Ici l'ékip ya une requette initiale qui charge et garde en cache les départements de toute la france pour pouvoir faire des check de visibilité plus tard
+        queryKey: ['allDepartements'],
+        queryFn: () => getDepartementByBbox(FRANCE_BBOX),
+        staleTime: Infinity,
     });
 
     useEffect(() => {
-        if (data)
-            onDepartementsBoundChange(data);
-    }, [data]);
+        if (allDepartements && isFeatureCollection(allDepartements)) {
+            onDepartementsBoundChange(allDepartements);
+        }
+    }, [allDepartements]);
 
-    const { mutate: departementsBoundsMutation } = useMutation({
+    const departementsVisibles = useMemo(() => { // Si jamais quelqun lis ceci, en gros cette fonction sert a savoir dans quel département tu es peut importe le niveau de zoom sur la carte et ca permet d'optimiser un maximum les requettes des parcelles / division. Bref gros banger wallah !
+        if (!allDepartements?.features || !mapBounds) return [];
+
+        const bounds = mapBounds;
+        console.log(allDepartements)
+
+        return allDepartements.features
+            .filter((dept: any) => {
+                const coords = dept.geometry.coordinates[0][0];
+                const lons = coords.map((c: any) => c[0]);
+                const lats = coords.map((c: any) => c[1]);
+                const deptMinLon = Math.min(...lons);
+                const deptMaxLon = Math.max(...lons);
+                const deptMinLat = Math.min(...lats);
+                const deptMaxLat = Math.max(...lats);
+
+                return !(bounds.getEast() < deptMinLon ||
+                    bounds.getWest() > deptMaxLon ||
+                    bounds.getNorth() < deptMinLat ||
+                    bounds.getSouth() > deptMaxLat);
+            })
+            .map((dept: any) => dept.properties.ddep_c_cod);
+
+    }, [allDepartements, mapBounds]);
+
+    const { mutate: departementsBoundsMutation } = useMutation({ // Mutation pour récupérer les départements en fonction de la bbox
         mutationFn: () => getDepartementByBbox(boundToBbox(mapBounds!)),
         onSuccess: (data) => {
             if (data && isFeatureCollection(data)) {
@@ -58,8 +78,11 @@ const ShapesLayer = ({
         }
     });
 
-    const { mutate: parcellesBoundsMutation } = useMutation({
-        mutationFn: (geomPolygon: object) => fetchParcelles(geomPolygon),
+    const { mutate: parcellesBoundsMutation } = useMutation({ // Mutation pour récupérer les parcelles en fonction de la bbox et des départements visibles
+        mutationFn: () => getParcellesByBboxAndDepartments(
+            boundToBbox(mapBounds!),
+            departementsVisibles
+        ),
         onSuccess: (data) => {
             if (data && isFeatureCollection(data)) {
                 onPacellesBoundChange(data);
@@ -73,7 +96,7 @@ const ShapesLayer = ({
         }
     });
 
-    const { mutate: cityBoundsMutation } = useMutation({
+    const { mutate: cityBoundsMutation } = useMutation({ // Mutation pour récupérer les villes en fonction de la bbox
         mutationFn: () => getCityByBbox(boundToBbox(mapBounds!)),
         onSuccess: (data) => {
             if (data && isFeatureCollection(data)) {
@@ -88,8 +111,11 @@ const ShapesLayer = ({
         }
     });
 
-    const { mutate: divisionsBoundsMutation } = useMutation({
-        mutationFn: (geomPolygon: object) => fetchDivisions(geomPolygon),
+    const { mutate: divisionsBoundsMutation } = useMutation({ // Mutation pour récupérer les divisions en fonction de la bbox et des départements visibles
+        mutationFn: () => getDivisionsByBboxAndDepartments(
+            boundToBbox(mapBounds!),
+            departementsVisibles
+        ),
         onSuccess: (data) => {
             if (data && isFeatureCollection(data)) {
                 onDivisionsBoundChange(data);
@@ -103,41 +129,38 @@ const ShapesLayer = ({
         }
     });
 
-    useEffect(() => {
+    useEffect(() => { // La c'est le useEffect qui en gros vérifie a quel niveau de zoom on est et dcp il sais keski fo requetter  ex: niveau 6 c les départements ta capté ?
         if (mapBounds &&
-            currentZoom >= MIN_ZOOM_FOR_PARCELLES) {
-            parcellesBoundsMutation(boundsToGeoJSON(mapBounds));
-            onFirstLayerRequestChange(false);
+            currentZoom >= MIN_ZOOM_FOR_PARCELLES &&
+            departementsVisibles.length > 0) {
+            parcellesBoundsMutation();
         }
 
         if (mapBounds &&
             currentZoom >= MIN_ZOOM_FOR_CITY &&
-            currentZoom < MIN_ZOOM_FOR_DIVISION &&
-            (lastZoom > currentZoom || firstLayerRequest || lastZoom === currentZoom)) {
+            currentZoom < MIN_ZOOM_FOR_DIVISION
+        ) {
             cityBoundsMutation();
-            onFirstLayerRequestChange(false);
         }
 
         if (mapBounds &&
             currentZoom >= MIN_ZOOM_FOR_DIVISION &&
             currentZoom < MIN_ZOOM_FOR_PARCELLES &&
-            (lastZoom > currentZoom || firstLayerRequest || lastZoom === currentZoom)) {
-            divisionsBoundsMutation(boundsToGeoJSON(mapBounds));
-            onFirstLayerRequestChange(false);
+            departementsVisibles.length > 0
+        ) {
+            divisionsBoundsMutation();
         }
 
         if (mapBounds &&
-            currentZoom < MIN_ZOOM_FOR_CITY &&
-            (lastZoom > currentZoom || firstLayerRequest || lastZoom === currentZoom)) {
-
+            currentZoom < MIN_ZOOM_FOR_CITY
+        ) {
             departementsBoundsMutation();
-            onFirstLayerRequestChange(false);
         }
     }, [mapBounds, currentZoom]);
 
     return (
         <>
-            {dataShape.departements && (
+            {dataShape.departements && ( // Layer GeoJSON pour les départements
                 <GeoJSON
                     key={JSON.stringify(dataShape.departements)}
                     data={dataShape.departements}
@@ -145,7 +168,7 @@ const ShapesLayer = ({
                     onEachFeature={(feature, layer) => onEachFeature(feature, layer, map)}
                 />
             )}
-            {dataShape.parcelles && (
+            {dataShape.parcelles && ( // La meme pour les parcelles
                 <GeoJSON
                     key={JSON.stringify(dataShape.parcelles)}
                     data={dataShape.parcelles}
@@ -153,7 +176,7 @@ const ShapesLayer = ({
                     onEachFeature={(feature, layer) => onEachFeature(feature, layer, map)}
                 />
             )}
-            {dataShape.city && (
+            {dataShape.city && ( // La meme pour les city
                 <GeoJSON
                     key={JSON.stringify(dataShape.city)}
                     data={dataShape.city}
@@ -161,7 +184,7 @@ const ShapesLayer = ({
                     onEachFeature={(feature, layer) => onEachFeature(feature, layer, map)}
                 />
             )}
-            {dataShape.divisions && (
+            {dataShape.divisions && ( // Et ta capté la meme pour les section cadastrale
                 <GeoJSON
                     key={JSON.stringify(dataShape.divisions)}
                     data={dataShape.divisions}
@@ -173,4 +196,9 @@ const ShapesLayer = ({
     );
 };
 
-export default ShapesLayer;
+export default ShapesLayer; // Ya presque tout qui est opti aux petits oignons ici, jsuis plutot content en sah
+
+// NOTE A MOI MEME POUR PLUS TARD : Changer le layer des villes, pour avoir un layer de ville par département et faire comme pour les parcelles et les division (car la requette des villes est un peu plus longue que les autres a cause des 400 Mo et quelques du layer niveau france)
+// Si vous avez des question contactez moi sur discord l'ekip pseudo : xeroce
+// Jak sap1 si tu lis ca me contact pas je t'aime pas salo
+// ACAB / Nik la polisse
