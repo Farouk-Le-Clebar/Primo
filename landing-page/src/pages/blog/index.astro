@@ -1,0 +1,65 @@
+---
+import { getCollection } from "astro:content";
+import Layout from "@layouts/Layout.astro";
+import Navbar from "@components/navbar/Navbar";
+import Footer from "@components/footer/Footer.astro";
+import BlogCard from "@components/blog/BlogCard.astro";
+import SectionHeader from "@components/ui/SectionHeader.astro";
+
+const allBlogPosts = await getCollection("blog");
+
+const sortedPosts = allBlogPosts.sort((a, b) => {
+  return new Date(b.data.date).getTime() - new Date(a.data.date).getTime();
+});
+---
+
+<Layout
+  title="Blog - Primo Data"
+  description="Découvrez nos articles sur la sécurité des données, le cloud computing et les meilleures pratiques en matière de conformité."
+>
+  <div class="flex flex-col min-h-screen">
+    <Navbar client:load />
+
+    <main class="grow">
+      <!-- Hero Section -->
+      <section class="bg-linear-to-b from-green-50 to-white py-20">
+        <div class="container mx-auto px-6">
+          <SectionHeader
+            title="Blog Primo"
+            description="Insights, analyses et bonnes pratiques pour sécuriser et optimiser vos données"
+            size="large"
+          />
+        </div>
+      </section>
+
+      <!-- Blog Grid -->
+      <section class="py-16">
+        <div class="container mx-auto px-6">
+          {
+            sortedPosts.length === 0 ? (
+              <div class="text-center py-12">
+                <p class="text-gray-500 text-lg">
+                  Aucun article pour le moment. Revenez bientôt !
+                </p>
+              </div>
+            ) : (
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {sortedPosts.map((post) => (
+                  <BlogCard
+                    title={post.data.title}
+                    slug={post.slug}
+                    date={post.data.date}
+                    description={post.data.description}
+                    tags={post.data.tags}
+                  />
+                ))}
+              </div>
+            )
+          }
+        </div>
+      </section>
+    </main>
+
+    <Footer />
+  </div>
+</Layout>

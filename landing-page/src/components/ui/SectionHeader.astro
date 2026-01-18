@@ -1,0 +1,46 @@
+---
+export interface Props {
+  title: string;
+  highlight?: string;
+  description: string;
+  size?: "default" | "large";
+}
+
+const { title, highlight, description, size = "default" } = Astro.props;
+
+const titleClasses =
+  size === "large"
+    ? "text-5xl font-bold text-gray-900 mb-6"
+    : "text-3xl md:text-4xl lg:text-5xl font-bold mb-4";
+
+const descriptionClasses =
+  size === "large"
+    ? "text-xl text-gray-600"
+    : "text-gray-700 max-w-2xl mx-auto text-sm md:text-base";
+
+const containerClasses =
+  size === "large"
+    ? "max-w-3xl mx-auto text-center"
+    : "text-center mb-12 md:mb-16";
+---
+
+<div class={containerClasses}>
+  {
+    size === "large" ? (
+      <h1 class={titleClasses}>{title}</h1>
+    ) : (
+      <h2 class={titleClasses}>
+        {highlight ? (
+          <>
+            {title} <span class="text-green-600"> {highlight}</span>
+          </>
+        ) : (
+          title
+        )}
+      </h2>
+    )
+  }
+  <p class={descriptionClasses}>
+    {description}
+  </p>
+</div>
