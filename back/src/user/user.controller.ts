@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Put,
   Param,
   Post,
   Req,
@@ -12,6 +13,7 @@ import { CheckEmailDto } from './dto/check-email.dto';
 import { UserService } from './user.service';
 import { JwtAuthGuard } from '../guard/jwt-auth.guard';
 import { User } from '../database/user.entity';
+import { UpdateProfileDto } from './dto/update-profile';
 
 interface RequestWithUser extends Request {
   user: User;
@@ -27,7 +29,6 @@ export class UserController {
 
   @Get('email/:email')
   async getUserByEmail(@Param('email') email: string) {
-    console.log('Fetching user by email:', email);
     return this.userService.getUserByEmail(email);
   }
 
@@ -36,5 +37,14 @@ export class UserController {
   async getCurrentUser(@Req() req: RequestWithUser): Promise<Partial<User>> {
     const { password, ...safeUser } = await this.userService.getUserByEmail(req.user.email);
     return safeUser;
+  }
+
+  @Put('profile')
+  @UseGuards(JwtAuthGuard)
+  async updateProfile(
+    @Req() req: RequestWithUser,
+    @Body() dto: UpdateProfileDto,
+  ) {
+    return await this.userService.updateProfile(req.user.email, dto);
   }
 }
