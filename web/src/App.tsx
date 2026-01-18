@@ -4,6 +4,7 @@ import { Toaster } from "react-hot-toast";
 // COMPONENTS
 import Layout from "./components/layouts/layout";
 import LayoutSettings from "./components/layouts/layoutSettings";
+import LayoutMap from "./components/layouts/layoutMap";
 import ProtectedRoute from "./components/protectedRoute/ProtectedRoute";
 
 // PUBLIC PAGES
@@ -13,26 +14,20 @@ import Map from "./pages/newMap/Map";
 
 // PROTECTED PAGES
 import Profile from "./pages/profile/Profile";
-
-import EditProfile from "./pages/settings/EditProfile";
+import EditProfile from "./pages/settings/editProfile/EditProfile";
 import Notifications from "./pages/settings/Notifications";
-import Billing from "./pages/settings/billing";
+import Billing from "./pages/settings/Billing";
 import Privacy from "./pages/settings/Privacy";
-import Security from "./pages/settings/security";
+import Security from "./pages/settings/Security";
 import Subscriptions from "./pages/settings/Subscriptions";
+import CustomToaster from "./components/toaster/CustomToaster";
 
 export default function App() {
   return (
     <>
       {/* Toaster pour les notifications */}
-      <Toaster position="top-right" reverseOrder={false}toastOptions={{
-        style: {
-            borderRadius: '10px',
-            background: '#333',
-            color: '#fff',
-          },
-        }}
-      />
+      <CustomToaster />
+    
       <Routes>
         {/* Routes Publiques */}
         <Route path="/" element={<Layout />}>
@@ -41,7 +36,12 @@ export default function App() {
           <Route path="projects" element={<Projects />} />
         </Route>
 
-        {/* Routes Protégées (Redirigent vers / si pas connecté) */}
+        {/* Routes de la carte */}
+        <Route element={<LayoutMap />}>
+            <Route path="search" element={<Map />} />
+        </Route>
+
+        {/* Routes Protégées */}
         <Route element={<ProtectedRoute />}>
           <Route path="/" element={<LayoutSettings />}>
             <Route path="profile" element={<Profile />} />
@@ -55,13 +55,9 @@ export default function App() {
             <Route path="settings/security" element={<Security />} />
             <Route path="settings/subscriptions" element={<Subscriptions />} />
           </Route>
-
         </Route>
-
-        {/* Routes publiques sans layout */}
-        <Route path="search" element={<Map />} />
-
-        {/* Catch-all redirection */}
+        
+        {/* Redirection pour les routes non trouvées */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </>
