@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { Navigate, Outlet } from "react-router-dom";
-import { checkAuth } from "../../utils/auth"; // Importe ta fonction
 import toast from "react-hot-toast";
+
+// COMPONENTS
+import { checkAuth } from "../../utils/auth"; 
 
 export default function ProtectedRoute() {
   const [isAuth, setIsAuth] = useState<boolean | null>(null);
@@ -12,7 +14,7 @@ export default function ProtectedRoute() {
       
       if (!isConnected) {
         toast.error("Veuillez vous connecter pour accéder à cette page", {
-          id: "auth-error", // Évite les doublons de toasts
+          id: "auth-error",
         });
       }
       
@@ -22,7 +24,6 @@ export default function ProtectedRoute() {
     verify();
   }, []);
 
-  // Écran de chargement pour éviter le "flash" de la page d'accueil
   if (isAuth === null) {
     return (
       <div className="flex h-screen w-full items-center justify-center bg-white">
@@ -31,6 +32,5 @@ export default function ProtectedRoute() {
     );
   }
 
-  // Si OK -> Affiche le contenu (Outlet), sinon -> Redirection Accueil
   return isAuth ? <Outlet /> : <Navigate to="/" replace />;
 }
