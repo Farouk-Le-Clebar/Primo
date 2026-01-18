@@ -1,9 +1,14 @@
-import SearchingBar from "../search/SearchBar";
+import SearchBar from "../search/SearchBar";
 import { Ellipsis, Settings } from 'lucide-react';
 import { useLocation } from "react-router-dom";
 
 export default function Navbar() {
   const location = useLocation();
+
+  const handleAddressSelect = (coords: [number, number]) => {
+    // Handle the selected address coordinates
+    console.log('Selected coordinates:', coords);
+  };
 
   const getPageName = (path: string) => {
     const parts = path.split("/").filter(Boolean);
@@ -23,7 +28,7 @@ export default function Navbar() {
           <p className="text-xs text-white font-lg">{pageName}</p>
         </div>
         <div className="flex w-xl h-full items-center">
-          <SearchingBar />
+          <SearchBar onAddressSelect={handleAddressSelect} />
         </div>
       </div>
 
