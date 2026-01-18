@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, memo } from 'react';
 import { View, Text } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
@@ -6,21 +6,30 @@ import { Ionicons } from '@expo/vector-icons';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
 import ScreenLayout from '../../components/ui/ScreenLayout';
+import Spacer from '../../components/ui/Spacer';
 import { AuthStackParamList } from '../../types/navigation';
 import { useAuth } from '../../context/AuthContext';
 import { validateEmail } from '../../utils/validation';
+import { IconName } from '../../types/icons';
 
 interface Props {
     navigation: NativeStackNavigationProp<AuthStackParamList, 'AuthEntry'>;
 }
 
-const SOCIAL_BUTTONS = [
+interface SocialButton {
+    variant: 'facebook' | 'google' | 'apple';
+    icon: IconName;
+    label: string;
+    color: string;
+}
+
+const SOCIAL_BUTTONS: readonly SocialButton[] = [
     { variant: 'facebook', icon: 'logo-facebook', label: 'Continuer avec Facebook', color: '#fff' },
     { variant: 'google', icon: 'logo-google', label: 'Continuer avec Google', color: '#EA4335' },
     { variant: 'apple', icon: 'logo-apple', label: 'Continuer avec Apple', color: '#fff' },
-] as const;
+];
 
-const AuthEntryScreen = ({ navigation }: Props) => {
+const AuthEntryScreen = memo(({ navigation }: Props) => {
     const { login } = useAuth();
     const [email, setEmail] = useState('');
     const [error, setError] = useState('');
@@ -42,10 +51,8 @@ const AuthEntryScreen = ({ navigation }: Props) => {
         }
 
         setLoading(true);
-        setTimeout(() => {
-            setLoading(false);
-            navigation.navigate('Register', { email: email.trim() });
-        }, 300);
+        navigation.navigate('Register', { email: email.trim() });
+        setLoading(false);
     }, [email, navigation]);
 
     return (
@@ -60,16 +67,16 @@ const AuthEntryScreen = ({ navigation }: Props) => {
             </View>
 
             <View className="mb-10 space-y-3">
-                {SOCIAL_BUTTONS.map((btn) => (
+                {SOCIAL_BUTTONS.map((btn, index) => (
                     <React.Fragment key={btn.variant}>
                         <Button
                             variant={btn.variant}
                             onPress={() => login(email)}
-                            icon={<Ionicons name={btn.icon as any} size={22} color={btn.color} />}
+                            icon={<Ionicons name={btn.icon} size={22} color={btn.color} />}
                         >
                             {btn.label}
                         </Button>
-                        {btn.variant !== 'apple' && <View className="h-3" />}
+                        {index < SOCIAL_BUTTONS.length - 1 && <Spacer size="sm" />}
                     </React.Fragment>
                 ))}
             </View>
@@ -91,16 +98,18 @@ const AuthEntryScreen = ({ navigation }: Props) => {
                     keyboardType="email-address"
                 />
 
-                <View className="h-2" />
+                <Spacer size="sm" />
 
                 <Button onPress={handleContinue} isLoading={loading} disabled={loading}>
                     Continuer
                 </Button>
             </View>
 
-            <View className="h-20" />
+            <Spacer size="xxl" />
         </ScreenLayout>
     );
-};
+});
+
+AuthEntryScreen.displayName = 'AuthEntryScreen';
 
 export default AuthEntryScreen;

@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, memo } from 'react';
 import { View, Text, Pressable } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
@@ -6,6 +6,8 @@ import { Ionicons } from '@expo/vector-icons';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
 import ScreenLayout from '../../components/ui/ScreenLayout';
+import BackButton from '../../components/ui/BackButton';
+import Spacer from '../../components/ui/Spacer';
 import { AuthStackParamList } from '../../types/navigation';
 import { validateEmail } from '../../utils/validation';
 
@@ -13,7 +15,7 @@ interface Props {
     navigation: NativeStackNavigationProp<AuthStackParamList, 'ForgotPassword'>;
 }
 
-const ForgotPasswordScreen = ({ navigation }: Props) => {
+const ForgotPasswordScreen = memo(({ navigation }: Props) => {
     const [email, setEmail] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
@@ -35,10 +37,8 @@ const ForgotPasswordScreen = ({ navigation }: Props) => {
         }
 
         setLoading(true);
-        setTimeout(() => {
-            setLoading(false);
-            setSent(true);
-        }, 500);
+        setSent(true);
+        setLoading(false);
     }, [email]);
 
     const handleBack = useCallback(() => navigation.goBack(), [navigation]);
@@ -46,12 +46,7 @@ const ForgotPasswordScreen = ({ navigation }: Props) => {
 
     return (
         <ScreenLayout>
-            <Pressable
-                onPress={handleBack}
-                className="w-10 h-10 rounded-full bg-gray-100 items-center justify-center mb-6"
-            >
-                <Ionicons name="arrow-back" size={20} color="#374151" />
-            </Pressable>
+            <BackButton onPress={handleBack} />
 
             {sent ? (
                 <View className="flex-1 items-center justify-center py-20">
@@ -89,7 +84,7 @@ const ForgotPasswordScreen = ({ navigation }: Props) => {
                             keyboardType="email-address"
                         />
 
-                        <View className="h-4" />
+                        <Spacer size="lg" />
 
                         <Button onPress={handleReset} isLoading={loading} disabled={loading}>
                             Envoyer le lien
@@ -105,6 +100,8 @@ const ForgotPasswordScreen = ({ navigation }: Props) => {
             )}
         </ScreenLayout>
     );
-};
+});
+
+ForgotPasswordScreen.displayName = 'ForgotPasswordScreen';
 
 export default ForgotPasswordScreen;

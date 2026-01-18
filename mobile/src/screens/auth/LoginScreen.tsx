@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, memo } from 'react';
 import { View, Text, Pressable } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RouteProp } from '@react-navigation/native';
@@ -7,6 +7,8 @@ import { Ionicons } from '@expo/vector-icons';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
 import ScreenLayout from '../../components/ui/ScreenLayout';
+import BackButton from '../../components/ui/BackButton';
+import Spacer from '../../components/ui/Spacer';
 import { AuthStackParamList } from '../../types/navigation';
 import { useAuth } from '../../context/AuthContext';
 
@@ -15,7 +17,7 @@ interface Props {
     route: RouteProp<AuthStackParamList, 'Login'>;
 }
 
-const LoginScreen = ({ navigation, route }: Props) => {
+const LoginScreen = memo(({ navigation, route }: Props) => {
     const { login } = useAuth();
     const { email } = route.params;
     const [password, setPassword] = useState('');
@@ -34,10 +36,8 @@ const LoginScreen = ({ navigation, route }: Props) => {
         }
 
         setLoading(true);
-        setTimeout(() => {
-            setLoading(false);
-            login(email);
-        }, 500);
+        login(email);
+        setLoading(false);
     }, [password, login, email]);
 
     const handleBack = useCallback(() => navigation.goBack(), [navigation]);
@@ -48,12 +48,7 @@ const LoginScreen = ({ navigation, route }: Props) => {
 
     return (
         <ScreenLayout>
-            <Pressable
-                onPress={handleBack}
-                className="w-10 h-10 rounded-full bg-gray-100 items-center justify-center mb-6"
-            >
-                <Ionicons name="arrow-back" size={20} color="#374151" />
-            </Pressable>
+            <BackButton onPress={handleBack} />
 
             <View className="mb-8">
                 <Text className="text-4xl font-bold text-gray-900 mb-4">
@@ -84,7 +79,7 @@ const LoginScreen = ({ navigation, route }: Props) => {
                     error={error}
                 />
 
-                <View className="h-2" />
+                <Spacer size="sm" />
 
                 <Button onPress={handleLogin} isLoading={loading} disabled={loading}>
                     Se connecter
@@ -95,9 +90,11 @@ const LoginScreen = ({ navigation, route }: Props) => {
                 </Pressable>
             </View>
 
-            <View className="h-20" />
+            <Spacer size="xxl" />
         </ScreenLayout>
     );
-};
+});
+
+LoginScreen.displayName = 'LoginScreen';
 
 export default LoginScreen;

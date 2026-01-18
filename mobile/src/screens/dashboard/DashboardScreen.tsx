@@ -1,22 +1,35 @@
-import React, { useMemo } from 'react';
+import React, { memo } from 'react';
 import { View, Text, Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 import { useComingSoon } from '../../hooks/useComingSoon';
 import ScreenLayout from '../../components/ui/ScreenLayout';
+import Spacer from '../../components/ui/Spacer';
 import { useAuth } from '../../context/AuthContext';
 import QuickAction from '../../components/dashboard/QuickAction';
 import MenuItem from '../../components/dashboard/MenuItem';
 import StatsCard from '../../components/dashboard/StatsCard';
+import { IconName } from '../../types/icons';
 
-// Configuration Data
-const QUICK_ACTIONS = [
+interface QuickActionConfig {
+    icon: IconName;
+    label: string;
+    color: string;
+}
+
+interface MenuItemConfig {
+    icon: IconName;
+    label: string;
+    subtitle: string;
+}
+
+const QUICK_ACTIONS: readonly QuickActionConfig[] = [
     { icon: 'search', label: 'Rechercher', color: 'bg-blue-500' },
     { icon: 'map', label: 'Carte', color: 'bg-green-500' },
     { icon: 'heart', label: 'Favoris', color: 'bg-red-400' },
 ];
 
-const MENU_ITEMS = [
+const MENU_ITEMS: readonly MenuItemConfig[] = [
     { icon: 'home-outline', label: 'Dashboard', subtitle: "Vue d'ensemble" },
     { icon: 'folder-outline', label: 'Mes Projets', subtitle: '0 projets' },
     { icon: 'heart-outline', label: 'Mes Favoris', subtitle: '0 biens sauvegardés' },
@@ -25,12 +38,10 @@ const MENU_ITEMS = [
     { icon: 'settings-outline', label: 'Paramètres', subtitle: 'Compte et préférences' },
 ];
 
-const DashboardScreen = () => {
+const DashboardScreen = memo(() => {
     const { showComingSoon } = useComingSoon();
     const { logout } = useAuth();
 
-    // Optimisation: Une seule fonction de callback stable
-    // Les composants enfants appellent onPress(label)
     const handleFeaturePress = showComingSoon;
 
     return (
@@ -86,9 +97,11 @@ const DashboardScreen = () => {
                 <Text className="text-error font-medium ml-2">Se déconnecter</Text>
             </Pressable>
 
-            <View className="h-10" />
+            <Spacer size="lg" />
         </ScreenLayout>
     );
-};
+});
+
+DashboardScreen.displayName = 'DashboardScreen';
 
 export default DashboardScreen;

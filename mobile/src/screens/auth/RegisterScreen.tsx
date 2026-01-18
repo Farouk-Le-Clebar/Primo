@@ -7,6 +7,8 @@ import { Ionicons } from '@expo/vector-icons';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
 import ScreenLayout from '../../components/ui/ScreenLayout';
+import BackButton from '../../components/ui/BackButton';
+import Spacer from '../../components/ui/Spacer';
 import { AuthStackParamList } from '../../types/navigation';
 import { getPasswordStrength } from '../../utils/validation';
 import { useAuth } from '../../context/AuthContext';
@@ -39,7 +41,7 @@ const Criterion = memo(({ met, label }: CriterionProps) => (
 
 Criterion.displayName = 'Criterion';
 
-const RegisterScreen = ({ navigation, route }: Props) => {
+const RegisterScreen = memo(({ navigation, route }: Props) => {
     const { login } = useAuth();
     const { email: initialEmail } = route.params;
     const [email, setEmail] = useState(initialEmail || '');
@@ -75,10 +77,8 @@ const RegisterScreen = ({ navigation, route }: Props) => {
         }
 
         setLoading(true);
-        setTimeout(() => {
-            setLoading(false);
-            login(email);
-        }, 500);
+        login(email);
+        setLoading(false);
     }, [email, password, strength.score, login]);
 
     const handleBack = useCallback(() => navigation.goBack(), [navigation]);
@@ -89,12 +89,7 @@ const RegisterScreen = ({ navigation, route }: Props) => {
 
     return (
         <ScreenLayout>
-            <Pressable
-                onPress={handleBack}
-                className="w-10 h-10 rounded-full bg-gray-100 items-center justify-center mb-6"
-            >
-                <Ionicons name="arrow-back" size={20} color="#374151" />
-            </Pressable>
+            <BackButton onPress={handleBack} />
 
             <View className="mb-8">
                 <Text className="text-4xl font-bold text-gray-900 mb-4">
@@ -115,7 +110,7 @@ const RegisterScreen = ({ navigation, route }: Props) => {
                     keyboardType="email-address"
                 />
 
-                <View className="h-1" />
+                <Spacer size="xs" />
 
                 <Input
                     value={password}
@@ -149,7 +144,7 @@ const RegisterScreen = ({ navigation, route }: Props) => {
 
                 {error && <Text className="text-error text-sm">{error}</Text>}
 
-                <View className="h-4" />
+                <Spacer size="lg" />
 
                 <Button onPress={handleRegister} isLoading={loading} disabled={loading}>
                     Créer mon compte
@@ -163,9 +158,11 @@ const RegisterScreen = ({ navigation, route }: Props) => {
                 </View>
             </View>
 
-            <View className="h-32" />
+            <Spacer size="xxl" />
         </ScreenLayout>
     );
-};
+});
+
+RegisterScreen.displayName = 'RegisterScreen';
 
 export default RegisterScreen;
