@@ -1,7 +1,11 @@
 import { motion } from "framer-motion";
 import { CornerDownRight } from "lucide-react";
-import { useAuthModal } from "../../../hooks/useAuthModal";
+
+// COMPONENTS
 import Button from "../../../ui/Button";
+
+// HOOKS
+import { useAuthModal } from "../../../hooks/useAuthModal";
 
 export default function LoginButton() {
   const { openAuthModal } = useAuthModal();

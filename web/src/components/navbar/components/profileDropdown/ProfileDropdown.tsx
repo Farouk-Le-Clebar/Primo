@@ -1,7 +1,8 @@
 import { useSelector } from "react-redux";
 import { useState, useRef, useEffect } from "react";
+
+// COMPONENTs
 import type { RootState } from "../../../../store/store.ts";
-import profilePlaceholder from "../../../../assets/images/profile.png";
 import DropdownMenu from "./ProfileDropdownMenu.tsx";
 
 export default function ProfileDropdown() {
@@ -9,6 +10,13 @@ export default function ProfileDropdown() {
   const dropdownRef = useRef<HTMLDivElement>(null);
   
   const userData = useSelector((state: RootState) => state.user.userInfo);
+
+  const user = userData?.user || userData;
+
+  const getAvatarUrl = (name: string | undefined) => {
+    const fileName = name || "green.png";
+    return new URL(`../../../../assets/profilePictures/${fileName}`, import.meta.url).href;
+  };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -28,7 +36,7 @@ export default function ProfileDropdown() {
       >
         <div className="w-9 h-9 rounded-full overflow-hidden border-2 border-transparent group-hover:border-green-500 transition-all duration-200 shadow-sm">
           <img
-            src={userData?.profilePicture || profilePlaceholder}
+            src={getAvatarUrl(user?.profilePicture)}
             alt="Profile"
             className="w-full h-full object-cover"
           />

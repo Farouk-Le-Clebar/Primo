@@ -2,12 +2,11 @@ import { useDispatch } from "react-redux";
 
 // COMPONENTS & ICONS
 import { clearUser } from "../../../../store/userSlice";
-import { useNavigate } from "react-router-dom";
 import UserProfile from "../../../user/UserProfile";
 import CustomNavLink from "../../../../ui/Navlink";
 
 // ICONS
-import { User, Settings, LogOut, ChevronRight } from "lucide-react";
+import { User, Settings, LogOut } from "lucide-react";
 
 interface DropdownMenuProps {
   user: any;
@@ -16,7 +15,6 @@ interface DropdownMenuProps {
 
 export default function DropdownMenu({ user, onClose }: DropdownMenuProps) {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const handleLogout = () => {
     dispatch(clearUser());
@@ -46,7 +44,7 @@ export default function DropdownMenu({ user, onClose }: DropdownMenuProps) {
       />
 
       <CustomNavLink
-        to="/settings"
+        to="/settings/edit-profile"
         label="Paramètres"
         icon={<Settings size={18} />}
         showChevronOnHover={true}
