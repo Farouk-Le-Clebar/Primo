@@ -1,5 +1,7 @@
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export const validateEmail = (email: string): boolean => {
-    return email.includes('@') && email.includes('.');
+    return EMAIL_REGEX.test(email.trim().toLowerCase());
 };
 
 export const getPasswordStrength = (password: string) => {

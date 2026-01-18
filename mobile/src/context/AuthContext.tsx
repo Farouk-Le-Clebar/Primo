@@ -1,6 +1,6 @@
 import React, { createContext, useState, useContext, useEffect, useCallback, useMemo, ReactNode } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { User } from '../types/auth';
+import { User, AuthResponse } from '../types/auth';
 import { verifyToken } from '../requests/AuthRequests';
 
 interface AuthContextType {
@@ -8,7 +8,7 @@ interface AuthContextType {
     isLoading: boolean;
     user: User | null;
     token: string | null;
-    setAuthData: (user: User, token: string) => void;
+    handleAuthSuccess: (data: AuthResponse) => Promise<void>;
     logout: () => Promise<void>;
 }
 
@@ -28,7 +28,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 const storedUser = await AsyncStorage.getItem('user');
 
                 if (storedToken && storedUser) {
-                    const verifiedData = await verifyToken(storedToken);
+                    const verifiedData = await verifyToken();
                     setToken(storedToken);
                     setUser(verifiedData.user);
                 }
@@ -41,9 +41,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         loadStoredAuth();
     }, []);
 
-    const setAuthData = useCallback((newUser: User, newToken: string) => {
-        setUser(newUser);
-        setToken(newToken);
+    const handleAuthSuccess = useCallback(async (data: AuthResponse) => {
+        await AsyncStorage.setItem('token', data.access_token);
+        await AsyncStorage.setItem('user', JSON.stringify(data.user));
+        setUser(data.user);
+        setToken(data.access_token);
     }, []);
 
     const logout = useCallback(async () => {
@@ -57,9 +59,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         isLoading,
         user,
         token,
-        setAuthData,
+        handleAuthSuccess,
         logout,
-    }), [isAuthenticated, isLoading, user, token, setAuthData, logout]);
+    }), [isAuthenticated, isLoading, user, token, handleAuthSuccess, logout]);
 
     return (
         <AuthContext.Provider value={value}>

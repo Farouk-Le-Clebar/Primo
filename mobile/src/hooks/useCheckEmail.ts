@@ -1,7 +1,8 @@
 import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
-import { checkUserByMail } from '../requests/UserRequests';
+import { checkUserByMail } from '../requests/AuthRequests';
 import { CheckEmailResponse } from '../types/auth';
+import { parseApiError, ApiErrorResponse } from '../utils/errorHandler';
 
 interface UseCheckEmailOptions {
     onSuccess?: (data: CheckEmailResponse) => void;
@@ -14,11 +15,8 @@ export const useCheckEmail = ({ onSuccess, onError }: UseCheckEmailOptions = {})
         onSuccess: (data) => {
             onSuccess?.(data);
         },
-        onError: (error: AxiosError) => {
-            const message = error.response?.status === 404
-                ? 'Service indisponible'
-                : 'Une erreur est survenue';
-            onError?.(message);
+        onError: (error: AxiosError<ApiErrorResponse>) => {
+            onError?.(parseApiError(error));
         },
     });
 };
