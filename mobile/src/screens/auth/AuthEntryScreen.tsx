@@ -8,8 +8,9 @@ import Input from '../../components/ui/Input';
 import ScreenLayout from '../../components/ui/ScreenLayout';
 import Spacer from '../../components/ui/Spacer';
 import { AuthStackParamList } from '../../types/navigation';
-import { useAuth } from '../../context/AuthContext';
 import { validateEmail } from '../../utils/validation';
+import { useCheckEmail } from '../../hooks/useCheckEmail';
+import { useSnackbar } from '../../context/SnackbarContext';
 import { IconName } from '../../types/icons';
 
 interface Props {
@@ -21,19 +22,27 @@ interface SocialButton {
     icon: IconName;
     label: string;
     color: string;
+    name: string;
 }
 
 const SOCIAL_BUTTONS: readonly SocialButton[] = [
-    { variant: 'facebook', icon: 'logo-facebook', label: 'Continuer avec Facebook', color: '#fff' },
-    { variant: 'google', icon: 'logo-google', label: 'Continuer avec Google', color: '#EA4335' },
-    { variant: 'apple', icon: 'logo-apple', label: 'Continuer avec Apple', color: '#fff' },
+    { variant: 'facebook', icon: 'logo-facebook', label: 'Continuer avec Facebook', color: '#fff', name: 'Facebook' },
+    { variant: 'google', icon: 'logo-google', label: 'Continuer avec Google', color: '#EA4335', name: 'Google' },
+    { variant: 'apple', icon: 'logo-apple', label: 'Continuer avec Apple', color: '#fff', name: 'Apple' },
 ];
 
 const AuthEntryScreen = memo(({ navigation }: Props) => {
-    const { login } = useAuth();
     const [email, setEmail] = useState('');
     const [error, setError] = useState('');
-    const [loading, setLoading] = useState(false);
+    const { showComingSoon } = useSnackbar();
+
+    const { mutate: checkEmail, isPending } = useCheckEmail({
+        onSuccess: (data) => {
+            const route = data.exists ? 'Login' : 'Register';
+            navigation.navigate(route, { email: email.trim() });
+        },
+        onError: (message) => setError(message),
+    });
 
     const handleEmailChange = useCallback((text: string) => {
         setEmail(text);
@@ -49,11 +58,12 @@ const AuthEntryScreen = memo(({ navigation }: Props) => {
             setError('Veuillez entrer une adresse e-mail valide');
             return;
         }
+        checkEmail(email.trim());
+    }, [email, checkEmail]);
 
-        setLoading(true);
-        navigation.navigate('Register', { email: email.trim() });
-        setLoading(false);
-    }, [email, navigation]);
+    const handleSocialPress = useCallback((name: string) => {
+        showComingSoon(`Connexion ${name}`);
+    }, [showComingSoon]);
 
     return (
         <ScreenLayout>
@@ -71,7 +81,7 @@ const AuthEntryScreen = memo(({ navigation }: Props) => {
                     <React.Fragment key={btn.variant}>
                         <Button
                             variant={btn.variant}
-                            onPress={() => login(email)}
+                            onPress={() => handleSocialPress(btn.name)}
                             icon={<Ionicons name={btn.icon} size={22} color={btn.color} />}
                         >
                             {btn.label}
@@ -100,7 +110,7 @@ const AuthEntryScreen = memo(({ navigation }: Props) => {
 
                 <Spacer size="sm" />
 
-                <Button onPress={handleContinue} isLoading={loading} disabled={loading}>
+                <Button onPress={handleContinue} isLoading={isPending} disabled={isPending}>
                     Continuer
                 </Button>
             </View>

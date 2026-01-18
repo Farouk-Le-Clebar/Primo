@@ -10,7 +10,7 @@ import ScreenLayout from '../../components/ui/ScreenLayout';
 import BackButton from '../../components/ui/BackButton';
 import Spacer from '../../components/ui/Spacer';
 import { AuthStackParamList } from '../../types/navigation';
-import { useAuth } from '../../context/AuthContext';
+import { useLogin } from '../../hooks/useLogin';
 
 interface Props {
     navigation: NativeStackNavigationProp<AuthStackParamList, 'Login'>;
@@ -18,11 +18,13 @@ interface Props {
 }
 
 const LoginScreen = memo(({ navigation, route }: Props) => {
-    const { login } = useAuth();
     const { email } = route.params;
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-    const [loading, setLoading] = useState(false);
+
+    const { mutate: loginUser, isPending } = useLogin({
+        onError: (message) => setError(message),
+    });
 
     const handlePasswordChange = useCallback((text: string) => {
         setPassword(text);
@@ -34,11 +36,8 @@ const LoginScreen = memo(({ navigation, route }: Props) => {
             setError('Veuillez entrer votre mot de passe');
             return;
         }
-
-        setLoading(true);
-        login(email);
-        setLoading(false);
-    }, [password, login, email]);
+        loginUser({ email, password });
+    }, [password, email, loginUser]);
 
     const handleBack = useCallback(() => navigation.goBack(), [navigation]);
 
@@ -81,7 +80,7 @@ const LoginScreen = memo(({ navigation, route }: Props) => {
 
                 <Spacer size="sm" />
 
-                <Button onPress={handleLogin} isLoading={loading} disabled={loading}>
+                <Button onPress={handleLogin} isLoading={isPending} disabled={isPending}>
                     Se connecter
                 </Button>
 

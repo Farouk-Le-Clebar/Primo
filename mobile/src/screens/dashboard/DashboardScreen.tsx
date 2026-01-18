@@ -2,7 +2,7 @@ import React, { memo } from 'react';
 import { View, Text, Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
-import { useComingSoon } from '../../hooks/useComingSoon';
+import { useSnackbar } from '../../context/SnackbarContext';
 import ScreenLayout from '../../components/ui/ScreenLayout';
 import Spacer from '../../components/ui/Spacer';
 import { useAuth } from '../../context/AuthContext';
@@ -39,7 +39,7 @@ const MENU_ITEMS: readonly MenuItemConfig[] = [
 ];
 
 const DashboardScreen = memo(() => {
-    const { showComingSoon } = useComingSoon();
+    const { showComingSoon } = useSnackbar();
     const { logout } = useAuth();
 
     const handleFeaturePress = showComingSoon;

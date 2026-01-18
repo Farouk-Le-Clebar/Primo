@@ -11,7 +11,7 @@ import BackButton from '../../components/ui/BackButton';
 import Spacer from '../../components/ui/Spacer';
 import { AuthStackParamList } from '../../types/navigation';
 import { getPasswordStrength } from '../../utils/validation';
-import { useAuth } from '../../context/AuthContext';
+import { useRegister } from '../../hooks/useRegister';
 
 interface Props {
     navigation: NativeStackNavigationProp<AuthStackParamList, 'Register'>;
@@ -42,12 +42,14 @@ const Criterion = memo(({ met, label }: CriterionProps) => (
 Criterion.displayName = 'Criterion';
 
 const RegisterScreen = memo(({ navigation, route }: Props) => {
-    const { login } = useAuth();
     const { email: initialEmail } = route.params;
     const [email, setEmail] = useState(initialEmail || '');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-    const [loading, setLoading] = useState(false);
+
+    const { mutate: registerUser, isPending } = useRegister({
+        onError: (message) => setError(message),
+    });
 
     const strength = useMemo(() => getPasswordStrength(password), [password]);
     const strengthStyle = STRENGTH_CONFIG[strength.score];
@@ -75,11 +77,8 @@ const RegisterScreen = memo(({ navigation, route }: Props) => {
             setError('Votre mot de passe doit respecter tous les critères');
             return;
         }
-
-        setLoading(true);
-        login(email);
-        setLoading(false);
-    }, [email, password, strength.score, login]);
+        registerUser({ email: email.trim(), password });
+    }, [email, password, strength.score, registerUser]);
 
     const handleBack = useCallback(() => navigation.goBack(), [navigation]);
 
@@ -146,7 +145,7 @@ const RegisterScreen = memo(({ navigation, route }: Props) => {
 
                 <Spacer size="lg" />
 
-                <Button onPress={handleRegister} isLoading={loading} disabled={loading}>
+                <Button onPress={handleRegister} isLoading={isPending} disabled={isPending}>
                     Créer mon compte
                 </Button>
 

@@ -1,34 +1,65 @@
-import React, { createContext, useState, useContext, ReactNode, useMemo, useCallback } from 'react';
+import React, { createContext, useState, useContext, useEffect, useCallback, useMemo, ReactNode } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { User } from '../types/auth';
+import { verifyToken } from '../requests/AuthRequests';
 
 interface AuthContextType {
     isAuthenticated: boolean;
-    user: { email?: string } | null;
-    login: (email?: string) => void;
-    logout: () => void;
+    isLoading: boolean;
+    user: User | null;
+    token: string | null;
+    setAuthData: (user: User, token: string) => void;
+    logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [user, setUser] = useState<{ email?: string } | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const [user, setUser] = useState<User | null>(null);
+    const [token, setToken] = useState<string | null>(null);
 
-    const login = useCallback((email?: string) => {
-        setIsAuthenticated(true);
-        if (email) setUser({ email });
+    const isAuthenticated = !!token && !!user;
+
+    useEffect(() => {
+        const loadStoredAuth = async () => {
+            try {
+                const storedToken = await AsyncStorage.getItem('token');
+                const storedUser = await AsyncStorage.getItem('user');
+
+                if (storedToken && storedUser) {
+                    const verifiedData = await verifyToken(storedToken);
+                    setToken(storedToken);
+                    setUser(verifiedData.user);
+                }
+            } catch {
+                await AsyncStorage.multiRemove(['token', 'user']);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        loadStoredAuth();
     }, []);
 
-    const logout = useCallback(() => {
-        setIsAuthenticated(false);
+    const setAuthData = useCallback((newUser: User, newToken: string) => {
+        setUser(newUser);
+        setToken(newToken);
+    }, []);
+
+    const logout = useCallback(async () => {
+        await AsyncStorage.multiRemove(['token', 'user']);
         setUser(null);
+        setToken(null);
     }, []);
 
     const value = useMemo(() => ({
         isAuthenticated,
+        isLoading,
         user,
-        login,
-        logout
-    }), [isAuthenticated, user, login, logout]);
+        token,
+        setAuthData,
+        logout,
+    }), [isAuthenticated, isLoading, user, token, setAuthData, logout]);
 
     return (
         <AuthContext.Provider value={value}>
