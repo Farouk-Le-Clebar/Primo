@@ -1,5 +1,4 @@
 import axios from "axios";
-import L from 'leaflet';
 
 const apiUrl = window?._env_?.API_URL;
 
