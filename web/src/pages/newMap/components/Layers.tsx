@@ -18,7 +18,7 @@ import { MIN_ZOOM_FOR_POIS, POI_CONFIGS } from "./PoiConfig";
 const Layers = () => {
     const [mapBounds, setMapBounds] = useState<L.LatLngBounds | null>(null);
     const [currentZoom, setCurrentZoom] = useState<number>(6);
-    const [lastZoom, setLastZoom] = useState<number>(6);
+    const [lastZoom, _setLastZoom] = useState<number>(6);
     const [firstLayerRequest, setFirstLayerRequest] = useState<boolean>(true);
     const [departementsBoundData, setDepartementsBoundData] =
         useState<FeatureCollection | null>(null);
@@ -38,11 +38,9 @@ const Layers = () => {
 
     const handleMapBoundsChange = (bounds: L.LatLngBounds) => {
         setMapBounds(bounds);
-        setLastZoom(currentZoom);
     };
 
     const handleZoomChange = (zoom: number) => {
-        setLastZoom(currentZoom);
         setCurrentZoom(zoom);
         if (zoom < MIN_ZOOM_FOR_PARCELLES && pacellesBoundData) {
             setFirstLayerRequest(true);
@@ -111,11 +109,11 @@ const Layers = () => {
                 onDepartementsBoundChange={handleDepartementsBoundChange}
                 onDivisionsBoundChange={handleDivisionsBoundChange}
                 onPacellesBoundChange={handlePacellesBoundChange}
-                onFirstLayerRequestChange={handleFirstLayerRequestHandled}
-                lastZoom={lastZoom}
                 currentZoom={currentZoom}
                 mapBounds={mapBounds}
                 firstLayerRequest={firstLayerRequest}
+                onFirstLayerRequestChange={handleFirstLayerRequestHandled}
+                lastZoom={lastZoom}
                 dataShape={{
                     departements: departementsBoundData,
                     parcelles: pacellesBoundData,
