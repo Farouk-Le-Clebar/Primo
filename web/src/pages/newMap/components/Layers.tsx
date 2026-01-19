@@ -112,8 +112,6 @@ const Layers = () => {
                 currentZoom={currentZoom}
                 mapBounds={mapBounds}
                 firstLayerRequest={firstLayerRequest}
-                onFirstLayerRequestChange={handleFirstLayerRequestHandled}
-                lastZoom={lastZoom}
                 dataShape={{
                     departements: departementsBoundData,
                     parcelles: pacellesBoundData,
@@ -133,3 +131,4 @@ const Layers = () => {
 };
 
 export default Layers;
+
