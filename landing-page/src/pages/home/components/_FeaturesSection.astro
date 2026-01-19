@@ -1,0 +1,86 @@
+---
+import { Search, BarChart3, Map } from "lucide-react";
+import FeatureItem from "@components/ui/FeatureItem.astro";
+import DataBadge from "@components/ui/DataBadge.astro";
+import SectionHeader from "@components/ui/SectionHeader.astro";
+---
+
+<section
+  id="features"
+  class="min-h-screen flex flex-col justify-center items-center py-16 md:py-20 bg-white"
+>
+  <div class="max-w-7xl mx-auto px-4 md:px-8 w-full">
+    <SectionHeader
+      title="Nos"
+      highlight="Fonctionnalités"
+      description="Une plateforme complète pour vous accompagner dans votre recherche immobilière"
+    />
+
+    <div class="grid md:grid-cols-2 gap-6 md:gap-8 lg:gap-12">
+      <div
+        class="bg-linear-to-br from-white to-green-50 border border-green-100 rounded-xl p-6 md:p-8 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+      >
+        <div class="flex items-center gap-4 mb-6">
+          <div class="bg-green-100 p-3 rounded-lg">
+            <Search className="text-green-600" size={32} />
+          </div>
+          <h3 class="text-2xl font-bold">Assistant IA</h3>
+        </div>
+
+        <p class="text-gray-700 mb-6">
+          Notre IA basée sur une architecture RAG vous aide à prendre des
+          décisions éclairées
+        </p>
+
+        <div class="space-y-4">
+          <FeatureItem
+            icon={Search}
+            title="Recherche intelligente"
+            description="Définissez vos critères et notre IA vous suggère des zones géographiques et parcelles adaptées à vos besoins. Réponses en langage naturel avec justifications détaillées."
+          />
+
+          <FeatureItem
+            icon={BarChart3}
+            title="Comparaison avancée"
+            description="Comparez plusieurs parcelles avec une notation automatique et des commentaires personnalisés. L'IA explique pourquoi une parcelle correspond mieux à vos critères."
+          />
+        </div>
+      </div>
+
+      <div
+        class="bg-linear-to-br from-white to-green-50 border border-green-100 rounded-xl p-6 md:p-8 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+      >
+        <div class="flex items-center gap-4 mb-6">
+          <div class="bg-green-100 p-3 rounded-lg">
+            <Map className="text-green-600" size={32} />
+          </div>
+          <h3 class="text-2xl font-bold">Outil d'information</h3>
+        </div>
+
+        <p class="text-gray-700 mb-6">
+          Une carte interactive avec toutes les parcelles cadastrales françaises
+        </p>
+
+        <div class="space-y-3">
+          <DataBadge
+            emoji="📊"
+            title="Données complètes"
+            description="Population, géorisques, débit internet, constructibilité, transports, PLU, marché de l'emploi, écoles, pollution, criminalité..."
+          />
+
+          <DataBadge
+            emoji="✅"
+            title="Sources fiables"
+            description="Données Open Data officielles : cadastre.gouv.fr, INSEE, IGN, GéoRisques, Météo-France, DVF (Demande de Valeur Foncière)..."
+          />
+
+          <DataBadge
+            emoji="🗺️"
+            title="Interface intuitive"
+            description="Cliquez sur n'importe quelle parcelle pour accéder instantanément à toutes ses informations dans une interface claire et compréhensible."
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

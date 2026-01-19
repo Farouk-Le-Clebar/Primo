@@ -1,0 +1,65 @@
+---
+import { Code, Sparkles, Check } from "lucide-react";
+import ServiceCard from "@components/ui/ServiceCard.astro";
+import SectionHeader from "@components/ui/SectionHeader.astro";
+---
+
+<section
+  id="services"
+  class="min-h-screen flex flex-col justify-center items-center py-16 md:py-20 bg-linear-to-b from-white via-green-50/30 to-white"
+>
+  <div class="max-w-7xl mx-auto px-4 md:px-8 w-full">
+    <SectionHeader
+      title="Nos"
+      highlight="Services"
+      description="Des solutions adaptées aux particuliers et aux professionnels"
+    />
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+      <ServiceCard
+        icon={Check}
+        title="Gratuit"
+        subtitle="Pour tous les particuliers"
+        features={[
+          "Accès illimité à toutes les données",
+          "Carte interactive complète",
+          "Assistant IA basique",
+          "Site web et application mobile",
+        ]}
+      />
+
+      <ServiceCard
+        icon={Code}
+        title="API de base"
+        subtitle="Pour les développeurs"
+        features={[
+          "Accès à toutes nos données",
+          "Données actuelles et fiables",
+          "Documentation complète",
+          "Support technique",
+        ]}
+        highlighted={true}
+      />
+
+      <ServiceCard
+        icon={Sparkles}
+        title="API + IA"
+        subtitle="Pour les professionnels"
+        features={[
+          "Tout de l'API de base",
+          "Accès à notre modèle d'IA",
+          "Analyses et comparaisons avancées",
+          "Réponses en langage naturel",
+        ]}
+      />
+    </div>
+
+    <div class="mt-8 md:mt-12 text-center">
+      <p class="text-gray-600 max-w-3xl mx-auto text-sm md:text-base">
+        Notre plateforme reste entièrement gratuite pour les particuliers. Les
+        services payants permettent aux professionnels d'intégrer nos données et
+        notre IA dans leurs propres applications.
+      </p>
+    </div>
+  </div>
+</section>
