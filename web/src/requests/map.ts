@@ -73,6 +73,7 @@ export const getPoisByBbox = async (
             console.error("Error fetching POI data:", error);
             throw error;
         });
+}
 export const getParcellesByBboxAndDepartments = async (bbox: string, departments: string[]) => {
     const promises = departments.map(dept => {
         const layerName = `primo:parcelles_${dept}`;
@@ -139,4 +140,5 @@ export const getDivisionsByBboxAndDepartments = async (bbox: string, departments
         type: 'FeatureCollection',
         features: allFeatures
     };
+
 };
