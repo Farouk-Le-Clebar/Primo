@@ -5,11 +5,6 @@ import "leaflet/dist/leaflet.css";
 import { useState, useCallback } from "react";
 import type { FeatureCollection } from "geojson";
 import L from "leaflet";
-import {
-    MIN_ZOOM_FOR_CITY,
-    MIN_ZOOM_FOR_DIVISION,
-    MIN_ZOOM_FOR_PARCELLES,
-} from "./MapUtils";
 import ShapesLayer from "./layers/ShapesLayer";
 import PoiLayer from "./layers/PoiLayer";
 import PoiWidget from "./layers/PoiWidget";
@@ -18,8 +13,6 @@ import { MIN_ZOOM_FOR_POIS, POI_CONFIGS } from "./PoiConfig";
 const Layers = () => {
     const [mapBounds, setMapBounds] = useState<L.LatLngBounds | null>(null);
     const [currentZoom, setCurrentZoom] = useState<number>(6);
-    const [lastZoom, _setLastZoom] = useState<number>(6);
-    const [firstLayerRequest, setFirstLayerRequest] = useState<boolean>(true);
     const [departementsBoundData, setDepartementsBoundData] =
         useState<FeatureCollection | null>(null);
     const [pacellesBoundData, setPacellesBoundData] =
@@ -33,7 +26,7 @@ const Layers = () => {
     const [enabledPoiTypes, setEnabledPoiTypes] = useState<string[]>(
         Object.entries(POI_CONFIGS)
             .filter(([_, config]) => config.enabled)
-            .map(([key]) => key)
+            .map(([key]) => key),
     );
 
     const handleMapBoundsChange = (bounds: L.LatLngBounds) => {
@@ -42,24 +35,6 @@ const Layers = () => {
 
     const handleZoomChange = (zoom: number) => {
         setCurrentZoom(zoom);
-        if (zoom < MIN_ZOOM_FOR_PARCELLES && pacellesBoundData) {
-            setFirstLayerRequest(true);
-        }
-        if (
-            (zoom < MIN_ZOOM_FOR_CITY || zoom >= MIN_ZOOM_FOR_DIVISION) &&
-            cityBoundData
-        ) {
-            setFirstLayerRequest(true);
-        }
-        if (
-            (zoom < MIN_ZOOM_FOR_DIVISION || zoom >= MIN_ZOOM_FOR_PARCELLES) &&
-            divisionsBoundData
-        ) {
-            setFirstLayerRequest(true);
-        }
-        if (zoom >= MIN_ZOOM_FOR_CITY && departementsBoundData) {
-            setFirstLayerRequest(true);
-        }
     };
 
     const handleCityBoundChange = (data: any) => {
@@ -78,17 +53,13 @@ const Layers = () => {
         setPacellesBoundData(data);
     };
 
-    const handleFirstLayerRequestHandled = (data: boolean) => {
-        setFirstLayerRequest(data);
-    };
-
     const handlePoisChange = (data: FeatureCollection | null) => {
         setPoisData(data);
     };
 
     const handleTogglePoi = useCallback((type: string, enabled: boolean) => {
         setEnabledPoiTypes((prev) =>
-            enabled ? [...prev, type] : prev.filter((t) => t !== type)
+            enabled ? [...prev, type] : prev.filter((t) => t !== type),
         );
     }, []);
 
@@ -99,6 +70,7 @@ const Layers = () => {
             <MapBounds onChange={handleMapBoundsChange} />
             <ZoomHandler onZoomChange={handleZoomChange} />
             <ZoomControl position="topright" />
+
             <PoiWidget
                 onTogglePoi={handleTogglePoi}
                 currentZoom={currentZoom}
@@ -111,9 +83,6 @@ const Layers = () => {
                 onPacellesBoundChange={handlePacellesBoundChange}
                 currentZoom={currentZoom}
                 mapBounds={mapBounds}
-                firstLayerRequest={firstLayerRequest}
-                onFirstLayerRequestChange={handleFirstLayerRequestHandled}
-                lastZoom={lastZoom}
                 dataShape={{
                     departements: departementsBoundData,
                     parcelles: pacellesBoundData,
