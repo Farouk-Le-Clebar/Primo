@@ -17,7 +17,7 @@ const hoverStyle = {
     weight: 3
 };
 
-export const onEachFeature = (feature: any, layer: L.Layer, map: L.Map) => {
+export const onEachFeature = (_feature: any, layer: L.Layer, map: L.Map) => {
     layer.on({
         click: (e: L.LeafletMouseEvent) => {
             if (selectedLayer === layer) {

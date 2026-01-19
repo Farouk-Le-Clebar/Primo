@@ -30,3 +30,5 @@ export const boundToBbox = (bounds: L.LatLngBounds) => {
         bounds.getNorth()
     ].join(','));
 };
+
+export const FRANCE_BBOX = "-180,-90,180,90";
