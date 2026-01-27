@@ -106,3 +106,38 @@ export const getDivisionsByBboxAndDepartments = async (bbox: string, departments
         features: allFeatures
     };
 };
+
+export const getPoisByBbox = async (
+    bbox: string,
+    types?: string[],
+    maxFeatures: number = 200,
+) => {
+    const params = new URLSearchParams({
+        service: "WFS",
+        version: "2.0.0",
+        request: "GetFeature",
+        typeName: "bdtopo:pois_france",
+        outputFormat: "application/json",
+        srsName: "EPSG:4326",
+        maxFeatures: maxFeatures.toString(),
+    });
+
+    const [minLon, minLat, maxLon, maxLat] = bbox.split(",");
+    const bboxFilter = `BBOX(geom,${minLon},${minLat},${maxLon},${maxLat},'EPSG:4326')`;
+
+    let cqlFilter = bboxFilter;
+    if (types && types.length > 0) {
+        const typeFilter = types.map((type) => `type='${type}'`).join(" OR ");
+        cqlFilter = `${bboxFilter} AND (${typeFilter})`;
+    }
+
+    params.append("cql_filter", cqlFilter);
+
+    return axios
+        .get(`${apiUrl}/geoserver/bdtopo/wfs?${params}`)
+        .then((response) => response.data)
+        .catch((error) => {
+            console.error("Error fetching POI data:", error);
+            throw error;
+        });
+};
