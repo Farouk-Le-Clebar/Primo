@@ -7,13 +7,13 @@ interface Props {
 
 const {
   title,
-  description = "Primo centralise toutes les informations cadastrales, urbanisme, risques et qualité de vie d'une parcelle en un clic. Gratuit et accessible à tous.",
+  description = "Primo centralise toutes les informations cadastrales, urbanisme, risques et qualité de vie d'une parcelle en un clic.",
   ogImage = "/og-image.png",
 } = Astro.props;
 
 const canonicalURL = new URL(
   Astro.url.pathname,
-  Astro.site || "https://primo-data.fr"
+  Astro.site || "https://primo-data.fr",
 );
 const siteUrl = Astro.site?.toString() || "https://primo-data.fr";
 const fullOgImage = new URL(ogImage, siteUrl).toString();
@@ -54,7 +54,7 @@ const fullOgImage = new URL(ogImage, siteUrl).toString();
         "@type": "SoftwareApplication",
         name: "Primo",
         description:
-          "Plateforme gratuite centralisant toutes les informations cadastrales et foncières en France",
+          "Plateforme centralisant toutes les informations cadastrales et foncières en France",
         applicationCategory: "BusinessApplication",
         operatingSystem: "Web, iOS, Android",
         offers: {
