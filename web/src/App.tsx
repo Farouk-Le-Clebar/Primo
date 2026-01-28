@@ -1,5 +1,4 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import { Toaster } from "react-hot-toast";
 
 // COMPONENTS
 import Layout from "./components/layouts/layout";
