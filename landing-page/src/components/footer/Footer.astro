@@ -1,0 +1,103 @@
+---
+import { Linkedin, Mail } from "lucide-react";
+import Logo from "@assets/logos/logoPrimoWhite.svg?url";
+import { EXTERNAL_LINKS, NAV_ITEMS, SITE_META } from "@config/constants";
+---
+
+<footer class="bg-gray-900 text-white py-12">
+  <div class="max-w-7xl mx-auto px-4 md:px-8">
+    <div class="grid md:grid-cols-4 gap-8 mb-8">
+      <div class="md:col-span-2">
+        <div class="flex items-center gap-2 mb-4">
+          <img src={Logo} alt="Logo Primo" class="h-8 w-8" />
+          <span class="text-2xl font-bold">Primo.</span>
+        </div>
+        <p class="text-gray-400 mb-4 max-w-md">
+          La plateforme qui centralise toutes les informations sur une parcelle
+          cadastrale en un clic. Gratuit, accessible et alimenté par l'IA.
+        </p>
+        <div class="flex items-center gap-4">
+          <a
+            href={EXTERNAL_LINKS.LINKEDIN}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="bg-gray-800 p-2 rounded-lg hover:bg-green-600 transition"
+            aria-label="LinkedIn"
+          >
+            <Linkedin size={20} />
+          </a>
+          <a
+            href={EXTERNAL_LINKS.EMAIL}
+            class="bg-gray-800 p-2 rounded-lg hover:bg-green-600 transition"
+            aria-label="Email"
+          >
+            <Mail size={20} />
+          </a>
+        </div>
+      </div>
+
+      <div>
+        <h3 class="font-semibold text-lg mb-4">Navigation</h3>
+        <ul class="space-y-2">
+          {
+            NAV_ITEMS.map((item) => (
+              <li>
+                <a
+                  href={`#${item.id}`}
+                  class="text-gray-400 hover:text-green-500 transition"
+                >
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="font-semibold text-lg mb-4">Liens utiles</h3>
+        <ul class="space-y-2">
+          <li>
+            <a
+              href={EXTERNAL_LINKS.BETA_FORM}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-gray-400 hover:text-green-500 transition"
+            >
+              Rejoindre la beta
+            </a>
+          </li>
+          <li>
+            <a
+              href={EXTERNAL_LINKS.LINKEDIN}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-gray-400 hover:text-green-500 transition"
+            >
+              LinkedIn
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="border-t border-gray-800 pt-8">
+      <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+        <p class="text-gray-400 text-sm">
+          © {SITE_META.CURRENT_YEAR} Primo. Tous droits réservés.
+        </p>
+        <div class="flex gap-6 text-sm">
+          <a href="/" class="text-gray-400 hover:text-green-500 transition">
+            Mentions légales
+          </a>
+          <a href="/" class="text-gray-400 hover:text-green-500 transition">
+            Confidentialité
+          </a>
+          <a href="/" class="text-gray-400 hover:text-green-500 transition">
+            CGU
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>

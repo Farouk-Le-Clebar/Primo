@@ -11,8 +11,8 @@ async function bootstrap() {
   app.use(morgan('dev'));
 
   app.enableCors({
-    origin: process.env.FRONT_URL,
-    credentials: true,
+    origin: "*",
+    credentials: false,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
   });

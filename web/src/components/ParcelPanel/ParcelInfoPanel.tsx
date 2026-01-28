@@ -23,6 +23,7 @@ export default function ParcelInfoPanel() {
   useEffect(() => {
     if (selectedParcelle?.feature) {
       setIsVisible(true);
+      console.log("selectedParcelle", selectedParcelle);
       setHasSelectedOnce(true);
     } else {
         setHasSelectedOnce(false);
@@ -33,7 +34,7 @@ export default function ParcelInfoPanel() {
   const widgets = getWidgetsFromUserProfile();
 
   const properties = selectedParcelle?.feature?.properties;
-  const parcelId = properties?.idu || "Parcelle inconnue";
+  const parcelId = properties?.id || "Parcelle inconnue";
 
   if (!hasSelectedOnce && !selectedParcelle?.feature) return null;
 

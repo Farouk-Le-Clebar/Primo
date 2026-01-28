@@ -66,7 +66,7 @@ export default function Navbar() {
         </div>
 
         <div className="flex-1 max-w-xl">
-          <SearchingBar onAddressSelect={(coords) => console.log(coords)} />
+          <SearchingBar onAddressSelect={(coords) => console.log(coords)}/>
         </div>
       </div>
 

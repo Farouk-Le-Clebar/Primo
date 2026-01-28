@@ -18,7 +18,7 @@ export default function BuildingsWidget({ feature }: ParcelWidgetProps) {
   useEffect(() => {
     if (!feature?.geometry) return;
 
-    const departement = feature.properties?.code_dep || '75';
+    const departement = 31;
     
     const allCoords = feature.geometry.coordinates.flat(2);
     
