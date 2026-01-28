@@ -10,6 +10,8 @@ import QuickAction from '../../components/dashboard/QuickAction';
 import MenuItem from '../../components/dashboard/MenuItem';
 import StatsCard from '../../components/dashboard/StatsCard';
 import { IconName } from '../../types/icons';
+import { useNavigation } from '@react-navigation/native';
+import { NavigationProp } from '../../types/navigation';
 
 interface QuickActionConfig {
     icon: IconName;
@@ -41,8 +43,15 @@ const MENU_ITEMS: readonly MenuItemConfig[] = [
 const DashboardScreen = memo(() => {
     const { showComingSoon } = useSnackbar();
     const { logout } = useAuth();
+    const navigation = useNavigation<NavigationProp>();
 
-    const handleFeaturePress = showComingSoon;
+    const handleFeaturePress = (feature: string) => {
+        if (feature === 'Carte') {
+            navigation.navigate('Map');
+        } else {
+            showComingSoon(feature);
+        }
+    }
 
     return (
         <ScreenLayout className="bg-gray-50" contentContainerClassName="px-5 py-6">
