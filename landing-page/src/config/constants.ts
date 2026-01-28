@@ -18,7 +18,7 @@ export const SITE_META = {
   TAGLINE: "Primo.",
   DOMAIN: "https://primo-data.fr",
   DESCRIPTION:
-    "Primo centralise toutes les informations cadastrales, urbanisme, risques et qualité de vie d'une parcelle en un clic. Gratuit et accessible à tous.",
+    "Primo centralise toutes les informations cadastrales, urbanisme, risques et qualité de vie d'une parcelle en un clic.",
   CURRENT_YEAR: new Date().getFullYear(),
 } as const;
 

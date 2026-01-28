@@ -15,7 +15,7 @@ services:
       - web
 
   backend:
-    image: garoverr/primo-backend:latest
+    image: garoverr/primo-backend:dev
     environment:
       MYSQL_HOST: mysql_db
       MYSQL_PORT: 3306
