@@ -27,7 +27,6 @@ const PoiLayer = ({
     enabledPoiTypes,
     dataPois,
 }: PoiLayerProps) => {
-    
     const { mutate: poisBoundsMutation } = useMutation({
         mutationFn: ({
             bbox,
@@ -93,7 +92,7 @@ const PoiLayer = ({
                             console.warn(
                                 "Failed to parse tags for POI:",
                                 props.name,
-                                e
+                                e,
                             );
                         }
                     } else if (props.tags && typeof props.tags === "object") {
@@ -114,10 +113,7 @@ const PoiLayer = ({
                             border: 2px solid white;
                             box-shadow: 0 2px 5px rgba(0,0,0,0.3);
                         ">
-                            <span style="
-                                transform: rotate(45deg);
-                                font-size: 16px;
-                            ">${config.icon}</span>
+                            <span style="transform: rotate(45deg); font-size: 16px;">${config.icon}</span>
                         </div>
                     `,
                         className: "custom-poi-icon",
@@ -128,15 +124,19 @@ const PoiLayer = ({
 
                     const buildAddress = () => {
                         const parts = [];
-                        if (tags["addr:housenumber"]) parts.push(tags["addr:housenumber"]);
-                        if (tags["addr:street"]) parts.push(tags["addr:street"]);
-                        
+                        if (tags["addr:housenumber"])
+                            parts.push(tags["addr:housenumber"]);
+                        if (tags["addr:street"])
+                            parts.push(tags["addr:street"]);
+
                         const line1 = parts.join(" ");
                         const line2Parts = [];
-                        if (tags["addr:postcode"]) line2Parts.push(tags["addr:postcode"]);
-                        if (tags["addr:city"]) line2Parts.push(tags["addr:city"]);
+                        if (tags["addr:postcode"])
+                            line2Parts.push(tags["addr:postcode"]);
+                        if (tags["addr:city"])
+                            line2Parts.push(tags["addr:city"]);
                         const line2 = line2Parts.join(" ");
-                        
+
                         if (line1 && line2) return `${line1}, ${line2}`;
                         if (line1) return line1;
                         if (line2) return line2;
@@ -147,6 +147,7 @@ const PoiLayer = ({
                     const phone = tags.phone || tags["contact:phone"];
                     const website = tags.website || tags["contact:website"];
                     const email = tags.email || tags["contact:email"];
+                    const openingHours = tags.opening_hours;
 
                     return (
                         <Marker
@@ -155,85 +156,50 @@ const PoiLayer = ({
                             icon={customIcon}
                         >
                             <Popup>
-                                <div
-                                    style={{
-                                        fontFamily: "sans-serif",
-                                        minWidth: "200px",
-                                        maxWidth: "300px",
-                                    }}
-                                >
-                                    {/* En-tête avec icône et nom */}
-                                    <div
-                                        style={{
-                                            display: "flex",
-                                            alignItems: "center",
-                                            gap: "8px",
-                                            marginBottom: "12px",
-                                            paddingBottom: "8px",
-                                            borderBottom: "1px solid #e0e0e0",
-                                        }}
-                                    >
-                                        <span style={{ fontSize: "28px" }}>
+                                <div className="font-sans min-w-[220px] max-w-[280px]">
+                                    {/* En-tête */}
+                                    <div className="flex items-center gap-2 mb-4 pb-3 border-b border-gray-100">
+                                        <span
+                                            className="text-2xl"
+                                            style={{ color: config.color }}
+                                        >
                                             {config.icon}
                                         </span>
-                                        <div style={{ flex: 1 }}>
-                                            <h3
-                                                style={{
-                                                    margin: 0,
-                                                    color: "#2c3e50",
-                                                    fontSize: "15px",
-                                                    fontWeight: "bold",
-                                                    lineHeight: 1.2,
-                                                }}
-                                            >
-                                                {props.name || tags.name || "Sans nom"}
+                                        <div className="flex-1">
+                                            <h3 className="text-[15px] font-semibold text-gray-900 leading-tight m-0">
+                                                {props.name ||
+                                                    tags.name ||
+                                                    "Sans nom"}
                                             </h3>
-                                            <p
-                                                style={{
-                                                    margin: "2px 0 0 0",
-                                                    color: config.color,
-                                                    fontSize: "11px",
-                                                    fontWeight: "600",
-                                                }}
-                                            >
+                                            <p className="text-[11px] font-medium text-gray-500 mt-0.5 m-0">
                                                 {config.label}
                                             </p>
                                         </div>
                                     </div>
 
                                     {/* Informations de contact */}
-                                    <div style={{ marginBottom: "8px" }}>
+                                    <div className="space-y-3">
                                         {address && (
-                                            <div
-                                                style={{
-                                                    margin: "6px 0",
-                                                    fontSize: "11px",
-                                                    display: "flex",
-                                                    gap: "6px",
-                                                }}
-                                            >
-                                                <span>📍</span>
-                                                <span style={{ color: "#555" }}>
+                                            <div>
+                                                <h4 className="text-[10px] font-semibold tracking-wide text-gray-400 mb-[-10px]">
+                                                    Adresse
+                                                </h4>
+                                                <p className="text-[12px] text-gray-700 leading-relaxed">
                                                     {address}
-                                                </span>
+                                                </p>
                                             </div>
                                         )}
 
                                         {phone && (
-                                            <div
-                                                style={{
-                                                    margin: "6px 0",
-                                                    fontSize: "11px",
-                                                    display: "flex",
-                                                    gap: "6px",
-                                                }}
-                                            >
-                                                <span>📞</span>
+                                            <div>
+                                                <h4 className="text-[10px] font-semibold tracking-wide text-gray-400 mb-1">
+                                                    Téléphone
+                                                </h4>
                                                 <a
                                                     href={`tel:${phone}`}
+                                                    className="text-[12px] no-underline hover:underline transition-colors duration-150"
                                                     style={{
                                                         color: config.color,
-                                                        textDecoration: "none",
                                                     }}
                                                 >
                                                     {phone}
@@ -242,21 +208,15 @@ const PoiLayer = ({
                                         )}
 
                                         {email && (
-                                            <div
-                                                style={{
-                                                    margin: "6px 0",
-                                                    fontSize: "11px",
-                                                    display: "flex",
-                                                    gap: "6px",
-                                                }}
-                                            >
-                                                <span>✉️</span>
+                                            <div>
+                                                <h4 className="text-[10px] font-semibold tracking-wide text-gray-400 mb-1">
+                                                    Email
+                                                </h4>
                                                 <a
                                                     href={`mailto:${email}`}
+                                                    className="text-[12px] no-underline hover:underline transition-colors duration-150 break-all"
                                                     style={{
                                                         color: config.color,
-                                                        textDecoration: "none",
-                                                        wordBreak: "break-all",
                                                     }}
                                                 >
                                                     {email}
@@ -265,46 +225,40 @@ const PoiLayer = ({
                                         )}
 
                                         {website && (
-                                            <div
-                                                style={{
-                                                    margin: "6px 0",
-                                                    fontSize: "11px",
-                                                    display: "flex",
-                                                    gap: "6px",
-                                                }}
-                                            >
-                                                <span>🌐</span>
+                                            <div>
+                                                <h4 className="text-[10px] font-semibold tracking-wide text-gray-400 mb-1">
+                                                    Site web
+                                                </h4>
                                                 <a
                                                     href={website}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
+                                                    className="text-[12px] no-underline hover:underline transition-colors duration-150"
                                                     style={{
                                                         color: config.color,
-                                                        textDecoration: "none",
                                                     }}
                                                 >
-                                                    Visiter le site
+                                                    {website.replace(
+                                                        /^https?:\/\//,
+                                                        "",
+                                                    )}
                                                 </a>
                                             </div>
                                         )}
 
-                                        {tags.opening_hours && (
-                                            <div
-                                                style={{
-                                                    margin: "6px 0",
-                                                    fontSize: "11px",
-                                                    display: "flex",
-                                                    gap: "6px",
-                                                }}
-                                            >
-                                                <span>🕐</span>
-                                                <span style={{ color: "#555", fontSize: "10px" }}>
-                                                    {tags.opening_hours}
-                                                </span>
+                                        {openingHours && (
+                                            <div>
+                                                <h4 className="text-[10px] font-semibold tracking-wide text-gray-400 mb-1">
+                                                    Horaires
+                                                </h4>
+                                                <div className="text-[11px] text-gray-700 leading-relaxed space-y-0.5">
+                                                    {formatOpeningHours(
+                                                        openingHours,
+                                                    )}
+                                                </div>
                                             </div>
                                         )}
                                     </div>
-
                                 </div>
                             </Popup>
                         </Marker>
@@ -312,6 +266,50 @@ const PoiLayer = ({
                 })}
         </>
     );
+};
+
+const formatOpeningHours = (hoursString: string) => {
+    const lines = hoursString.split(";").map((line) => line.trim());
+
+    return lines.map((line, index) => {
+        const [daysPart, hoursPart] = line.split(/\s+/);
+
+        if (!hoursPart) {
+            return (
+                <div key={index} className="flex justify-between">
+                    <span className="font-medium">{line}</span>
+                </div>
+            );
+        }
+
+        let formattedDays = daysPart;
+        const dayMap: Record<string, string> = {
+            Mo: "Lun",
+            Tu: "Mar",
+            We: "Mer",
+            Th: "Jeu",
+            Fr: "Ven",
+            Sa: "Sam",
+            Su: "Dim",
+        };
+
+        Object.entries(dayMap).forEach(([osm, fr]) => {
+            formattedDays = formattedDays.replace(osm, fr);
+        });
+
+        const formattedHours = hoursPart.replace("-", " - "); // peut-etre à supprimer car ça peut créer petite différences
+
+        return (
+            <div key={index} className="flex justify-between items-center">
+                <span className="font-medium text-gray-600">
+                    {formattedDays}
+                </span>
+                <span className="font-semibold text-gray-800">
+                    {formattedHours}
+                </span>
+            </div>
+        );
+    });
 };
 
 export default PoiLayer;
