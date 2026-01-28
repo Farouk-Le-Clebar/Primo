@@ -18,7 +18,7 @@ services:
     image: garoverr/primo-backend:latest
     environment:
       MYSQL_HOST: mysql_db
-      MYSQL_PORT: 6673
+      MYSQL_PORT: 3306
       MYSQL_USER: user_primo
       MYSQL_PASSWORD: V3RyS3eCr3tP@ssw0rd
       MYSQL_DATABASE: primo
