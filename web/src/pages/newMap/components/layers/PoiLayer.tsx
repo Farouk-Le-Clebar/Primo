@@ -100,7 +100,6 @@ const PoiLayer = ({
                         tags = props.tags;
                     }
 
-                    // Icône personnalisée
                     const customIcon = L.divIcon({
                         html: `
                         <div style="
@@ -127,7 +126,6 @@ const PoiLayer = ({
                         popupAnchor: [0, -30],
                     });
 
-                    // Construction de l'adresse complète
                     const buildAddress = () => {
                         const parts = [];
                         if (tags["addr:housenumber"]) parts.push(tags["addr:housenumber"]);
