@@ -3,7 +3,8 @@ import { useEffect } from "react";
 import { Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 import { getPoisByBbox } from "../../../../requests/map";
-import { getMaxFeaturesForZoom,
+import {
+    getMaxFeaturesForZoom,
     MIN_ZOOM_FOR_POIS,
     POI_CONFIGS,
     type PoiType,
@@ -26,7 +27,7 @@ const PoiLayer = ({
     enabledPoiTypes,
     dataPois,
 }: PoiLayerProps) => {
-
+    
     const { mutate: poisBoundsMutation } = useMutation({
         mutationFn: ({
             bbox,
@@ -83,7 +84,23 @@ const PoiLayer = ({
 
                     if (!config) return null;
 
-                    // a changer ici car pas bo
+                    // Parser les tags si c'est une string JSON
+                    let tags: Record<string, any> = {};
+                    if (typeof props.tags === "string") {
+                        try {
+                            tags = JSON.parse(props.tags);
+                        } catch (e) {
+                            console.warn(
+                                "Failed to parse tags for POI:",
+                                props.name,
+                                e
+                            );
+                        }
+                    } else if (props.tags && typeof props.tags === "object") {
+                        tags = props.tags;
+                    }
+
+                    // Icône personnalisée
                     const customIcon = L.divIcon({
                         html: `
                         <div style="
@@ -110,46 +127,75 @@ const PoiLayer = ({
                         popupAnchor: [0, -30],
                     });
 
+                    // Construction de l'adresse complète
+                    const buildAddress = () => {
+                        const parts = [];
+                        if (tags["addr:housenumber"]) parts.push(tags["addr:housenumber"]);
+                        if (tags["addr:street"]) parts.push(tags["addr:street"]);
+                        
+                        const line1 = parts.join(" ");
+                        const line2Parts = [];
+                        if (tags["addr:postcode"]) line2Parts.push(tags["addr:postcode"]);
+                        if (tags["addr:city"]) line2Parts.push(tags["addr:city"]);
+                        const line2 = line2Parts.join(" ");
+                        
+                        if (line1 && line2) return `${line1}, ${line2}`;
+                        if (line1) return line1;
+                        if (line2) return line2;
+                        return null;
+                    };
+
+                    const address = buildAddress();
+                    const phone = tags.phone || tags["contact:phone"];
+                    const website = tags.website || tags["contact:website"];
+                    const email = tags.email || tags["contact:email"];
+
                     return (
                         <Marker
                             key={`poi-${props.osm_id || index}`}
-                            position={[coords[1], coords[0]]} // [lat, lon]
+                            position={[coords[1], coords[0]]}
                             icon={customIcon}
                         >
                             <Popup>
                                 <div
                                     style={{
                                         fontFamily: "sans-serif",
-                                        minWidth: "180px",
+                                        minWidth: "200px",
+                                        maxWidth: "300px",
                                     }}
                                 >
+                                    {/* En-tête avec icône et nom */}
                                     <div
                                         style={{
                                             display: "flex",
                                             alignItems: "center",
                                             gap: "8px",
-                                            marginBottom: "8px",
+                                            marginBottom: "12px",
+                                            paddingBottom: "8px",
+                                            borderBottom: "1px solid #e0e0e0",
                                         }}
                                     >
-                                        <span style={{ fontSize: "24px" }}>
+                                        <span style={{ fontSize: "28px" }}>
                                             {config.icon}
                                         </span>
-                                        <div>
+                                        <div style={{ flex: 1 }}>
                                             <h3
                                                 style={{
                                                     margin: 0,
                                                     color: "#2c3e50",
-                                                    fontSize: "14px",
+                                                    fontSize: "15px",
                                                     fontWeight: "bold",
+                                                    lineHeight: 1.2,
                                                 }}
                                             >
-                                                {props.name || "Sans nom"}
+                                                {props.name || tags.name || "Sans nom"}
                                             </h3>
                                             <p
                                                 style={{
-                                                    margin: 0,
-                                                    color: "#7f8c8d",
+                                                    margin: "2px 0 0 0",
+                                                    color: config.color,
                                                     fontSize: "11px",
+                                                    fontWeight: "600",
                                                 }}
                                             >
                                                 {config.label}
@@ -157,48 +203,110 @@ const PoiLayer = ({
                                         </div>
                                     </div>
 
-                                    {props.tags?.phone && (
-                                        <p
-                                            style={{
-                                                margin: "4px 0",
-                                                fontSize: "10px",
-                                            }}
-                                        >
-                                            <strong>📞 Téléphone:</strong>{" "}
-                                            {props.tags.phone}
-                                        </p>
-                                    )}
-
-                                    {props.tags?.opening_hours && (
-                                        <p
-                                            style={{
-                                                margin: "4px 0",
-                                                fontSize: "10px",
-                                            }}
-                                        >
-                                            <strong>🕐 Horaires:</strong>{" "}
-                                            {props.tags.opening_hours}
-                                        </p>
-                                    )}
-
-                                    {props.tags?.website && (
-                                        <p
-                                            style={{
-                                                margin: "4px 0",
-                                                fontSize: "10px",
-                                            }}
-                                        >
-                                            <strong>🌐 Site:</strong>{" "}
-                                            <a
-                                                href={props.tags.website}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                style={{ color: config.color }}
+                                    {/* Informations de contact */}
+                                    <div style={{ marginBottom: "8px" }}>
+                                        {address && (
+                                            <div
+                                                style={{
+                                                    margin: "6px 0",
+                                                    fontSize: "11px",
+                                                    display: "flex",
+                                                    gap: "6px",
+                                                }}
                                             >
-                                                Visiter
-                                            </a>
-                                        </p>
-                                    )}
+                                                <span>📍</span>
+                                                <span style={{ color: "#555" }}>
+                                                    {address}
+                                                </span>
+                                            </div>
+                                        )}
+
+                                        {phone && (
+                                            <div
+                                                style={{
+                                                    margin: "6px 0",
+                                                    fontSize: "11px",
+                                                    display: "flex",
+                                                    gap: "6px",
+                                                }}
+                                            >
+                                                <span>📞</span>
+                                                <a
+                                                    href={`tel:${phone}`}
+                                                    style={{
+                                                        color: config.color,
+                                                        textDecoration: "none",
+                                                    }}
+                                                >
+                                                    {phone}
+                                                </a>
+                                            </div>
+                                        )}
+
+                                        {email && (
+                                            <div
+                                                style={{
+                                                    margin: "6px 0",
+                                                    fontSize: "11px",
+                                                    display: "flex",
+                                                    gap: "6px",
+                                                }}
+                                            >
+                                                <span>✉️</span>
+                                                <a
+                                                    href={`mailto:${email}`}
+                                                    style={{
+                                                        color: config.color,
+                                                        textDecoration: "none",
+                                                        wordBreak: "break-all",
+                                                    }}
+                                                >
+                                                    {email}
+                                                </a>
+                                            </div>
+                                        )}
+
+                                        {website && (
+                                            <div
+                                                style={{
+                                                    margin: "6px 0",
+                                                    fontSize: "11px",
+                                                    display: "flex",
+                                                    gap: "6px",
+                                                }}
+                                            >
+                                                <span>🌐</span>
+                                                <a
+                                                    href={website}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    style={{
+                                                        color: config.color,
+                                                        textDecoration: "none",
+                                                    }}
+                                                >
+                                                    Visiter le site
+                                                </a>
+                                            </div>
+                                        )}
+
+                                        {tags.opening_hours && (
+                                            <div
+                                                style={{
+                                                    margin: "6px 0",
+                                                    fontSize: "11px",
+                                                    display: "flex",
+                                                    gap: "6px",
+                                                }}
+                                            >
+                                                <span>🕐</span>
+                                                <span style={{ color: "#555", fontSize: "10px" }}>
+                                                    {tags.opening_hours}
+                                                </span>
+                                            </div>
+                                        )}
+                                    </div>
+
                                 </div>
                             </Popup>
                         </Marker>
