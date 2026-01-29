@@ -2,7 +2,7 @@ import { store } from "../store/store";
 
 export const isUserInfos = () => {
     const state = store.getState();
-    const userData = state.user.userInfo;
+    const userData = state.user.userInfo as any;
 
     if (!userData || !userData.user) {
         return false;

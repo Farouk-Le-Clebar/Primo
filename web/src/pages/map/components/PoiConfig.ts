@@ -18,7 +18,7 @@ export type PoiType = {
 export interface PoiConfig {
     type: string;
     label: string;
-    ticon: any; // Type de lucide-react
+    ticon: any;
     icon: string;
     color: string;
     enabled: boolean;

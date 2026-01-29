@@ -2,14 +2,8 @@ import { useState } from "react";
 import { X } from "lucide-react";
 
 const PRESET_AVATARS = [
-  "blue.png",
-  "cyan.png",
-  "green.png",
-  "orange.png",
-  "pink.png",
-  "white.png",
-  "whitepink.png",
-  "yellow.png"
+  "blue.png", "cyan.png", "green.png", "orange.png",
+  "pink.png", "white.png", "whitepink.png", "yellow.png"
 ];
 
 interface AvatarUploadProps {
@@ -19,17 +13,17 @@ interface AvatarUploadProps {
 
 export default function AvatarUpload({ currentImage, onImageChange }: AvatarUploadProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [preview, setPreview] = useState<string | null>(null);
+  const [preview, setPreview] = useState<string | undefined>(undefined);
 
-  const getAssetPath = (name: string | undefined | null) => {
-    if (!name) return null; 
+  const getAssetPath = (name: string | undefined | null): string | undefined => {
+    if (!name) return undefined; 
     
     if (name.includes("/") || name.startsWith("data:")) return name;
     
     try {
       return new URL(`../../../../assets/profilePictures/${name}`, import.meta.url).href;
     } catch (e) {
-      return null;
+      return undefined;
     }
   };
 

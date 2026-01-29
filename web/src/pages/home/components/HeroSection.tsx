@@ -1,7 +1,6 @@
 import { Building2, Map as MapIcon, Users, ShieldAlert } from "lucide-react";
 
 export default function HeroSection() {
-  // Données factices pour remplir les widgets
   const miniWidgets = [
     { label: "Parcelles", icon: <MapIcon size={16} />, value: "1,240" },
     { label: "Bâtiments", icon: <Building2 size={16} />, value: "850" },

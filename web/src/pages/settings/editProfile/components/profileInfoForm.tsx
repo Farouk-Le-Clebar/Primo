@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useMutation } from "@tanstack/react-query";
 import type { RootState } from "../../../../store/store.ts";
@@ -27,12 +27,15 @@ export default function ProfileInfoForm() {
   });
 
   useEffect(() => {
-    if (userData?.user) {
+
+    const userContainer = userData as any;
+
+    if (userContainer?.user) {
       setFormData({
-        firstName: userData.user.firstName || "",
-        lastName: userData.user.surName || "",
-        email: userData.user.email || "",
-        profilePicture: userData.user.profilePicture || profilePlaceholder
+        firstName: userContainer.user.firstName || "",
+        lastName: userContainer.user.surName || "",
+        email: userContainer.user.email || "",
+        profilePicture: userContainer.user.profilePicture || profilePlaceholder
       });
     }
   }, [userData]);

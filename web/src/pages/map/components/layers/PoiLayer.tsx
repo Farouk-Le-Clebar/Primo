@@ -9,7 +9,7 @@ import {
     POI_CONFIGS,
     type PoiType,
 } from "../PoiConfig";
-import { boundToBbox } from "../MapUtils";
+import { boundToBbox } from "../../../../utils/map";
 import type { FeatureCollection } from "geojson";
 
 type PoiLayerProps = {
