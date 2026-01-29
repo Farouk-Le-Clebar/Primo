@@ -11,7 +11,6 @@ import { AuthModalProvider } from "./context/AuthModalProvider";
 const queryClient = new QueryClient();
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
     <QueryClientProvider client={queryClient}>
       <Provider store={store}>
         <AuthModalProvider>
@@ -21,5 +20,4 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         </AuthModalProvider>
       </Provider>
     </QueryClientProvider>
-  </React.StrictMode>
 );
