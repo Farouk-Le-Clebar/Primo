@@ -13,14 +13,25 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async register(email: string, password: string) {
-    const existingUser = await this.userRepository.findOne({ where: { email } });
+  async register(
+    email: string,
+    firstName: string,
+    surName: string,
+    password: string,
+  ) {
+
+    console.log("Registering user:", email, firstName, surName);
+  
+    const existingUser = await this.userRepository.findOne({
+      where: { email },
+    });
     if (existingUser) {
       throw new UnauthorizedException('Email déjà utilisé');
     }
-
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = this.userRepository.create({
+      firstName,
+      surName,
       email,
       password: hashedPassword,
     });
@@ -31,7 +42,7 @@ export class AuthService {
     const token = this.jwtService.sign(payload);
 
     const { password: _, ...result } = user;
-    
+
     return {
       access_token: token,
       user: {
@@ -47,9 +58,15 @@ export class AuthService {
   async login(email: string, password: string) {
     const user = await this.userRepository.findOne({
       where: { email },
-      select: ['id', 'email', 'firstName', 'surName', 'profilePicture', 'password'],
+      select: [
+        'id',
+        'email',
+        'firstName',
+        'surName',
+        'profilePicture',
+        'password',
+      ],
     });
-    
     if (!user) {
       throw new UnauthorizedException('Identifiants invalides');
     }
@@ -75,23 +92,15 @@ export class AuthService {
   }
 
   async validateUser(payload: { sub: number; email: string }) {
-    console.log('🔍 Validating user with payload:', payload);
-    
     const user = await this.userRepository.findOne({
       where: { id: payload.sub },
       select: ['id', 'email', 'firstName', 'surName', 'profilePicture'],
     });
-    
+
     if (!user) {
-      console.log('❌ User not found in database');
+      console.log('User not found in database');
       return null;
     }
-
-    console.log('✅ User validated:', {
-      id: user.id,
-      email: user.email,
-      firstName: user.firstName,
-    });
 
     return {
       email: user.email,
