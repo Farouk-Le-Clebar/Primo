@@ -1,0 +1,15 @@
+---
+import Layout from "@layouts/Layout.astro";
+import Navbar from "@components/navbar/Navbar";
+import Home from "@pages/home/Home.astro";
+import Footer from "@components/footer/Footer.astro";
+---
+
+<Layout
+  title="Primo - Toutes les informations cadastrales en un clic"
+  description="Accédez aux données cadastrales, PLU, risques naturels et qualité de vie de n'importe quelle parcelle en France. Plateforme intuitive avec assistant IA."
+>
+  <Navbar client:load />
+  <Home />
+  <Footer />
+</Layout>

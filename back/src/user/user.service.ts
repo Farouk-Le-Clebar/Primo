@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../database/user.entity';
+import { UpdateProfileDto } from './dto/update-profile';
 
 @Injectable()
 export class UserService {
@@ -22,5 +23,19 @@ export class UserService {
       throw new NotFoundException('User not found');
     }
     return user;
+  }
+
+  async updateProfile(email: string, updateData: UpdateProfileDto) {
+    const user = await this.getUserByEmail(email);
+
+    Object.assign(user, updateData);
+
+    const updatedUser = await this.userRepo.save(user);
+
+    const { password, ...safeUser } = updatedUser;
+    return {
+      message: 'Profil mis à jour avec succès',
+      user: safeUser,
+    };
   }
 }

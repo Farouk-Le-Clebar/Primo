@@ -20,3 +20,12 @@ export const getUserByToken = async (token: string) => {
   const response = await axios.get(apiUrl + `/user/${encodeURIComponent(token)}`);
   return response.data;
 };
+
+export const updateUserProfile = async (token: string, profileData: any) => {
+  const response = await axios.put(`${apiUrl}/user/profile`, profileData, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+  return response.data;
+}

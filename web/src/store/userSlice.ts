@@ -5,12 +5,12 @@ import type { User } from "./userTypes";
 const savedUser = localStorage.getItem("user");
 
 interface UserState {
-  data: User | null;
+  userInfo: User | null;
   isAuthenticated: boolean;
 }
 
 const initialState: UserState = {
-  data: savedUser ? JSON.parse(savedUser) : null,
+  userInfo: savedUser ? JSON.parse(savedUser) : null,
   isAuthenticated: !!savedUser,
 };
 
@@ -19,12 +19,12 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     setUser: (state, action: PayloadAction<User>) => {
-      state.data = action.payload;
+      state.userInfo = action.payload;
       state.isAuthenticated = true;
       localStorage.setItem("user", JSON.stringify(action.payload));
     },
     clearUser: (state) => {
-      state.data = null;
+      state.userInfo = null;
       state.isAuthenticated = false;
       localStorage.removeItem("user");
     },
