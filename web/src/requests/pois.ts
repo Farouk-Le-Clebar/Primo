@@ -7,7 +7,7 @@ export interface PoiFeature {
   id: string;
   geometry: {
     type: "Point";
-    coordinates: [number, number]; // [lon, lat]
+    coordinates: [number, number];
   };
   properties: {
     osm_id: string;
