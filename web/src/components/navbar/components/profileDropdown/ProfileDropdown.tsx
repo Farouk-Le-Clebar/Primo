@@ -8,14 +8,18 @@ import DropdownMenu from "./ProfileDropdownMenu.tsx";
 export default function ProfileDropdown() {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  
   const userData = useSelector((state: RootState) => state.user.userInfo);
 
-  const user = userData?.user || userData;
+  const userContainer = userData as any;
+  const currentUser = userContainer?.user ? userContainer.user : userContainer;
 
   const getAvatarUrl = (name: string | undefined) => {
     const fileName = name || "green.png";
-    return new URL(`../../../../assets/profilePictures/${fileName}`, import.meta.url).href;
+    try {
+      return new URL(`../../../../assets/profilePictures/${fileName}`, import.meta.url).href;
+    } catch (e) {
+      return new URL(`../../../../assets/profilePictures/green.png`, import.meta.url).href;
+    }
   };
 
   useEffect(() => {
@@ -36,7 +40,7 @@ export default function ProfileDropdown() {
       >
         <div className="w-9 h-9 rounded-full overflow-hidden border-2 border-transparent group-hover:border-green-500 transition-all duration-200 shadow-sm">
           <img
-            src={getAvatarUrl(user?.profilePicture)}
+            src={getAvatarUrl(currentUser?.profilePicture)}
             alt="Profile"
             className="w-full h-full object-cover"
           />
@@ -45,7 +49,6 @@ export default function ProfileDropdown() {
 
       {isOpen && (
         <DropdownMenu 
-          user={userData.user} 
           onClose={() => setIsOpen(false)} 
         />
       )}

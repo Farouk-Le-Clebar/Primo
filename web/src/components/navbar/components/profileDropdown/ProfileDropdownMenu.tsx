@@ -9,11 +9,10 @@ import CustomNavLink from "../../../../ui/Navlink";
 import { User, Settings, LogOut } from "lucide-react";
 
 interface DropdownMenuProps {
-  user: any;
   onClose: () => void;
 }
 
-export default function DropdownMenu({ user, onClose }: DropdownMenuProps) {
+export default function DropdownMenu({ onClose }: DropdownMenuProps) {
   const dispatch = useDispatch();
 
   const handleLogout = () => {
@@ -28,7 +27,7 @@ export default function DropdownMenu({ user, onClose }: DropdownMenuProps) {
     <div className="absolute right-[-10px] mt-2 w-64 bg-white rounded-xl shadow-xl border border-[#E6E7EB] py-2 z-50 transform origin-top-right flex flex-col gap-1">
       
       <div className="px-4 py-3 border-b border-gray-50 mb-1">
-        <UserProfile user={user} />
+        <UserProfile/>
       </div>
 
       <CustomNavLink
