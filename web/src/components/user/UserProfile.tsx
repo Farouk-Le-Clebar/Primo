@@ -6,15 +6,12 @@ import type { RootState } from "../../store/store";
 // ASSETS
 import profilePlaceholder from "../../assets/profilePictures/green.png";
 
-interface UserProfileProps {
-  user?: any; 
-}
+export default function UserProfile() {
+  const userData = useSelector((state: RootState) => state.user.userInfo);
 
-export default function UserProfile({ user: userProp }: UserProfileProps) {
-  const reduxUserInfo = useSelector((state: RootState) => state.user.userInfo);
+  const userContainer = userData as any;
 
-  const activeUser = userProp || reduxUserInfo?.user || reduxUserInfo;
-
+  
   const getAvatarUrl = (name: string | undefined) => {
     const fileName = name || "green.png";
     try {
@@ -33,7 +30,7 @@ export default function UserProfile({ user: userProp }: UserProfileProps) {
     <div className="flex h-full w-full items-center gap-3">
       <div className="w-10 h-10 rounded-full overflow-hidden border border-gray-100 shadow-sm flex-shrink-0">
         <img
-          src={getAvatarUrl(activeUser?.profilePicture)}
+          src={getAvatarUrl(userContainer?.user.profilePicture)}
           alt="User profile"
           className="w-full h-full object-cover"
           onError={(e) => (e.currentTarget.src = profilePlaceholder)}
@@ -42,13 +39,13 @@ export default function UserProfile({ user: userProp }: UserProfileProps) {
 
       <div className="flex flex-col min-w-0">
         <div className="text-sm font-semibold text-gray-800 truncate">
-          {activeUser?.firstName || activeUser?.surName 
-            ? truncate(`${activeUser.firstName || ""} ${activeUser.surName || ""}`, 18)
+          {userContainer?.user.firstName || userContainer?.user.surName 
+            ? truncate(`${userContainer.user.firstName || ""} ${userContainer.user.surName || ""}`, 18)
             : "Utilisateur"}
         </div>
 
         <div className="text-xs text-gray-500 truncate">
-          {activeUser?.email || "Pas d'email"}
+          {userContainer?.user.email || "Pas d'email"}
         </div>
       </div>
     </div>

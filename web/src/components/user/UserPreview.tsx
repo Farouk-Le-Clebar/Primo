@@ -15,6 +15,8 @@ export default function UserInfo({ email }: { email: string }) {
 
   const getAvatarUrl = (name: string | undefined) => {
     const fileName = name || "green.png";
+
+    console.log("Profile picture file name:", data);
     if (fileName.startsWith("data:") || fileName.startsWith("http")) return fileName;
     
     try {
