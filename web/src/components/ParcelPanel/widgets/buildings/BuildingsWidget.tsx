@@ -10,7 +10,7 @@ import { WALL_MATERIALS, ROOF_MATERIALS, getMaterialLabel } from "../../../../ut
 import type { ParcelWidgetProps } from "../../types";
 
 export default function BuildingsWidget({ feature }: ParcelWidgetProps) {
-  const { mutate, data, isPending, error } = useMutation({
+  const { mutate, data, isPending } = useMutation({
     mutationFn: async ({ bbox, departement }: { bbox: string; departement: string }) => 
       await getBuildingsByBbox(bbox, departement),
   });
@@ -18,10 +18,20 @@ export default function BuildingsWidget({ feature }: ParcelWidgetProps) {
   useEffect(() => {
     if (!feature?.geometry) return;
 
-    const departement = 31;
+
+    const departement = String(feature.id).split('_')[1]?.split('.')[0] || "";
+
+    console.log("departement : ", departement);
     
-    const allCoords = feature.geometry.coordinates.flat(2);
-    
+    if (!('coordinates' in feature.geometry)) {
+      console.warn("La géométrie n'a pas de coordonnées (GeometryCollection)");
+      return;
+    }
+
+    // 2. Maintenant TypeScript sait que 'coordinates' existe !
+    // On force le type car 'flat' sur des tableaux multi-dimensionnels GeoJSON peut être complexe
+    const allCoords = (feature.geometry.coordinates as any).flat(2);
+
     let minLng = Infinity;
     let minLat = Infinity;
     let maxLng = -Infinity;

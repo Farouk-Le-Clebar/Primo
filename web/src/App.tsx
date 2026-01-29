@@ -9,7 +9,7 @@ import ProtectedRoute from "./components/protectedRoute/ProtectedRoute";
 // PUBLIC PAGES
 import Dashboard from "./pages/dashboard/Dashboard";
 import Projects from "./pages/projects/Projects";
-import Map from "./pages/newMap/Map";
+import Map from "./pages/map/Map";
 
 // PROTECTED PAGES
 import Profile from "./pages/profile/Profile";

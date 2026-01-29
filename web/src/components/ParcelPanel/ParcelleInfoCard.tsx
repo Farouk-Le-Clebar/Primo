@@ -1,21 +1,19 @@
 import { MapPin, Maximize, Landmark, FileText, Calendar } from "lucide-react";
 
-// Mise à jour de l'interface pour correspondre aux données GeoServer
 interface ParcelProperties {
-  id: string;         // Ancien idu
-  commune: string;    // Ancien code_insee
+  id: string;
+  commune: string;
   section: string;
   numero: string;
   contenance: number;
   prefixe?: string;
-  updated?: string;   // Nouvelle donnée disponible
+  updated?: string;
   created?: string;
 }
 
 export const ParcelInfoCard = ({ properties }: { properties: ParcelProperties }) => {
   if (!properties) return null;
 
-  // Extraction du département (2 premiers chiffres du code INSEE)
   const code_dep = properties.commune?.substring(0, 2);
 
   const formatSurface = (m2: number) => {
