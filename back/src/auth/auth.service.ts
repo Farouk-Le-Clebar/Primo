@@ -27,15 +27,29 @@ export class AuthService {
 
     await this.userRepository.save(user);
 
+    const payload = { sub: user.id, email: user.email };
+    const token = this.jwtService.sign(payload);
+
     const { password: _, ...result } = user;
-    return result;
+    
+    return {
+      access_token: token,
+      user: {
+        id: result.id,
+        email: result.email,
+        firstName: result.firstName,
+        surName: result.surName,
+        profilePicture: result.profilePicture,
+      },
+    };
   }
 
   async login(email: string, password: string) {
     const user = await this.userRepository.findOne({
       where: { email },
-      select: ['email', 'firstName', 'surName', 'profilePicture', 'password'],
+      select: ['id', 'email', 'firstName', 'surName', 'profilePicture', 'password'],
     });
+    
     if (!user) {
       throw new UnauthorizedException('Identifiants invalides');
     }
@@ -61,14 +75,29 @@ export class AuthService {
   }
 
   async validateUser(payload: { sub: number; email: string }) {
+    console.log('🔍 Validating user with payload:', payload);
+    
     const user = await this.userRepository.findOne({
       where: { id: payload.sub },
+      select: ['id', 'email', 'firstName', 'surName', 'profilePicture'],
     });
+    
     if (!user) {
+      console.log('❌ User not found in database');
       return null;
     }
 
-    const { password, ...result } = user;
-    return result;
+    console.log('✅ User validated:', {
+      id: user.id,
+      email: user.email,
+      firstName: user.firstName,
+    });
+
+    return {
+      email: user.email,
+      firstName: user.firstName,
+      surName: user.surName,
+      profilePicture: user.profilePicture,
+    };
   }
 }
