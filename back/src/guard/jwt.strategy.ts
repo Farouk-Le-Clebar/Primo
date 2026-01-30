@@ -27,11 +27,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       sub: payload.sub,
       email: payload.email,
     });
-    
+
     if (!user) {
       throw new UnauthorizedException('Utilisateur non trouvé');
     }
-    
+
     return user;
   }
 }

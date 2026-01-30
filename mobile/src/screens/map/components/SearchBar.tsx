@@ -44,12 +44,17 @@ const SearchBar = ({ onAddressSelect }: SearchBarProps) => {
     }, [address]);
 
     useEffect(() => {
+        // Ne pas faire de recherche si une adresse a été sélectionnée
+        if (selectedAddress) {
+            return;
+        }
+        
         if (debouncedAddress.trim() !== "") {
             getAddress(debouncedAddress);
         } else {
             setAdressList([]);
         }
-    }, [debouncedAddress]);
+    }, [debouncedAddress, selectedAddress]);
 
     const handleAddressClick = (coords: [number, number], label: string) => {
         setSelectedAddress(label);

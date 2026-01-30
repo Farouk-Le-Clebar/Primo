@@ -22,12 +22,13 @@ export type DataType = {
 };
 
 
-export const boundToBbox = (bounds: L.LatLngBounds) => {
+export const boundToBbox = (bounds: any) => {
+    const { _southWest, _northEast } = bounds;
     return ([
-        bounds.getWest(),
-        bounds.getSouth(),
-        bounds.getEast(),
-        bounds.getNorth()
+        _southWest.lng,
+        _southWest.lat,
+        _northEast.lng,
+        _northEast.lat
     ].join(','));
 };
 
