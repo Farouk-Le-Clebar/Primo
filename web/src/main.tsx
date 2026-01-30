@@ -1,4 +1,3 @@
-import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -11,7 +10,6 @@ import { AuthModalProvider } from "./context/AuthModalProvider";
 const queryClient = new QueryClient();
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
     <QueryClientProvider client={queryClient}>
       <Provider store={store}>
         <AuthModalProvider>
@@ -21,5 +19,4 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         </AuthModalProvider>
       </Provider>
     </QueryClientProvider>
-  </React.StrictMode>
 );
