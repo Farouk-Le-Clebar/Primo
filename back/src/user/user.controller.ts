@@ -18,6 +18,7 @@ import { UpdateProfileDto } from './dto/update-profile';
 interface RequestWithUser extends Request {
   user: User;
 }
+
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}

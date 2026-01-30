@@ -18,14 +18,14 @@ export default function Navbar() {
   const location = useLocation();
   const [isUserConnected, setIsUserConnected] = useState<boolean | null>(null);
 
-  useEffect(() => {
-    const verify = async () => {
-      const isConnected = await checkAuth();
-      setIsUserConnected(isConnected);
-    };
-    
+  useEffect(() => {   
     verify();
   }, []);
+
+  const verify = async () => {
+      const isConnected = await checkAuth();
+      setIsUserConnected(isConnected);
+  };
 
   const getPageName = (path: string) => {
     const parts = path.split("/").filter(Boolean);

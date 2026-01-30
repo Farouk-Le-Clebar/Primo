@@ -20,6 +20,8 @@ export default function RegisterModal({
   onClose: () => void;
 }) {
   const [email, setEmail] = useState(initialEmail || "");
+  const [firstName, setFirstName] = useState("");
+  const [surName, setSurName] = useState("");
   const [password, setPassword] = useState("");
 
   const [errorMessage, setErrorMessage] = useState("");
@@ -38,13 +40,15 @@ export default function RegisterModal({
   const strengthColors = ["bg-red-500", "bg-yellow-500", "bg-green-500"];
 
   const { mutate, isPending } = useMutation({
-    mutationFn: () => register(email, password),
+    mutationFn: () => register(email, firstName, surName, password),
     onSuccess: (data) => {
       if (typeof window !== "undefined" && window.localStorage) {
         try {
           localStorage.setItem("token", data.access_token);
           if (data.user) {
+            console.log("Registered user:", data.user);
             dispatch(setUser(data.user));
+            window.location.reload();
           }
           onClose();
         } catch (err) {
@@ -110,6 +114,32 @@ export default function RegisterModal({
               value={email}
               className=""
             />
+        </div>
+
+        <div className="flex gap-4 mt-4">
+          {/* Input Firstname */}
+          <div className="flex-1 space-y-1">
+            <h3 className="font-UberMoveMedium text-sm">Prénom</h3>
+            <Input
+              type="text"
+              placeholder="Entrez votre prénom"
+              onChange={(setFirstName)}
+              value={firstName}
+              className=""
+            />
+          </div>
+
+          {/* Input Lastname */}
+          <div className="flex-1 space-y-1">
+            <h3 className="font-UberMoveMedium text-sm">Nom de famille</h3>
+            <Input
+              type="text"
+              placeholder="Entrez votre nom de famille"
+              onChange={(setSurName)}
+              value={surName}
+              className=""
+            />
+          </div>
         </div>
 
         {/* Input Password */}
