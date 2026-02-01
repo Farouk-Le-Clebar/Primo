@@ -13,7 +13,7 @@ export const checkAuth = async () => {
   }
 
   try {
-    const userData = await verifyToken(token);
+    await verifyToken(token);
     return true;
   } catch (error) {
     console.error("Session expirée ou invalide :", error);
