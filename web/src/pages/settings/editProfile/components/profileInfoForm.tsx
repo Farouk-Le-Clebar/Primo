@@ -1,8 +1,5 @@
 import { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
 import { useMutation } from "@tanstack/react-query";
-import type { RootState } from "../../../../store/store.ts";
-import { setUser } from "../../../../store/userSlice";
 import { updateUserProfile } from "../../../../requests/UserRequests";
 
 // UI COMPONENTS
@@ -10,60 +7,54 @@ import Input from "../../../../ui/Input";
 import AvatarUpload from "./AvatarUpload.tsx";
 
 // ASSETS
-import profilePlaceholder from "../../../../assets/profilePictures/green.png";
 import { toast } from "react-hot-toast";
 
 export default function ProfileInfoForm() {
-  const dispatch = useDispatch();
-  const userData = useSelector((state: RootState) => state.user.userInfo);
-  
   const token = localStorage.getItem("token") || "";
 
-  const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    profilePicture: ""
+  const [formData, setFormData] = useState(() => {
+    const userString = localStorage.getItem("user");
+    if (userString) {
+      const user = JSON.parse(userString);
+      return {
+        firstName: user.firstName || "",
+        lastName: user.surName || "",
+        email: user.email || "",
+        profilePicture: user.profilePicture || "green.png"
+      };
+    }
+    return {
+      firstName: "",
+      lastName: "",
+      email: "",
+      profilePicture: "green.png"
+    };
   });
 
-  useEffect(() => {
-
-    const userContainer = userData as any;
-
-    if (userContainer?.user) {
-      setFormData({
-        firstName: userContainer.user.firstName || "",
-        lastName: userContainer.user.surName || "",
-        email: userContainer.user.email || "",
-        profilePicture: userContainer.user.profilePicture || profilePlaceholder
-      });
+  const { mutate, isPending } = useMutation({
+    mutationFn: (data: any) => updateUserProfile(token, data),
+    onSuccess: (response) => {
+      if (response.user) {
+        localStorage.setItem("user", JSON.stringify(response.user));
+      }
+      toast.success("Profil mis à jour avec succès !");
+    },
+    onError: (error) => {
+      console.error("Erreur mise à jour:", error);
+      toast.error("Erreur lors de la mise à jour du profil.");
     }
-  }, [userData]);
-
-    const { mutate, isPending } = useMutation({
-        mutationFn: (data: any) => updateUserProfile(token, data),
-        onSuccess: (response) => {
-        if (response.user) {
-            dispatch(setUser(response.user));
-        }
-        toast.success("Profil mis à jour avec succès !");
-        },
-        onError: (error) => {
-        console.error("Erreur mise à jour:", error);
-        toast.error("Erreur lors de la mise à jour du profil.");
-        }
-    });
+  });
 
   const handleFieldChange = (fieldName: string, value: string) => {
     setFormData((prev) => ({ ...prev, [fieldName]: value }));
   };
 
-    const handleImageUpdate = (base64: string) => {
+  const handleImageUpdate = (imageName: string) => {
     setFormData((prev) => ({
-        ...prev,
-        profilePicture: base64
+      ...prev,
+      profilePicture: imageName
     }));
-    };
+  };
 
   const saveProfile = () => {
     const payload = {
@@ -78,11 +69,11 @@ export default function ProfileInfoForm() {
   return (
     <div className="flex w-full flex-col">
       {/* HEADER */}
-      <div className="flex w-full items-end justify-between pb-1"> 
+      <div className="flex w-full items-end justify-between pb-1">
         <h1 className="font-UberMove mb-1 text-2xl font-medium text-gray-900 leading-none">
           Mes informations
         </h1>
-        <button 
+        <button
           disabled={isPending}
           onClick={saveProfile}
           className={`mb-1 text-sm text-white px-5 py-2 rounded-lg font-medium transition-all duration-200 shadow-sm
@@ -101,7 +92,7 @@ export default function ProfileInfoForm() {
       <hr className="border-t border-gray-200" />
 
       {/* FORMULAIRE */}
-      <div className="flex flex-col md:flex-row justify-between items-start gap-12 mt-10">    
+      <div className="flex flex-col md:flex-row justify-between items-start gap-12 mt-10">
         <div className="flex flex-col w-full md:w-2/3 space-y-7">
           {/* Prénom */}
           <div className="flex flex-col space-y-1.5 w-1/2">
@@ -137,7 +128,7 @@ export default function ProfileInfoForm() {
                 type="email"
                 height="h-10"
                 value={formData.email}
-                onChange={() => {}}
+                onChange={() => { }}
                 className="bg-[#EFEFF4] border-none text-gray-400 cursor-not-allowed opacity-70"
               />
               <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-300">
@@ -151,12 +142,12 @@ export default function ProfileInfoForm() {
 
         {/* AVATAR */}
         <div className="flex w-full md:w-1/3 justify-center pt-4 ">
-          <AvatarUpload 
-            currentImage={formData.profilePicture} 
-            onImageChange={handleImageUpdate} 
+          <AvatarUpload
+            currentImage={formData.profilePicture}
+            onImageChange={handleImageUpdate}
           />
         </div>
       </div>
-    </div> 
-  );    
+    </div>
+  );
 }
