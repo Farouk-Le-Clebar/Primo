@@ -3,16 +3,16 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 // UTILS
-import { checkAuth } from "../../../../utils/auth";
+import { checkAuth } from "../../../../../utils/auth";
 
 // COMPONENTS
-import SearchingBar from "../../../../components/search/SearchBar";
-import LoginButton from "../../../../components/navbar/components/LoginButton";
-import NotificationsDropdown from "../../../../components/navbar/components/notificationDropdown/NotificationsDropdown";
-import ProfileDropdown from "../../../../components/navbar/components/profileDropdown/ProfileDropdown";
+import SearchingBar from "../../../../../components/search/SearchBar";
+import LoginButton from "../../../../../components/navbar/components/LoginButton";
+import NotificationsDropdown from "../../../../../components/navbar/components/notificationDropdown/NotificationsDropdown";
+import ProfileDropdown from "../../../../../components/navbar/components/profileDropdown/ProfileDropdown";
 
 // ICONS / LOGOS
-import PrimoLogo from "../../../../assets/logos/logoPrimoWhite.svg?react";
+import PrimoLogo from "../../../../../assets/logos/logoPrimoWhite.svg?react";
 import { useMap } from "react-leaflet";
 
 export default function Navbar() {
