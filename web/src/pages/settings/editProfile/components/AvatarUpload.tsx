@@ -1,6 +1,30 @@
 import { useState } from "react";
 import { X } from "lucide-react";
 
+// ASSETS
+import PPGreen from "../../../../assets/profilePictures/green.svg?react";
+import PPCyan from "../../../../assets/profilePictures/cyan.svg?react";
+import PPBlue from "../../../../assets/profilePictures/blue.svg?react";
+import PPOrange from "../../../../assets/profilePictures/orange.svg?react";
+import PPpink from "../../../../assets/profilePictures/pink.svg?react";
+import PPRed from "../../../../assets/profilePictures/red.svg?react";
+import PPWhite from "../../../../assets/profilePictures/white.svg?react";
+import PPWhitePink from "../../../../assets/profilePictures/whitepink.svg?react";
+import PPYellow from "../../../../assets/profilePictures/yellow.svg?react";
+
+// Dictionnaire des avatars
+const AVATAR_COMPONENTS: Record<string, React.FC<React.SVGProps<SVGSVGElement>>> = {
+  "green.png": PPGreen,
+  "cyan.png": PPCyan,
+  "blue.png": PPBlue,
+  "orange.png": PPOrange,
+  "pink.png": PPpink,
+  "red.png": PPRed,
+  "white.png": PPWhite,
+  "whitepink.png": PPWhitePink,
+  "yellow.png": PPYellow,
+};
+
 const PRESET_AVATARS = [
   "blue.png", "cyan.png", "green.png", "orange.png",
   "pink.png", "white.png", "whitepink.png", "yellow.png"
@@ -13,25 +37,15 @@ interface AvatarUploadProps {
 
 export default function AvatarUpload({ currentImage, onImageChange }: AvatarUploadProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [preview, setPreview] = useState<string | undefined>(undefined);
-
-  const getAssetPath = (name: string | undefined | null): string | undefined => {
-    if (!name) return undefined; 
-    
-    if (name.includes("/") || name.startsWith("data:")) return name;
-    
-    try {
-      return new URL(`../../../../assets/profilePictures/${name}`, import.meta.url).href;
-    } catch (e) {
-      return undefined;
-    }
-  };
+  const [selectedAvatar, setSelectedAvatar] = useState<string>(currentImage || "green.png");
 
   const selectPreset = (avatarName: string) => {
-    setPreview(getAssetPath(avatarName));
+    setSelectedAvatar(avatarName);
     onImageChange(avatarName);
     setIsModalOpen(false);
   };
+
+  const CurrentAvatarComponent = AVATAR_COMPONENTS[selectedAvatar] || PPGreen;
 
   return (
     <>
@@ -40,11 +54,7 @@ export default function AvatarUpload({ currentImage, onImageChange }: AvatarUplo
         onClick={() => setIsModalOpen(true)}
       >
         <div className="w-46 h-46 rounded-full overflow-hidden border-4 border-white shadow-md transition-all duration-300 group-hover:shadow-lg group-hover:brightness-95">
-          <img 
-            src={preview || getAssetPath(currentImage)} 
-            alt="Profile" 
-            className="w-full h-full object-cover"
-          />
+          <CurrentAvatarComponent className="w-full h-full" />
           <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
             <span className="text-white text-[10px] font-bold uppercase tracking-widest text-center px-2">
               Changer l'avatar
@@ -83,15 +93,18 @@ export default function AvatarUpload({ currentImage, onImageChange }: AvatarUplo
               </div>
 
               <div className="grid grid-cols-4 gap-4">
-                {PRESET_AVATARS.map((avatar) => (
-                  <button
-                    key={avatar}
-                    onClick={() => selectPreset(avatar)}
-                    className="relative aspect-square rounded-full overflow-hidden border-2 border-transparent hover:border-[#388160] hover:scale-110 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#388160] focus:ring-offset-2"
-                  >
-                    <img src={getAssetPath(avatar)} alt={avatar} className="w-full h-full object-cover" />
-                  </button>
-                ))}
+                {PRESET_AVATARS.map((avatar) => {
+                  const AvatarComponent = AVATAR_COMPONENTS[avatar] || PPGreen;
+                  return (
+                    <button
+                      key={avatar}
+                      onClick={() => selectPreset(avatar)}
+                      className="relative aspect-square rounded-full overflow-hidden border-2 border-transparent hover:border-[#388160] hover:scale-110 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#388160] focus:ring-offset-2"
+                    >
+                      <AvatarComponent className="w-full h-full" />
+                    </button>
+                  );
+                })}
               </div>
             </div>
           </div>

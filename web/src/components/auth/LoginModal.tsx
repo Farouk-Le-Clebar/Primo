@@ -8,8 +8,6 @@ import { Eye, EyeOff, ArrowLeft } from "lucide-react";
 import Button from "../../ui/Button";
 import Input from "../../ui/Input";
 import {BackgroundColors, TextColors}  from "../../utils/colors";
-import { useDispatch } from "react-redux";
-import { setUser } from "../../store/userSlice";
 
 export default function LoginModal({ 
   email,
@@ -23,7 +21,6 @@ export default function LoginModal({
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const dispatch = useDispatch();
 
   const { mutate, isPending } = useMutation({
     mutationFn: () => login(email, password),
@@ -32,7 +29,7 @@ export default function LoginModal({
         try {
           localStorage.setItem("token", data.access_token);
           if (data.user) {
-            dispatch(setUser(data.user));
+            localStorage.setItem("user", JSON.stringify(data.user));
             window.location.reload();
           }
           onClose();

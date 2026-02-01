@@ -38,10 +38,5 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @Get('verify')
-  verifyToken(@Request() req) {
-    return { 
-      valid: true, 
-      user: req.user 
-    };
-  }
+  verifyToken(@Request() req) {}
 }

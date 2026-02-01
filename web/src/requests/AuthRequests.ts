@@ -3,6 +3,7 @@ const apiUrl = window?._env_?.API_URL;
 
 export const login = async (email: string, password: string) => {
   const response = await axios.post(apiUrl + "/auth/login", { email, password });
+  console.log(response.data);
   return response.data;
 };
 

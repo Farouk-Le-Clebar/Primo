@@ -1,16 +1,16 @@
 import MapBounds from "./layers/MapBounds";
 import ZoomHandler from "./layers/ZoomHandler";
-import { TileLayer, ZoomControl } from "react-leaflet";
+import { TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { useState, useCallback } from "react";
 import type { FeatureCollection } from "geojson";
 import L from "leaflet";
 import ShapesLayer from "./layers/ShapesLayer";
-import PoiLayer from "./layers/PoiLayer";
-import PoiWidget from "./layers/PoiWidget";
+import PoiLayer from "./layers/POI/PoiLayer";
+import PoiWidget from "./layers/POI/PoiWidget";
 import { MIN_ZOOM_FOR_POIS, POI_CONFIGS } from "./PoiConfig";
 import ParcelInfoPanel from "./layers/ParcelPanel/ParcelInfoPanel";
-import Navbar from "./layers/Navbar";
+import Navbar from "./layers/Navbar/Navbar";
 
 const Layers = () => {
     const [mapBounds, setMapBounds] = useState<L.LatLngBounds | null>(null);
@@ -81,7 +81,6 @@ const Layers = () => {
             <TileLayer url="https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}" />
             <MapBounds onChange={handleMapBoundsChange} />
             <ZoomHandler onZoomChange={handleZoomChange} />
-            <ZoomControl position="topright" />
 
             <Navbar  />
 

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { POI_CONFIGS } from "../PoiConfig";
+import { POI_CONFIGS } from "../../PoiConfig";
 import { MapPin, ChevronDown, ChevronUp } from "lucide-react";
 
 interface PoiWidgetProps {
