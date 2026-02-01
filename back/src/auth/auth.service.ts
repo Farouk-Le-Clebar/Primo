@@ -13,28 +13,59 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async register(email: string, password: string) {
-    const existingUser = await this.userRepository.findOne({ where: { email } });
+  async register(
+    email: string,
+    firstName: string,
+    surName: string,
+    password: string,
+  ) {
+
+    console.log("Registering user:", email, firstName, surName);
+  
+    const existingUser = await this.userRepository.findOne({
+      where: { email },
+    });
     if (existingUser) {
       throw new UnauthorizedException('Email déjà utilisé');
     }
-
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = this.userRepository.create({
+      firstName,
+      surName,
       email,
       password: hashedPassword,
     });
 
     await this.userRepository.save(user);
 
+    const payload = { sub: user.id, email: user.email };
+    const token = this.jwtService.sign(payload);
+
     const { password: _, ...result } = user;
-    return result;
+
+    return {
+      access_token: token,
+      user: {
+        id: result.id,
+        email: result.email,
+        firstName: result.firstName,
+        surName: result.surName,
+        profilePicture: result.profilePicture,
+      },
+    };
   }
 
   async login(email: string, password: string) {
     const user = await this.userRepository.findOne({
       where: { email },
-      select: ['email', 'firstName', 'surName', 'profilePicture', 'password'],
+      select: [
+        'id',
+        'email',
+        'firstName',
+        'surName',
+        'profilePicture',
+        'password',
+      ],
     });
     if (!user) {
       throw new UnauthorizedException('Identifiants invalides');
@@ -63,12 +94,19 @@ export class AuthService {
   async validateUser(payload: { sub: number; email: string }) {
     const user = await this.userRepository.findOne({
       where: { id: payload.sub },
+      select: ['id', 'email', 'firstName', 'surName', 'profilePicture'],
     });
+
     if (!user) {
+      console.log('User not found in database');
       return null;
     }
 
-    const { password, ...result } = user;
-    return result;
+    return {
+      email: user.email,
+      firstName: user.firstName,
+      surName: user.surName,
+      profilePicture: user.profilePicture,
+    };
   }
 }

@@ -9,6 +9,8 @@ import ShapesLayer from "./layers/ShapesLayer";
 import PoiLayer from "./layers/PoiLayer";
 import PoiWidget from "./layers/PoiWidget";
 import { MIN_ZOOM_FOR_POIS, POI_CONFIGS } from "./PoiConfig";
+import ParcelInfoPanel from "./layers/ParcelPanel/ParcelInfoPanel";
+import Navbar from "./layers/Navbar";
 
 const Layers = () => {
     const [mapBounds, setMapBounds] = useState<L.LatLngBounds | null>(null);
@@ -21,6 +23,11 @@ const Layers = () => {
         useState<FeatureCollection | null>(null);
     const [divisionsBoundData, setDivisionsBoundData] =
         useState<FeatureCollection | null>(null);
+    const [selectedParcelle, setSelectedParcelle] = useState<{
+        bounds: L.LatLngBounds;
+        feature: any;
+        layer: L.Path;
+    } | null>(null);
 
     const [poisData, setPoisData] = useState<FeatureCollection | null>(null);
     const [enabledPoiTypes, setEnabledPoiTypes] = useState<string[]>(
@@ -63,6 +70,11 @@ const Layers = () => {
         );
     }, []);
 
+    const handleParcelleSelect = (bounds: L.LatLngBounds, feature: any, layer: L.Path) => {
+        setSelectedParcelle({ bounds, feature, layer });
+        console.log(selectedParcelle);
+    };
+
     return (
         <>
             {/* https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png */}
@@ -70,6 +82,8 @@ const Layers = () => {
             <MapBounds onChange={handleMapBoundsChange} />
             <ZoomHandler onZoomChange={handleZoomChange} />
             <ZoomControl position="topright" />
+
+            <Navbar  />
 
             <PoiWidget
                 onTogglePoi={handleTogglePoi}
@@ -89,6 +103,7 @@ const Layers = () => {
                     city: cityBoundData,
                     divisions: divisionsBoundData,
                 }}
+                onParcelleSelect={handleParcelleSelect}
             />
             <PoiLayer
                 onPoisChange={handlePoisChange}
@@ -97,6 +112,7 @@ const Layers = () => {
                 enabledPoiTypes={enabledPoiTypes}
                 dataPois={{ pois: poisData }}
             />
+            <ParcelInfoPanel selectedParcelle={selectedParcelle} />
         </>
     );
 };

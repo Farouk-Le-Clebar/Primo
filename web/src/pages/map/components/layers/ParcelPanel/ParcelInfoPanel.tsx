@@ -4,7 +4,6 @@ import { X, ChevronRight, MapPin } from "lucide-react";
 // COMPONENTS
 import type { ParcelWidgetComponent } from "./types";
 import { ParcelInfoCard } from "./ParcelleInfoCard";
-import { useParcelle } from "../../context/ParcelleContext";
 
 // WIDGETS
 import BuildingsWidget from "./widgets/buildings/BuildingsWidget";
@@ -15,15 +14,21 @@ const getWidgetsFromUserProfile = (): ParcelWidgetComponent[] => {
   ];
 }
 
-export default function ParcelInfoPanel() {
-  const { selectedParcelle } = useParcelle();
+type ParcelInfoPanelProps = {
+  selectedParcelle: {
+      bounds: L.LatLngBounds;
+      feature: any;
+      layer: L.Path;
+  } | null;
+};
+
+export default function ParcelInfoPanel({ selectedParcelle }: ParcelInfoPanelProps) {
   const [isVisible, setIsVisible] = useState(false);
   const [hasSelectedOnce, setHasSelectedOnce] = useState(false);
 
   useEffect(() => {
     if (selectedParcelle?.feature) {
       setIsVisible(true);
-      console.log("selectedParcelle", selectedParcelle);
       setHasSelectedOnce(true);
     } else {
         setHasSelectedOnce(false);
@@ -42,7 +47,7 @@ export default function ParcelInfoPanel() {
   return (
     <div className="relative h-full w-full pointer-events-none">
       <div 
-        className={`absolute top-4 left-4 z-10 transition-all duration-500 ease-out pointer-events-auto ${
+        className={`absolute top-4 left-4 z-[500] transition-all duration-500 ease-out pointer-events-auto ${
            !isVisible && selectedParcelle?.feature ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-10 pointer-events-none"
         }`}
       >
@@ -58,7 +63,7 @@ export default function ParcelInfoPanel() {
       </div>
 
       <aside
-        className={`absolute inset-y-0 left-0 w-full bg-[#F8F9FB] shadow-[20px_0_25px_-5px_rgba(0,0,0,0.1)] z-20 transform transition-transform duration-500 cubic-bezier(0.4, 0, 0.2, 1) flex flex-col pointer-events-auto ${
+        className={`absolute inset-y-0 left-0 w-full sm:w-[350px] lg:w-[400px] bg-[#F8F9FB] shadow-[20px_0_25px_-5px_rgba(0,0,0,0.1)] z-[500] transform transition-transform duration-500 ease-in-out flex flex-col pointer-events-auto ${
           isVisible ? "translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -72,7 +77,7 @@ export default function ParcelInfoPanel() {
                 <p className="text-xs text-gray-400 font-mono mt-0.5">{parcelId}</p>
             </div>
           </div>
-          
+
           <button
             onClick={() => setIsVisible(false)}
             className="p-2 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-colors"
