@@ -45,7 +45,7 @@ export default function CustomNavLink({
 
   const content = (
     <>
-      <div className={`flex items-center ${gap}`}>
+      <div className={`${isDanger ? "text-red-500" : textColor} flex items-center ${gap}`}>
         {icon && <div className={`${isDanger ? "text-red-500" : iconColor} flex items-center`}>{icon}</div>}
         <span className={`${!showChevronOnHover ? "text-xs" : "text-sm"} font-[var(--font-UberMove)]`}>
             {label}
