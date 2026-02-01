@@ -46,7 +46,6 @@ export default function RegisterModal({
         try {
           localStorage.setItem("token", data.access_token);
           if (data.user) {
-            console.log("Registered user:", data.user);
             dispatch(setUser(data.user));
             window.location.reload();
           }

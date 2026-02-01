@@ -1,13 +1,13 @@
 import { Outlet } from "react-router-dom";
-import Navbar from "../navbar/Navbar";
 import Sidebar from "../sidebars/Sidebar";
+import NavbarSettings from "../navbar/NavbarSettings";
 
 export default function Layout() {
   return (
     <div className="relative h-screen flex flex-col overflow-hidden bg-[#F7F7FA]">
       {/* 1. NAVBAR : Prend toute la largeur en haut */}
       <header className="relative z-20 w-full h-20 flex items-center bg-white border-b border-gray-200">
-        <Navbar />
+        <NavbarSettings />
       </header>
 
       {/* 2. CONTAINER INFERIEUR : Sidebar + Content */}

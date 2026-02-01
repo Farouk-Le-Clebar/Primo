@@ -4,10 +4,10 @@ import { useMutation } from "@tanstack/react-query";
 import { Search } from 'lucide-react';
 
 type SearchBarProps = {
-  onAddressSelect: (coords: [number, number]) => void;
+  onAdressSelect: (coords: [number, number]) => void;
 }
 
-const SearchBar = ({ onAddressSelect }: SearchBarProps) => {
+const SearchBar = ({ onAdressSelect }: SearchBarProps) => {
   const [address, setAddress] = useState("");
   const [selectedAddress, setSelectedAddress] = useState<string | null>(null);
   
@@ -49,7 +49,7 @@ const SearchBar = ({ onAddressSelect }: SearchBarProps) => {
   const handleAddressClick = (coords: [number, number], label: string) => {
     setSelectedAddress(label);
     setAdressList([]);
-    onAddressSelect(coords);
+    onAdressSelect(coords);
   };
 
   return (

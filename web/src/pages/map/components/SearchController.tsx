@@ -12,7 +12,7 @@ const SearchController = () => {
         <div className="absolute top-5 left-0 w-full z-[1000] flex justify-center pointer-events-none">
             <div className="w-1/2 pointer-events-auto">
                 <SearchBar
-                    onAddressSelect={handleAdressSelect}
+                    onAdressSelect={handleAdressSelect}
                 />
             </div>
         </div>

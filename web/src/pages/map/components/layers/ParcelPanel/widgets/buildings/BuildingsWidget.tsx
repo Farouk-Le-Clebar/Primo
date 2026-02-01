@@ -5,8 +5,8 @@ import { Building2 } from "lucide-react";
 // COMPONENTS
 import { Widget } from "../Widget";
 import { BuildingCard } from "./BuildingCard";
-import { getBuildingsByBbox } from "../../../../requests/parcel-info";
-import { WALL_MATERIALS, ROOF_MATERIALS, getMaterialLabel } from "../../../../utils/building-dictionaries";
+import { getBuildingsByBbox } from "../../../../../../../requests/parcel-info";
+import { WALL_MATERIALS, ROOF_MATERIALS, getMaterialLabel } from "../../../../../../../utils/building-dictionaries";
 import type { ParcelWidgetProps } from "../../types";
 
 export default function BuildingsWidget({ feature }: ParcelWidgetProps) {
@@ -21,7 +21,6 @@ export default function BuildingsWidget({ feature }: ParcelWidgetProps) {
 
     const departement = String(feature.id).split('_')[1]?.split('.')[0] || "";
 
-    console.log("departement : ", departement);
     
     if (!('coordinates' in feature.geometry)) {
       console.warn("La géométrie n'a pas de coordonnées (GeometryCollection)");
