@@ -38,8 +38,5 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @Get('verify')
-  verifyToken(@Request() req) {
-    console.log(req.user);
-    return this.authService.validateUser({ sub: req.user.id, email: req.user.email });
-  }
+  verifyToken(@Request() req) {}
 }

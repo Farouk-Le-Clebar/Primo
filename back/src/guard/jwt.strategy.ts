@@ -5,7 +5,7 @@ import { ConfigService } from '@nestjs/config';
 import { AuthService } from '../auth/auth.service';
 
 export interface JwtPayload {
-  sub: number;
+  sub: string;
   email: string;
 }
 
@@ -31,7 +31,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     if (!user) {
       throw new UnauthorizedException('Utilisateur non trouvé');
     }
-
     return user;
   }
 }
