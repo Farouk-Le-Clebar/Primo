@@ -11,6 +11,8 @@ import PoiWidget from "./layers/POI/PoiWidget";
 import { MIN_ZOOM_FOR_POIS, POI_CONFIGS } from "./PoiConfig";
 import ParcelInfoPanel from "./layers/ParcelPanel/ParcelInfoPanel";
 import Navbar from "./layers/Navbar/Navbar";
+import MapPreference from "./layers/preference/MapPreference";
+import { mapPreference } from "../../../utils/map";
 
 const Layers = () => {
     const [mapBounds, setMapBounds] = useState<L.LatLngBounds | null>(null);
@@ -28,6 +30,9 @@ const Layers = () => {
         feature: any;
         layer: L.Path;
     } | null>(null);
+
+    const user = JSON.parse(localStorage.getItem("user") || "{}");
+    const [mapType, setMapType] = useState<"basic" | "satellite">(user.mapPreference);
 
     const [poisData, setPoisData] = useState<FeatureCollection | null>(null);
     const [enabledPoiTypes, setEnabledPoiTypes] = useState<string[]>(
@@ -75,14 +80,23 @@ const Layers = () => {
         console.log(selectedParcelle);
     };
 
+    const handleChangeMapType = (type: "basic" | "satellite") => {
+        setMapType(type);
+        user.mapPreference = type;
+        localStorage.setItem("user", JSON.stringify(user));
+    }
+
     return (
         <>
-            {/* https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png */}
-            <TileLayer url="https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}" />
+            <TileLayer url={mapPreference[mapType]} />
             <MapBounds onChange={handleMapBoundsChange} />
             <ZoomHandler onZoomChange={handleZoomChange} />
+            <MapPreference
+                onChangeMapType={handleChangeMapType}
+                currentMapType={mapType}
+            />
 
-            <Navbar  />
+            <Navbar />
 
             <PoiWidget
                 onTogglePoi={handleTogglePoi}
