@@ -141,3 +141,4 @@ export const getPoisByBbox = async (
             throw error;
         });
 };
+
