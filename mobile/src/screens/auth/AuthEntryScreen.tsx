@@ -69,7 +69,7 @@ const AuthEntryScreen = memo(({ navigation }: Props) => {
         <ScreenLayout>
             <View className="mb-10">
                 <Text className="text-4xl font-bold text-gray-900 mb-4">
-                    Bienvenue sur{'\n'}Primo.
+                    Bienvenue sur{'\n'}Primo
                 </Text>
                 <Text className="text-base text-gray-500 leading-relaxed">
                     Connectez-vous avec votre réseau social préféré ou entrez votre e-mail pour continuer.
