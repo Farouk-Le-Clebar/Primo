@@ -25,7 +25,7 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto flex items-center justify-between px-4 md:px-8 py-4 gap-85">
           <a href="/" className="flex items-center gap-2">
             <img src={Logo} alt="Logo" className="h-7 w-7" />
-            <span className="text-xl text-gray-800 font-medium">Primo.</span>
+            <span className="text-xl text-gray-800 font-medium">Primo</span>
           </a>
 
           <div className="hidden md:flex items-center gap-8 w-full">
