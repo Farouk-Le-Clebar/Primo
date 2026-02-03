@@ -58,7 +58,7 @@ export default function Navbar() {
           <PrimoLogo className="w-9 h-9 invert" />
         </div>
         <span className="text-2xl font-UberMoveBold text-gray-900 tracking-tight">
-          Primo.
+          Primo
         </span>
       </Link>
 

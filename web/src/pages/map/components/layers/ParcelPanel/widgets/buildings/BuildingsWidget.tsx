@@ -5,7 +5,7 @@ import { Building2 } from "lucide-react";
 // COMPONENTS
 import { Widget } from "../Widget";
 import { BuildingCard } from "./BuildingCard";
-import { getBuildingsByGeometry } from "../../../../../../../requests/parcel-info";
+import { getBuildingsByGeometry } from "../../../../../../../requests/geoserver/bdTopo";
 import { WALL_MATERIALS, ROOF_MATERIALS, getMaterialLabel } from "../../../../../../../utils/building-dictionaries";
 import type { ParcelWidgetProps } from "../../types";
 
