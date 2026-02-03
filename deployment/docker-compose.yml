@@ -1,43 +1,57 @@
 services:
-  traefik:
-    image: traefik:v3.0
-    container_name: traefik
-    command:
-      - "--configFile=/traefik.yml"
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./traefik.yml:/traefik.yml:ro
-      - ./acme.json:/acme.json
-    networks:
-      - web
-
-  landing:
-    image: garoverr/primo-landing:dev
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.landing.rule=Host(`primo-data.fr`)"
-      - "traefik.http.routers.landing.entrypoints=websecure"
-      - "traefik.http.routers.landing.tls.certresolver=myresolver"
-      - "traefik.http.services.landing.loadbalancer.server.port=80"
-    networks:
-      - web
-
-  frontend:
-    image: garoverr/primo-frontend:dev
+  # Base de données spatiale
+  postgis:
+    platform: linux/amd64
+    image: postgis/postgis:15-3.4
+    container_name: postgis_primo
+    restart: always
     environment:
-      VITE_API_URL: "https://api.primo-data.fr"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.frontend.rule=Host(`app.primo-data.fr`)"
-      - "traefik.http.routers.frontend.entrypoints=websecure"
-      - "traefik.http.routers.frontend.tls.certresolver=myresolver"
-      - "traefik.http.services.frontend.loadbalancer.server.port=80"
+      POSTGRES_DB: bdtopo
+      POSTGRES_USER: geo_primo
+      POSTGRES_PASSWORD: G30S3cr3tP@ss
+      # Autorise les connexions locales pour le développement
+      POSTGRES_HOST_AUTH_METHOD: trust 
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgis_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U geo_primo -d bdtopo"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     networks:
-      - web
+      - geo-net
+
+  # Moteur de cartes
+  geoserver:
+    platform: linux/amd64
+    image: kartoza/geoserver:2.24.0
+    container_name: geoserver_primo
+    restart: always
+    environment:
+      GEOSERVER_ADMIN_USER: admin
+      GEOSERVER_ADMIN_PASSWORD: geoserver_primo
+      INITIAL_MEMORY: 2G
+      MAXIMUM_MEMORY: 4G
+      # Désactive les extensions inutiles pour la légèreté
+      STABLE_EXTENSIONS: "" 
+    ports:
+      - '8080:8080'
+    volumes:
+      - geoserver_data:/opt/geoserver/data_dir
+      # Données météo WorldClim
+      - ../back/data/meteo:/opt/geoserver/data_dir/meteo:ro
+    depends_on:
+      postgis:
+        condition: service_healthy
+    networks:
+      - geo-net
+
+volumes:
+  postgis_data:
+  geoserver_data:
 
 networks:
-  web:
+  geo-net:
     driver: bridge
