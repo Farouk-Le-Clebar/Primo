@@ -95,7 +95,7 @@ export default function RegisterModal({
         </h2>
 
         <p className="text-gray-600 font-UberMoveMedium mb-6 text-sm sm:text-sm">
-          Il ne vous reste plus qu’une étape avant de rejoindre l’aventure Primo.
+          Il ne vous reste plus qu’une étape avant de rejoindre l’aventure Primo
           Entrez simplement votre mot de passe deux fois pour sécuriser votre compte et commencer votre expérience.
         </p>
 
