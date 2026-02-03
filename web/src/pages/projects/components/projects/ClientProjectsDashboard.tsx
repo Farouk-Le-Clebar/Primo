@@ -68,7 +68,7 @@ export const ClientProjectsDashboard: React.FC<
     };
 
     return (
-        <div className="w-full h-full bg-gray-50 p-8">
+        <div className="w-full font-UberMove h-full bg-gray-50 p-8">
             <DashboardHeader
                 searchTerm={searchTerm}
                 onSearchChange={setSearchTerm}

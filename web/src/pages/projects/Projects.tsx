@@ -24,8 +24,9 @@ export default function Projects() {
     );
 }
 
+//TODO : ajouter une petite animation sur le panel de confirmation pour la suppression
 //TODO : régler bug des tris & icon par nbr parcelles & paramètres : on dirait que ça ne peut pas fonctionner de manière indépendante
-//TODO : ajouter pastille coloré sur item filtre quand filtre en cours
 //TODO : ajuster le style général (taille, typo, etc...)
 //TODO : ajuster le design du panelFIlter
-//TODO : ajuster le header du ClientProject 
+//TODO : sur "fonctionnalité à venir" du compare : ajouter animation comme google pour IA quand on hover
+//TODO : ajouter une petite animation au moment de l'ajout aux favoris d'un projet

@@ -6,7 +6,7 @@ export const mockProjects: ClientProject[] = [
         name: "Ferme des Trois Chênes",
         parameters: 5,
         parcels: 2,
-        createdAt: "2023-01-12",
+        createdAt: "",
         modifiedAt: "2023-01-18T09:22:00",
         isFavorite: true,
     },

@@ -18,7 +18,7 @@ const NotesCard: React.FC<NotesCardProps> = ({
   return (
     <div className="bg-white rounded-xl border border-gray-200 p-4 h-full flex flex-col">
       {/* Titre */}
-      <h3 className="text-sm font-semibold text-gray-900 mb-3">Notes</h3>
+      <h3 className="text-sm px-2 font-semibold text-gray-900 mb-3">Notes</h3>
 
       {/* Zone de texte - Prend toute la hauteur disponible */}
       <textarea

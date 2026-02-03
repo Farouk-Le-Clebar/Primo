@@ -5,45 +5,30 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
     isOpen,
     onClose,
     onConfirm,
-    projectName,
 }) => {
     if (!isOpen) return null;
-
-    const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
-        if (e.target === e.currentTarget) {
-            onClose();
-        }
-    };
-
     return (
         <div
-            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-            onClick={handleBackdropClick}
+            className="absolute right-0 top-1/2 -translate-y-1/2 z-30 transition-transform duration-300 translate-x-0"
+            style={{ minWidth: 20, maxWidth: 320, height: 64 }}
         >
-            <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
-                {/* Title */}
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                    Confirmer la suppression
-                </h3>
-
-                {/* Message */}
-                <p className="text-gray-600 mb-6">
-                    Êtes-vous sûr de vouloir supprimer le projet{" "}
-                    <span className="font-semibold">"{projectName}"</span> ?
-                    Cette action est irréversible.
-                </p>
-
-                {/* Action buttons */}
-                <div className="flex justify-end gap-3">
+            <div className="bg-[#F9FAFB] py-2 flex flex-col items-start w-full h-full justify-center">
+                <div className="flex gap-2 self-end">
                     <button
-                        onClick={onClose}
-                        className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onClose();
+                        }}
+                        className="px-3 py-1 text-xs text-gray-700 hover:bg-gray-100 rounded transition-colors border border-gray-300"
                     >
                         Annuler
                     </button>
                     <button
-                        onClick={onConfirm}
-                        className="px-4 py-2 bg-red-500 text-white hover:bg-red-600 rounded-lg transition-colors"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onConfirm();
+                        }}
+                        className="px-3 py-1 text-xs bg-red-500 text-white hover:bg-red-600 rounded transition-colors"
                     >
                         Supprimer
                     </button>

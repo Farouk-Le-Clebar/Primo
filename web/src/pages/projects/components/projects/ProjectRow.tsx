@@ -1,7 +1,9 @@
-import React from "react";
-import { Star, Trash2 } from "lucide-react";
+import React, { useState } from "react";
+import { Sparkle, Trash2 } from "lucide-react";
 import type { ProjectRowProps } from "../../../../types/project";
 import { formatDate, formatDateTime } from "../../../../utils/project";
+import DeleteConfirmationModal from "./DeleteConfirmationModal";
+import { FAVORITE_GRADIENT } from "../../../../constants/favorite-gradient";
 
 const ProjectRow: React.FC<ProjectRowProps> = ({
     project,
@@ -10,10 +12,12 @@ const ProjectRow: React.FC<ProjectRowProps> = ({
     onDeleteClick,
 }) => {
     const [dateStr, timeStr] = formatDateTime(project.modifiedAt);
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+
     return (
         <tr
             onClick={() => onProjectClick(project)}
-            className="hover:bg-gray-100 cursor-pointer transition-colors"
+            className="cursor-pointer transition-colors"
         >
             {/* Name column */}
             <td className="px-6 py-4">
@@ -26,13 +30,12 @@ const ProjectRow: React.FC<ProjectRowProps> = ({
                     <span className="text-sm text-gray-900">
                         {project.name}
                     </span>
-                    
                 </div>
             </td>
 
             {/* Parameters column */}
             <td className="px-6 py-4">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-orange-100 text-orange-600 rounded-md text-sm">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-orange-100 text-orange-600 rounded-md text-xs">
                     <svg
                         className="w-3.5 h-3.5"
                         fill="none"
@@ -52,7 +55,7 @@ const ProjectRow: React.FC<ProjectRowProps> = ({
 
             {/* Parcels column */}
             <td className="px-6 py-4">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-purple-100 text-purple-600 rounded-md text-sm">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-purple-100 text-purple-600 rounded-md text-xs">
                     <svg
                         className="w-3.5 h-3.5"
                         fill="none"
@@ -100,34 +103,58 @@ const ProjectRow: React.FC<ProjectRowProps> = ({
             </td>
 
             {/* Actions column */}
-            <td className="px-6 py-4">
+            <td className="px-6 py-4 relative" style={{ minWidth: 120 }}>
                 <div className="flex items-center gap-2">
                     <button
                         onClick={(e) => onToggleFavorite(project.id, e)}
-                        className="p-1.5 hover:bg-gray-100 rounded transition-colors"
+                        className="p-1.5 rounded transition-colors"
                         aria-label={
                             project.isFavorite
                                 ? "Retirer des favoris"
                                 : "Ajouter aux favoris"
                         }
                     >
-                        <Star
-                            className={`w-5 h-5 ${
-                                project.isFavorite
-                                    ? "fill-orange-400 text-orange-400"
-                                    : "text-gray-400"
-                            }`}
-                        />
+                        <svg
+                            width="25"
+                            height="25"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <defs>
+                                {project.isFavorite && FAVORITE_GRADIENT.svg}
+                            </defs>
+                            <Sparkle
+                                className={`w-5 h-5 ${project.isFavorite ? "text-transparent" : "text-gray-400"}`}
+                                style={
+                                    project.isFavorite
+                                        ? { fill: "url(#favorite-gradient)" }
+                                        : {}
+                                }
+                            />
+                        </svg>
                     </button>
 
                     <button
-                        onClick={(e) => onDeleteClick(project, e)}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            setShowDeleteConfirm(true);
+                        }}
                         className="p-1.5 hover:bg-red-50 rounded transition-colors"
                         aria-label="Supprimer le projet"
                     >
                         <Trash2 className="w-5 h-5 text-gray-400 hover:text-red-500" />
                     </button>
                 </div>
+                <DeleteConfirmationModal
+                    isOpen={showDeleteConfirm}
+                    onClose={() => setShowDeleteConfirm(false)}
+                    onConfirm={() => {
+                        setShowDeleteConfirm(false);
+                        // onDeleteClick();
+                    }}
+                    projectName={project.name}
+                />
             </td>
         </tr>
     );

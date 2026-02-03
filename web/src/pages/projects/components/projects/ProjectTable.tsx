@@ -48,7 +48,7 @@ const ProjectTable: React.FC<ProjectTableProps> = ({
                             >
                                 <button
                                     onClick={() => onSort(column.key)}
-                                    className="flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors"
+                                    className="flex cursor-pointer items-center gap-2 text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors"
                                 >
                                     {column.label}
                                     <SortIcon

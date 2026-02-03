@@ -30,7 +30,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
             {/* Dashboard Header */}
             <div className="flex items-center min-h-0 w-full">
                 {/* Title */}
-                <h1 className="text-base font-semibold text-gray-700 mr-4 whitespace-nowrap">
+                <h1 className="text-base font-semibold text-gray-700 px-6 whitespace-nowrap">
                     Projets clients
                 </h1>
 
@@ -51,10 +51,10 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                         {/* Filters button */}
                         <button
                             onClick={onToggleFilter}
-                            className={`flex items-center gap-1 px-3 py-1 rounded-md text-sm transition-colors  ${
+                            className={`flex cursor-pointer items-center gap-1 px-3 py-1 rounded-md text-sm transition-all ${
                                 isFilterOpen
                                     ? "border-blue-500 bg-blue-50 text-blue-700"
-                                    : "border-gray-300 hover:bg-gray-50"
+                                    : "border-gray-300 hover:border-blue-500 hover:bg-blue-50 hover:text-blue-700"
                             }`}
                         >
                             <SlidersHorizontal className="w-4 h-4" />
@@ -69,10 +69,29 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                 {/* Create new button */}
                 <button
                     onClick={onCreateNew}
-                    className="flex items-center gap-3 px-3.5 py-1.5 bg-gray-900 text-white rounded-[10px] text-sm hover:bg-gray-800 transition-colors ml-4"
+                    className="flex mr-10 cursor-pointer items-center gap-3 px-3.5 py-1.5 bg-white text-gray-900 text-[12px] transition-colors border border-transparent relative group"
+                    style={{
+                        background: "#fff",
+                        position: "relative",
+                        zIndex: 1,
+                    }}
                 >
-                    <span className="font-medium">Créer</span>
-                    <Plus className="w-4 h-4" />
+                    <span className="font-normal">Créer</span>
+                    <Plus className="w-4 h-4 transition-transform group-hover:rotate-15" />
+                    <span
+                        aria-hidden="true"
+                        className="pointer-events-none absolute inset-0 rounded-[7px]"
+                        style={{
+                            padding: 1,
+                            zIndex: -1,
+                            background:
+                                "linear-gradient(60deg, #E1E1E1 0%, #737373 50%, #E1E1E1 100%)",
+                            WebkitMask:
+                                "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
+                            WebkitMaskComposite: "xor",
+                            maskComposite: "exclude",
+                        }}
+                    />
                 </button>
             </div>
         </div>
