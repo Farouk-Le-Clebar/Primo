@@ -2,10 +2,7 @@ import React, { useState } from "react";
 import type { MapViewProps } from "../../../../types/projectDetail";
 import { LocateFixed } from "lucide-react";
 
-/**
- * Composant de la carte avec les parcelles
- * Pour l'instant, affiche une zone de placeholder pour la carte
- */
+
 const MapView: React.FC<MapViewProps> = ({ parcels, isLoading }) => {
     const [activeView, setActiveView] = useState<"parcels" | "map">("parcels");
 
@@ -35,7 +32,7 @@ const MapView: React.FC<MapViewProps> = ({ parcels, isLoading }) => {
             <div className="absolute top-4 right-4 z-10">
                     <button
                         onClick={() => setActiveView("map")}
-                        className={`px-2 py-1 rounded-md text-xs font-medium transition-all flex items-center gap-1 ${
+                        className={`px-2 py-1 cursor-pointer rounded-md text-xs font-medium transition-all flex items-center gap-1 ${
                             activeView === "map"
                                 ? "bg-white text-gray-900"
                                 : "bg-white/80 text-gray-900 hover:bg-white"
@@ -63,7 +60,7 @@ const MapView: React.FC<MapViewProps> = ({ parcels, isLoading }) => {
 
             {/* Bouton de recentrage en bas à droite */}
             <div className="absolute bottom-4 right-4 z-10">
-                <button className="w-7 h-7 bg-white rounded-lg flex items-center justify-center hover:bg-gray-50 transition-colors">
+                <button className="w-7 h-7 bg-white cursor-pointer rounded-lg flex items-center justify-center hover:bg-gray-50 transition-colors">
                     <LocateFixed className="w-4 h-4 text-gray-900" />
                 </button>
             </div>

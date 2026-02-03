@@ -40,7 +40,7 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({
                             <svg width="25" height="25" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <defs>{isFavorite && FAVORITE_GRADIENT.svg}</defs>
                                 <Sparkle
-                                    className={`w-5 h-5 ${isFavorite ? 'text-orange-400' : 'text-gray-400'}`}
+                                    className={`w-5 h-5 ${isFavorite ? 'text-transparent' : 'text-gray-400'}`}
                                     style={isFavorite ? { fill: 'url(#favorite-gradient)' } : {}}
                                 />
                             </svg>

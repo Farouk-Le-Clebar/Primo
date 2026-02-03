@@ -30,3 +30,4 @@ export default function Projects() {
 //TODO : ajuster le design du panelFIlter
 //TODO : sur "fonctionnalité à venir" du compare : ajouter animation comme google pour IA quand on hover
 //TODO : ajouter une petite animation au moment de l'ajout aux favoris d'un projet
+//TODO : ajouter petit modal qui s'ouvre quand on souhaite selectionner "map" ou "list" dans MapView
