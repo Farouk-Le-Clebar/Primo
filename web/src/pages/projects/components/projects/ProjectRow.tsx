@@ -1,37 +1,36 @@
 import React from "react";
 import { Star, Trash2 } from "lucide-react";
-import type { ProjectRowProps } from "../../../types/project";
-import { formatDate, formatDateTime } from "../../../utils/project";
+import type { ProjectRowProps } from "../../../../types/project";
+import { formatDate, formatDateTime } from "../../../../utils/project";
 
-/**
- * Composant représentant une ligne de projet dans le tableau
- */
 const ProjectRow: React.FC<ProjectRowProps> = ({
     project,
     onProjectClick,
     onToggleFavorite,
     onDeleteClick,
 }) => {
+    const [dateStr, timeStr] = formatDateTime(project.modifiedAt);
     return (
         <tr
             onClick={() => onProjectClick(project)}
-            className="hover:bg-gray-50 cursor-pointer transition-colors"
+            className="hover:bg-gray-100 cursor-pointer transition-colors"
         >
-            {/* Colonne Nom */}
+            {/* Name column */}
             <td className="px-6 py-4">
                 <div className="flex items-center gap-3">
                     <div className="w-8 h-8 bg-gray-100 rounded flex items-center justify-center flex-shrink-0">
-                        <span className="text-sm font-medium text-gray-600">
+                        <span className="text-sm font-bold text-gray-600">
                             {project.name.charAt(0).toUpperCase()}
                         </span>
                     </div>
                     <span className="text-sm text-gray-900">
                         {project.name}
                     </span>
+                    
                 </div>
             </td>
 
-            {/* Colonne Paramètres */}
+            {/* Parameters column */}
             <td className="px-6 py-4">
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-orange-100 text-orange-600 rounded-md text-sm">
                     <svg
@@ -47,11 +46,11 @@ const ProjectRow: React.FC<ProjectRowProps> = ({
                             d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
                         />
                     </svg>
-                    {project.parameters} parameters
+                    {project.parameters} paramètres
                 </span>
             </td>
 
-            {/* Colonne Parcelles */}
+            {/* Parcels column */}
             <td className="px-6 py-4">
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-purple-100 text-purple-600 rounded-md text-sm">
                     <svg
@@ -77,31 +76,32 @@ const ProjectRow: React.FC<ProjectRowProps> = ({
                 </span>
             </td>
 
-            {/* Colonne Date de création */}
+            {/* Created date column */}
             <td className="px-6 py-4">
                 <span className="text-sm text-gray-600">
                     {formatDate(project.createdAt)}
                 </span>
             </td>
 
-            {/* Colonne Dernière modification */}
+            {/* Modified date column */}
             <td className="px-6 py-4">
                 <span className="relative inline-block">
-                    {/* Surlignage carré gris */}
+                    {/* Gray square highlight */}
                     <span
-                        className="absolute left-1/2 top-1/2 -translate-x-[-20px] -translate-y-1/2 w-[32%] h-5 bg-gray-200 rounded-[2px] z-0"
+                        className="absolute left-1/2 top-1/2 -translate-x-[-23px] -translate-y-[10px] w-[32%] h-5 bg-gray-200 rounded-[4px] z-0"
                         aria-hidden="true"
                     />
-                    <span className="relative text-sm text-gray-600 z-10 px-1">
-                        {formatDateTime(project.modifiedAt)}
+                    <span className="relative text-sm text-gray-600 z-10 px-1 flex items-center">
+                        <span>{dateStr}</span>
+                        <span style={{ display: "inline-block", width: 12 }} />
+                        <span>{timeStr}</span>
                     </span>
                 </span>
             </td>
 
-            {/* Colonne Actions */}
+            {/* Actions column */}
             <td className="px-6 py-4">
                 <div className="flex items-center gap-2">
-                    {/* Bouton Favori */}
                     <button
                         onClick={(e) => onToggleFavorite(project.id, e)}
                         className="p-1.5 hover:bg-gray-100 rounded transition-colors"
@@ -120,7 +120,6 @@ const ProjectRow: React.FC<ProjectRowProps> = ({
                         />
                     </button>
 
-                    {/* Bouton Supprimer */}
                     <button
                         onClick={(e) => onDeleteClick(project, e)}
                         className="p-1.5 hover:bg-red-50 rounded transition-colors"

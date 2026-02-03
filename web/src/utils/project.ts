@@ -1,8 +1,5 @@
 import type { ClientProject, ProjectFilters, SortConfig } from '../types/project';
 
-/**
- * Formate une date au format français DD/MM/YYYY
- */
 export const formatDate = (dateString: string): string => {
   const date = new Date(dateString);
   return date.toLocaleDateString('fr-FR', {
@@ -12,10 +9,7 @@ export const formatDate = (dateString: string): string => {
   });
 };
 
-/**
- * Formate une date avec l'heure au format français DD/MM/YYYY HH:MM
- */
-export const formatDateTime = (dateString: string): string => {
+export const formatDateTime = (dateString: string): [string, string] => {
   const date = new Date(dateString);
   const formattedDate = date.toLocaleDateString('fr-FR', {
     day: '2-digit',
@@ -26,12 +20,9 @@ export const formatDateTime = (dateString: string): string => {
     hour: '2-digit',
     minute: '2-digit'
   });
-  return `${formattedDate} ${formattedTime}`;
+  return [formattedDate, formattedTime];
 };
 
-/**
- * Filtre les projets selon le terme de recherche
- */
 export const filterBySearch = (
   projects: ClientProject[],
   searchTerm: string
@@ -44,16 +35,12 @@ export const filterBySearch = (
   );
 };
 
-/**
- * Filtre les projets selon les critères de filtrage
- */
 export const filterByFilters = (
   projects: ClientProject[],
   filters: ProjectFilters
 ): ClientProject[] => {
   let filtered = [...projects];
 
-  // Filtre de paramètres
   if (filters.parametersMin) {
     filtered = filtered.filter(p => p.parameters >= parseInt(filters.parametersMin));
   }
@@ -61,7 +48,6 @@ export const filterByFilters = (
     filtered = filtered.filter(p => p.parameters <= parseInt(filters.parametersMax));
   }
 
-  // Filtre de parcelles
   if (filters.parcelsMin) {
     filtered = filtered.filter(p => p.parcels >= parseInt(filters.parcelsMin));
   }
@@ -69,7 +55,6 @@ export const filterByFilters = (
     filtered = filtered.filter(p => p.parcels <= parseInt(filters.parcelsMax));
   }
 
-  // Filtre de date
   if (filters.timeRange && filters.timeRange !== 'custom') {
     const days = parseInt(filters.timeRange);
     const cutoffDate = new Date();
@@ -86,9 +71,6 @@ export const filterByFilters = (
   return filtered;
 };
 
-/**
- * Trie les projets selon la configuration de tri
- */
 export const sortProjects = (
   projects: ClientProject[],
   sortConfig: SortConfig
@@ -99,7 +81,6 @@ export const sortProjects = (
     let aValue: any = a[sortConfig.key!];
     let bValue: any = b[sortConfig.key!];
 
-    // Gestion spéciale pour les dates
     if (sortConfig.key === 'createdAt' || sortConfig.key === 'modifiedAt') {
       aValue = new Date(aValue);
       bValue = new Date(bValue);
@@ -115,9 +96,6 @@ export const sortProjects = (
   });
 };
 
-/**
- * Applique tous les filtres et le tri aux projets
- */
 export const processProjects = (
   projects: ClientProject[],
   searchTerm: string,
@@ -130,9 +108,6 @@ export const processProjects = (
   return processed;
 };
 
-/**
- * Retourne les filtres par défaut
- */
 export const getDefaultFilters = (): ProjectFilters => ({
   parametersMin: '',
   parametersMax: '',

@@ -20,6 +20,7 @@ import Privacy from "./pages/settings/Privacy";
 import Security from "./pages/settings/Security";
 import Subscriptions from "./pages/settings/Subscriptions";
 import CustomToaster from "./components/toaster/CustomToaster";
+import ProjectDetailPage from "./pages/projects/ProjectDetail";
 
 export default function App() {
   return (
@@ -33,6 +34,7 @@ export default function App() {
           <Route index element={<Dashboard />} />
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="projects" element={<Projects />} />
+          <Route path="projects/:id" element={<ProjectDetailPage />} />
         </Route>
 
         {/* Routes de la carte */}
