@@ -63,8 +63,8 @@ const MapView: React.FC<MapViewProps> = ({ parcels, isLoading }) => {
 
             {/* Bouton de recentrage en bas à droite */}
             <div className="absolute bottom-4 right-4 z-10">
-                <button className="w-10 h-10 bg-white rounded-lg flex items-center justify-center hover:bg-gray-50 transition-colors">
-                    <LocateFixed className="w-5 h-5 text-gray-900" />
+                <button className="w-7 h-7 bg-white rounded-lg flex items-center justify-center hover:bg-gray-50 transition-colors">
+                    <LocateFixed className="w-4 h-4 text-gray-900" />
                 </button>
             </div>
 

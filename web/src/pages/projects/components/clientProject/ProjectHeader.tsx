@@ -10,7 +10,8 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({
     onToggleFavorite,
 }) => {
     return (
-        <div className="relative flex items-center justify-between mb-4 h-12">
+        <div className="relative flex items-center justify-between h-12">
+            {/* Bouton retour + Nom du projet */}
             <div className="flex items-center gap-4 z-10">
                 <button
                     onClick={onBack}
@@ -21,6 +22,7 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({
                 </button>
             </div>
 
+            {/* Titre centré */}
             <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-max text-center">
                 {isLoading ? (
                     <div className="h-7 w-48 bg-gray-200 rounded animate-pulse" />
@@ -31,6 +33,7 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({
                 )}
             </div>
 
+            {/* Actions : Favori + Aide */}
             <div className="flex items-center gap-3 z-10">
                 <button
                     onClick={onToggleFavorite}
