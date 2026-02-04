@@ -1,9 +1,9 @@
 export interface User {
     id: string;
     firstName: string;
-    lastName: string;
+    surName: string;
     email: string;
-    profilePhoto?: string;
+    profilePicture?: string;
 }
 
 export interface AuthResponse {
@@ -13,4 +13,14 @@ export interface AuthResponse {
 
 export interface CheckEmailResponse {
     exists: boolean;
+}
+
+export interface UpdateProfilePayload {
+    firstName?: string;
+    surName?: string;
+    profilePicture?: string;
+}
+
+export interface UpdateProfileResponse {
+    user: User;
 }

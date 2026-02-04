@@ -2,15 +2,17 @@ import React, { useState, useCallback, memo } from 'react';
 import { View, Text, Pressable } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RouteProp } from '@react-navigation/native';
-import { Ionicons } from '@expo/vector-icons';
+import { useQuery } from '@tanstack/react-query';
 
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
 import ScreenLayout from '../../components/ui/ScreenLayout';
 import BackButton from '../../components/ui/BackButton';
 import Spacer from '../../components/ui/Spacer';
+import UserAvatar from '../../components/ui/UserAvatar';
 import { AuthStackParamList } from '../../types/navigation';
 import { useLogin } from '../../hooks/useLogin';
+import { getUserByEmail } from '../../requests/UserRequests';
 
 interface Props {
     navigation: NativeStackNavigationProp<AuthStackParamList, 'Login'>;
@@ -21,6 +23,12 @@ const LoginScreen = memo(({ navigation, route }: Props) => {
     const { email } = route.params;
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+
+    const { data: userInfo } = useQuery({
+        queryKey: ['userPublicInfo', email],
+        queryFn: () => getUserByEmail(email),
+        staleTime: 5 * 60 * 1000,
+    });
 
     const { mutate: loginUser, isPending } = useLogin({
         onError: (message) => setError(message),
@@ -59,9 +67,7 @@ const LoginScreen = memo(({ navigation, route }: Props) => {
             </View>
 
             <View className="flex-row items-center bg-gray-50 p-4 rounded-2xl mb-8">
-                <View className="w-12 h-12 rounded-full bg-primary items-center justify-center">
-                    <Ionicons name="person" size={24} color="#fff" />
-                </View>
+                <UserAvatar avatarName={userInfo?.profilePicture} size={48} />
                 <View className="ml-4 flex-1">
                     <Text className="text-xs text-gray-400 uppercase tracking-wide">Compte</Text>
                     <Text className="text-base font-medium text-gray-900 mt-0.5">{email}</Text>

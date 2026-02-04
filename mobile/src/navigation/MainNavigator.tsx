@@ -3,6 +3,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import DashboardScreen from '../screens/dashboard/DashboardScreen';
 import MapScreen from '../screens/map/MapScreen';
+import SettingsScreen from '../screens/settings/SettingsScreen';
+import EditProfileScreen from '../screens/settings/EditProfileScreen';
 import { MainStackParamList } from '../types/navigation';
 
 const Stack = createNativeStackNavigator<MainStackParamList>();
@@ -17,6 +19,8 @@ const MainNavigator = () => (
     >
         <Stack.Screen name="Dashboard" component={DashboardScreen} />
         <Stack.Screen name="Map" component={MapScreen} />
+        <Stack.Screen name="Settings" component={SettingsScreen} />
+        <Stack.Screen name="EditProfile" component={EditProfileScreen} />
     </Stack.Navigator>
 );
 
