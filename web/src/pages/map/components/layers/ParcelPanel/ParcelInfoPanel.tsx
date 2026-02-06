@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { X, ChevronRight, MapPin } from "lucide-react";
 
 // COMPONENTS
@@ -7,10 +7,14 @@ import { ParcelInfoCard } from "./ParcelleInfoCard";
 
 // WIDGETS
 import BuildingsWidget from "./widgets/buildings/BuildingsWidget";
+import MeteoWidget from "./widgets/meteo/MeteoWidget";
+import GpuWidget from "./widgets/gpu/GpuWidget";
 
 const getWidgetsFromUserProfile = (): ParcelWidgetComponent[] => {
   return [
     BuildingsWidget,
+    MeteoWidget,
+    GpuWidget,
   ];
 }
 
@@ -25,6 +29,27 @@ type ParcelInfoPanelProps = {
 export default function ParcelInfoPanel({ selectedParcelle }: ParcelInfoPanelProps) {
   const [isVisible, setIsVisible] = useState(false);
   const [hasSelectedOnce, setHasSelectedOnce] = useState(false);
+  const panelRef = useRef<HTMLElement>(null);
+
+  // Empêcher le scroll de la carte quand on est sur le panel
+  useEffect(() => {
+    const panel = panelRef.current;
+    if (!panel) return;
+
+    const stopPropagation = (e: Event) => {
+      e.stopPropagation();
+    };
+
+    panel.addEventListener('wheel', stopPropagation);
+    panel.addEventListener('mousedown', stopPropagation);
+    panel.addEventListener('touchstart', stopPropagation);
+
+    return () => {
+      panel.removeEventListener('wheel', stopPropagation);
+      panel.removeEventListener('mousedown', stopPropagation);
+      panel.removeEventListener('touchstart', stopPropagation);
+    };
+  }, []);
 
   useEffect(() => {
     if (selectedParcelle?.feature) {
@@ -63,6 +88,7 @@ export default function ParcelInfoPanel({ selectedParcelle }: ParcelInfoPanelPro
       </div>
 
       <aside
+        ref={panelRef}
         className={`absolute inset-y-0 left-0 w-full sm:w-[350px] lg:w-[400px] bg-[#F8F9FB] shadow-[20px_0_25px_-5px_rgba(0,0,0,0.1)] z-[500] transform transition-transform duration-500 ease-in-out flex flex-col pointer-events-auto ${
           isVisible ? "translate-x-0" : "-translate-x-full"
         }`}
