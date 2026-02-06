@@ -3,7 +3,7 @@ import { useMutation } from "@tanstack/react-query";
 import { Building2 } from "lucide-react";
 
 // COMPONENTS
-import { Widget } from "../Widget";
+import { WidgetSection } from "../WidgetSection.tsx";
 import { BuildingCard } from "./BuildingCard";
 import { getBuildingsByGeometry } from "../../../../../../../requests/geoserver/bdTopo";
 import { WALL_MATERIALS, ROOF_MATERIALS, getMaterialLabel } from "../../../../../../../utils/building-dictionaries";
@@ -38,7 +38,7 @@ export default function BuildingsWidget({ feature }: ParcelWidgetProps) {
                     `${buildings.length} détection${buildings.length > 1 ? 's' : ''}`;
 
   return (
-    <Widget 
+    <WidgetSection 
       title="Bâtiments" 
       icon={Building2} 
       loading={isPending} 
@@ -57,6 +57,6 @@ export default function BuildingsWidget({ feature }: ParcelWidgetProps) {
           />
         );
       })}
-    </Widget>
+    </WidgetSection>
   );
 }
