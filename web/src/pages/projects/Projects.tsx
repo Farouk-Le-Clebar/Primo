@@ -1,7 +1,28 @@
+import { useNavigate } from "react-router-dom";
+import { ClientProjectsDashboard } from "./components/projects/ClientProjectsDashboard";
+
 export default function Projects() {
-  return (
-    <div className="flex flex-col bg-cover bg-center">
-      <span>Page Projets</span>
-    </div>
-  );
+    const navigate = useNavigate();
+
+    const handleProjectClick = (project: any) => {
+        navigate(`/projects/${project.id}`);
+    };
+
+    const handleCreateNew = () => {
+        navigate("/projects/new");
+    };
+
+    return (
+        <div className="flex flex-col bg-cover bg-center">
+            <ClientProjectsDashboard
+                onProjectClick={handleProjectClick}
+                onCreateNew={handleCreateNew}
+            />
+        </div>
+    );
 }
+
+//TODO : ajouter une petite animation sur le panel de confirmation pour la suppression
+//TODO : ajuster le design du panelFIlter
+//TODO : ajouter petit modal qui s'ouvre quand on souhaite selectionner "map" ou "list" dans MapView
+//TODO : quand on clique une 3eme fois sur le tri par ordre sur la page project : réinitialiser le tri
