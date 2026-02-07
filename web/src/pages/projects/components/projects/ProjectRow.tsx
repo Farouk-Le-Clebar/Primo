@@ -5,12 +5,11 @@ import { formatDate, formatDateTime } from "../../../../utils/project";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
 import { FAVORITE_GRADIENT } from "../../../../constants/favorite-gradient";
 
-
 const ProjectRow: React.FC<ProjectRowProps> = ({
     project,
     onProjectClick,
     onToggleFavorite,
-    onDeleteClick,
+    onDeleteProject,
 }) => {
     const [dateStr, timeStr] = formatDateTime(project.modifiedAt);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -147,12 +146,13 @@ const ProjectRow: React.FC<ProjectRowProps> = ({
                         <Trash2 className="w-5 h-5 text-gray-400 hover:text-red-500" />
                     </button>
                 </div>
+                
                 <DeleteConfirmationModal
                     isOpen={showDeleteConfirm}
                     onClose={() => setShowDeleteConfirm(false)}
                     onConfirm={() => {
                         setShowDeleteConfirm(false);
-                        // onDeleteClick();
+                        onDeleteProject(project.id);
                     }}
                     projectName={project.name}
                 />

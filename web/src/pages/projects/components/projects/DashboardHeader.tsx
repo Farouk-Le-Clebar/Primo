@@ -34,7 +34,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                     Projets clients
                 </h1>
 
-                {/* Centered area: search + filter */}
+                {/*search + filter */}
                 <div className="flex flex-1 justify-center">
                     <div className="flex items-center gap-5 w-full max-w-lg">
                         {/* Search bar */}

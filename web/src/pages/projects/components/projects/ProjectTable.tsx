@@ -1,5 +1,4 @@
 import React from "react";
-<ChevronsUpDown />;
 import type { ProjectTableProps, SortKey } from "../../../../types/project";
 import ProjectRow from "./ProjectRow";
 import { ChevronsUpDown } from "lucide-react";
@@ -25,7 +24,7 @@ const ProjectTable: React.FC<ProjectTableProps> = ({
     onSort,
     onProjectClick,
     onToggleFavorite,
-    onDeleteClick,
+    onDeleteProject,
 }) => {
     const columns: Array<{ key: SortKey; label: string }> = [
         { key: "name", label: "Noms" },
@@ -75,7 +74,7 @@ const ProjectTable: React.FC<ProjectTableProps> = ({
                             project={project}
                             onProjectClick={onProjectClick}
                             onToggleFavorite={onToggleFavorite}
-                            onDeleteClick={onDeleteClick}
+                            onDeleteProject={onDeleteProject}
                         />
                     ))}
                 </tbody>

@@ -12,7 +12,7 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({
 }) => {
     return (
         <div className="relative flex items-center justify-between h-12">
-            {/* Bouton retour */}
+            {/* return */}
             <div className="flex items-center gap-4 z-10">
                 <button
                     onClick={onBack}
@@ -23,7 +23,7 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({
                 </button>
             </div>
 
-            {/* Titre centré + étoile */}
+            {/* title + fav */}
             <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-max flex items-center gap-5 text-center">
                 {isLoading ? (
                     <div className="h-7 w-48 bg-gray-200 rounded animate-pulse" />
@@ -49,7 +49,7 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({
                 )}
             </div>
 
-            {/* Actions : Aide */}
+            {/* Help */}
             <div className="flex items-center gap-3 z-10">
                 <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
                     <HelpCircle className="w-5 h-5 text-gray-400" />

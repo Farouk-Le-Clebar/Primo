@@ -14,7 +14,7 @@ const MapView: React.FC<MapViewProps> = ({ parcels, isLoading }) => {
 
     return (
         <div className="relative w-full h-96 bg-gradient-to-br from-blue-100 via-green-100 to-blue-50 rounded-xl overflow-hidden">
-            {/* Boutons de contrôle en haut à gauche */}
+            {/* Title */}
             <div className="absolute top-4 left-4 z-10 flex gap-2">
                     <button
                         onClick={() => setActiveView("parcels")}
@@ -28,7 +28,7 @@ const MapView: React.FC<MapViewProps> = ({ parcels, isLoading }) => {
                     </button>
             </div>
 
-            {/* Bouton Map en haut à droite */}
+            {/* Map button */}
             <div className="absolute top-4 right-4 z-10">
                     <button
                         onClick={() => setActiveView("map")}
@@ -55,17 +55,17 @@ const MapView: React.FC<MapViewProps> = ({ parcels, isLoading }) => {
                     </button>
             </div>
 
-            {/* Zone de la carte - placeholder */}
+            {/* Map area - placeholder */}
             <div className="w-full h-full flex items-center justify-center"></div>
 
-            {/* Bouton de recentrage en bas à droite */}
+            {/* Recenter button */}
             <div className="absolute bottom-4 right-4 z-10">
                 <button className="w-7 h-7 bg-white cursor-pointer rounded-lg flex items-center justify-center hover:bg-gray-50 transition-colors">
                     <LocateFixed className="w-4 h-4 text-gray-900" />
                 </button>
             </div>
 
-            {/* Note : Ici sera intégrée votre vraie carte plus tard */}
+            {/*  carte plus tard ici */}
             <div className="absolute inset-0 flex items-center justify-center opacity-20">
                 <svg
                     className="w-24 h-24 text-gray-400"

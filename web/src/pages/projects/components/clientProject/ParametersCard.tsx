@@ -1,5 +1,4 @@
 import React from "react";
-import "./ParametersCard.css";
 import { ChevronRight } from "lucide-react";
 import type { ParametersCardProps } from "../../../../types/projectDetail";
 
@@ -21,7 +20,7 @@ const ParametersCard: React.FC<ParametersCardProps> = ({
 
     return (
         <div className="bg-white rounded-xl border border-gray-200 h-full flex flex-col overflow-hidden">
-            {/* En-tête avec titre et bouton */}
+            {/* Header with title and button */}
             <div className="flex items-center justify-between p-4 flex-shrink-0">
                 <h3 className="text-sm font-semibold text-gray-900">
                     Paramètres
