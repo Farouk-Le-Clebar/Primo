@@ -20,6 +20,7 @@ export class AuthService {
     surName: string,
     password: string,
   ) {
+    console.log('Registering user:', email, firstName, surName);
 
     const existingUser = await this.userRepository.findOne({
       where: { email },

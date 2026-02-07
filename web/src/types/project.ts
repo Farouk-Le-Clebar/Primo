@@ -1,5 +1,5 @@
 export interface ClientProject {
-    id: number;
+    id: string;
     name: string;
     parameters: number;
     parcels: number;
@@ -39,7 +39,6 @@ export interface DeleteModalState {
 export interface ClientProjectsDashboardProps {
     onProjectClick: (project: ClientProject) => void;
     onCreateNew: () => void;
-    initialProjects?: ClientProject[];
 }
 
 export interface ProjectTableProps {
@@ -47,15 +46,15 @@ export interface ProjectTableProps {
     sortConfig: SortConfig;
     onSort: (key: SortKey) => void;
     onProjectClick: (project: ClientProject) => void;
-    onToggleFavorite: (projectId: number, e: React.MouseEvent) => void;
-    onDeleteClick: (project: ClientProject, e: React.MouseEvent) => void;
+    onToggleFavorite: (projectId: string, e: React.MouseEvent) => void;
+    onDeleteProject: (projectId: string) => void;
 }
 
 export interface ProjectRowProps {
     project: ClientProject;
     onProjectClick: (project: ClientProject) => void;
-    onToggleFavorite: (projectId: number, e: React.MouseEvent) => void;
-    onDeleteClick: (project: ClientProject, e: React.MouseEvent) => void;
+    onToggleFavorite: (projectId: string, e: React.MouseEvent) => void;
+    onDeleteProject: (projectId: string) => void;
 }
 
 export interface DashboardHeaderProps {
