@@ -3,7 +3,8 @@ import type { MapViewProps } from "../../../../types/projectDetail";
 import { LocateFixed } from "lucide-react";
 
 
-const MapView: React.FC<MapViewProps> = ({ parcels, isLoading }) => {
+// const MapView: React.FC<MapViewProps> = ({ parcels, isLoading }) => {
+const MapView: React.FC<MapViewProps> = ({ isLoading }) => {
     const [activeView, setActiveView] = useState<"parcels" | "map">("parcels");
 
     if (isLoading) {

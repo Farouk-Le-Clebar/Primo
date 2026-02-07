@@ -3,7 +3,7 @@ import { ChevronRight } from "lucide-react";
 import type { ParametersCardProps } from "../../../../types/projectDetail";
 
 const ParametersCard: React.FC<ParametersCardProps> = ({
-    data,
+    // data,
     isLoading,
     onViewAll,
 }) => {
