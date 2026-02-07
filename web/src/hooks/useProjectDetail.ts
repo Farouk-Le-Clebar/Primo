@@ -1,10 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import type { ProjectDetail } from '../types/projectDetail';
+import {
+  fetchProjectById,
+  updateProjectNotes,
+  updateProjectFavorite,
+} from '../requests/projectRequests';
 
-/**
- * Hook pour gérer les données du projet
- * Simule le chargement et la gestion d'état
- */
+
 export const useProjectDetail = (projectId?: string) => {
   const [project, setProject] = useState<ProjectDetail | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -12,96 +14,88 @@ export const useProjectDetail = (projectId?: string) => {
 
   useEffect(() => {
     const loadProject = async () => {
+      if (!projectId) return;
       try {
         setIsLoading(true);
-        
-        // Simuler un appel API avec un délai
-        await new Promise(resolve => setTimeout(resolve, 1000));
-
-        // Données mock pour le développement
-        const mockProject: ProjectDetail = {
-          id: parseInt(projectId || '1'),
-          name: 'Alain Fréberger',
-          isFavorite: true,
-          notes: '',
-          createdAt: '2023-05-14',
-          modifiedAt: '2023-05-14T17:37:00'
-        };
-
-        setProject(mockProject);
+        setError(null);
+        const data = await fetchProjectById(projectId);
+        setProject({
+          id: data.id,
+          name: data.name,
+          isFavorite: data.isFavorite,
+          notes: data.notes || '',
+          parcels: data.parcels?.map(p => ({
+            id: p.id,
+            coordinates: p.coordinates,
+          })),
+          parameters: data.parameters,
+          createdAt: data.createdAt,
+          modifiedAt: data.modifiedAt,
+        });
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Erreur inconnue');
+        setError(
+          err instanceof Error ? err.message : 'Erreur lors du chargement du projet',
+        );
       } finally {
         setIsLoading(false);
       }
     };
-
-    if (projectId) {
-      loadProject();
-    }
+    loadProject();
   }, [projectId]);
 
   return { project, isLoading, error, setProject };
 };
 
-/**
- * Hook pour gérer les notes avec sauvegarde automatique
- */
+
 export const useNotes = (initialNotes: string = '', projectId?: string) => {
   const [notes, setNotes] = useState(initialNotes);
   const [isSaving, setIsSaving] = useState(false);
+  const initialNotesRef = useRef(initialNotes);
 
   useEffect(() => {
     setNotes(initialNotes);
+    initialNotesRef.current = initialNotes;
   }, [initialNotes]);
 
   useEffect(() => {
-    // Sauvegarder automatiquement après 1 seconde d'inactivité
-    const timer = setTimeout(() => {
-      if (notes !== initialNotes && projectId) {
-        saveNotes(notes);
+    if (notes === initialNotesRef.current || !projectId) return;
+
+    const timer = setTimeout(async () => {
+      try {
+        setIsSaving(true);
+        await updateProjectNotes(projectId, notes);
+      } catch (error) {
+        console.error('Erreur lors de la sauvegarde des notes:', error);
+      } finally {
+        setIsSaving(false);
       }
     }, 1000);
 
     return () => clearTimeout(timer);
-  }, [notes, initialNotes, projectId]);
-
-  const saveNotes = async (content: string) => {
-    try {
-      setIsSaving(true);
-      // TODO: Remplacer par un vrai appel API
-      // await api.updateProjectNotes(projectId, content);
-      console.log('Notes sauvegardées:', content);
-    } catch (error) {
-      console.error('Erreur lors de la sauvegarde des notes:', error);
-    } finally {
-      setIsSaving(false);
-    }
-  };
+  }, [notes, projectId]);
 
   return { notes, setNotes, isSaving };
 };
 
-/**
- * Hook pour gérer le statut favori
- */
-export const useFavorite = (initialValue: boolean, _projectId?: string) => {
+
+export const useFavorite = (initialValue: boolean, projectId?: string) => {
   const [isFavorite, setIsFavorite] = useState(initialValue);
 
-  const toggleFavorite = async () => {
+  useEffect(() => {
+    setIsFavorite(initialValue);
+  }, [initialValue]);
+
+  const toggleFavorite = useCallback(async () => {
+    if (!projectId) return;
     const newValue = !isFavorite;
     setIsFavorite(newValue);
-
     try {
-      // TODO: Remplacer par un vrai appel API
-      // await api.updateProjectFavorite(projectId, newValue);
-      console.log('Favori mis à jour:', newValue);
+      await updateProjectFavorite(projectId, newValue);
     } catch (error) {
-      // En cas d'erreur, revenir à l'état précédent
       setIsFavorite(!newValue);
       console.error('Erreur lors de la mise à jour du favori:', error);
     }
-  };
+  }, [isFavorite, projectId]);
 
   return { isFavorite, toggleFavorite };
 };

@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import type {
     ClientProject,
     SortConfig,
@@ -7,9 +7,28 @@ import type {
     DeleteModalState,
 } from "../types/project";
 import { processProjects, getDefaultFilters } from "../utils/project";
+import {
+    fetchProjects,
+    updateProjectFavorite,
+    deleteProject as deleteProjectApi,
+} from "../requests/projectRequests";
+import type { ProjectResponse } from "../requests/projectRequests";
 
 /**
- * Hook personnalisé pour gérer la recherche avec debounce
+ * Convertit une réponse API en ClientProject pour l'affichage dashboard
+ */
+const toClientProject = (p: ProjectResponse): ClientProject => ({
+    id: p.id,
+    name: p.name,
+    parameters: p.parameters ? Object.keys(p.parameters).length : 0,
+    parcels: p.parcels ? p.parcels.length : 0,
+    createdAt: p.createdAt,
+    modifiedAt: p.modifiedAt,
+    isFavorite: p.isFavorite,
+});
+
+/**
+ * Hook pour recherche debounce
  */
 export const useSearch = (initialValue = "", delay = 500) => {
     const [searchTerm, setSearchTerm] = useState(initialValue);
@@ -28,7 +47,7 @@ export const useSearch = (initialValue = "", delay = 500) => {
 };
 
 /**
- * Hook personnalisé pour gérer le tri des colonnes
+ * Hook tri des colonnes
  */
 export const useSort = (initialKey: SortKey | null = null) => {
     const [sortConfig, setSortConfig] = useState<SortConfig>({
@@ -37,18 +56,23 @@ export const useSort = (initialKey: SortKey | null = null) => {
     });
 
     const handleSort = (key: SortKey) => {
-        let direction: "asc" | "desc" = "asc";
-        if (sortConfig.key === key && sortConfig.direction === "asc") {
-            direction = "desc";
+        if (sortConfig.key !== key) {
+            // Premier clic : tri ascendant sur une nouvelle colonne
+            setSortConfig({ key, direction: "asc" });
+        } else if (sortConfig.direction === "asc") {
+            // Deuxième clic : tri descendant
+            setSortConfig({ key, direction: "desc" });
+        } else if (sortConfig.direction === "desc") {
+            // Troisième clic : réinitialisation
+            setSortConfig({ key: null, direction: "asc" });
         }
-        setSortConfig({ key, direction });
     };
 
     return { sortConfig, handleSort };
 };
 
 /**
- * Hook personnalisé pour gérer les filtres
+ * Hook filtres
  */
 export const useFilters = () => {
     const [filters, setFilters] = useState<ProjectFilters>(getDefaultFilters());
@@ -67,66 +91,88 @@ export const useFilters = () => {
 };
 
 /**
- * Hook personnalisé pour gérer les projets (CRUD)
+ * Hook projets (CRUD) avec appels API
  */
-export const useProjects = (initialProjects: ClientProject[]) => {
-    const [projects, setProjects] = useState<ClientProject[]>(initialProjects);
+export const useProjects = () => {
+    const [projects, setProjects] = useState<ClientProject[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
-    /**
-     * Bascule le statut favori d'un projet
-     */
-    const toggleFavorite = (projectId: number) => {
-        setProjects((prevProjects) =>
-            prevProjects.map((project) =>
-                project.id === projectId
-                    ? { ...project, isFavorite: !project.isFavorite }
-                    : project,
-            ),
-        );
-    };
+    const loadProjects = useCallback(async () => {
+        try {
+            setIsLoading(true);
+            setError(null);
+            const data = await fetchProjects();
+            setProjects(data.map(toClientProject));
+        } catch (err) {
+            setError(
+                err instanceof Error
+                    ? err.message
+                    : "Erreur lors du chargement des projets",
+            );
+        } finally {
+            setIsLoading(false);
+        }
+    }, []);
 
-    /**
-     * Supprime un projet
-     */
-    const deleteProject = (projectId: number) => {
-        setProjects((prevProjects) =>
-            prevProjects.filter((p) => p.id !== projectId),
-        );
-    };
+    useEffect(() => {
+        loadProjects();
+    }, [loadProjects]);
 
-    /**
-     * Ajoute un nouveau projet
-     */
-    const addProject = (project: ClientProject) => {
-        setProjects((prevProjects) => [...prevProjects, project]);
-    };
+    const toggleFavorite = useCallback(
+        async (projectId: string) => {
+            const project = projects.find((p) => p.id === projectId);
+            if (!project) return;
 
-    /**
-     * Met à jour un projet existant
-     */
-    const updateProject = (
-        projectId: number,
-        updates: Partial<ClientProject>,
-    ) => {
-        setProjects((prevProjects) =>
-            prevProjects.map((project) =>
-                project.id === projectId ? { ...project, ...updates } : project,
-            ),
-        );
-    };
+            const newValue = !project.isFavorite;
+            setProjects((prev) =>
+                prev.map((p) =>
+                    p.id === projectId ? { ...p, isFavorite: newValue } : p,
+                ),
+            );
+
+            try {
+                await updateProjectFavorite(projectId, newValue);
+            } catch {
+                setProjects((prev) =>
+                    prev.map((p) =>
+                        p.id === projectId
+                            ? { ...p, isFavorite: !newValue }
+                            : p,
+                    ),
+                );
+            }
+        },
+        [projects],
+    );
+
+    const removeProject = useCallback(
+        async (projectId: string) => {
+            const backup = projects;
+            setProjects((prev) => prev.filter((p) => p.id !== projectId));
+
+            try {
+                await deleteProjectApi(projectId);
+            } catch {
+                setProjects(backup);
+            }
+        },
+        [projects],
+    );
 
     return {
         projects,
+        isLoading,
+        error,
         setProjects,
         toggleFavorite,
-        deleteProject,
-        addProject,
-        updateProject,
+        deleteProject: removeProject,
+        refreshProjects: loadProjects,
     };
 };
 
 /**
- * Hook personnalisé pour gérer la modal de suppression
+ * Hook modal de suppression
  */
 export const useDeleteModal = () => {
     const [deleteModal, setDeleteModal] = useState<DeleteModalState>({
@@ -150,7 +196,7 @@ export const useDeleteModal = () => {
 };
 
 /**
- * Hook personnalisé pour traiter et filtrer les projets
+ * Hook traitement et filtrage des projets
  */
 export const useProcessedProjects = (
     projects: ClientProject[],
