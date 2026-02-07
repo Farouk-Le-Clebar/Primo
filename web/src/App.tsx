@@ -3,7 +3,6 @@ import { Routes, Route, Navigate } from "react-router-dom";
 // COMPONENTS
 import Layout from "./components/layouts/layout";
 import LayoutSettings from "./components/layouts/layoutSettings";
-import LayoutMap from "./components/layouts/layoutMap";
 import ProtectedRoute from "./components/protectedRoute/ProtectedRoute";
 
 // PUBLIC PAGES
@@ -27,7 +26,7 @@ export default function App() {
     <>
       {/* Toaster pour les notifications */}
       <CustomToaster />
-    
+
       <Routes>
         {/* Routes Publiques */}
         <Route path="/" element={<Layout />}>
@@ -38,9 +37,7 @@ export default function App() {
         </Route>
 
         {/* Routes de la carte */}
-        <Route element={<LayoutMap />}>
-            <Route path="search" element={<Map />} />
-        </Route>
+        <Route path="search" element={<Map />} />
 
         {/* Routes Protégées */}
         <Route element={<ProtectedRoute />}>
@@ -57,7 +54,7 @@ export default function App() {
             <Route path="settings/subscriptions" element={<Subscriptions />} />
           </Route>
         </Route>
-        
+
         {/* Redirection pour les routes non trouvées */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

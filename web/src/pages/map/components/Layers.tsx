@@ -1,14 +1,18 @@
 import MapBounds from "./layers/MapBounds";
 import ZoomHandler from "./layers/ZoomHandler";
-import { TileLayer, ZoomControl } from "react-leaflet";
+import { TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { useState, useCallback } from "react";
 import type { FeatureCollection } from "geojson";
 import L from "leaflet";
 import ShapesLayer from "./layers/ShapesLayer";
-import PoiLayer from "./layers/PoiLayer";
-import PoiWidget from "./layers/PoiWidget";
+import PoiLayer from "./layers/POI/PoiLayer";
+import PoiWidget from "./layers/POI/PoiWidget";
 import { MIN_ZOOM_FOR_POIS, POI_CONFIGS } from "./PoiConfig";
+import ParcelInfoPanel from "./layers/ParcelPanel/ParcelInfoPanel";
+import Navbar from "./layers/Navbar/Navbar";
+import MapPreference from "./layers/preference/MapPreference";
+import { mapPreference } from "../../../utils/map";
 
 const Layers = () => {
     const [mapBounds, setMapBounds] = useState<L.LatLngBounds | null>(null);
@@ -21,6 +25,14 @@ const Layers = () => {
         useState<FeatureCollection | null>(null);
     const [divisionsBoundData, setDivisionsBoundData] =
         useState<FeatureCollection | null>(null);
+    const [selectedParcelle, setSelectedParcelle] = useState<{
+        bounds: L.LatLngBounds;
+        feature: any;
+        layer: L.Path;
+    } | null>(null);
+
+    const user = JSON.parse(localStorage.getItem("user") || "{}");
+    const [mapType, setMapType] = useState<"basic" | "satellite">(user.mapPreference);
 
     const [poisData, setPoisData] = useState<FeatureCollection | null>(null);
     const [enabledPoiTypes, setEnabledPoiTypes] = useState<string[]>(
@@ -63,13 +75,28 @@ const Layers = () => {
         );
     }, []);
 
+    const handleParcelleSelect = (bounds: L.LatLngBounds, feature: any, layer: L.Path) => {
+        setSelectedParcelle({ bounds, feature, layer });
+        console.log(selectedParcelle);
+    };
+
+    const handleChangeMapType = (type: "basic" | "satellite") => {
+        setMapType(type);
+        user.mapPreference = type;
+        localStorage.setItem("user", JSON.stringify(user));
+    }
+
     return (
         <>
-            {/* https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png */}
-            <TileLayer url="https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}" />
+            <TileLayer url={mapPreference[mapType]} />
             <MapBounds onChange={handleMapBoundsChange} />
             <ZoomHandler onZoomChange={handleZoomChange} />
-            <ZoomControl position="topright" />
+            <MapPreference
+                onChangeMapType={handleChangeMapType}
+                currentMapType={mapType}
+            />
+
+            <Navbar />
 
             <PoiWidget
                 onTogglePoi={handleTogglePoi}
@@ -89,6 +116,7 @@ const Layers = () => {
                     city: cityBoundData,
                     divisions: divisionsBoundData,
                 }}
+                onParcelleSelect={handleParcelleSelect}
             />
             <PoiLayer
                 onPoisChange={handlePoisChange}
@@ -97,6 +125,7 @@ const Layers = () => {
                 enabledPoiTypes={enabledPoiTypes}
                 dataPois={{ pois: poisData }}
             />
+            <ParcelInfoPanel selectedParcelle={selectedParcelle} />
         </>
     );
 };

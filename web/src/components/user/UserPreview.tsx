@@ -4,7 +4,28 @@ import { useQuery } from "@tanstack/react-query";
 import { getUserByMail } from "../../requests/UserRequests";
 
 // ASSETS
-import profilePlaceholder from "../../assets/profilePictures/green.png";
+import PPGreen from "../../assets/profilePictures/green.svg?react";
+import PPCyan from "../../assets/profilePictures/cyan.svg?react";
+import PPBlue from "../../assets/profilePictures/blue.svg?react";
+import PPOrange from "../../assets/profilePictures/orange.svg?react";
+import PPpink from "../../assets/profilePictures/pink.svg?react";
+import PPRed from "../../assets/profilePictures/red.svg?react";
+import PPWhite from "../../assets/profilePictures/white.svg?react";
+import PPWhitePink from "../../assets/profilePictures/whitepink.svg?react";
+import PPYellow from "../../assets/profilePictures/yellow.svg?react";
+
+// Dictionnaire des avatars
+const AVATAR_COMPONENTS: Record<string, React.FC<React.SVGProps<SVGSVGElement>>> = {
+  "green.png": PPGreen,
+  "cyan.png": PPCyan,
+  "blue.png": PPBlue,
+  "orange.png": PPOrange,
+  "pink.png": PPpink,
+  "red.png": PPRed,
+  "white.png": PPWhite,
+  "whitepink.png": PPWhitePink,
+  "yellow.png": PPYellow,
+};
 
 export default function UserInfo({ email }: { email: string }) {
   const { data, isLoading, error } = useQuery({
@@ -12,19 +33,6 @@ export default function UserInfo({ email }: { email: string }) {
     queryFn: () => getUserByMail(email),
     enabled: !!email,
   });
-
-  const getAvatarUrl = (name: string | undefined) => {
-    const fileName = name || "green.png";
-
-    console.log("Profile picture file name:", data);
-    if (fileName.startsWith("data:") || fileName.startsWith("http")) return fileName;
-    
-    try {
-      return new URL(`../../assets/profilePictures/${fileName}`, import.meta.url).href;
-    } catch (e) {
-      return profilePlaceholder;
-    }
-  };
 
   if (!email) return null;
 
@@ -48,15 +56,13 @@ export default function UserInfo({ email }: { email: string }) {
     );
   }
 
+  const fileName = data.profilePicture || "green.png";
+  const AvatarComponent = AVATAR_COMPONENTS[fileName] || PPGreen;
+
   return (
     <div className="flex items-center bg-[#EFEFF4] w-full px-4 py-3 border border-transparent rounded-xl transition-all duration-200">
       <div className="w-10 h-10 rounded-full overflow-hidden border border-white shadow-sm flex-shrink-0">
-        <img
-          src={getAvatarUrl(data.profilePicture)}
-          alt="Photo de profil"
-          className="w-full h-full object-cover"
-          onError={(e) => (e.currentTarget.src = profilePlaceholder)}
-        />
+        <AvatarComponent className="w-full h-full" />
       </div>
 
       <div className="ml-3 flex flex-col min-w-0">

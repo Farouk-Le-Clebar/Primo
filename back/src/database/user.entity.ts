@@ -3,7 +3,7 @@ import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 @Entity()
 export class User {
   @PrimaryGeneratedColumn('uuid')
-  id: number;
+  id: string;
 
   @Column({ type: 'varchar', nullable: false, default: '' })
   firstName: string;
@@ -19,4 +19,7 @@ export class User {
 
   @Column({ type: 'varchar', nullable: true, default: null })
   profilePicture: string | null;
+
+  @Column({ type: 'varchar', nullable: false, default: 'basic' })
+  mapPreference: string;
 }

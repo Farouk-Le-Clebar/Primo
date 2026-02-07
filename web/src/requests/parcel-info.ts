@@ -6,7 +6,6 @@ const apiUrl = window?._env_?.API_URL;
 export const getBuildingsByBbox = async (bbox: string, departement: string) => {
   const typeNames = `primo:batiment_${departement}`;
 
-  console.log("Fetching buildings for bbox:", bbox, "and departement:", departement);
   
   const params = new URLSearchParams({
     service: 'WFS',

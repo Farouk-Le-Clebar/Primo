@@ -1,7 +1,5 @@
-import { useDispatch } from "react-redux";
 
 // COMPONENTS & ICONS
-import { clearUser } from "../../../../store/userSlice";
 import UserProfile from "../../../user/UserProfile";
 import CustomNavLink from "../../../../ui/Navlink";
 
@@ -13,11 +11,10 @@ interface DropdownMenuProps {
 }
 
 export default function DropdownMenu({ onClose }: DropdownMenuProps) {
-  const dispatch = useDispatch();
 
   const handleLogout = () => {
-    dispatch(clearUser());
     localStorage.removeItem("token");
+    localStorage.removeItem("user");
     window.location.reload();
   };
 

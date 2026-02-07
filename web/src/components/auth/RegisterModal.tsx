@@ -7,8 +7,6 @@ import { Eye, EyeOff, ArrowLeft } from "lucide-react";
 import Button from "../../ui/Button";
 import Input from "../../ui/Input";
 import {BackgroundColors, TextColors}  from "../../utils/colors";
-import { useDispatch } from "react-redux";
-import { setUser } from "../../store/userSlice";
 
 export default function RegisterModal({ 
   email: initialEmail,
@@ -26,7 +24,6 @@ export default function RegisterModal({
 
   const [errorMessage, setErrorMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const dispatch = useDispatch();
 
   const getPasswordStrength = (password: string) => {
     let score = 0;
@@ -46,8 +43,6 @@ export default function RegisterModal({
         try {
           localStorage.setItem("token", data.access_token);
           if (data.user) {
-            console.log("Registered user:", data.user);
-            dispatch(setUser(data.user));
             window.location.reload();
           }
           onClose();

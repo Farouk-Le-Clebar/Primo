@@ -9,7 +9,7 @@ export class UserService {
   constructor(
     @InjectRepository(User)
     private userRepo: Repository<User>,
-  ) {}
+  ) { }
 
   async checkEmailExists(email: string): Promise<{ exists: boolean }> {
     const user = await this.userRepo.findOne({ where: { email } });
@@ -22,20 +22,50 @@ export class UserService {
     if (!user) {
       throw new NotFoundException('User not found');
     }
-    return user;
+
+    const { password, id, ...safeUser } = user;
+    return safeUser;
   }
 
-  async updateProfile(email: string, updateData: UpdateProfileDto) {
-    const user = await this.getUserByEmail(email);
+  async updateProfile(ReqId: string, updateData: UpdateProfileDto) {
+    const user = await this.userRepo.findOne({ where: { id: ReqId } });
 
-    Object.assign(user, updateData);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    if (updateData.firstName !== undefined)
+      user.firstName = updateData.firstName;
+    if (updateData.surName !== undefined)
+      user.surName = updateData.surName;
+    if (updateData.profilePicture !== undefined)
+      user.profilePicture = updateData.profilePicture;
 
     const updatedUser = await this.userRepo.save(user);
 
-    const { password, ...safeUser } = updatedUser;
+    const { password, id, ...safeUser } = updatedUser;
     return {
-      message: 'Profil mis à jour avec succès',
+      message: 'Profile updated successfully',
       user: safeUser,
+    };
+  }
+
+  async updateMapPreference(id: string, mapPreference: string) {
+    const user = await this.userRepo.findOne({ where: { id: id } });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    user.mapPreference = mapPreference;
+
+    const updatedUser = await this.userRepo.save(user);
+    if (!updatedUser) {
+      throw new NotFoundException('Failed to update map preference');
+    }
+
+    return {
+      message: 'Preference changed successfully',
     };
   }
 }

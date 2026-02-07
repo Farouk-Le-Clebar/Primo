@@ -2,14 +2,14 @@ import { useMutation } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { Marker, Popup } from "react-leaflet";
 import L from "leaflet";
-import { getPoisByBbox } from "../../../../requests/map";
+import { getPoisByBbox } from "../../../../../requests/map";
 import {
     getMaxFeaturesForZoom,
     MIN_ZOOM_FOR_POIS,
     POI_CONFIGS,
     type PoiType,
-} from "../PoiConfig";
-import { boundToBbox } from "../../../../utils/map";
+} from "../../PoiConfig";
+import { boundToBbox } from "../../../../../utils/map";
 import type { FeatureCollection } from "geojson";
 
 type PoiLayerProps = {

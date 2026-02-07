@@ -1,5 +1,5 @@
 import axios from "axios";
-const apiUrl = window?._env_?.API_URL;
+const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
 export const getCityByBbox = async (bbox: string) => {
     const params = new URLSearchParams({
@@ -141,4 +141,3 @@ export const getPoisByBbox = async (
             throw error;
         });
 };
-

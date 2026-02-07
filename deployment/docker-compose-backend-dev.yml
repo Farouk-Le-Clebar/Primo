@@ -25,7 +25,7 @@ services:
       JWT_SECRET: S3cReT
       ADDOK_URL: http://addok:7878
       FRONT_URL: app.primo-data.fr
-      GEOSERVER_URL: http://geoserver:8080/geoserver
+      EXTERNE_GEOSERVER_URL: http://geoserver:8080/geoserver
 
     labels:
       - "traefik.enable=true"
@@ -110,7 +110,7 @@ services:
       GEOSERVER_ADMIN_USER: admin
       GEOSERVER_ADMIN_PASSWORD: geoserver_primo
       INITIAL_MEMORY: 2G
-      MAXIMUM_MEMORY: 4G
+      MAXIMUM_MEMORY: 32G
       STABLE_EXTENSIONS: wps,csw
       COMMUNITY_EXTENSIONS: ""
     ports:
@@ -125,6 +125,22 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
+    networks:
+      - web
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin_primo
+    restart: always
+    environment:
+      PMA_HOST: mysql_db
+      PMA_PORT: 3306
+      PMA_USER: user_primo
+      PMA_PASSWORD: V3RyS3eCr3tP@ssw0rd
+    ports:
+      - '8081:80'
+    depends_on:
+      - mysql_db
     networks:
       - web
 

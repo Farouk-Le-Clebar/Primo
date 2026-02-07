@@ -7,6 +7,7 @@ import {
   Post,
   Req,
   UseGuards,
+  BadRequestException,
 } from '@nestjs/common';
 import type { Request } from 'express';
 import { CheckEmailDto } from './dto/check-email.dto';
@@ -33,19 +34,26 @@ export class UserController {
     return this.userService.getUserByEmail(email);
   }
 
-  @Get('me')
-  @UseGuards(JwtAuthGuard)
-  async getCurrentUser(@Req() req: RequestWithUser): Promise<Partial<User>> {
-    const { password, ...safeUser } = await this.userService.getUserByEmail(req.user.email);
-    return safeUser;
-  }
-
   @Put('profile')
   @UseGuards(JwtAuthGuard)
   async updateProfile(
     @Req() req: RequestWithUser,
     @Body() dto: UpdateProfileDto,
   ) {
-    return await this.userService.updateProfile(req.user.email, dto);
+    return await this.userService.updateProfile(req.user.id, dto);
+  }
+
+  @Put('map')
+  @UseGuards(JwtAuthGuard)
+  async updateMapPreference(
+    @Req() req: RequestWithUser,
+    @Body('mapPreference') mapPreference: string,
+  ) {
+    if (mapPreference == null) {
+      throw new BadRequestException('mapPreference is required');
+    } else if (mapPreference !== 'basic' && mapPreference !== 'satellite') {
+      throw new BadRequestException('Invalid mapPreference value');
+    }
+    return await this.userService.updateMapPreference(req.user.id, mapPreference);
   }
 }

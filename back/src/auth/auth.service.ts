@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../database/user.entity';
 import * as bcrypt from 'bcrypt';
+import { map } from 'rxjs';
 
 @Injectable()
 export class AuthService {
@@ -20,8 +21,6 @@ export class AuthService {
     password: string,
   ) {
 
-    console.log("Registering user:", email, firstName, surName);
-  
     const existingUser = await this.userRepository.findOne({
       where: { email },
     });
@@ -51,6 +50,7 @@ export class AuthService {
         firstName: result.firstName,
         surName: result.surName,
         profilePicture: result.profilePicture,
+        mapPreference: result.mapPreference,
       },
     };
   }
@@ -65,6 +65,7 @@ export class AuthService {
         'surName',
         'profilePicture',
         'password',
+        'mapPreference',
       ],
     });
     if (!user) {
@@ -82,31 +83,32 @@ export class AuthService {
     return {
       access_token: token,
       user: {
-        id: user.id,
         email: user.email,
         firstName: user.firstName,
         surName: user.surName,
         profilePicture: user.profilePicture,
+        mapPreference: user.mapPreference,
       },
     };
   }
 
-  async validateUser(payload: { sub: number; email: string }) {
+  async validateUser(payload: { sub: string; email: string }) {
     const user = await this.userRepository.findOne({
       where: { id: payload.sub },
-      select: ['id', 'email', 'firstName', 'surName', 'profilePicture'],
+      select: ['id', 'email', 'firstName', 'surName', 'profilePicture', 'mapPreference'],
     });
 
     if (!user) {
-      console.log('User not found in database');
       return null;
     }
 
     return {
+      id: user.id,
       email: user.email,
       firstName: user.firstName,
       surName: user.surName,
       profilePicture: user.profilePicture,
+      mapPreference: user.mapPreference,
     };
   }
 }
