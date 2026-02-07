@@ -55,7 +55,7 @@ export const ClientProjectPage: React.FC<ProjectDetailPageProps> = ({
     }
 
     return (
-        <div className="w-full h-screen bg-gray-50 flex flex-col overflow-hidden">
+        <div className="w-full h-screen bg-gray-50 flex flex-col overflow-hidden font-UberMove">
             {/* Header*/}
             <div className="flex-shrink-0 px-7 pt-1 pb-0 bg-white mb-4 border-b border-gray-200">
                 <ProjectHeader

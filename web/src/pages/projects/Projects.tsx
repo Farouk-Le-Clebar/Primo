@@ -25,9 +25,8 @@ export default function Projects() {
 }
 
 //TODO : ajouter une petite animation sur le panel de confirmation pour la suppression
-//TODO : régler bug des tris & icon par nbr parcelles & paramètres : on dirait que ça ne peut pas fonctionner de manière indépendante
-//TODO : ajuster le style général (taille, typo, etc...)
 //TODO : ajuster le design du panelFIlter
-//TODO : sur "fonctionnalité à venir" du compare : ajouter animation comme google pour IA quand on hover
 //TODO : ajouter une petite animation au moment de l'ajout aux favoris d'un projet
 //TODO : ajouter petit modal qui s'ouvre quand on souhaite selectionner "map" ou "list" dans MapView
+//TODO : quand on clique une 3eme fois sur le tri par ordre sur la page project : réinitialiser le tri
+//TODO : changer la card parameter

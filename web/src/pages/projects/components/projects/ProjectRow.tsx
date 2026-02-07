@@ -5,6 +5,7 @@ import { formatDate, formatDateTime } from "../../../../utils/project";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
 import { FAVORITE_GRADIENT } from "../../../../constants/favorite-gradient";
 
+
 const ProjectRow: React.FC<ProjectRowProps> = ({
     project,
     onProjectClick,
@@ -35,7 +36,7 @@ const ProjectRow: React.FC<ProjectRowProps> = ({
 
             {/* Parameters column */}
             <td className="px-6 py-4">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-orange-100 text-orange-600 rounded-md text-xs">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-green-100 text-green-600 rounded-md text-xs">
                     <svg
                         className="w-3.5 h-3.5"
                         fill="none"

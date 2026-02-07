@@ -24,7 +24,7 @@ const MapView: React.FC<MapViewProps> = ({ parcels, isLoading }) => {
                                 : "bg-white/80 text-gray-900 hover:bg-white"
                         }`}
                     >
-                        Parcels
+                        Parcelles
                     </button>
             </div>
 
