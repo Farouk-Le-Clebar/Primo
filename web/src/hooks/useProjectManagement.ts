@@ -1,4 +1,5 @@
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import type {
     ClientProject,
     SortConfig,
@@ -11,7 +12,7 @@ import { processProjects, getDefaultFilters } from "../utils/project";
 import {
     fetchProjects,
     updateProjectFavorite,
-    deleteProject as deleteProjectApi,
+    deleteProject,
 } from "../requests/projectRequests";
 
 /**
@@ -91,83 +92,90 @@ export const useFilters = () => {
 };
 
 /**
- * Hook projets (CRUD) avec appels API
+ * Hook projets (CRUD) avec useQuery + useMutation (TanStack)
+ *
  */
 export const useProjects = () => {
-    const [projects, setProjects] = useState<ClientProject[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+    const queryClient = useQueryClient();
 
-    const loadProjects = useCallback(async () => {
-        try {
-            setIsLoading(true);
-            setError(null);
-            const data = await fetchProjects();
-            setProjects(data.map(toClientProject));
-        } catch (err) {
-            setError(
-                err instanceof Error
-                    ? err.message
-                    : "Erreur lors du chargement des projets",
-            );
-        } finally {
-            setIsLoading(false);
-        }
-    }, []);
+    const {
+        data: projects = [],
+        isLoading,
+        error,
+    } = useQuery({
+        queryKey: ["projects"],
+        queryFn: fetchProjects,
+        select: (data) => data.map(toClientProject),
+    });
 
-    useEffect(() => {
-        loadProjects();
-    }, [loadProjects]);
-
-    const toggleFavorite = useCallback(
-        async (projectId: string) => {
-            const project = projects.find((p) => p.id === projectId);
-            if (!project) return;
-
-            const newValue = !project.isFavorite;
-            setProjects((prev) =>
-                prev.map((p) =>
+    const { mutate: toggleFavorite } = useMutation({
+        mutationFn: ({
+            projectId,
+            newValue,
+        }: {
+            projectId: string;
+            newValue: boolean;
+        }) => updateProjectFavorite(projectId, newValue),
+        onMutate: async ({ projectId, newValue }) => {
+            await queryClient.cancelQueries({ queryKey: ["projects"] });
+            const previous = queryClient.getQueryData<ProjectResponse[]>([
+                "projects",
+            ]);
+            queryClient.setQueryData<ProjectResponse[]>(["projects"], (old) =>
+                old?.map((p) =>
                     p.id === projectId ? { ...p, isFavorite: newValue } : p,
                 ),
             );
-
-            try {
-                await updateProjectFavorite(projectId, newValue);
-            } catch {
-                setProjects((prev) =>
-                    prev.map((p) =>
-                        p.id === projectId
-                            ? { ...p, isFavorite: !newValue }
-                            : p,
-                    ),
-                );
+            return { previous };
+        },
+        onError: (_err, _vars, context) => {
+            if (context?.previous) {
+                queryClient.setQueryData(["projects"], context.previous);
             }
         },
-        [projects],
-    );
+        onSettled: () => {
+            queryClient.invalidateQueries({ queryKey: ["projects"] });
+        },
+    });
 
-    const removeProject = useCallback(
-        async (projectId: string) => {
-            const backup = projects;
-            setProjects((prev) => prev.filter((p) => p.id !== projectId));
-
-            try {
-                await deleteProjectApi(projectId);
-            } catch {
-                setProjects(backup);
+    const { mutate: removeProject } = useMutation({
+        mutationFn: (projectId: string) => deleteProject(projectId),
+        onMutate: async (projectId) => {
+            await queryClient.cancelQueries({ queryKey: ["projects"] });
+            const previous = queryClient.getQueryData<ProjectResponse[]>([
+                "projects",
+            ]);
+            queryClient.setQueryData<ProjectResponse[]>(["projects"], (old) =>
+                old?.filter((p) => p.id !== projectId),
+            );
+            return { previous };
+        },
+        onError: (_err, _vars, context) => {
+            if (context?.previous) {
+                queryClient.setQueryData(["projects"], context.previous);
             }
         },
-        [projects],
-    );
+        onSettled: () => {
+            queryClient.invalidateQueries({ queryKey: ["projects"] });
+        },
+    });
 
     return {
         projects,
         isLoading,
-        error,
-        setProjects,
-        toggleFavorite,
-        deleteProject: removeProject,
-        refreshProjects: loadProjects,
+        error: error
+            ? error instanceof Error
+                ? error.message
+                : "Erreur lors du chargement des projets"
+            : null,
+        toggleFavorite: (projectId: string) => {
+            const project = projects.find((p) => p.id === projectId);
+            if (project)
+                toggleFavorite({ projectId, newValue: !project.isFavorite });
+        },
+        deleteProject: (projectId: string) => removeProject(projectId),
+        refreshProjects: () =>
+            queryClient.invalidateQueries({ queryKey: ["projects"] }),
     };
 };
 

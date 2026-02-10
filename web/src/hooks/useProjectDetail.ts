@@ -1,101 +1,120 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
-import type { ProjectDetail } from '../types/projectDetail';
+import { useState, useEffect, useRef } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import type { ProjectDetail } from "../types/projectDetail";
+import type { ProjectResponse } from "../types/projectCreate";
 import {
-  fetchProjectById,
-  updateProjectNotes,
-  updateProjectFavorite,
-} from '../requests/projectRequests';
+    fetchProjectById,
+    updateProjectNotes,
+    updateProjectFavorite,
+} from "../requests/projectRequests";
+
+/**
+ * Convertit une ProjectResponse API en ProjectDetail pour l'affichage.
+ */
+const toProjectDetail = (data: ProjectResponse): ProjectDetail => ({
+    id: data.id,
+    name: data.name,
+    isFavorite: data.isFavorite,
+    notes: data.notes || "",
+    parcels: data.parcels?.map((p) => ({
+        id: p.id,
+        coordinates: p.coordinates,
+    })),
+    parameters: data.parameters,
+    createdAt: data.createdAt,
+    modifiedAt: data.modifiedAt,
+});
 
 
 export const useProjectDetail = (projectId?: string) => {
-  const [project, setProject] = useState<ProjectDetail | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+    const {
+        data: project = null,
+        isLoading,
+        error,
+    } = useQuery({
+        queryKey: ["project", projectId],
+        queryFn: () => fetchProjectById(projectId!),
+        enabled: !!projectId,
+        select: toProjectDetail,
+    });
 
-  useEffect(() => {
-    const loadProject = async () => {
-      if (!projectId) return;
-      try {
-        setIsLoading(true);
-        setError(null);
-        const data = await fetchProjectById(projectId);
-        setProject({
-          id: data.id,
-          name: data.name,
-          isFavorite: data.isFavorite,
-          notes: data.notes || '',
-          parcels: data.parcels?.map(p => ({
-            id: p.id,
-            coordinates: p.coordinates,
-          })),
-          parameters: data.parameters,
-          createdAt: data.createdAt,
-          modifiedAt: data.modifiedAt,
-        });
-      } catch (err) {
-        setError(
-          err instanceof Error ? err.message : 'Erreur lors du chargement du projet',
-        );
-      } finally {
-        setIsLoading(false);
-      }
+    return {
+        project,
+        isLoading,
+        error: error
+            ? error instanceof Error
+                ? error.message
+                : "Erreur lors du chargement du projet"
+            : null,
     };
-    loadProject();
-  }, [projectId]);
-
-  return { project, isLoading, error, setProject };
 };
 
 
-export const useNotes = (initialNotes: string = '', projectId?: string) => {
-  const [notes, setNotes] = useState(initialNotes);
-  const [isSaving, setIsSaving] = useState(false);
-  const initialNotesRef = useRef(initialNotes);
+export const useNotes = (initialNotes: string = "", projectId?: string) => {
+    const [notes, setNotes] = useState(initialNotes);
+    const initialNotesRef = useRef(initialNotes);
+    const queryClient = useQueryClient();
 
-  useEffect(() => {
-    setNotes(initialNotes);
-    initialNotesRef.current = initialNotes;
-  }, [initialNotes]);
+    useEffect(() => {
+        setNotes(initialNotes);
+        initialNotesRef.current = initialNotes;
+    }, [initialNotes]);
 
-  useEffect(() => {
-    if (notes === initialNotesRef.current || !projectId) return;
+    const { mutate: saveNotes, isPending: isSaving } = useMutation({
+        mutationFn: (newNotes: string) =>
+            updateProjectNotes(projectId!, newNotes),
+        onSettled: () => {
+            queryClient.invalidateQueries({ queryKey: ["project", projectId] });
+        },
+        onError: (error) => {
+            console.error("Erreur lors de la sauvegarde des notes:", error);
+        },
+    });
 
-    const timer = setTimeout(async () => {
-      try {
-        setIsSaving(true);
-        await updateProjectNotes(projectId, notes);
-      } catch (error) {
-        console.error('Erreur lors de la sauvegarde des notes:', error);
-      } finally {
-        setIsSaving(false);
-      }
-    }, 1000);
+    useEffect(() => {
+        if (notes === initialNotesRef.current || !projectId) return;
 
-    return () => clearTimeout(timer);
-  }, [notes, projectId]);
+        const timer = setTimeout(() => {
+            saveNotes(notes);
+        }, 1000);
 
-  return { notes, setNotes, isSaving };
+        return () => clearTimeout(timer);
+    }, [notes, projectId, saveNotes]);
+
+    return { notes, setNotes, isSaving };
 };
 
 
 export const useFavorite = (initialValue: boolean, projectId?: string) => {
-  const [isFavorite, setIsFavorite] = useState(initialValue);
+    const [isFavorite, setIsFavorite] = useState(initialValue);
+    const queryClient = useQueryClient();
 
-  useEffect(() => {
-    setIsFavorite(initialValue);
-  }, [initialValue]);
+    useEffect(() => {
+        setIsFavorite(initialValue);
+    }, [initialValue]);
 
-  const toggleFavorite = useCallback(async () => {
-    if (!projectId) return;
-    const newValue = !isFavorite;
-    setIsFavorite(newValue);
-    try {
-      await updateProjectFavorite(projectId, newValue);
-    } catch (error) {
-      setIsFavorite(!newValue);
-      console.error('Erreur lors de la mise à jour du favori:', error);
-    }
-  }, [isFavorite, projectId]);
+    const { mutate: toggleMutation } = useMutation({
+        mutationFn: (newValue: boolean) =>
+            updateProjectFavorite(projectId!, newValue),
+        onMutate: async (newValue) => {
+            const previous = isFavorite;
+            setIsFavorite(newValue);
+            return { previous };
+        },
+        onError: (_err, _newValue, context) => {
+            if (context) setIsFavorite(context.previous);
+            console.error("Erreur lors de la mise à jour du favori");
+        },
+        onSettled: () => {
+            queryClient.invalidateQueries({ queryKey: ["project", projectId] });
+            queryClient.invalidateQueries({ queryKey: ["projects"] });
+        },
+    });
 
-  return { isFavorite, toggleFavorite };
+    const toggleFavorite = () => {
+        if (!projectId) return;
+        toggleMutation(!isFavorite);
+    };
+
+    return { isFavorite, toggleFavorite };
 };
