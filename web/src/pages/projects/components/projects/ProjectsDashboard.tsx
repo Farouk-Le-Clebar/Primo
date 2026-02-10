@@ -15,6 +15,7 @@ import ProjectTable from "./ProjectTable";
 type ProjectsDashboardProps = {
     onProjectClick: (project: ClientProject) => void;
     onCreateNew: () => void;
+    errorComponent?: React.ReactNode;
 };
 
 const SkeletonRow = () => (
@@ -46,9 +47,11 @@ const SkeletonRow = () => (
     </tr>
 );
 
-export const ProjectsDashboard: React.FC<
-    ProjectsDashboardProps
-> = ({ onProjectClick, onCreateNew }) => {
+export const ProjectsDashboard: React.FC<ProjectsDashboardProps> = ({
+    onProjectClick,
+    onCreateNew,
+    errorComponent,
+}) => {
     const { searchTerm, setSearchTerm, debouncedSearchTerm } = useSearch();
     const { sortConfig, handleSort } = useSort();
     const {
@@ -130,7 +133,11 @@ export const ProjectsDashboard: React.FC<
                     </table>
                 </div>
             ) : error ? (
-                <div className="py-12 text-center text-red-500">{error}</div>
+                errorComponent ? (
+                    errorComponent
+                ) : (
+                    <div className="py-12 text-center text-red-500">{error}</div>
+                )
             ) : (
                 <ProjectTable
                     projects={processedProjects}

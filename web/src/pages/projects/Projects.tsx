@@ -1,5 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { ProjectsDashboard } from "./components/projects/ProjectsDashboard";
+import ErrorCard from "./components/projects/ErrorCard";
+import { AlertCircle } from "lucide-react";
 
 export default function Projects() {
     const navigate = useNavigate();
@@ -17,6 +19,13 @@ export default function Projects() {
             <ProjectsDashboard
                 onProjectClick={handleProjectClick}
                 onCreateNew={handleCreateNew}
+                errorComponent={
+                    <ErrorCard
+                        message="Connectez-vous ou créez un compte pour retrouver vos projets"
+                        secondaryText="Avec les projets, disposez d'espaces de travail personnalisés pour piloter efficacement chacune de vos réalisations."
+                        icon={<AlertCircle />}
+                    />
+                }
             />
         </div>
     );

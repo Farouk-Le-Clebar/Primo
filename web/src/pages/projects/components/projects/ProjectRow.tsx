@@ -36,7 +36,7 @@ const ProjectRow: React.FC<ProjectRowProps> = ({
                             {project.name.charAt(0).toUpperCase()}
                         </span>
                     </div>
-                    <div className="relative w-48 max-w-[12rem]">
+                    <div className="relative w-40 max-w-[12rem]">
                             <span
                                 className="text-sm text-gray-900 overflow-hidden whitespace-nowrap text-ellipsis block pr-8"
                                 style={{ display: "block" }}
