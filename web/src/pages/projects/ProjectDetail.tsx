@@ -2,7 +2,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { ClientProjectPage } from "./components/clientProject/ClientProject";
 
 
-export default function ProjectDetailPage() {
+export default function ProjectDetail() {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
 

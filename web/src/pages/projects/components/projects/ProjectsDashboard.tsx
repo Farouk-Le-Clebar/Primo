@@ -12,7 +12,7 @@ import FilterPanel from "./FilterPanel";
 import ProjectTable from "./ProjectTable";
 
 
-type ClientProjectsDashboardProps = {
+type ProjectsDashboardProps = {
     onProjectClick: (project: ClientProject) => void;
     onCreateNew: () => void;
 };
@@ -46,8 +46,8 @@ const SkeletonRow = () => (
     </tr>
 );
 
-export const ClientProjectsDashboard: React.FC<
-    ClientProjectsDashboardProps
+export const ProjectsDashboard: React.FC<
+    ProjectsDashboardProps
 > = ({ onProjectClick, onCreateNew }) => {
     const { searchTerm, setSearchTerm, debouncedSearchTerm } = useSearch();
     const { sortConfig, handleSort } = useSort();

@@ -1,45 +1,41 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ChevronLeft } from "lucide-react";
 import { createProject } from "../../requests/projectRequests";
 import Input from "../../ui/Input";
 
 import { MAX_NAME_LENGTH } from "../../constants/project.constants";
 
-export default function AddProjectPage() {
+
+export default function ProjectCreate() {
     const navigate = useNavigate();
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [error, setError] = useState<string | null>(null);
+    const queryClient = useQueryClient();
 
     const [formData, setFormData] = useState({
         name: "",
         notes: "",
     });
 
-    const handleSubmit = async () => {
-        if (!formData.name.trim()) {
-            setError("Le nom du projet est requis");
-            return;
-        }
-
-        setIsSubmitting(true);
-        setError(null);
-
-        try {
-            const newProject = await createProject({
+    const {
+        mutate: submitProject,
+        isPending: isSubmitting,
+        error,
+    } = useMutation({
+        mutationFn: () =>
+            createProject({
                 name: formData.name.trim(),
                 notes: formData.notes.trim() || undefined,
-            });
-
+            }),
+        onSuccess: (newProject) => {
+            queryClient.invalidateQueries({ queryKey: ["projects"] });
             navigate(`/projects/${newProject.id}`);
-        } catch (err) {
-            setError(
-                err instanceof Error
-                    ? err.message
-                    : "Erreur lors de la création du projet",
-            );
-            setIsSubmitting(false);
-        }
+        },
+    });
+
+    const handleSubmit = () => {
+        if (!formData.name.trim()) return;
+        submitProject();
     };
 
     const handleCancel = () => {
@@ -68,7 +64,6 @@ export default function AddProjectPage() {
                             Nouveau Projet
                         </h1>
                     </div>
-
                 </div>
             </div>
 
@@ -103,7 +98,11 @@ export default function AddProjectPage() {
                     {/* Error message */}
                     {error && (
                         <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
-                            <p className="text-sm text-red-600">{error}</p>
+                            <p className="text-sm text-red-600">
+                                {error instanceof Error
+                                    ? error.message
+                                    : "Erreur lors de la création du projet"}
+                            </p>
                         </div>
                     )}
 
