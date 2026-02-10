@@ -1,12 +1,16 @@
 import React, { useEffect, useRef } from "react";
-import type { FilterPanelProps } from "../../../../types/project";
+import type { ProjectFilters } from "../../../../types/project";
 
-const TIME_RANGES = [
-    { label: "Dernier jour", value: "1" },
-    { label: "3 derniers jours", value: "3" },
-    { label: "1 semaine", value: "7" },
-    { label: "Personnalisé", value: "custom" },
-];
+import { TIME_RANGES } from "../../../../constants/project.constants";
+
+
+type FilterPanelProps = {
+    isOpen: boolean;
+    onClose: () => void;
+    filters: ProjectFilters;
+    onFiltersChange: (filters: ProjectFilters) => void;
+}
+
 
 const FilterPanel: React.FC<FilterPanelProps> = ({
     isOpen,

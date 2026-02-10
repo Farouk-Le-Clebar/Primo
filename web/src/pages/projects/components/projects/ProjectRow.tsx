@@ -1,9 +1,18 @@
 import React, { useState } from "react";
 import { Sparkle, Trash2 } from "lucide-react";
-import type { ProjectRowProps } from "../../../../types/project";
+import type { ClientProject } from "../../../../types/project";
 import { formatDate, formatDateTime } from "../../../../utils/project";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
 import { FAVORITE_GRADIENT } from "../../../../constants/favorite-gradient";
+
+
+type ProjectRowProps =  {
+    project: ClientProject;
+    onProjectClick: (project: ClientProject) => void;
+    onToggleFavorite: (projectId: string, e: React.MouseEvent) => void;
+    onDeleteProject: (projectId: string) => void;
+};
+
 
 const ProjectRow: React.FC<ProjectRowProps> = ({
     project,

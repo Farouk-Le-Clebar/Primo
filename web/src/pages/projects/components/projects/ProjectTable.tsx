@@ -1,7 +1,18 @@
 import React from "react";
-import type { ProjectTableProps, SortKey } from "../../../../types/project";
+import type { ClientProject, SortConfig, SortKey } from "../../../../types/project";
 import ProjectRow from "./ProjectRow";
 import { ChevronsUpDown } from "lucide-react";
+
+
+type ProjectTableProps = {
+    projects: ClientProject[];
+    sortConfig: SortConfig;
+    onSort: (key: SortKey) => void;
+    onProjectClick: (project: ClientProject) => void;
+    onToggleFavorite: (projectId: string, e: React.MouseEvent) => void;
+    onDeleteProject: (projectId: string) => void;
+};
+
 
 const SortIcon: React.FC<{
     columnKey: SortKey;

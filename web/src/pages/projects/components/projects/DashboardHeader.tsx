@@ -1,9 +1,15 @@
 import React from "react";
 import { Search, SlidersHorizontal, Plus } from "lucide-react";
-import type {
-    DashboardHeaderProps,
-    ProjectFilters,
-} from "../../../../types/project";
+import type { ProjectFilters } from "../../../../types/project";
+
+type DashboardHeaderProps = {
+    searchTerm: string;
+    onSearchChange: (value: string) => void;
+    isFilterOpen: boolean;
+    onToggleFilter: () => void;
+    onCreateNew: () => void;
+    filters: ProjectFilters;
+};
 
 const isFilterActive = (filters: ProjectFilters) => {
     return (

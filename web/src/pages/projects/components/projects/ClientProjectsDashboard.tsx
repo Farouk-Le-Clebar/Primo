@@ -1,5 +1,5 @@
 import React from "react";
-import type { ClientProjectsDashboardProps } from "../../../../types/project";
+import type { ClientProject } from "../../../../types/project";
 import {
     useSearch,
     useSort,
@@ -10,6 +10,12 @@ import {
 import DashboardHeader from "./DashboardHeader";
 import FilterPanel from "./FilterPanel";
 import ProjectTable from "./ProjectTable";
+
+
+type ClientProjectsDashboardProps = {
+    onProjectClick: (project: ClientProject) => void;
+    onCreateNew: () => void;
+};
 
 const SkeletonRow = () => (
     <tr>

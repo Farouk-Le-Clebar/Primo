@@ -25,4 +25,4 @@ export default function Projects() {
 //TODO : ajouter une petite animation sur le panel de confirmation pour la suppression
 //TODO : ajuster le design du panelFIlter
 //TODO : ajouter petit modal qui s'ouvre quand on souhaite selectionner "map" ou "list" dans MapView
-//TODO : quand on clique une 3eme fois sur le tri par ordre sur la page project : réinitialiser le tri
+//TODO : améliorer le tableau pour que le titre des projets n'influence pas la taille des colonnes

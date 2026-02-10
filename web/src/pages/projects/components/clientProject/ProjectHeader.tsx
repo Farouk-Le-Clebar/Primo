@@ -1,7 +1,16 @@
 import React from "react";
 import { ChevronLeft, Sparkle, HelpCircle } from "lucide-react";
-import type { ProjectHeaderProps } from "../../../../types/projectDetail";
 import { FAVORITE_GRADIENT } from "../../../../constants/favorite-gradient";
+
+    
+type ProjectHeaderProps = {
+    name: string;
+    isFavorite: boolean;
+    isLoading: boolean;
+    onBack: () => void;
+    onToggleFavorite: () => void;
+};
+
 
 const ProjectHeader: React.FC<ProjectHeaderProps> = ({
     name,

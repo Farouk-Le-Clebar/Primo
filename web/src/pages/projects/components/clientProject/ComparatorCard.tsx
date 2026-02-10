@@ -1,5 +1,10 @@
 import React from 'react';
-import type { ComparatorCardProps } from '../../../../types/projectDetail';
+
+
+type ComparatorCardProps = {
+    isLoading: boolean;
+};
+
 
 const ComparatorCard: React.FC<ComparatorCardProps> = ({ isLoading }) => {
   if (isLoading) {

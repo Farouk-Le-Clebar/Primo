@@ -1,5 +1,12 @@
 import React from 'react';
-import type { NotesCardProps } from '../../../../types/projectDetail';
+
+
+type NotesCardProps = {
+    notes: string;
+    isLoading: boolean;
+    onNotesChange: (notes: string) => void;
+};
+
 
 const NotesCard: React.FC<NotesCardProps> = ({
   notes,

@@ -1,5 +1,4 @@
 import React from "react";
-import type { ProjectDetailPageProps } from "../../../../types/projectDetail";
 import {
     useProjectDetail,
     useNotes,
@@ -11,6 +10,13 @@ import MapView from "./MapView";
 import ParametersCard from "./ParametersCard";
 import ComparatorCard from "./ComparatorCard";
 import NotesCard from "./NotesCard";
+
+
+type ProjectDetailPageProps = {
+    projectId?: string;
+    onBack?: () => void;
+};
+
 
 export const ClientProjectPage: React.FC<ProjectDetailPageProps> = ({
     projectId,

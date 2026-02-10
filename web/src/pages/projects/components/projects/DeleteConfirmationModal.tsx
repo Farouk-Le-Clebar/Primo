@@ -1,5 +1,11 @@
 import React from "react";
-import type { DeleteConfirmationModalProps } from "../../../../types/project";
+
+type DeleteConfirmationModalProps = {
+    isOpen: boolean;
+    onClose: () => void;
+    onConfirm: () => void;
+    projectName?: string;
+};
 
 const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
     isOpen,
