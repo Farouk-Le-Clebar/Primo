@@ -9,6 +9,7 @@ export const formatDate = (dateString: string): string => {
   });
 };
 
+
 export const formatDateTime = (dateString: string): [string, string] => {
   const date = new Date(dateString);
   const formattedDate = date.toLocaleDateString('fr-FR', {
@@ -23,6 +24,7 @@ export const formatDateTime = (dateString: string): [string, string] => {
   return [formattedDate, formattedTime];
 };
 
+
 export const filterBySearch = (
   projects: ClientProject[],
   searchTerm: string
@@ -34,6 +36,7 @@ export const filterBySearch = (
     project.name.toLowerCase().includes(lowerSearch)
   );
 };
+
 
 export const filterByFilters = (
   projects: ClientProject[],
@@ -71,6 +74,7 @@ export const filterByFilters = (
   return filtered;
 };
 
+
 export const sortProjects = (
   projects: ClientProject[],
   sortConfig: SortConfig
@@ -96,6 +100,7 @@ export const sortProjects = (
   });
 };
 
+
 export const processProjects = (
   projects: ClientProject[],
   searchTerm: string,
@@ -107,6 +112,7 @@ export const processProjects = (
   processed = sortProjects(processed, sortConfig);
   return processed;
 };
+
 
 export const getDefaultFilters = (): ProjectFilters => ({
   parametersMin: '',

@@ -14,5 +14,3 @@ export interface Parcel {
     coordinates: [number, number];
     // le reste é à definir 
 }
-
-

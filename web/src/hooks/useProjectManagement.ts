@@ -6,13 +6,13 @@ import type {
     ProjectFilters,
     DeleteModalState,
 } from "../types/project";
+import type { ProjectResponse } from "../types/projectCreate";
 import { processProjects, getDefaultFilters } from "../utils/project";
 import {
     fetchProjects,
     updateProjectFavorite,
     deleteProject as deleteProjectApi,
 } from "../requests/projectRequests";
-import type { ProjectResponse } from "../requests/projectRequests";
 
 /**
  * Convertit une réponse API en ClientProject pour l'affichage dashboard

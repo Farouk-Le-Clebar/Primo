@@ -1,131 +1,99 @@
 import axios from "axios";
+import type {
+    CreateProjectPayload,
+    ProjectResponse,
+    UpdateProjectPayload,
+} from "../types/projectCreate";
+import { getAuthHeaders } from "../utils/auth";
 
 const apiUrl = window?._env_?.API_URL;
 
-function getAuthHeaders() {
-    const token = localStorage.getItem("token");
-    return {
-        Authorization: `Bearer ${token}`,
-    };
-}
 
-// ---- Types ----
-
-export interface CreateProjectPayload {
-    name: string;
-    isFavorite?: boolean;
-    notes?: string;
-}
-
-export interface UpdateProjectPayload {
-    name?: string;
-    isFavorite?: boolean;
-    notes?: string;
-    parcels?: Array<{
-        id: string;
-        coordinates: [number, number];
-        properties?: Record<string, any>;
-    }>;
-    parameters?: Record<string, any>;
-}
-
-export interface ProjectResponse {
-    id: string;
-    name: string;
-    isFavorite: boolean;
-    notes: string | null;
-    parcels: Array<{
-        id: string;
-        coordinates: [number, number];
-        properties?: Record<string, any>;
-    }> | null;
-    parameters: Record<string, any> | null;
-    userId: string;
-    createdAt: string;
-    modifiedAt: string;
-}
-
-// ---- API Calls ----
-
-export const fetchProjects = async (): Promise<ProjectResponse[]> => {
-    const response = await axios.get(`${apiUrl}/projects`, {
+export const fetchProjects = (): Promise<ProjectResponse[]> => {
+    return axios.get(`${apiUrl}/projects`, {
         headers: getAuthHeaders(),
+    })
+    .then(response => response.data)
+    .catch(() => {
+      throw new Error("Failed to fetch projects data");
     });
-    return response.data;
 };
 
-export const fetchProjectById = async (
-    id: string,
-): Promise<ProjectResponse> => {
-    const response = await axios.get(`${apiUrl}/projects/${id}`, {
+
+export const fetchProjectById = (id: string): Promise<ProjectResponse> => {
+    return axios.get(`${apiUrl}/projects/${id}`, {
         headers: getAuthHeaders(),
+    })
+    .then(response => response.data)
+    .catch(() => {
+      throw new Error(`Failed to fetch project with id ${id}`);
     });
-    return response.data;
 };
 
-export const createProject = async (
-    data: CreateProjectPayload,
-): Promise<ProjectResponse> => {
-    const response = await axios.post(`${apiUrl}/projects`, data, {
+
+export const createProject = (data: CreateProjectPayload): Promise<ProjectResponse> => {
+    return axios.post(`${apiUrl}/projects`, data, {
         headers: getAuthHeaders(),
+    })
+    .then(response => response.data)
+    .catch(() => {
+      throw new Error("Failed to create project");
     });
-    return response.data;
 };
 
-export const updateProject = async (
-    id: string,
-    data: UpdateProjectPayload,
-): Promise<ProjectResponse> => {
-    const response = await axios.patch(`${apiUrl}/projects/${id}`, data, {
+
+export const updateProject = (id: string, data: UpdateProjectPayload): Promise<ProjectResponse> => {
+    return axios.patch(`${apiUrl}/projects/${id}`, data, {
         headers: getAuthHeaders(),
-    });
-    return response.data;
+    })
+    .then(response => response.data);
 };
 
-export const updateProjectNotes = async (
-    id: string,
-    notes: string,
-): Promise<ProjectResponse> => {
-    const response = await axios.patch(
+
+export const updateProjectNotes = (id: string, notes: string): Promise<ProjectResponse> => {
+    return axios.patch(
         `${apiUrl}/projects/${id}/notes`,
         { notes },
         { headers: getAuthHeaders() },
-    );
-    return response.data;
+    )
+    .then(response => response.data);
 };
 
-export const updateProjectFavorite = async (
-    id: string,
-    isFavorite: boolean,
-): Promise<ProjectResponse> => {
-    const response = await axios.patch(
+
+export const updateProjectFavorite = (id: string, isFavorite: boolean): Promise<ProjectResponse> => {
+    return axios.patch(
         `${apiUrl}/projects/${id}/favorite`,
         { isFavorite },
         { headers: getAuthHeaders() },
-    );
-    return response.data;
+    )
+    .then(response => response.data);
 };
 
-export const deleteProject = async (id: string): Promise<void> => {
-    await axios.delete(`${apiUrl}/projects/${id}`, {
+
+export const deleteProject = (id: string): Promise<void> => {
+    return axios.delete(`${apiUrl}/projects/${id}`, {
         headers: getAuthHeaders(),
+    })
+    .then(() => undefined)
+    .catch(() => {
+      throw new Error(`Failed to delete project with id ${id}`);
     });
 };
 
-export const searchProjects = async (
-    search: string,
-): Promise<ProjectResponse[]> => {
-    const response = await axios.get(`${apiUrl}/projects`, {
+
+export const searchProjects = (search: string): Promise<ProjectResponse[]> => {
+    return axios.get(`${apiUrl}/projects`, {
         headers: getAuthHeaders(),
         params: { search },
-    });
-    return response.data;
+    })
+    .then(response => response.data);
 };
 
-export const fetchFavoriteProjects = async (): Promise<ProjectResponse[]> => {
-    const response = await axios.get(`${apiUrl}/projects`, {
+
+export const fetchFavoriteProjects = (): Promise<ProjectResponse[]> => {
+    return axios.get(`${apiUrl}/projects`, {
         headers: getAuthHeaders(),
         params: { favorites: "true" },
-    });
-    return response.data;
+    })
+    .then(response => response.data);
 };
