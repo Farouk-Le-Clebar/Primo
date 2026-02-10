@@ -20,13 +20,13 @@ export type SortKey =
 export type SortDirection = "asc" | "desc";
 
 
-export interface SortConfig {
+export type SortConfig = {
     key: SortKey | null;
     direction: SortDirection;
 }
 
 
-export interface ProjectFilters {
+export type ProjectFilters = {
     parametersMin: string;
     parametersMax: string;
     parcelsMin: string;
@@ -37,7 +37,7 @@ export interface ProjectFilters {
 }
 
 
-export interface DeleteModalState {
+export type DeleteModalState = {
     isOpen: boolean;
     project: ClientProject | null;
 }

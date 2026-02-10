@@ -9,8 +9,10 @@ export interface ProjectDetail {
     modifiedAt: string;
 }
 
+
 export interface Parcel {
     id: string;
     coordinates: [number, number];
     // le reste é à definir 
 }
+

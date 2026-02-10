@@ -1,11 +1,11 @@
-export interface CreateProjectPayload {
+export type CreateProjectPayload = {
     name: string;
     isFavorite?: boolean;
     notes?: string;
 }
 
 
-export interface UpdateProjectPayload {
+export type UpdateProjectPayload = {
     name?: string;
     isFavorite?: boolean;
     notes?: string;
