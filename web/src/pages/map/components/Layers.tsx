@@ -13,6 +13,7 @@ import ParcelInfoPanel from "./layers/ParcelPanel/ParcelInfoPanel";
 import Navbar from "./layers/Navbar/Navbar";
 import MapPreference from "./layers/preference/MapPreference";
 import { mapPreference } from "../../../utils/map";
+import NoScrollZone from "../wrapper/NoScrollZone";
 
 const Layers = () => {
     const [mapBounds, setMapBounds] = useState<L.LatLngBounds | null>(null);
@@ -96,7 +97,9 @@ const Layers = () => {
                 currentMapType={mapType}
             />
 
-            <Navbar />
+            <NoScrollZone>
+                <Navbar />
+            </NoScrollZone>
 
             <PoiWidget
                 onTogglePoi={handleTogglePoi}
@@ -125,7 +128,9 @@ const Layers = () => {
                 enabledPoiTypes={enabledPoiTypes}
                 dataPois={{ pois: poisData }}
             />
-            <ParcelInfoPanel selectedParcelle={selectedParcelle} />
+            <NoScrollZone>
+                <ParcelInfoPanel selectedParcelle={selectedParcelle} />
+            </NoScrollZone>
         </>
     );
 };
