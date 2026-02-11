@@ -1,8 +1,8 @@
 import MapBounds from "./layers/MapBounds";
 import ZoomHandler from "./layers/ZoomHandler";
-import { TileLayer, useMap } from "react-leaflet";
+import { TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import { useState, useCallback, useRef, useEffect } from "react";
+import { useState, useCallback } from "react";
 import type { FeatureCollection } from "geojson";
 import L from "leaflet";
 import ShapesLayer from "./layers/ShapesLayer";
