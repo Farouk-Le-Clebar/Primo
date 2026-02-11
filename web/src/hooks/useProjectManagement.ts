@@ -91,10 +91,7 @@ export const useFilters = () => {
     };
 };
 
-/**
- * Hook projets (CRUD) avec useQuery + useMutation (TanStack)
- *
- */
+
 export const useProjects = () => {
     const queryClient = useQueryClient();
 
