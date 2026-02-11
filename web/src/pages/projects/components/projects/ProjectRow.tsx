@@ -26,7 +26,7 @@ const ProjectRow: React.FC<ProjectRowProps> = ({
     return (
         <tr
             onClick={() => onProjectClick(project)}
-            className="cursor-pointer transition-colors"
+            className="cursor-pointer"
         >
             {/* Name column */}
             <td className="px-6 py-4">

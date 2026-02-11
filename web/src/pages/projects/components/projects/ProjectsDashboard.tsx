@@ -11,7 +11,6 @@ import DashboardHeader from "./DashboardHeader";
 import FilterPanel from "./FilterPanel";
 import ProjectTable from "./ProjectTable";
 
-
 type ProjectsDashboardProps = {
     onProjectClick: (project: ClientProject) => void;
     onCreateNew: () => void;
@@ -136,7 +135,9 @@ export const ProjectsDashboard: React.FC<ProjectsDashboardProps> = ({
                 errorComponent ? (
                     errorComponent
                 ) : (
-                    <div className="py-12 text-center text-red-500">{error}</div>
+                    <div className="py-12 text-center text-red-500">
+                        {error}
+                    </div>
                 )
             ) : (
                 <ProjectTable

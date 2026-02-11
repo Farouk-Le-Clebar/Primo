@@ -14,7 +14,7 @@ const ErrorCard: React.FC<ErrorCardProps> = ({
     className,
 }) => (
     <div
-        className={`max-w-md mx-auto mt-20 bg-white rounded-[15px] border border-gray-200 p-7 ${className || ""}`}
+        className={`max-w-md mx-auto mt-20 bg-white rounded-[22px] border border-gray-200 p-7 ${className || ""}`}
         style={{ boxShadow: "none" }}
     >
         {/* Header */}
