@@ -38,7 +38,7 @@ const PoiWidget = ({ onTogglePoi }: PoiWidgetProps) => {
             style={{ minHeight: isOpen ? 200 : undefined }}
             // style={{ minHeight: isOpen ? 200 : undefined, right: isOpen ? 50 : 150 }}
         >
-            <div className="bg-white rounded-xl shadow-xl overflow-hidden h-full">
+            <div className="bg-white font-UberMove rounded-xl shadow-xl overflow-hidden h-full">
                 {/* Header */}
                 <button
                     onClick={() => setIsOpen(!isOpen)}
