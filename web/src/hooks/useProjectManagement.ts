@@ -8,6 +8,11 @@ import type {
     DeleteModalState,
 } from "../types/project";
 import type { ProjectResponse } from "../types/projectCreate";
+import {
+    type ProjectError,
+    ApiError,
+    PROJECT_ERROR_CODES,
+} from "../types/projectError";
 import { processProjects, getDefaultFilters } from "../utils/project";
 import {
     fetchProjects,
@@ -27,6 +32,23 @@ const toClientProject = (p: ProjectResponse): ClientProject => ({
     modifiedAt: p.modifiedAt,
     isFavorite: p.isFavorite,
 });
+
+/**
+ * Extrait un ProjectError structuré depuis l'erreur brute de React Query.
+ * Retourne `null` quand il n'y a pas d'erreur.
+ */
+const toProjectError = (error: Error | null): ProjectError | null => {
+    if (!error) return null;
+
+    if (error instanceof ApiError) {
+        return error.toProjectError();
+    }
+
+    return {
+        code: PROJECT_ERROR_CODES.UNKNOWN,
+        message: error.message || "Erreur lors du chargement des projets",
+    };
+};
 
 /**
  * Hook pour recherche debounce
@@ -90,7 +112,6 @@ export const useFilters = () => {
         closeFilterPanel,
     };
 };
-
 
 export const useProjects = () => {
     const queryClient = useQueryClient();
@@ -160,11 +181,7 @@ export const useProjects = () => {
     return {
         projects,
         isLoading,
-        error: error
-            ? error instanceof Error
-                ? error.message
-                : "Erreur lors du chargement des projets"
-            : null,
+        error: toProjectError(error),
         toggleFavorite: (projectId: string) => {
             const project = projects.find((p) => p.id === projectId);
             if (project)

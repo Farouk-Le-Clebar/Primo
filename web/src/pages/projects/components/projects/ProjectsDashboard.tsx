@@ -7,14 +7,15 @@ import {
     useProjects,
     useProcessedProjects,
 } from "../../../../hooks/useProjectManagement";
+import { useAuthModal } from "../../../../hooks/useAuthModal";
 import DashboardHeader from "./DashboardHeader";
 import FilterPanel from "./FilterPanel";
 import ProjectTable from "./ProjectTable";
+import ErrorCard from "./ErrorCard";
 
 type ProjectsDashboardProps = {
     onProjectClick: (project: ClientProject) => void;
     onCreateNew: () => void;
-    errorComponent?: React.ReactNode;
 };
 
 const SkeletonRow = () => (
@@ -49,7 +50,6 @@ const SkeletonRow = () => (
 export const ProjectsDashboard: React.FC<ProjectsDashboardProps> = ({
     onProjectClick,
     onCreateNew,
-    errorComponent,
 }) => {
     const { searchTerm, setSearchTerm, debouncedSearchTerm } = useSearch();
     const { sortConfig, handleSort } = useSort();
@@ -61,8 +61,16 @@ export const ProjectsDashboard: React.FC<ProjectsDashboardProps> = ({
         closeFilterPanel,
     } = useFilters();
 
-    const { projects, isLoading, error, toggleFavorite, deleteProject } =
-        useProjects();
+    const {
+        projects,
+        isLoading,
+        error,
+        toggleFavorite,
+        deleteProject,
+        refreshProjects,
+    } = useProjects();
+
+    const { openAuthModal } = useAuthModal();
 
     const processedProjects = useProcessedProjects(
         projects,
@@ -132,13 +140,11 @@ export const ProjectsDashboard: React.FC<ProjectsDashboardProps> = ({
                     </table>
                 </div>
             ) : error ? (
-                errorComponent ? (
-                    errorComponent
-                ) : (
-                    <div className="py-12 text-center text-red-500">
-                        {error}
-                    </div>
-                )
+                <ErrorCard
+                    error={error}
+                    onRetry={refreshProjects}
+                    onLogin={openAuthModal}
+                />
             ) : (
                 <ProjectTable
                     projects={processedProjects}
