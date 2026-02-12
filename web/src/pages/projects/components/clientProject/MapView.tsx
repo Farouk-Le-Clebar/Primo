@@ -44,8 +44,8 @@ const MapView: React.FC<MapViewProps> = ({ parcels, isLoading }) => {
 
     return (
         <div className={`relative w-full h-96 rounded-xl overflow-hidden transition-colors duration-300 ${
-            activeView === "list" 
-                ? "bg-white" 
+            activeView === "list"
+                ? "bg-white"
                 : "bg-gradient-to-br from-blue-100 via-green-100 to-blue-50"
         }`}>
             {/* Title */}
