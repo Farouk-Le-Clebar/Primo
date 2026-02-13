@@ -1,6 +1,5 @@
 import type { FeatureCollection } from 'geojson';
 
-
 export const MIN_ZOOM_FOR_PARCELLES = 18;
 export const MIN_ZOOM_FOR_DIVISION = 15;
 export const MIN_ZOOM_FOR_CITY = 11;
@@ -20,7 +19,6 @@ export type DataType = {
     city: FeatureCollection | null;
     divisions: FeatureCollection | null;
 };
-
 
 export const boundToBbox = (bounds: any) => {
     const { _southWest, _northEast } = bounds;
