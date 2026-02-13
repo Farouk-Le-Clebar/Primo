@@ -12,7 +12,7 @@ export const useMapHtml = () => {
 
         const loadHtml = async () => {
             try {
-                const path = require("../../../../assets/leaflet.html");
+                const path = require("../../../../assets/leaflet-custom.html");
                 const asset = Asset.fromModule(path);
                 await asset.downloadAsync();
                 const content = await FileSystem.readAsStringAsync(asset.localUri!);
