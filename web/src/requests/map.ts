@@ -116,7 +116,7 @@ export const getPoisByBbox = async (
         service: "WFS",
         version: "2.0.0",
         request: "GetFeature",
-        typeName: "primo:pois_france",
+        typeName: "primo:pois_france", // workspace used for the api calls, must be "primo"
         outputFormat: "application/json",
         srsName: "EPSG:4326",
         maxFeatures: maxFeatures.toString(),
@@ -134,7 +134,7 @@ export const getPoisByBbox = async (
     params.append("cql_filter", cqlFilter);
 
     return axios
-        .get(`${apiUrl}/geoserver/primo/wfs?${params}`) //Attention pas mettre bdtopo
+        .get(`${apiUrl}/geoserver/primo/wfs?${params}`) // workspace used for the api calls, must be "primo"
         .then((response) => response.data)
         .catch((error) => {
             console.error("Error fetching POI data:", error);
