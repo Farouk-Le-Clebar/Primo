@@ -1,6 +1,8 @@
 import React, { useState, memo, useCallback } from 'react';
 import { View, Text, Pressable, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useMutation } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
 
 import ScreenLayout from '../../components/ui/ScreenLayout';
 import BackButton from '../../components/ui/BackButton';
@@ -8,11 +10,11 @@ import Input from '../../components/ui/Input';
 import AvatarUpload from '../../components/settings/AvatarUpload';
 import { useAuth } from '../../context/AuthContext';
 import { useSnackbar } from '../../context/SnackbarContext';
-import { useUpdateProfile } from '../../hooks/useUpdateProfile';
+import { updateUserProfile } from '../../requests/UserRequests';
 import { UpdateProfilePayload } from '../../types/auth';
 
 const EditProfileScreen = memo(() => {
-    const { user } = useAuth();
+    const { user, token, updateUser } = useAuth();
     const { showSuccess, showError } = useSnackbar();
 
     const [formData, setFormData] = useState(() => ({
@@ -22,9 +24,22 @@ const EditProfileScreen = memo(() => {
         profilePicture: user?.profilePicture || 'green.png'
     }));
 
-    const { mutate, isPending } = useUpdateProfile({
-        onSuccess: () => showSuccess('Profil mis à jour avec succès !'),
-        onError: (error) => showError(error),
+    const { mutate, isPending } = useMutation({
+        mutationFn: (data: UpdateProfilePayload) => updateUserProfile(token!, data),
+        onSuccess: async (response) => {
+            if (response.user) {
+                await updateUser(response.user);
+            }
+            showSuccess('Profil mis à jour avec succès !');
+        },
+        onError: (err: unknown) => {
+            if (err instanceof AxiosError) {
+                console.error('Erreur mise à jour:', err);
+                showError('Erreur lors de la mise à jour du profil.');
+            } else {
+                showError('Erreur inattendue. Merci de réessayer.');
+            }
+        },
     });
 
     const handleFieldChange = useCallback((fieldName: string, value: string) => {

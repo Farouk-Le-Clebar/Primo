@@ -29,7 +29,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 const storedUser = await AsyncStorage.getItem('user');
 
                 if (storedToken && storedUser) {
-                    const verifiedData = await verifyToken();
+                    const verifiedData = await verifyToken(storedToken);
                     setToken(storedToken);
                     setUser(verifiedData.user);
                 }

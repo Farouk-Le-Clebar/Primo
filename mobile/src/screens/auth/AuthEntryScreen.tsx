@@ -2,6 +2,8 @@ import React, { useState, useCallback, memo } from 'react';
 import { View, Text } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
+import { useMutation } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
 
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
@@ -9,7 +11,7 @@ import ScreenLayout from '../../components/ui/ScreenLayout';
 import Spacer from '../../components/ui/Spacer';
 import { AuthStackParamList } from '../../types/navigation';
 import { validateEmail } from '../../utils/validation';
-import { useCheckEmail } from '../../hooks/useCheckEmail';
+import { checkUserByMail } from '../../requests/AuthRequests';
 import { useSnackbar } from '../../context/SnackbarContext';
 import { IconName } from '../../types/icons';
 
@@ -36,12 +38,19 @@ const AuthEntryScreen = memo(({ navigation }: Props) => {
     const [error, setError] = useState('');
     const { showComingSoon } = useSnackbar();
 
-    const { mutate: checkEmail, isPending } = useCheckEmail({
+    const { mutate: checkEmail, isPending } = useMutation({
+        mutationFn: (email: string) => checkUserByMail(email),
         onSuccess: (data) => {
             const route = data.exists ? 'Login' : 'Register';
             navigation.navigate(route, { email: email.trim() });
         },
-        onError: (message) => setError(message),
+        onError: (err: unknown) => {
+            if (err instanceof AxiosError) {
+                setError('Une erreur est survenue. Veuillez réessayer plus tard.');
+            } else {
+                setError('Erreur inattendue. Merci de réessayer.');
+            }
+        },
     });
 
     const handleEmailChange = useCallback((text: string) => {
