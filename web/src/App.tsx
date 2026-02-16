@@ -19,6 +19,8 @@ import Privacy from "./pages/settings/Privacy";
 import Security from "./pages/settings/Security";
 import Subscriptions from "./pages/settings/Subscriptions";
 import CustomToaster from "./components/toaster/CustomToaster";
+import ProjectDetail from "./pages/projects/ProjectDetail";
+import ProjectCreate from "./pages/projects/ProjectCreate";
 
 export default function App() {
   return (
@@ -32,6 +34,10 @@ export default function App() {
           <Route index element={<Dashboard />} />
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="projects" element={<Projects />} />
+            <Route element={<ProtectedRoute />}>
+              <Route path="projects/new" element={<ProjectCreate />} />
+              <Route path="projects/:id" element={<ProjectDetail />} />
+            </Route>
         </Route>
 
         {/* Routes de la carte */}

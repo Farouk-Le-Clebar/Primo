@@ -4,11 +4,13 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { User } from './database/user.entity';
+import { Project } from './database/project.entity';
 import { AddokProxyMiddleware } from './api/addok.middleware';
 import { AuthModule } from './auth/auth.module';
 import { GeoServerProxyMiddleware } from './api/geoserver.middleware';
 import { GeoModule } from './geo/geo.module';
 import { UserModule } from './user/user.module';
+import { ProjectModule } from './project/project.module';
 
 @Module({
   imports: [
@@ -24,13 +26,14 @@ import { UserModule } from './user/user.module';
       username: process.env.MYSQL_USER,
       password: process.env.MYSQL_PASSWORD,
       database: process.env.MYSQL_DATABASE,
-      entities: [User],
+      entities: [User, Project],
       synchronize: true,
     }),
     TypeOrmModule.forFeature([User]),
     AuthModule,
     GeoModule,
     UserModule,
+    ProjectModule,
   ],
   controllers: [AppController],
   providers: [AppService],
