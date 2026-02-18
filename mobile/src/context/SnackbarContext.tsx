@@ -13,6 +13,8 @@ interface SnackbarOptions {
 interface SnackbarContextType {
     showSnackbar: (message: string, options?: SnackbarOptions) => void;
     showComingSoon: (feature: string) => void;
+    showSuccess: (message: string) => void;
+    showError: (message: string) => void;
 }
 
 const SnackbarContext = createContext<SnackbarContextType | undefined>(undefined);
@@ -36,6 +38,14 @@ export const SnackbarProvider = ({ children }: SnackbarProviderProps) => {
         showSnackbar(`🚧 "${feature}" arrive bientôt !`, { type: 'info', duration: 2500 });
     }, [showSnackbar]);
 
+    const showSuccess = useCallback((msg: string) => {
+        showSnackbar(msg, { type: 'success', duration: 3000 });
+    }, [showSnackbar]);
+
+    const showError = useCallback((msg: string) => {
+        showSnackbar(msg, { type: 'error', duration: 4000 });
+    }, [showSnackbar]);
+
     const handleDismiss = useCallback(() => {
         setVisible(false);
     }, []);
@@ -43,7 +53,9 @@ export const SnackbarProvider = ({ children }: SnackbarProviderProps) => {
     const contextValue = useMemo(() => ({
         showSnackbar,
         showComingSoon,
-    }), [showSnackbar, showComingSoon]);
+        showSuccess,
+        showError,
+    }), [showSnackbar, showComingSoon, showSuccess, showError]);
 
     return (
         <SnackbarContext.Provider value={contextValue}>
