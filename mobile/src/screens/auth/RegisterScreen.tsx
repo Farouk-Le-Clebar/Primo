@@ -3,6 +3,8 @@ import { View, Text, Pressable } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RouteProp } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
+import { useMutation } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
 
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
@@ -11,7 +13,8 @@ import BackButton from '../../components/ui/BackButton';
 import Spacer from '../../components/ui/Spacer';
 import { AuthStackParamList } from '../../types/navigation';
 import { getPasswordStrength } from '../../utils/validation';
-import { useRegister } from '../../hooks/useRegister';
+import { useAuth } from '../../context/AuthContext';
+import { register } from '../../requests/AuthRequests';
 
 interface Props {
     navigation: NativeStackNavigationProp<AuthStackParamList, 'Register'>;
@@ -46,9 +49,25 @@ const RegisterScreen = memo(({ navigation, route }: Props) => {
     const [email, setEmail] = useState(initialEmail || '');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const { handleAuthSuccess } = useAuth();
 
-    const { mutate: registerUser, isPending } = useRegister({
-        onError: (message) => setError(message),
+    const { mutate: registerUser, isPending } = useMutation({
+        mutationFn: ({ email, password }: { email: string; password: string }) =>
+            register(email, password),
+        onSuccess: async (data) => {
+            await handleAuthSuccess(data);
+        },
+        onError: (err: unknown) => {
+            if (err instanceof AxiosError) {
+                if (err.response?.status === 409) {
+                    setError('Un compte avec cet e-mail existe déjà.');
+                } else {
+                    setError('Une erreur est survenue. Veuillez réessayer plus tard.');
+                }
+            } else {
+                setError('Erreur inattendue. Merci de réessayer.');
+            }
+        },
     });
 
     const strength = useMemo(() => getPasswordStrength(password), [password]);
