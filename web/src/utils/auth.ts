@@ -13,7 +13,8 @@ export const checkAuth = async () => {
   }
 
   try {
-    await verifyToken(token);
+    const user = await verifyToken(token);
+    localStorage.setItem("user", JSON.stringify(user));
     return true;
   } catch (error) {
     console.error("Session expirée ou invalide :", error);

@@ -68,4 +68,12 @@ export class UserService {
       message: 'Preference changed successfully',
     };
   }
+
+  async userIsAdmin(userId: string): Promise<boolean> {
+    const user = await this.userRepo.findOne({
+      where: { id: userId },
+      select: ['isAdmin'],
+    });
+    return user?.isAdmin || false;
+  }
 }

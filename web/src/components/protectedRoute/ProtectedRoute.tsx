@@ -3,7 +3,7 @@ import { Navigate, Outlet } from "react-router-dom";
 import toast from "react-hot-toast";
 
 // COMPONENTS
-import { checkAuth } from "../../utils/auth"; 
+import { checkAuth } from "../../utils/auth";
 
 export default function ProtectedRoute() {
   const [isAuth, setIsAuth] = useState<boolean | null>(null);
@@ -11,13 +11,13 @@ export default function ProtectedRoute() {
   useEffect(() => {
     const verify = async () => {
       const isConnected = await checkAuth();
-      
+
       if (!isConnected) {
         toast.error("Veuillez vous connecter pour accéder à cette page", {
           id: "auth-error",
         });
       }
-      
+
       setIsAuth(isConnected);
     };
 

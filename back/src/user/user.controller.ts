@@ -15,6 +15,7 @@ import { UserService } from './user.service';
 import { JwtAuthGuard } from '../guard/jwt-auth.guard';
 import { User } from '../database/user.entity';
 import { UpdateProfileDto } from './dto/update-profile';
+import { AdminGuard } from 'src/guard/admin.guard';
 
 interface RequestWithUser extends Request {
   user: User;
@@ -32,6 +33,11 @@ export class UserController {
   @Get('email/:email')
   async getUserByEmail(@Param('email') email: string) {
     return this.userService.getUserByEmail(email);
+  }
+
+  @Get('is-admin')
+  @UseGuards(JwtAuthGuard, AdminGuard)
+  async isAdmin(@Req() req: RequestWithUser) {
   }
 
   @Put('profile')
