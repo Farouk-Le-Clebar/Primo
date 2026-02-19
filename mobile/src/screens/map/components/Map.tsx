@@ -4,7 +4,10 @@ import { WebView } from 'react-native-webview';
 import { useMapHtml } from '../hooks/useMapHtml';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { getDepartementByBbox, getCityByBbox, getDivisionsByBboxAndDepartments, getParcellesByBboxAndDepartments } from '../../../requests/map';
-import { FRANCE_BBOX, isFeatureCollection, boundToBbox, MIN_ZOOM_FOR_DIVISION } from '../../../utils/map';
+import { FRANCE_BBOX, isFeatureCollection, boundToBbox } from '../../../utils/map';
+import { geometryToBbox } from '../../../utils/map';
+import { ParcellePayload } from '../../../types/map';
+import ParcelleInfoPanel from './ParcelleInfoPanel';
 
 type MapProps = {
     center: { lat: number; lng: number };
@@ -41,6 +44,8 @@ const getGeometryCenter = (geometry: any): { lat: number; lng: number } | null =
     };
 };
 
+
+
 const Map = ({ center, zoom, onMessageReceived, bounds }: MapProps) => {
     const webViewRef = useRef<WebView>(null);
     const { htmlContent, loading } = useMapHtml();
@@ -48,6 +53,8 @@ const Map = ({ center, zoom, onMessageReceived, bounds }: MapProps) => {
     const pendingGeoJSON = useRef<any>(null);
     const [departmentsShapes, setDepartmentsShapes] = useState<any>(null);
     const currentZoom = useRef(zoom);
+    const [selectedParcelle, setSelectedParcelle] = useState<ParcellePayload | null>(null);
+
 
     const lastPropCenter = useRef<{ lat: number; lng: number }>({ lat: center.lat, lng: center.lng });
     const ignoreNextCenterUpdate = useRef(false);
@@ -202,7 +209,6 @@ const Map = ({ center, zoom, onMessageReceived, bounds }: MapProps) => {
             if (data.event === 'onShapeClick') {
                 const geometry = data.payload?.geometry;
                 const alreadyCentered = data.payload?.alreadyCentered;
-
                 if (geometry && !alreadyCentered) {
                     const shapeCenter = getGeometryCenter(geometry);
                     if (shapeCenter) {
@@ -216,6 +222,12 @@ const Map = ({ center, zoom, onMessageReceived, bounds }: MapProps) => {
                             ignoreNextCenterUpdate.current = true;
                             flyTo(shapeCenter.lat, shapeCenter.lng, 12);
                         }
+                        if (currentZoom.current >= 18) {
+                            setSelectedParcelle({
+                                geometry: geometryToBbox(geometry),
+                                id: data.payload.properties.id
+                            });
+                        }
                     }
                 }
             }
@@ -226,20 +238,32 @@ const Map = ({ center, zoom, onMessageReceived, bounds }: MapProps) => {
         }
     }, [onMessageReceived, sendGeoJSON, flyTo]);
 
+    const onClosePanel = () => {
+        setSelectedParcelle(null);
+    };
+
     if (loading || !htmlContent) {
         return <ActivityIndicator size="large" />;
     }
 
     return (
-        <WebView
-            ref={webViewRef}
-            source={{ html: htmlContent }}
-            style={{ flex: 1 }}
-            onMessage={handleMessage}
-            javaScriptEnabled={true}
-            domStorageEnabled={true}
-            originWhitelist={['*']}
-        />
+        <>
+            <WebView
+                ref={webViewRef}
+                source={{ html: htmlContent }}
+                style={{ flex: 1 }}
+                onMessage={handleMessage}
+                javaScriptEnabled={true}
+                domStorageEnabled={true}
+                originWhitelist={['*']}
+            />
+            {selectedParcelle &&
+                <ParcelleInfoPanel
+                    selectedParcelle={selectedParcelle}
+                    onClose={onClosePanel}
+                />
+            }
+        </>
     );
 };
 
