@@ -1,0 +1,202 @@
+---
+import Layout from "@layouts/Layout.astro";
+import Navbar from "@components/navbar/Navbar";
+import Footer from "@components/footer/Footer.astro";
+import {
+  Target,
+  TrendingUp,
+  Database,
+  Shield,
+  Sparkles,
+  Map,
+  Clock,
+  Users,
+} from "lucide-react";
+import { EXTERNAL_LINKS, CTA_TEXTS } from "@config/constants";
+import InfoCard from "@components/ui/InfoCard.astro";
+---
+
+<Layout
+  title="À propos de Primo | Données cadastrales et foncières en France"
+  description="Découvrez Primo, la plateforme qui centralise toutes les données cadastrales, urbanisme, risques naturels et qualité de vie d'une parcelle en un clic. Notre mission, nos forces, notre vision."
+>
+  <div class="flex flex-col min-h-screen">
+    <Navbar client:load />
+
+    <main class="grow">
+      <section class="bg-linear-to-b from-green-50 to-white py-20">
+        <div class="container mx-auto px-6 text-center">
+          <h1 class="text-4xl md:text-5xl font-bold mb-6">
+            À propos de <span class="text-green-600">Primo</span>
+          </h1>
+          <p class="text-gray-700 text-lg max-w-3xl mx-auto leading-relaxed">
+            Primo est une plateforme innovante qui centralise toutes les
+            informations cadastrales et foncières en France, rendant accessibles
+            en un clic des données habituellement dispersées et complexes.
+          </p>
+        </div>
+      </section>
+
+      <section class="py-16 bg-white">
+        <div class="max-w-4xl mx-auto px-6">
+          <div
+            class="bg-linear-to-br from-green-50 to-white border border-green-100 rounded-xl p-8 md:p-10 shadow-md"
+          >
+            <h2 class="text-2xl md:text-3xl font-bold mb-6 text-center">
+              La mission de Primo
+            </h2>
+            <p class="text-gray-700 text-lg text-center leading-relaxed">
+              87% des Français considèrent l'environnement du logement comme un
+              critère décisif dans leur choix immobilier. Pourtant, ces
+              informations sont dispersées sur des dizaines de sites différents
+              et souvent incompréhensibles pour un non-expert.
+            </p>
+            <p class="text-gray-700 text-lg text-center leading-relaxed mt-4">
+              <span class="text-green-600 font-semibold"
+                >Primo centralise toutes ces données essentielles en un clic</span
+              >, permettant à chacun — particuliers comme professionnels — de
+              prendre des décisions éclairées rapidement.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="py-16 bg-gray-50">
+        <div class="max-w-5xl mx-auto px-6">
+          <h2 class="text-2xl md:text-3xl font-bold text-center mb-12">
+            Ce que <span class="text-green-600">Primo</span> vous apporte
+          </h2>
+          <div class="grid md:grid-cols-2 gap-6 md:gap-8">
+            <InfoCard
+              icon={Database}
+              title="Centralisation des données"
+              description="Cadastre, PLU, risques naturels, démographie, transports, emploi, écoles, criminalité… toutes les informations essentielles réunies sur une seule plateforme Primo."
+            />
+            <InfoCard
+              icon={Sparkles}
+              title="Assistant IA Primo"
+              description="Notre intelligence artificielle basée sur une architecture RAG analyse et traduit le jargon juridique en phrases simples et compréhensibles."
+            />
+            <InfoCard
+              icon={Map}
+              title="Carte interactive"
+              description="Explorez toutes les parcelles cadastrales françaises sur une carte intuitive. Cliquez sur n'importe quelle parcelle pour accéder à son dossier complet via Primo."
+            />
+            <InfoCard
+              icon={Clock}
+              title="Gain de temps"
+              description="Plus besoin de naviguer entre cadastre.gouv.fr, GéoRisques, INSEE, ARCEP et des dizaines d'autres sites. Primo regroupe tout en un seul endroit."
+            />
+          </div>
+        </div>
+      </section>
+
+      <section class="py-16 bg-white">
+        <div class="max-w-4xl mx-auto px-6">
+          <h2 class="text-2xl md:text-3xl font-bold text-center mb-8">
+            Des données officielles, fiables et vérifiées
+          </h2>
+          <p class="text-gray-700 text-lg text-center mb-8 leading-relaxed">
+            Primo agrège exclusivement des données Open Data provenant de
+            sources officielles françaises :
+          </p>
+          <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+            {
+              [
+                "cadastre.gouv.fr",
+                "INSEE",
+                "IGN",
+                "GéoRisques (BRGM)",
+                "Météo-France",
+                "DVF (Valeurs Foncières)",
+                "ARCEP",
+                "Base ICPE",
+                "data.gouv.fr",
+              ].map((source) => (
+                <div class="bg-green-50 border border-green-100 rounded-lg p-4 text-center">
+                  <span class="text-green-700 font-medium text-sm">
+                    {source}
+                  </span>
+                </div>
+              ))
+            }
+          </div>
+        </div>
+      </section>
+
+      <section class="py-16 bg-gray-50">
+        <div class="max-w-4xl mx-auto px-6">
+          <h2 class="text-2xl md:text-3xl font-bold text-center mb-8">
+            Primo s'adresse à tous
+          </h2>
+          <div class="grid md:grid-cols-3 gap-6">
+            <div
+              class="bg-white rounded-xl p-6 shadow-sm border border-gray-100"
+            >
+              <div class="text-3xl mb-4">🏠</div>
+              <h3 class="text-lg font-bold mb-2">Particuliers</h3>
+              <p class="text-gray-600 text-sm">
+                Acheteurs, primo-accédants, propriétaires : analysez votre futur
+                quartier avec Primo avant de signer.
+              </p>
+            </div>
+            <div
+              class="bg-white rounded-xl p-6 shadow-sm border border-gray-100"
+            >
+              <div class="text-3xl mb-4">🏢</div>
+              <h3 class="text-lg font-bold mb-2">Professionnels</h3>
+              <p class="text-gray-600 text-sm">
+                Agents immobiliers, marchands de biens, notaires : Primo
+                accélère votre prospection et renforce vos argumentaires.
+              </p>
+            </div>
+            <div
+              class="bg-white rounded-xl p-6 shadow-sm border border-gray-100"
+            >
+              <div class="text-3xl mb-4">💻</div>
+              <h3 class="text-lg font-bold mb-2">Développeurs</h3>
+              <p class="text-gray-600 text-sm">
+                Intégrez les données foncières de Primo dans vos applications
+                grâce à notre API développeur.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="py-16 bg-white">
+        <div class="max-w-4xl mx-auto px-6">
+          <div
+            class="bg-linear-to-r from-green-600 to-green-700 rounded-2xl p-8 md:p-12 text-white text-center shadow-xl"
+          >
+            <h2 class="text-2xl md:text-3xl font-bold mb-4">
+              Prêt à découvrir Primo ?
+            </h2>
+            <p class="text-lg mb-8 opacity-90">
+              Rejoignez les utilisateurs qui font confiance à Primo pour leurs
+              projets immobiliers.
+            </p>
+            <div class="flex gap-4 justify-center flex-wrap">
+              <a
+                href={EXTERNAL_LINKS.BETA_FORM}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="border-2 border-white text-white px-8 py-3 rounded-xl font-semibold hover:bg-white hover:text-green-600 transition-all hover:scale-105"
+              >
+                {CTA_TEXTS.BETA_BUTTON}
+              </a>
+              <a
+                href="/blog"
+                class="bg-white/20 text-white px-8 py-3 rounded-xl font-semibold hover:bg-white/30 transition-all"
+              >
+                Lire le blog
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <Footer />
+  </div>
+</Layout>

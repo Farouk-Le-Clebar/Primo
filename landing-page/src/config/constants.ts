@@ -3,6 +3,7 @@ export const EXTERNAL_LINKS = {
     "https://docs.google.com/forms/d/e/1FAIpQLSdJmNDDhunKox0XS8WZWfG2Wof7ue87fxCvxv_ch98r98cA-g/viewform?usp=header",
   APP_URL: "https://app.primo-data.fr/",
   LINKEDIN: "https://www.linkedin.com/company/primo-data-app/",
+  INSTAGRAM: "https://www.instagram.com/primo.app/",
   EMAIL: "mailto:contact@primo-data.fr",
 } as const;
 

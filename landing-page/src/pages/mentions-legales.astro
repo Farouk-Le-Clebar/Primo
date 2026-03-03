@@ -1,0 +1,92 @@
+---
+import Layout from "@layouts/Layout.astro";
+import Navbar from "@components/navbar/Navbar";
+import Footer from "@components/footer/Footer.astro";
+---
+
+<Layout
+  title="Mentions légales - Primo"
+  description="Mentions légales du site primo-data.fr, plateforme de données cadastrales et foncières en France."
+>
+  <div class="flex flex-col min-h-screen">
+    <Navbar client:load />
+
+    <main class="grow bg-gray-50">
+      <div class="container mx-auto px-6 pt-28 pb-16">
+        <div
+          class="max-w-3xl mx-auto bg-white rounded-xl shadow-sm p-8 md:p-12"
+        >
+          <h1 class="text-3xl font-bold mb-8">Mentions légales</h1>
+
+          <section class="mb-8">
+            <h2 class="text-xl font-semibold mb-4">Éditeur du site</h2>
+            <p class="text-gray-700 leading-relaxed">
+              Le site <strong>primo-data.fr</strong> est édité par <strong
+                >Primo</strong
+              >.<br />
+              Email : <a
+                href="mailto:contact@primo-data.fr"
+                class="text-green-600 hover:underline">contact@primo-data.fr</a
+              >
+            </p>
+          </section>
+
+          <section class="mb-8">
+            <h2 class="text-xl font-semibold mb-4">Hébergement</h2>
+            <p class="text-gray-700 leading-relaxed">
+              Le site est hébergé par un prestataire professionnel garantissant
+              la disponibilité et la sécurité des données.
+            </p>
+          </section>
+
+          <section class="mb-8">
+            <h2 class="text-xl font-semibold mb-4">Propriété intellectuelle</h2>
+            <p class="text-gray-700 leading-relaxed">
+              L'ensemble du contenu du site primo-data.fr (textes, images,
+              graphismes, logo Primo, icônes, logiciels, etc.) est la propriété
+              exclusive de Primo ou de ses partenaires et est protégé par les
+              lois françaises et internationales relatives à la propriété
+              intellectuelle.
+            </p>
+            <p class="text-gray-700 leading-relaxed mt-4">
+              Toute reproduction, représentation, modification ou adaptation,
+              totale ou partielle, du contenu du site est strictement interdite
+              sans autorisation préalable écrite de Primo.
+            </p>
+          </section>
+
+          <section class="mb-8">
+            <h2 class="text-xl font-semibold mb-4">Données personnelles</h2>
+            <p class="text-gray-700 leading-relaxed">
+              Conformément à la loi Informatique et Libertés et au RGPD, vous
+              disposez de droits d'accès, de rectification et de suppression des
+              données vous concernant. Pour exercer ces droits, contactez-nous à <a
+                href="mailto:contact@primo-data.fr"
+                class="text-green-600 hover:underline">contact@primo-data.fr</a
+              >.
+            </p>
+            <p class="text-gray-700 leading-relaxed mt-4">
+              Pour plus d'informations, consultez notre <a
+                href="/confidentialite"
+                class="text-green-600 hover:underline"
+                >politique de confidentialité</a
+              >.
+            </p>
+          </section>
+
+          <section>
+            <h2 class="text-xl font-semibold mb-4">Responsabilité</h2>
+            <p class="text-gray-700 leading-relaxed">
+              Primo s'efforce de fournir des informations aussi précises que
+              possible. Toutefois, Primo ne pourra être tenue responsable des
+              omissions, inexactitudes ou carences dans la mise à jour des
+              informations, qu'elles soient de son fait ou du fait de tiers.
+            </p>
+          </section>
+        </div>
+      </div>
+    </main>
+
+    <Footer />
+  </div>
+</Layout>
