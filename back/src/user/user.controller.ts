@@ -25,6 +25,12 @@ interface RequestWithUser extends Request {
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  @Get(':from/:to')
+  @UseGuards(JwtAuthGuard, AdminGuard)
+  async getUsers(@Param('from') from: number, @Param('to') to: number) {
+    return this.userService.getUsers(from, to);
+  }
+
   @Post('check-email')
   async checkEmail(@Body() dto: CheckEmailDto) {
     return this.userService.checkEmailExists(dto.email);

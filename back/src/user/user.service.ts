@@ -76,4 +76,13 @@ export class UserService {
     });
     return user?.isAdmin || false;
   }
+
+  async getUsers(from: number, to: number) {
+    const users = await this.userRepo.find({
+      skip: from,
+      take: to - from,
+    });
+
+    return users.map(({ password, mapPreference, ...safeUser }) => safeUser);
+  }
 }

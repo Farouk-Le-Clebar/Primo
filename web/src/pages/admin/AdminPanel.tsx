@@ -1,8 +1,10 @@
+import UsersList from "./components/UsersList";
+
 const AdminPanel = () => {
 
     return (
-        <div className="admin-panel">
-            <h1>Admin Panel</h1>
+        <div className="w-full h-full p-10">
+            <UsersList />
         </div>
     );
 };

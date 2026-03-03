@@ -15,7 +15,7 @@ const AdminRoute = () => {
     useEffect(() => {
         if (isError) {
             toast.error("Accès refusé : droits administrateur requis.", {
-                id: "auth-error",
+                id: "admin-error",
             });
         }
     }, [isError]);
