@@ -22,6 +22,7 @@
     "expo-font": "^14.0.10",
     "expo-status-bar": "~3.0.9",
     "geojson": "^0.5.0",
+    "lucide-react": "^0.574.0",
     "nativewind": "^4.2.1",
     "react": "19.1.0",
     "react-native": "0.81.5",
