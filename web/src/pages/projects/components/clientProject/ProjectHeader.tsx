@@ -42,7 +42,7 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({
                 {isLoading ? (
                     <div className="h-5 w-32 bg-gray-200 rounded animate-pulse" />
                 ) : (
-                    <span className="text-sm font-semibold text-gray-900 whitespace-nowrap">
+                    <span className="text-sm font-medium text-gray-900 whitespace-nowrap">
                         {name}
                     </span>
                 )}
