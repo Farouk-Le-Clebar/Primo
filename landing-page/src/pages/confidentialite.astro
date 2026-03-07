@@ -1,0 +1,120 @@
+---
+import Layout from "@layouts/Layout.astro";
+import Navbar from "@components/navbar/Navbar";
+import Footer from "@components/footer/Footer.astro";
+---
+
+<Layout
+  title="Politique de confidentialité - Primo"
+  description="Politique de confidentialité de Primo. Découvrez comment nous protégeons vos données personnelles sur primo-data.fr."
+>
+  <div class="flex flex-col min-h-screen">
+    <Navbar client:load />
+
+    <main class="grow bg-gray-50">
+      <div class="container mx-auto px-6 pt-28 pb-16">
+        <div
+          class="max-w-3xl mx-auto bg-white rounded-xl shadow-sm p-8 md:p-12"
+        >
+          <h1 class="text-3xl font-bold mb-8">Politique de confidentialité</h1>
+
+          <section class="mb-8">
+            <h2 class="text-xl font-semibold mb-4">1. Collecte des données</h2>
+            <p class="text-gray-700 leading-relaxed">
+              <strong>Primo</strong> s'engage à protéger la vie privée des utilisateurs
+              de sa plateforme primo-data.fr. Nous collectons uniquement les données
+              nécessaires au bon fonctionnement du service.
+            </p>
+            <p class="text-gray-700 leading-relaxed mt-4">
+              Les données collectées peuvent inclure : adresse email, nom, et
+              données de navigation (cookies analytiques).
+            </p>
+          </section>
+
+          <section class="mb-8">
+            <h2 class="text-xl font-semibold mb-4">
+              2. Utilisation des données
+            </h2>
+            <p class="text-gray-700 leading-relaxed">
+              Les données collectées par Primo sont utilisées pour :
+            </p>
+            <ul class="list-disc list-inside text-gray-700 mt-4 space-y-2">
+              <li>Fournir et améliorer nos services</li>
+              <li>Gérer votre compte utilisateur</li>
+              <li>Communiquer sur les mises à jour de la plateforme</li>
+              <li>Analyser l'utilisation du site pour l'améliorer</li>
+            </ul>
+          </section>
+
+          <section class="mb-8">
+            <h2 class="text-xl font-semibold mb-4">
+              3. Protection des données
+            </h2>
+            <p class="text-gray-700 leading-relaxed">
+              Primo met en œuvre des mesures techniques et organisationnelles
+              appropriées pour protéger vos données personnelles contre tout
+              accès non autorisé, modification, divulgation ou destruction.
+            </p>
+          </section>
+
+          <section class="mb-8">
+            <h2 class="text-xl font-semibold mb-4">4. Vos droits (RGPD)</h2>
+            <p class="text-gray-700 leading-relaxed">
+              Conformément au Règlement Général sur la Protection des Données
+              (RGPD), vous disposez des droits suivants :
+            </p>
+            <ul class="list-disc list-inside text-gray-700 mt-4 space-y-2">
+              <li>
+                <strong>Droit d'accès</strong> : obtenir une copie de vos données
+                personnelles
+              </li>
+              <li>
+                <strong>Droit de rectification</strong> : corriger vos données inexactes
+              </li>
+              <li>
+                <strong>Droit à l'effacement</strong> : demander la suppression de
+                vos données
+              </li>
+              <li>
+                <strong>Droit à la portabilité</strong> : recevoir vos données dans
+                un format structuré
+              </li>
+              <li>
+                <strong>Droit d'opposition</strong> : vous opposer au traitement de
+                vos données
+              </li>
+            </ul>
+            <p class="text-gray-700 leading-relaxed mt-4">
+              Pour exercer ces droits, contactez-nous à <a
+                href="mailto:contact@primo-data.fr"
+                class="text-green-600 hover:underline">contact@primo-data.fr</a
+              >.
+            </p>
+          </section>
+
+          <section class="mb-8">
+            <h2 class="text-xl font-semibold mb-4">5. Cookies</h2>
+            <p class="text-gray-700 leading-relaxed">
+              Le site primo-data.fr peut utiliser des cookies à des fins de
+              mesure d'audience et d'amélioration de l'expérience utilisateur.
+              Vous pouvez configurer votre navigateur pour refuser les cookies.
+            </p>
+          </section>
+
+          <section>
+            <h2 class="text-xl font-semibold mb-4">6. Contact</h2>
+            <p class="text-gray-700 leading-relaxed">
+              Pour toute question relative à la protection de vos données,
+              contactez Primo à <a
+                href="mailto:contact@primo-data.fr"
+                class="text-green-600 hover:underline">contact@primo-data.fr</a
+              >.
+            </p>
+          </section>
+        </div>
+      </div>
+    </main>
+
+    <Footer />
+  </div>
+</Layout>

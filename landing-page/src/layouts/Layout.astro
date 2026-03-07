@@ -25,6 +25,11 @@ const fullOgImage = new URL(ogImage, siteUrl).toString();
     <meta charset="UTF-8" />
     <meta name="description" content={description} />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="keywords"
+      content="Primo, données cadastrales, PLU, urbanisme, parcelle, foncier, géorisques, immobilier France, cadastre, risques naturels"
+    />
+    <meta name="author" content="Primo" />
     <link rel="canonical" href={canonicalURL} />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
 
@@ -53,8 +58,9 @@ const fullOgImage = new URL(ogImage, siteUrl).toString();
         "@context": "https://schema.org",
         "@type": "SoftwareApplication",
         name: "Primo",
+        url: "https://primo-data.fr",
         description:
-          "Plateforme centralisant toutes les informations cadastrales et foncières en France",
+          "Plateforme centralisant toutes les informations cadastrales et foncières en France. Accédez aux données PLU, risques naturels, cadastre et qualité de vie en un clic.",
         applicationCategory: "BusinessApplication",
         operatingSystem: "Web, iOS, Android",
         offers: {
@@ -62,10 +68,27 @@ const fullOgImage = new URL(ogImage, siteUrl).toString();
           price: "0",
           priceCurrency: "EUR",
         },
-        aggregateRating: {
-          "@type": "AggregateRating",
-          ratingValue: "4.8",
-          ratingCount: "150",
+      })}
+    />
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        name: "Primo",
+        url: "https://primo-data.fr",
+        logo: "https://primo-data.fr/favicon.ico",
+        description:
+          "Primo centralise toutes les informations cadastrales, urbanisme, risques et qualité de vie d'une parcelle en un clic.",
+        sameAs: [
+          "https://www.linkedin.com/company/primo-data-app/",
+          "https://www.instagram.com/primo.app/",
+        ],
+        contactPoint: {
+          "@type": "ContactPoint",
+          email: "contact@primo-data.fr",
+          contactType: "customer service",
+          availableLanguage: "French",
         },
       })}
     />
