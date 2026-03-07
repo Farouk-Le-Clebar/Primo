@@ -219,7 +219,7 @@ export class GeoService {
       };
     }
 
-    const maxFeatures = this.calculateMaxFeatures(zoom);
+
 
     const wfsParams = new URLSearchParams({
       service: 'WFS',
@@ -229,8 +229,7 @@ export class GeoService {
       outputFormat: 'application/json',
       srsName: 'EPSG:4326',
       bbox: `${bbox},EPSG:4326`,
-      maxFeatures: maxFeatures.toString(),
-    });
+      });
 
     if (types && types.length > 0) {
       const cqlFilter = types.map((type) => `type='${type}'`).join(' OR ');
@@ -267,13 +266,5 @@ export class GeoService {
       { type: 'cinema', category: 'amenity', count: 2106 },
       { type: 'library', category: 'amenity', count: 1200 },
     ];
-  }
-
-
-  private calculateMaxFeatures(zoom: number): number {
-    if (zoom >= 16) return 500;
-    if (zoom >= 14) return 200;
-    if (zoom >= 12) return 100;
-    return 50;
   }
 }

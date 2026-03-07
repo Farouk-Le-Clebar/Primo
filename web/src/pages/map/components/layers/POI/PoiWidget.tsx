@@ -32,13 +32,13 @@ const PoiWidget = ({ onTogglePoi }: PoiWidgetProps) => {
 
     return (
         <div
-            className={`absolute top-4 right-22 z-[1000] transition-all duration-300 ${
+            className={`absolute top-4 right-4 z-[1000] transition-all duration-300 ${
                 isOpen ? openWidth : closedWidth
             } ${isOpen ? openHeight : closedHeight}`}
             style={{ minHeight: isOpen ? 200 : undefined }}
             // style={{ minHeight: isOpen ? 200 : undefined, right: isOpen ? 50 : 150 }}
         >
-            <div className="bg-white font-UberMove rounded-xl shadow-xl overflow-hidden h-full">
+            <div className="bg-white font-inter rounded-xl shadow-xl overflow-hidden h-full">
                 {/* Header */}
                 <button
                     onClick={() => setIsOpen(!isOpen)}

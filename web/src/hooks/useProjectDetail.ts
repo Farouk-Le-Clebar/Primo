@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import type { ProjectDetail } from "../types/projectDetail";
-import type { ProjectResponse } from "../types/projectCreate";
+import type { ProjectDetail } from "../types/project/projectDetail";
+import type { ProjectResponse } from "../types/project/projectCreate";
 import {
     fetchProjectById,
     updateProjectNotes,
@@ -25,7 +25,6 @@ const toProjectDetail = (data: ProjectResponse): ProjectDetail => ({
     modifiedAt: data.modifiedAt,
 });
 
-
 export const useProjectDetail = (projectId?: string) => {
     const {
         data: project = null,
@@ -48,7 +47,6 @@ export const useProjectDetail = (projectId?: string) => {
             : null,
     };
 };
-
 
 export const useNotes = (initialNotes: string = "", projectId?: string) => {
     const [notes, setNotes] = useState(initialNotes);
@@ -83,7 +81,6 @@ export const useNotes = (initialNotes: string = "", projectId?: string) => {
 
     return { notes, setNotes, isSaving };
 };
-
 
 export const useFavorite = (initialValue: boolean, projectId?: string) => {
     const [isFavorite, setIsFavorite] = useState(initialValue);

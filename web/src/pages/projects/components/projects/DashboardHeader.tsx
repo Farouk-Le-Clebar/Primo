@@ -1,6 +1,6 @@
 import React from "react";
 import { Search, SlidersHorizontal, Plus } from "lucide-react";
-import type { ProjectFilters } from "../../../../types/project";
+import type { ProjectFilters } from "../../../../types/project/project";
 
 type DashboardHeaderProps = {
     searchTerm: string;
