@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import type { Parcel } from "../../../../types/projectDetail";
+import type { Parcel } from "../../../../../types/projectDetail";
 import { LocateFixed, Map, List } from "lucide-react";
 import ListView from "./ListView";
 
@@ -43,11 +43,13 @@ const MapView: React.FC<MapViewProps> = ({ parcels, isLoading }) => {
     }
 
     return (
-        <div className={`relative w-full h-96 rounded-xl overflow-hidden transition-colors duration-300 ${
-            activeView === "list"
-                ? "bg-white"
-                : "bg-gradient-to-br from-blue-100 via-green-100 to-blue-50"
-        }`}>
+        <div
+            className={`relative w-full h-96 rounded-xl overflow-hidden transition-colors duration-300 ${
+                activeView === "list"
+                    ? "bg-white"
+                    : "bg-gradient-to-br from-blue-100 via-green-100 to-blue-50"
+            }`}
+        >
             {/* Title */}
             <div className="absolute top-4 left-4 z-10 flex gap-2">
                 <div className="text-xs font-medium text-gray-900 px-2 py-1 bg-white rounded-md shadow-sm">
@@ -111,7 +113,9 @@ const MapView: React.FC<MapViewProps> = ({ parcels, isLoading }) => {
             </div>
 
             {/* Content area */}
-            <div className={`w-full h-full ${activeView === "list" ? "pt-16" : ""}`}>
+            <div
+                className={`w-full h-full ${activeView === "list" ? "pt-16" : ""}`}
+            >
                 {activeView === "map" ? (
                     <>
                         {/* Map placeholder */}

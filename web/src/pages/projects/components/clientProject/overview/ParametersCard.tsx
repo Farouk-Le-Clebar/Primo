@@ -1,13 +1,11 @@
 import React from "react";
 import { ChevronRight } from "lucide-react";
 
-
 type ParametersCardProps = {
     data?: any;
     isLoading: boolean;
     onViewAll: () => void;
 };
-
 
 const ParametersCard: React.FC<ParametersCardProps> = ({
     // data,

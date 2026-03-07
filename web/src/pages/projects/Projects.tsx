@@ -21,7 +21,3 @@ export default function Projects() {
         </div>
     );
 }
-
-//TODO : ajouter une petite animation sur le panel de confirmation pour la suppression
-//TODO : ajuster le design du panelFIlter
-//TODO : ajuster le design du bouton de changement de view dans MapView pour avoir qqchose de clean comme Apple
