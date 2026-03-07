@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const apiUrl = window?._env_?.API_URL || "http://localhost:3000";
+const apiUrl = window?._env_?.API_URL;
 
 export interface PoiFeature {
   type: "Feature";
