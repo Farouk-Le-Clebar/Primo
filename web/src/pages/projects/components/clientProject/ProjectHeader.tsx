@@ -24,25 +24,25 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({
     onTabChange,
 }) => {
     return (
-        <div className="flex items-center justify-between h-15">
+        <div className="flex items-center justify-between h-14">
             {/* Left: back button + tabs */}
             <div className="flex items-center gap-5">
                 <button
                     onClick={onBack}
-                    className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full border border-gray-200 cursor-pointer hover:bg-gray-100 transition-colors"
+                    className="flex-shrink-0 w-7.5 h-6.5 flex items-center justify-center rounded-full border border-gray-200 cursor-pointer hover:bg-gray-100 transition-colors group"
                 >
-                    <ChevronLeft className="w-4 h-4 text-gray-900" />
+                    <ChevronLeft className="w-4 h-4 text-gray-900 transition-transform group-hover:translate-x-[-2px]" />
                 </button>
 
                 <ProjectTabs activeTab={activeTab} onTabChange={onTabChange} />
             </div>
 
-            {/* Right: help → favorite → project name */}
+            {/* Right: help + favorite + project name */}
             <div className="flex items-center gap-4">
                 {isLoading ? (
                     <div className="h-5 w-32 bg-gray-200 rounded animate-pulse" />
                 ) : (
-                    <span className="text-sm font-medium text-gray-900 whitespace-nowrap">
+                    <span className="text-[14px] font-medium text-gray-900 whitespace-nowrap">
                         {name}
                     </span>
                 )}

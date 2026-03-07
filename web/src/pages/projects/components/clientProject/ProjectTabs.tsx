@@ -20,12 +20,12 @@ const ProjectTabs: React.FC<ProjectTabsProps> = ({
             const textEl = el.querySelector("span");
             if (textEl) {
                 const textWidth = textEl.offsetWidth;
-                const barWidth = textWidth * 0.8;
+                const barWidth = textWidth * 0.85; // -> la taille de la barre par rapport au texte
                 const textLeft =
                     textEl.getBoundingClientRect().left -
                     (el.closest("[data-tab-container]")?.getBoundingClientRect()
                         .left ?? 0);
-                const barLeft = textLeft + (textWidth - barWidth) / 2;
+                const barLeft = textLeft + (textWidth - barWidth) / 2; // pos centrer la barre sous le texte
                 setIndicator({ left: barLeft, width: barWidth });
             }
         }
@@ -48,7 +48,7 @@ const ProjectTabs: React.FC<ProjectTabsProps> = ({
                                 : "text-[#949496] hover:text-gray-700"
                         }`}
                     >
-                        <span className="text-sm font-medium whitespace-nowrap">
+                        <span className="text-[13px] font-medium whitespace-nowrap">
                             {tab.label}
                         </span>
                     </button>
