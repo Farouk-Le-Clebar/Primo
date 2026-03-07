@@ -1,5 +1,5 @@
 import React from "react";
-import type { ClientProject } from "../../../../types/project";
+import type { ClientProject } from "../../../../types/project/project";
 import {
     useSearch,
     useSort,
