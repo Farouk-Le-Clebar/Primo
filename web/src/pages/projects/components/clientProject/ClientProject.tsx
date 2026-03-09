@@ -4,6 +4,7 @@ import {
     useNotes,
     useFavorite,
 } from "../../../../hooks/useProjectDetail";
+import { useCurrentMemberRole } from "../../../../hooks/useCurrentMemberRole";
 
 import ProjectHeader from "./ProjectHeader";
 import { OverviewTab } from "./overview";
@@ -33,6 +34,8 @@ export const ClientProjectPage: React.FC<ProjectDetailPageProps> = ({
     );
 
     const { notes, setNotes } = useNotes(project?.notes || "", projectId);
+
+    const { canEdit } = useCurrentMemberRole(projectId, project?.userId);
 
     const handleBack = () => {
         if (onBack) {
@@ -72,6 +75,7 @@ export const ClientProjectPage: React.FC<ProjectDetailPageProps> = ({
                         notes={notes}
                         onNotesChange={setNotes}
                         onViewAllParameters={handleViewAllParameters}
+                        canEdit={canEdit}
                     />
                 );
             case "parameters":
@@ -83,7 +87,12 @@ export const ClientProjectPage: React.FC<ProjectDetailPageProps> = ({
             case "activities":
                 return <ActivitiesTab />;
             case "members":
-                return <MembersTab />;
+                return (
+                    <MembersTab
+                        projectId={projectId}
+                        projectOwnerId={project?.userId}
+                    />
+                );
             default:
                 return null;
         }

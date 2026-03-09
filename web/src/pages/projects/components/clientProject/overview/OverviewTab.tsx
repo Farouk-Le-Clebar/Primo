@@ -10,6 +10,7 @@ type OverviewTabProps = {
     notes: string;
     onNotesChange: (notes: string) => void;
     onViewAllParameters: () => void;
+    canEdit?: boolean;
 };
 
 const OverviewTab: React.FC<OverviewTabProps> = ({
@@ -18,6 +19,7 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
     notes,
     onNotesChange,
     onViewAllParameters,
+    canEdit = true,
 }) => {
     return (
         <div className="flex flex-col gap-4 flex-1 min-h-0">
@@ -44,6 +46,7 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
                         notes={notes}
                         isLoading={isLoading}
                         onNotesChange={onNotesChange}
+                        canEdit={canEdit}
                     />
                 </div>
             </div>

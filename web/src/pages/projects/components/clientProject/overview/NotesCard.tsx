@@ -1,15 +1,18 @@
 import React from "react";
+import toast from "react-hot-toast";
 
 type NotesCardProps = {
     notes: string;
     isLoading: boolean;
     onNotesChange: (notes: string) => void;
+    canEdit?: boolean;
 };
 
 const NotesCard: React.FC<NotesCardProps> = ({
     notes,
     isLoading,
     onNotesChange,
+    canEdit = true,
 }) => {
     if (isLoading) {
         return (
@@ -28,9 +31,26 @@ const NotesCard: React.FC<NotesCardProps> = ({
 
             <textarea
                 value={notes}
-                onChange={(e) => onNotesChange(e.target.value)}
-                placeholder="Écrivez vos notes ici..."
-                className="flex-1 w-full p-2 text-sm text-gray-700 placeholder-gray-400 border-none focus:outline-none resize-none"
+                onChange={(e) => {
+                    if (!canEdit) return;
+                    onNotesChange(e.target.value);
+                }}
+                readOnly={!canEdit}
+                onClick={() => {
+                    if (!canEdit) {
+                        toast.error(
+                            "Vous n'avez pas les droits nécessaires pour modifier les notes",
+                        );
+                    }
+                }}
+                placeholder={
+                    canEdit
+                        ? "Écrivez vos notes ici..."
+                        : "Aucune note (lecture seule)"
+                }
+                className={`flex-1 w-full p-2 text-sm text-gray-700 placeholder-gray-400 border-none focus:outline-none resize-none ${
+                    !canEdit ? "cursor-not-allowed bg-gray-50/50" : ""
+                }`}
             />
 
             {notes && (

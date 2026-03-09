@@ -21,10 +21,10 @@ const toProjectDetail = (data: ProjectResponse): ProjectDetail => ({
         coordinates: p.coordinates,
     })),
     parameters: data.parameters,
+    userId: data.userId,
     createdAt: data.createdAt,
     modifiedAt: data.modifiedAt,
 });
-
 
 export const useProjectDetail = (projectId?: string) => {
     const {
@@ -48,7 +48,6 @@ export const useProjectDetail = (projectId?: string) => {
             : null,
     };
 };
-
 
 export const useNotes = (initialNotes: string = "", projectId?: string) => {
     const [notes, setNotes] = useState(initialNotes);
@@ -83,7 +82,6 @@ export const useNotes = (initialNotes: string = "", projectId?: string) => {
 
     return { notes, setNotes, isSaving };
 };
-
 
 export const useFavorite = (initialValue: boolean, projectId?: string) => {
     const [isFavorite, setIsFavorite] = useState(initialValue);
