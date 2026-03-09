@@ -3,8 +3,9 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../database/user.entity';
+import { NotificationType } from '../database/notification.entity';
+import { NotificationService } from '../notification/notification.service';
 import * as bcrypt from 'bcrypt';
-import { map } from 'rxjs';
 
 @Injectable()
 export class AuthService {
@@ -12,6 +13,7 @@ export class AuthService {
     @InjectRepository(User)
     private userRepository: Repository<User>,
     private jwtService: JwtService,
+    private notificationService: NotificationService,
   ) {}
 
   async register(
@@ -37,6 +39,15 @@ export class AuthService {
     });
 
     await this.userRepository.save(user);
+
+    // Notification de bienvenue
+    await this.notificationService.createNotification(
+      user.id,
+      NotificationType.SYSTEM,
+      'Bienvenue sur Primo ! 🎉',
+      'Nous sommes ravis de vous accueillir. Commencez par créer votre premier projet pour explorer toutes les fonctionnalités.',
+      { welcomeNotification: true },
+    );
 
     const payload = { sub: user.id, email: user.email };
     const token = this.jwtService.sign(payload);
@@ -84,6 +95,7 @@ export class AuthService {
     return {
       access_token: token,
       user: {
+        id: user.id,
         email: user.email,
         firstName: user.firstName,
         surName: user.surName,
@@ -96,7 +108,14 @@ export class AuthService {
   async validateUser(payload: { sub: string; email: string }) {
     const user = await this.userRepository.findOne({
       where: { id: payload.sub },
-      select: ['id', 'email', 'firstName', 'surName', 'profilePicture', 'mapPreference'],
+      select: [
+        'id',
+        'email',
+        'firstName',
+        'surName',
+        'profilePicture',
+        'mapPreference',
+      ],
     });
 
     if (!user) {

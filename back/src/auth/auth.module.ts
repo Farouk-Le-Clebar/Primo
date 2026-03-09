@@ -8,17 +8,19 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { JwtStrategy } from '../guard/jwt.strategy';
 import { JwtAuthGuard } from '../guard/jwt-auth.guard';
+import { NotificationModule } from '../notification/notification.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([User]),
     PassportModule,
+    NotificationModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_SECRET') || 'defaultSecret',
-        signOptions: { 
-          expiresIn: '1d'
+        signOptions: {
+          expiresIn: '1d',
         },
       }),
       inject: [ConfigService],
