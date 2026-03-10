@@ -20,14 +20,12 @@ import {
     deleteProject,
 } from "../requests/projectRequests";
 
-
 /**
  * Vérifie si un token est présent dans le localStorage.
  * Permet de court-circuiter les requêtes API quand l'utilisateur n'est
  * clairement pas connecté, évitant ainsi des allers-retours inutiles.
  */
 const hasToken = (): boolean => !!localStorage.getItem("token");
-
 
 /**
  * Convertit une réponse API en ClientProject pour l'affichage dashboard
@@ -37,6 +35,7 @@ const toClientProject = (p: ProjectResponse): ClientProject => ({
     name: p.name,
     parameters: p.parameters ? Object.keys(p.parameters).length : 0,
     parcels: p.parcels ? p.parcels.length : 0,
+    memberCount: p.memberCount ?? 0,
     createdAt: p.createdAt,
     modifiedAt: p.modifiedAt,
     isFavorite: p.isFavorite,
@@ -134,7 +133,6 @@ export const useProjects = () => {
         queryKey: ["projects"],
         queryFn: fetchProjects,
         select: (data) => data.map(toClientProject),
-
 
         // Ne pas lancer la requête si aucun token n'est présent
         enabled: isAuthenticated,

@@ -5,9 +5,11 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
+  OneToMany,
   JoinColumn,
 } from 'typeorm';
 import { User } from './user.entity';
+import { ProjectMember } from './project-member.entity';
 
 @Entity('projects')
 export class Project {
@@ -48,4 +50,7 @@ export class Project {
 
   @UpdateDateColumn({ type: 'timestamp' })
   modifiedAt: Date;
+
+  @OneToMany(() => ProjectMember, (member) => member.project)
+  members: ProjectMember[];
 }

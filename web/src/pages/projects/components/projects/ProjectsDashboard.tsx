@@ -33,6 +33,9 @@ const SkeletonRow = () => (
             <div className="h-6 w-24 bg-gray-200 rounded-md animate-pulse" />
         </td>
         <td className="px-6 py-4">
+            <div className="h-6 w-24 bg-gray-200 rounded-md animate-pulse" />
+        </td>
+        <td className="px-6 py-4">
             <div className="h-4 w-24 bg-gray-200 rounded animate-pulse" />
         </td>
         <td className="px-6 py-4">
@@ -117,6 +120,7 @@ export const ProjectsDashboard: React.FC<ProjectsDashboardProps> = ({
                                     "Noms",
                                     "Paramètres",
                                     "Parcelles",
+                                    "Membres",
                                     "Date de création",
                                     "Dernière modification",
                                     "Actions",

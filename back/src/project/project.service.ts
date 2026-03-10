@@ -59,7 +59,7 @@ export class ProjectService {
       });
       await this.memberRepository.save(ownerMember);
 
-      return this.toResponseDto(savedProject);
+      return await this.toResponseDto(savedProject);
     } catch (error) {
       throw new BadRequestException('Erreur lors de la création du projet');
     }
@@ -92,7 +92,7 @@ export class ProjectService {
         new Date(b.modifiedAt).getTime() - new Date(a.modifiedAt).getTime(),
     );
 
-    return all.map((project) => this.toResponseDto(project));
+    return Promise.all(all.map((project) => this.toResponseDto(project)));
   }
 
   async findOne(id: string, userId: string): Promise<ProjectResponseDto> {
@@ -114,7 +114,7 @@ export class ProjectService {
       }
     }
 
-    return this.toResponseDto(project);
+    return await this.toResponseDto(project);
   }
 
   async update(
@@ -137,7 +137,7 @@ export class ProjectService {
       Object.assign(project, updateProjectDto);
 
       const updatedProject = await this.projectRepository.save(project);
-      return this.toResponseDto(updatedProject);
+      return await this.toResponseDto(updatedProject);
     } catch (error) {
       throw new BadRequestException('Erreur lors de la mise à jour du projet');
     }
@@ -237,7 +237,7 @@ export class ProjectService {
       order: { modifiedAt: 'DESC' },
     });
 
-    return projects.map((project) => this.toResponseDto(project));
+    return Promise.all(projects.map((project) => this.toResponseDto(project)));
   }
 
   async searchByName(
@@ -253,7 +253,7 @@ export class ProjectService {
       .orderBy('project.modifiedAt', 'DESC')
       .getMany();
 
-    return projects.map((project) => this.toResponseDto(project));
+    return Promise.all(projects.map((project) => this.toResponseDto(project)));
   }
 
   /**
@@ -289,7 +289,14 @@ export class ProjectService {
     }
   }
 
-  private toResponseDto(project: Project): ProjectResponseDto {
+  private async toResponseDto(project: Project): Promise<ProjectResponseDto> {
+    const memberCount = await this.memberRepository.count({
+      where: {
+        projectId: project.id,
+        status: ProjectMemberStatus.ACCEPTED,
+      },
+    });
+
     return {
       id: project.id,
       name: project.name,
@@ -300,6 +307,7 @@ export class ProjectService {
       userId: project.userId,
       createdAt: project.createdAt,
       modifiedAt: project.modifiedAt,
+      memberCount,
     };
   }
 }

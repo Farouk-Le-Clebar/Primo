@@ -121,16 +121,16 @@ const MembersTab: React.FC<MembersTabProps> = ({
 
                 <button
                     onClick={handleInviteClick}
-                    className="flex items-center gap-2 px-3.5 py-1.5 bg-white text-gray-900 text-[12px] transition-colors border border-transparent relative group cursor-pointer"
-                    style={{
-                        background: "#fff",
-                        position: "relative",
-                        zIndex: 1,
-                    }}
+                    className="flex items-center gap-2 px-3.5 py-1.5  bg-[#388160] rounded-lg hover:bg-[#2d664c] text-white text-[12px] transition-colors border border-transparent relative group cursor-pointer"
+                    // style={{
+                    //     background: "#fff",
+                    //     position: "relative",
+                    //     zIndex: 1,
+                    // }}
                 >
-                    <span className="font-normal">Inviter</span>
                     <UserPlus className="w-4 h-4 transition-transform group-hover:rotate-6" />
-                    <span
+                    <span className="font-semibold">Inviter</span>
+                    {/* <span
                         aria-hidden="true"
                         className="pointer-events-none absolute inset-0 rounded-[7px]"
                         style={{
@@ -143,7 +143,7 @@ const MembersTab: React.FC<MembersTabProps> = ({
                             WebkitMaskComposite: "xor",
                             maskComposite: "exclude",
                         }}
-                    />
+                    /> */}
                 </button>
             </div>
 

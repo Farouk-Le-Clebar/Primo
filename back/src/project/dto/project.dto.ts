@@ -75,6 +75,7 @@ export class ProjectResponseDto {
   userId: string;
   createdAt: Date;
   modifiedAt: Date;
+  memberCount: number;
 }
 
 export class UpdateNotesDto {
