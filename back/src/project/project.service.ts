@@ -130,7 +130,7 @@ export class ProjectService {
       throw new NotFoundException(`Projet avec l'ID ${id} non trouvé`);
     }
 
-    // Vérifier que l'utilisateur a le droit d'écriture (owner/admin/editor)
+    // Vérifier que l'utilisateur a le droit d'écriture (owner/admin & co-admin/editor)
     await this.assertWriteAccess(id, userId);
 
     try {
@@ -258,7 +258,7 @@ export class ProjectService {
 
   /**
    * Vérifie que l'utilisateur a un accès en écriture sur le projet.
-   * Rôles autorisés : owner, admin, editor.
+   * Rôles autorisés : owner, admin, co-admin, editor.
    */
   private async assertWriteAccess(
     projectId: string,
@@ -279,6 +279,7 @@ export class ProjectService {
     const writeRoles: ProjectMemberRole[] = [
       ProjectMemberRole.OWNER,
       ProjectMemberRole.ADMIN,
+      ProjectMemberRole.CO_ADMIN,
       ProjectMemberRole.EDITOR,
     ];
 

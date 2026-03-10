@@ -5,8 +5,8 @@ import type { MemberRole } from "../types/member";
 /**
  * Détermine le rôle de l'utilisateur courant sur un projet donné.
  *
- * - Si l'utilisateur est le propriétaire du projet (project.userId === currentUserId) → "owner"
- * - Sinon, cherche dans la liste des membres → rôle trouvé ou null
+ * - Si l'utilisateur est le propriétaire du projet (project.userId === currentUserId) -> "owner"
+ * - Sinon, cherche dans la liste des membres -> rôle trouvé ou null
  *
  * Retourne { role, canEdit, canManageMembers, isLoading }
  */
@@ -41,9 +41,15 @@ export function useCurrentMemberRole(
         role,
         currentUserId: currentUser.id as string | undefined,
         isLoading,
-        /** owner / admin / editor peuvent modifier (notes, paramètres, etc.) */
-        canEdit: role === "owner" || role === "admin" || role === "editor",
-        /** owner / admin peuvent inviter, changer les rôles, supprimer des membres */
+        /** owner / admin / co-admin / editor peuvent modifier (notes, paramètres, etc.) */
+        canEdit:
+            role === "owner" ||
+            role === "admin" ||
+            role === "co-admin" ||
+            role === "editor",
+        /** owner / admin / co-admin peuvent inviter des membres */
+        canInvite: role === "owner" || role === "admin" || role === "co-admin",
+        /** owner / admin peuvent changer les rôles et supprimer des membres */
         canManageMembers: role === "owner" || role === "admin",
     };
 }

@@ -1,4 +1,4 @@
-export type MemberRole = "owner" | "admin" | "editor" | "viewer";
+export type MemberRole = "owner" | "admin"| "co-admin" | "editor" | "viewer";
 export type MemberStatus = "pending" | "accepted" | "declined";
 
 export interface MemberResponse {

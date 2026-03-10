@@ -34,7 +34,6 @@ export class ProjectMembersService {
     private readonly notificationService: NotificationService,
   ) {}
 
-
   async invite(
     projectId: string,
     inviterId: string,
@@ -48,10 +47,11 @@ export class ProjectMembersService {
       throw new NotFoundException(`Projet avec l'ID ${projectId} non trouvé`);
     }
 
-    // Vérifier que l'inviteur est owner ou admin du projet
+    // Vérifier que l'inviteur est owner ou admin/co-admin du projet
     await this.assertRole(projectId, inviterId, [
       ProjectMemberRole.OWNER,
       ProjectMemberRole.ADMIN,
+      ProjectMemberRole.CO_ADMIN,
     ]);
 
     const invitedUser = await this.userRepository.findOne({
@@ -80,7 +80,6 @@ export class ProjectMembersService {
       );
     }
 
-  
     if (dto.role === ProjectMemberRole.OWNER) {
       throw new ForbiddenException(
         'Le rôle owner ne peut pas être attribué via invitation',
@@ -147,12 +146,10 @@ export class ProjectMembersService {
     return this.toResponseDto(saved, invitedUser);
   }
 
-
   async getMembers(
     projectId: string,
     requesterId: string,
   ): Promise<MemberResponseDto[]> {
-
     await this.assertMember(projectId, requesterId);
 
     const members = await this.memberRepository.find({
@@ -164,17 +161,16 @@ export class ProjectMembersService {
     return members.map((m) => this.toResponseDto(m, m.user));
   }
 
-
   async updateRole(
     projectId: string,
     memberId: string,
     requesterId: string,
     dto: UpdateMemberRoleDto,
   ): Promise<MemberResponseDto> {
-
     await this.assertRole(projectId, requesterId, [
       ProjectMemberRole.OWNER,
       ProjectMemberRole.ADMIN,
+      ProjectMemberRole.CO_ADMIN,
     ]);
 
     const member = await this.memberRepository.findOne({
@@ -209,16 +205,15 @@ export class ProjectMembersService {
     return this.toResponseDto(updated, member.user);
   }
 
-
   async removeMember(
     projectId: string,
     memberId: string,
     requesterId: string,
   ): Promise<void> {
-
     await this.assertRole(projectId, requesterId, [
       ProjectMemberRole.OWNER,
       ProjectMemberRole.ADMIN,
+      ProjectMemberRole.CO_ADMIN,
     ]);
 
     const member = await this.memberRepository.findOne({
@@ -238,7 +233,6 @@ export class ProjectMembersService {
 
     await this.memberRepository.remove(member);
   }
-
 
   async respondToInvitation(
     projectId: string,
@@ -276,7 +270,6 @@ export class ProjectMembersService {
 
     const updated = await this.memberRepository.save(member);
 
-
     const project = await this.projectRepository.findOne({
       where: { id: projectId },
     });
@@ -307,15 +300,13 @@ export class ProjectMembersService {
     return this.toResponseDto(updated, member.user);
   }
 
-
   /**
-   * vérifie que l'utilisateur est membre du projet 
+   * vérifie que l'utilisateur est membre du projet
    */
   private async assertMember(
     projectId: string,
     userId: string,
   ): Promise<ProjectMember> {
-
     const project = await this.projectRepository.findOne({
       where: { id: projectId },
     });

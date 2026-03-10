@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { ChevronDown, } from "lucide-react";
-import type { MemberRole } from "../../../../../requests/memberRequests";
+import type { MemberRole } from "../../../../../types/member";
 
 type RoleDropdownProps = {
     currentRole: MemberRole;
@@ -22,6 +22,11 @@ const ROLE_CONFIG: Record<
         color: "text-gray-700",
         bg: " ",
     },
+    "co-admin":{
+        label: "Co-Admin",
+        color: "text-gray-700",
+        bg: " ",
+    },
     editor: {
         label: "Éditeur",
         color: "text-gray-700",
@@ -34,7 +39,7 @@ const ROLE_CONFIG: Record<
     },
 };
 
-const ASSIGNABLE_ROLES: MemberRole[] = ["admin", "editor", "viewer"];
+const ASSIGNABLE_ROLES: MemberRole[] = ["admin", "co-admin", "editor", "viewer"];
 
 const RoleDropdown: React.FC<RoleDropdownProps> = ({
     currentRole,

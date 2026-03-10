@@ -53,7 +53,7 @@ const MembersTab: React.FC<MembersTabProps> = ({
     const updateRole = useUpdateMemberRole(projectId);
     const removeMember = useRemoveMember(projectId);
     const invite = useInviteMember(projectId);
-    const { canManageMembers, currentUserId } = useCurrentMemberRole(
+    const { canInvite, canManageMembers, currentUserId } = useCurrentMemberRole(
         projectId,
         projectOwnerId,
     );
@@ -77,12 +77,12 @@ const MembersTab: React.FC<MembersTabProps> = ({
 
     const handleInviteClick = () => {
         console.log(
-            "Invite click - canManageMembers:",
-            canManageMembers,
+            "Invite click - canInvite:",
+            canInvite,
             "currentUserId:",
             currentUserId,
         );
-        if (!canManageMembers) {
+        if (!canInvite) {
             toast.error(
                 "Vous n'avez pas les droits nécessaires pour inviter un membre",
             );

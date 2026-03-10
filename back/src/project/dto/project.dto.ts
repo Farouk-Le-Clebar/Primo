@@ -5,7 +5,6 @@ import {
   IsObject,
   IsArray,
   MaxLength,
-  ValidateNested,
 } from 'class-validator';
 
 export class CreateProjectDto {

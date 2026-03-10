@@ -13,6 +13,7 @@ import { Project } from './project.entity';
 export enum ProjectMemberRole {
   OWNER = 'owner',
   ADMIN = 'admin',
+  CO_ADMIN = 'co-admin',
   EDITOR = 'editor',
   VIEWER = 'viewer',
 }
