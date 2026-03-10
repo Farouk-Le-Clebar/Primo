@@ -20,6 +20,15 @@ import {
     deleteProject,
 } from "../requests/projectRequests";
 
+
+/**
+ * Vérifie si un token est présent dans le localStorage.
+ * Permet de court-circuiter les requêtes API quand l'utilisateur n'est
+ * clairement pas connecté, évitant ainsi des allers-retours inutiles.
+ */
+const hasToken = (): boolean => !!localStorage.getItem("token");
+
+
 /**
  * Convertit une réponse API en ClientProject pour l'affichage dashboard
  */
@@ -115,6 +124,7 @@ export const useFilters = () => {
 
 export const useProjects = () => {
     const queryClient = useQueryClient();
+    const isAuthenticated = hasToken();
 
     const {
         data: projects = [],
@@ -124,7 +134,32 @@ export const useProjects = () => {
         queryKey: ["projects"],
         queryFn: fetchProjects,
         select: (data) => data.map(toClientProject),
+
+
+        // Ne pas lancer la requête si aucun token n'est présent
+        enabled: isAuthenticated,
+        // Ne pas réessayer sur les erreurs d'authentification (401/403)
+        retry: (failureCount, err) => {
+            if (
+                err instanceof ApiError &&
+                (err.code === PROJECT_ERROR_CODES.UNAUTHORIZED ||
+                    err.code === PROJECT_ERROR_CODES.FORBIDDEN)
+            ) {
+                return false;
+            }
+            return failureCount < 3;
+        },
     });
+
+    // Si pas de token, on renvoie immédiatement une erreur UNAUTHORIZED
+    // sans attendre de réponse serveur
+    const resolvedError: ProjectError | null = !isAuthenticated
+        ? {
+              code: PROJECT_ERROR_CODES.UNAUTHORIZED,
+              message: "Vous n'êtes pas connecté",
+              detail: "Connectez-vous ou créez un compte pour accéder à vos projets.",
+          }
+        : toProjectError(error);
 
     const { mutate: toggleFavorite } = useMutation({
         mutationFn: ({
@@ -180,8 +215,8 @@ export const useProjects = () => {
 
     return {
         projects,
-        isLoading,
-        error: toProjectError(error),
+        isLoading: isAuthenticated ? isLoading : false,
+        error: resolvedError,
         toggleFavorite: (projectId: string) => {
             const project = projects.find((p) => p.id === projectId);
             if (project)
