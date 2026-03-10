@@ -49,7 +49,7 @@ const ProjectRow: React.FC<ProjectRowProps> = ({
 
             {/* Parameters column */}
             <td className="px-6 py-4">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-green-100 text-green-600 rounded-md text-xs">
+                <span className="inline-flex whitespace-nowrap items-center gap-1.5 px-3 py-1 bg-green-100 text-green-600 rounded-md text-xs">
                     <svg
                         className="w-3.5 h-3.5"
                         fill="none"
@@ -69,7 +69,7 @@ const ProjectRow: React.FC<ProjectRowProps> = ({
 
             {/* Parcels column */}
             <td className="px-6 py-4">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-purple-100 text-purple-600 rounded-md text-xs">
+                <span className="inline-flex whitespace-nowrap items-center gap-1.5 px-3 py-1 bg-purple-100 text-purple-600 rounded-md text-xs">
                     <svg
                         className="w-3.5 h-3.5"
                         fill="none"

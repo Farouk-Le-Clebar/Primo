@@ -145,7 +145,7 @@ const InviteMemberModal: React.FC<InviteMemberModalProps> = ({
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className="flex-1 flex items-center justify-center gap-2 px-4 py-2 text-sm text-white bg-[#388160]/90 rounded-lg hover:bg-[#388160] transition-colors cursor-pointer disabled:opacity-50"
+                            className="flex-1 flex items-center justify-center gap-2 px-4 py-2 text-sm text-white bg-[#388160] rounded-lg hover:bg-[#2d664c] transition-colors cursor-pointer disabled:opacity-50"
                         >
                             {isLoading ? (
                                 <Loader2 className="w-4 h-4 animate-spin" />

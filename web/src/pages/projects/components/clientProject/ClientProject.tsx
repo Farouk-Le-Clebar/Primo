@@ -99,7 +99,7 @@ export const ClientProjectPage: React.FC<ProjectDetailPageProps> = ({
     };
 
     return (
-        <div className="w-full h-screen bg-gray-50 flex flex-col overflow-hidden font-inter">
+        <div className="w-full h-full bg-gray-50 flex flex-col overflow-hidden font-inter">
             {/* Header (back + tabs + project info) */}
             <div className="flex-shrink-0 px-7 bg-white border-b border-gray-200 ">
                 <ProjectHeader

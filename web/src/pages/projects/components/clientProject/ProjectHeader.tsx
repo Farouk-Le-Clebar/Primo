@@ -25,7 +25,7 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({
 }) => {
     return (
         <div className="flex items-center justify-between h-14">
-            {/* Left: back button + tabs */}
+            {/*back button + tabs */}
             <div className="flex items-center gap-5">
                 <button
                     onClick={onBack}
@@ -37,7 +37,7 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({
                 <ProjectTabs activeTab={activeTab} onTabChange={onTabChange} />
             </div>
 
-            {/* Right: help + favorite + project name */}
+            {/*help + favorite + project name */}
             <div className="flex items-center gap-4">
                 {isLoading ? (
                     <div className="h-5 w-32 bg-gray-200 rounded animate-pulse" />
