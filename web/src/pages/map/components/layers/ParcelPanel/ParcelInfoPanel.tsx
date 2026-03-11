@@ -8,13 +8,17 @@ import { ParcelInfoCard } from "./ParcelleInfoCard";
 // WIDGETS
 import BuildingsWidget from "./widgets/buildings/BuildingsWidget";
 import MeteoWidget from "./widgets/meteo/MeteoWidget";
-import GpuWidget from "./widgets/gpu/GpuWidget";
+import GpuUrbanAreasWidget from "./widgets/gpu/UrbanAreas/GpuUrbanAreasWidget";
+import GpuPrescriptionsWidget from "./widgets/gpu/Prescriptions/GpuPrescriptionsWidget";
+import GpuInformationsWidget from "./widgets/gpu/Informations/GpuInformationsWidget";
 
 const getWidgetsFromUserProfile = (): ParcelWidgetComponent[] => {
   return [
     BuildingsWidget,
     MeteoWidget,
-    GpuWidget,
+    GpuUrbanAreasWidget,
+    GpuPrescriptionsWidget,
+    GpuInformationsWidget,
   ];
 }
 
