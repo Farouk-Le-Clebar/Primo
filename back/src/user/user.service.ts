@@ -85,4 +85,30 @@ export class UserService {
 
     return users.map(({ password, mapPreference, ...safeUser }) => safeUser);
   }
+
+  async deleteUser(userId: string) {
+    const user = await this.userRepo.findOne({ where: { id: userId } });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    await this.userRepo.remove(user);
+
+    return { message: 'User deleted successfully' };
+  }
+
+  async searchUsers(query: string) {
+    const lowerQuery = query.toLowerCase();
+
+    const users = await this.userRepo
+      .createQueryBuilder('user')
+      .where('LOWER(user.firstName) LIKE :query', { query: `%${lowerQuery}%` })
+      .orWhere('LOWER(user.surName) LIKE :query', { query: `%${lowerQuery}%` })
+      .orWhere('LOWER(user.email) LIKE :query', { query: `%${lowerQuery}%` })
+      .orWhere("LOWER(CONCAT(user.firstName, ' ', user.surName)) LIKE :query", { query: `%${lowerQuery}%` })
+      .getMany();
+
+    return users.map(({ password, mapPreference, ...safeUser }) => safeUser);
+  }
 }

@@ -9,9 +9,35 @@ export const getUsers = async (from: number, to: number) => {
       Authorization: `Bearer ${token}`
     }
   })
-  .then((response) => response.data)
-  .catch((error) => {
-    console.error("Error getting users:", error);
-    throw error;
-  });
+    .then((response) => response.data)
+    .catch((error) => {
+      console.error("Error getting users:", error);
+      throw error;
+    });
+}
+
+export const deleteUser = async (userId: string) => {
+  return axios.post(`${apiUrl}/user/admin/delete`, { userId }, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+    .then((response) => response.data)
+    .catch((error) => {
+      console.error("Error deleting user:", error);
+      throw error;
+    });
+}
+
+export const searchUsers = async (query: string) => {
+  return axios.get(`${apiUrl}/user/admin/search/${query}`, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+    .then((response) => response.data)
+    .catch((error) => {
+      console.error("Error searching users:", error);
+      throw error;
+    });
 }

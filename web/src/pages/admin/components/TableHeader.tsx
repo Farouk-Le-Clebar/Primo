@@ -7,6 +7,7 @@ const TableHeader = () => (
             <th className={headerStyle}>Nom</th>
             <th className={headerStyle}>Email</th>
             <th className={`${headerStyle} text-center`}>Admin</th>
+            <th className={`${headerStyle} text-center`}>Delete</th>
         </tr>
     </thead>
 );
