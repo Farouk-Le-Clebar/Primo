@@ -13,9 +13,8 @@ import type {
     ProjectError,
     ProjectErrorCode,
     ErrorVariant,
-} from "../../../../types/projectError";
-import { PROJECT_ERROR_CODES } from "../../../../types/projectError";
-
+} from "../../../../types/project/projectError";
+import { PROJECT_ERROR_CODES } from "../../../../types/project/projectError";
 
 type ErrorCardProps = {
     error: ProjectError;
@@ -23,7 +22,6 @@ type ErrorCardProps = {
     onLogin?: () => void;
     className?: string;
 };
-
 
 const ERROR_VARIANTS: Record<ProjectErrorCode, ErrorVariant> = {
     [PROJECT_ERROR_CODES.UNAUTHORIZED]: {
@@ -69,7 +67,6 @@ const ERROR_VARIANTS: Record<ProjectErrorCode, ErrorVariant> = {
         accentText: "text-gray-600",
     },
 };
-
 
 const ErrorCard: React.FC<ErrorCardProps> = ({
     error,

@@ -22,6 +22,7 @@ module.exports = {
                 success: '#22C55E',
                 error: '#EF4444',
                 warning: '#EAB308',
+                lightGreen: '#00A33D',
             },
             fontFamily: {
                 // Add custom fonts here if needed

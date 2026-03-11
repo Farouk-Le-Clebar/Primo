@@ -26,7 +26,6 @@ const SearchBar = ({ onAddressSelect }: SearchBarProps) => {
         mutationFn: (address: string) => addOkRequest(address),
         onSuccess: (data: any) => {
             setAdressList(data.features || []);
-            console.log('Fetched addresses:', data.features || []);
         },
         onError: () => {
             setAdressList([]);

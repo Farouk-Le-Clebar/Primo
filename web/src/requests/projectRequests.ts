@@ -3,8 +3,8 @@ import type {
     CreateProjectPayload,
     ProjectResponse,
     UpdateProjectPayload,
-} from "../types/projectCreate";
-import { ApiError, PROJECT_ERROR_CODES } from "../types/projectError";
+} from "../types/project/projectCreate";
+import { ApiError, PROJECT_ERROR_CODES } from "../types/project/projectError";
 import { getAuthHeaders } from "../utils/auth";
 
 const apiUrl = window?._env_?.API_URL;
@@ -93,7 +93,6 @@ function handleApiError(error: unknown, fallbackMessage: string): never {
     });
 }
 
-
 export const fetchProjects = (): Promise<ProjectResponse[]> =>
     axios
         .get(`${apiUrl}/projects`, { headers: getAuthHeaders() })
@@ -102,13 +101,11 @@ export const fetchProjects = (): Promise<ProjectResponse[]> =>
             handleApiError(err, "Impossible de charger les projets"),
         );
 
-
 export const fetchProjectById = (id: string): Promise<ProjectResponse> =>
     axios
         .get(`${apiUrl}/projects/${id}`, { headers: getAuthHeaders() })
         .then((r) => r.data)
         .catch((err) => handleApiError(err, "Impossible de charger le projet"));
-
 
 export const createProject = (
     data: CreateProjectPayload,
@@ -117,7 +114,6 @@ export const createProject = (
         .post(`${apiUrl}/projects`, data, { headers: getAuthHeaders() })
         .then((r) => r.data)
         .catch((err) => handleApiError(err, "Impossible de créer le projet"));
-
 
 export const updateProject = (
     id: string,
@@ -129,7 +125,6 @@ export const updateProject = (
         .catch((err) =>
             handleApiError(err, "Impossible de mettre à jour le projet"),
         );
-
 
 export const updateProjectNotes = (
     id: string,
@@ -146,7 +141,6 @@ export const updateProjectNotes = (
             handleApiError(err, "Impossible de sauvegarder les notes"),
         );
 
-
 export const updateProjectFavorite = (
     id: string,
     isFavorite: boolean,
@@ -162,7 +156,6 @@ export const updateProjectFavorite = (
             handleApiError(err, "Impossible de mettre à jour le favori"),
         );
 
-
 export const deleteProject = (id: string): Promise<void> =>
     axios
         .delete(`${apiUrl}/projects/${id}`, { headers: getAuthHeaders() })
@@ -170,7 +163,6 @@ export const deleteProject = (id: string): Promise<void> =>
         .catch((err) =>
             handleApiError(err, "Impossible de supprimer le projet"),
         );
-
 
 export const searchProjects = (search: string): Promise<ProjectResponse[]> =>
     axios
@@ -183,7 +175,6 @@ export const searchProjects = (search: string): Promise<ProjectResponse[]> =>
             handleApiError(err, "Impossible de rechercher les projets"),
         );
 
-        
 export const fetchFavoriteProjects = (): Promise<ProjectResponse[]> =>
     axios
         .get(`${apiUrl}/projects`, {

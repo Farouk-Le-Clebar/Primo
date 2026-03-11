@@ -1,0 +1,110 @@
+---
+import Layout from "@layouts/Layout.astro";
+import Navbar from "@components/navbar/Navbar";
+import Footer from "@components/footer/Footer.astro";
+---
+
+<Layout
+  title="Conditions Générales d'Utilisation - Primo"
+  description="Conditions générales d'utilisation de Primo, plateforme de données cadastrales et foncières en France."
+>
+  <div class="flex flex-col min-h-screen">
+    <Navbar client:load />
+
+    <main class="grow bg-gray-50">
+      <div class="container mx-auto px-6 pt-28 pb-16">
+        <div
+          class="max-w-3xl mx-auto bg-white rounded-xl shadow-sm p-8 md:p-12"
+        >
+          <h1 class="text-3xl font-bold mb-8">
+            Conditions Générales d'Utilisation
+          </h1>
+
+          <section class="mb-8">
+            <h2 class="text-xl font-semibold mb-4">1. Objet</h2>
+            <p class="text-gray-700 leading-relaxed">
+              Les présentes conditions générales d'utilisation (CGU) définissent
+              les modalités d'accès et d'utilisation de la plateforme <strong
+                >Primo</strong
+              >, accessible à l'adresse <strong>primo-data.fr</strong>.
+            </p>
+            <p class="text-gray-700 leading-relaxed mt-4">
+              Primo est une plateforme de centralisation des données
+              cadastrales, foncières et environnementales en France. En accédant
+              au site, l'utilisateur accepte sans réserve les présentes CGU.
+            </p>
+          </section>
+
+          <section class="mb-8">
+            <h2 class="text-xl font-semibold mb-4">2. Accès au service</h2>
+            <p class="text-gray-700 leading-relaxed">
+              L'accès à la plateforme Primo est ouvert à toute personne
+              disposant d'un accès Internet. Primo se réserve le droit de
+              suspendre ou de restreindre l'accès au service pour maintenance ou
+              mise à jour.
+            </p>
+          </section>
+
+          <section class="mb-8">
+            <h2 class="text-xl font-semibold mb-4">
+              3. Utilisation des données
+            </h2>
+            <p class="text-gray-700 leading-relaxed">
+              Les données présentées sur Primo proviennent de sources
+              officielles Open Data (cadastre.gouv.fr, INSEE, IGN, GéoRisques,
+              ARCEP, DVF, etc.). Primo agrège et présente ces données dans un
+              format accessible et compréhensible.
+            </p>
+            <p class="text-gray-700 leading-relaxed mt-4">
+              Les informations fournies par Primo sont données à titre indicatif
+              et ne sauraient se substituer à un avis professionnel (notaire,
+              géomètre, urbaniste).
+            </p>
+          </section>
+
+          <section class="mb-8">
+            <h2 class="text-xl font-semibold mb-4">
+              4. Propriété intellectuelle
+            </h2>
+            <p class="text-gray-700 leading-relaxed">
+              L'ensemble des éléments du site Primo (design, textes, logiciels,
+              marque Primo, logo) sont protégés par le droit de la propriété
+              intellectuelle. Toute reproduction non autorisée est interdite.
+            </p>
+          </section>
+
+          <section class="mb-8">
+            <h2 class="text-xl font-semibold mb-4">5. Responsabilité</h2>
+            <p class="text-gray-700 leading-relaxed">
+              Primo ne saurait être tenue responsable des dommages directs ou
+              indirects résultant de l'utilisation des informations fournies sur
+              la plateforme. L'utilisateur est seul responsable de l'usage qu'il
+              fait des données consultées.
+            </p>
+          </section>
+
+          <section class="mb-8">
+            <h2 class="text-xl font-semibold mb-4">6. Modification des CGU</h2>
+            <p class="text-gray-700 leading-relaxed">
+              Primo se réserve le droit de modifier les présentes CGU à tout
+              moment. L'utilisateur sera informé de toute modification
+              substantielle.
+            </p>
+          </section>
+
+          <section>
+            <h2 class="text-xl font-semibold mb-4">7. Contact</h2>
+            <p class="text-gray-700 leading-relaxed">
+              Pour toute question relative aux CGU, contactez-nous à <a
+                href="mailto:contact@primo-data.fr"
+                class="text-green-600 hover:underline">contact@primo-data.fr</a
+              >.
+            </p>
+          </section>
+        </div>
+      </div>
+    </main>
+
+    <Footer />
+  </div>
+</Layout>
