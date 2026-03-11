@@ -22,4 +22,7 @@ export class User {
 
   @Column({ type: 'varchar', nullable: false, default: 'basic' })
   mapPreference: string;
+
+  @Column({ type: 'boolean', nullable: false, default: false })
+  isAdmin: boolean;
 }
