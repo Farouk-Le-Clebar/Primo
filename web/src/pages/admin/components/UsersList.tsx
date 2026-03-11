@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { ChevronRight, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { getUsers, searchUsers } from "../../../requests/admin";
@@ -32,7 +32,7 @@ const UsersList = () => {
         onSuccess: (data) => {
             setUsers(data);
         },
-        onError: (error) => {
+        onError: () => {
             toast.error("Accès refusé : droits administrateur requis.", {
                 id: "admin-error",
             });
