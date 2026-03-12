@@ -3,7 +3,7 @@ import type {
     ClientProject,
     SortConfig,
     SortKey,
-} from "../../../../types/project";
+} from "../../../../types/project/project";
 import ProjectRow from "./ProjectRow";
 import { ChevronsUpDown } from "lucide-react";
 

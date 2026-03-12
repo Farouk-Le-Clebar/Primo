@@ -15,6 +15,7 @@ import { UserService } from './user.service';
 import { JwtAuthGuard } from '../guard/jwt-auth.guard';
 import { User } from '../database/user.entity';
 import { UpdateProfileDto } from './dto/update-profile';
+import { AdminGuard } from 'src/guard/admin.guard';
 
 interface RequestWithUser extends Request {
   user: User;
@@ -22,7 +23,7 @@ interface RequestWithUser extends Request {
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) { }
 
   @Post('check-email')
   async checkEmail(@Body() dto: CheckEmailDto) {
@@ -32,6 +33,29 @@ export class UserController {
   @Get('email/:email')
   async getUserByEmail(@Param('email') email: string) {
     return this.userService.getUserByEmail(email);
+  }
+
+  @Get(':from/:to')
+  @UseGuards(JwtAuthGuard, AdminGuard)
+  async getUsers(@Param('from') from: number, @Param('to') to: number) {
+    return this.userService.getUsers(from, to);
+  }
+
+  @Get('admin/search/:query')
+  @UseGuards(JwtAuthGuard, AdminGuard)
+  async searchUsers(@Param('query') query: string) {
+    return this.userService.searchUsers(query);
+  }
+
+  @Post('admin/delete')
+  @UseGuards(JwtAuthGuard, AdminGuard)
+  async deleteUser(@Body('userId') userId: string) {
+    return this.userService.deleteUser(userId);
+  }
+
+  @Get('is-admin')
+  @UseGuards(JwtAuthGuard, AdminGuard)
+  async isAdmin(@Req() req: RequestWithUser) {
   }
 
   @Put('profile')

@@ -1,22 +1,28 @@
-import api from '../services/api';
+import axios from 'axios';
 import { AuthResponse, CheckEmailResponse } from '../types/auth';
 
+const apiUrl = process.env.EXPO_PUBLIC_API_URL;
+
 export const login = async (email: string, password: string): Promise<AuthResponse> => {
-    const response = await api.post<AuthResponse>('/auth/login', { email, password });
+    const response = await axios.post<AuthResponse>(apiUrl + '/auth/login', { email, password });
     return response.data;
 };
 
 export const register = async (email: string, password: string): Promise<AuthResponse> => {
-    const response = await api.post<AuthResponse>('/auth/register', { email, password });
+    const response = await axios.post<AuthResponse>(apiUrl + '/auth/register', { email, password });
     return response.data;
 };
 
-export const verifyToken = async (): Promise<AuthResponse> => {
-    const response = await api.get<AuthResponse>('/auth/verify');
+export const verifyToken = async (token: string): Promise<AuthResponse> => {
+    const response = await axios.get<AuthResponse>(apiUrl + '/auth/verify', {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
     return response.data;
 };
 
 export const checkUserByMail = async (email: string): Promise<CheckEmailResponse> => {
-    const response = await api.post<CheckEmailResponse>('/user/check-email', { email });
+    const response = await axios.post<CheckEmailResponse>(apiUrl + '/user/check-email', { email });
     return response.data;
 };

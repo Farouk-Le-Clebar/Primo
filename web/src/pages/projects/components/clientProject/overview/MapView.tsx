@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import type { Parcel } from "../../../../../types/projectDetail";
+import type { Parcel } from "../../../../../types/project/projectDetail";
 import { LocateFixed, Map, List } from "lucide-react";
 import ListView from "./ListView";
 

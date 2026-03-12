@@ -78,6 +78,7 @@ export class AuthService {
         'profilePicture',
         'password',
         'mapPreference',
+        'isAdmin',
       ],
     });
     if (!user) {
@@ -101,6 +102,7 @@ export class AuthService {
         surName: user.surName,
         profilePicture: user.profilePicture,
         mapPreference: user.mapPreference,
+        isAdmin: user.isAdmin,
       },
     };
   }
@@ -108,14 +110,7 @@ export class AuthService {
   async validateUser(payload: { sub: string; email: string }) {
     const user = await this.userRepository.findOne({
       where: { id: payload.sub },
-      select: [
-        'id',
-        'email',
-        'firstName',
-        'surName',
-        'profilePicture',
-        'mapPreference',
-      ],
+      select: ['id', 'email', 'firstName', 'surName', 'profilePicture', 'mapPreference', "isAdmin"],
     });
 
     if (!user) {
@@ -123,12 +118,12 @@ export class AuthService {
     }
 
     return {
-      id: user.id,
       email: user.email,
       firstName: user.firstName,
       surName: user.surName,
       profilePicture: user.profilePicture,
       mapPreference: user.mapPreference,
+      isAdmin: user.isAdmin,
     };
   }
 }

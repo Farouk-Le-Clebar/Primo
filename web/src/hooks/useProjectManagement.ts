@@ -6,13 +6,13 @@ import type {
     SortKey,
     ProjectFilters,
     DeleteModalState,
-} from "../types/project";
-import type { ProjectResponse } from "../types/projectCreate";
+} from "../types/project/project";
+import type { ProjectResponse } from "../types/project/projectCreate";
 import {
     type ProjectError,
     ApiError,
     PROJECT_ERROR_CODES,
-} from "../types/projectError";
+} from "../types/project/projectError";
 import { processProjects, getDefaultFilters } from "../utils/project";
 import {
     fetchProjects,

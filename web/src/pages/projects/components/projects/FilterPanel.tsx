@@ -1,16 +1,14 @@
 import React, { useEffect, useRef } from "react";
-import type { ProjectFilters } from "../../../../types/project";
+import type { ProjectFilters } from "../../../../types/project/project";
 
 import { TIME_RANGES } from "../../../../constants/project.constants";
-
 
 type FilterPanelProps = {
     isOpen: boolean;
     onClose: () => void;
     filters: ProjectFilters;
     onFiltersChange: (filters: ProjectFilters) => void;
-}
-
+};
 
 const FilterPanel: React.FC<FilterPanelProps> = ({
     isOpen,
