@@ -1,3 +1,4 @@
+import { useState, useEffect, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import axios from "axios";
@@ -7,7 +8,13 @@ import {
     updateMemberRole,
     removeMember,
 } from "../requests/memberRequests";
-import type { MemberResponse, MemberRole } from "../types/member";
+import type {
+    MemberResponse,
+    MemberRole,
+    MemberSortKey,
+    MemberSortConfig,
+} from "../types/member";
+import { processMembers } from "../utils/member";
 
 function getErrorMessage(err: unknown, fallback: string): string {
     if (axios.isAxiosError(err)) {
@@ -17,7 +24,6 @@ function getErrorMessage(err: unknown, fallback: string): string {
     }
     return fallback;
 }
-
 
 export function useMembers(projectId?: string) {
     const {
@@ -33,7 +39,6 @@ export function useMembers(projectId?: string) {
 
     return { members, isLoading, error };
 }
-
 
 export function useInviteMember(projectId?: string) {
     const queryClient = useQueryClient();
@@ -52,7 +57,6 @@ export function useInviteMember(projectId?: string) {
         },
     });
 }
-
 
 export function useUpdateMemberRole(projectId?: string) {
     const queryClient = useQueryClient();
@@ -108,7 +112,6 @@ export function useUpdateMemberRole(projectId?: string) {
     });
 }
 
-
 export function useRemoveMember(projectId?: string) {
     const queryClient = useQueryClient();
 
@@ -154,4 +157,59 @@ export function useRemoveMember(projectId?: string) {
             });
         },
     });
+}
+
+/**
+ * Hook recherche avec debounce pour la liste des membres
+ */
+export function useMemberSearch(initialValue = "", delay = 300) {
+    const [searchTerm, setSearchTerm] = useState(initialValue);
+    const [debouncedSearchTerm, setDebouncedSearchTerm] =
+        useState(initialValue);
+
+    useEffect(() => {
+        const timer = setTimeout(
+            () => setDebouncedSearchTerm(searchTerm),
+            delay,
+        );
+        return () => clearTimeout(timer);
+    }, [searchTerm, delay]);
+
+    return { searchTerm, setSearchTerm, debouncedSearchTerm };
+}
+
+/**
+ * Hook tri des colonnes du tableau membres (3 clics : asc → desc → reset)
+ */
+export function useMemberSort(initialKey: MemberSortKey | null = null) {
+    const [sortConfig, setSortConfig] = useState<MemberSortConfig>({
+        key: initialKey,
+        direction: "asc",
+    });
+
+    const handleSort = (key: MemberSortKey) => {
+        if (sortConfig.key !== key) {
+            setSortConfig({ key, direction: "asc" });
+        } else if (sortConfig.direction === "asc") {
+            setSortConfig({ key, direction: "desc" });
+        } else {
+            setSortConfig({ key: null, direction: "asc" });
+        }
+    };
+
+    return { sortConfig, handleSort };
+}
+
+/**
+ * Hook filtrage + tri mémoïsé de la liste des membres
+ */
+export function useProcessedMembers(
+    members: MemberResponse[],
+    searchTerm: string,
+    sortConfig: MemberSortConfig,
+) {
+    return useMemo(
+        () => processMembers(members, searchTerm, sortConfig),
+        [members, searchTerm, sortConfig],
+    );
 }

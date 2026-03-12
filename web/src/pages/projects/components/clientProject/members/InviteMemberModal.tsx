@@ -191,29 +191,33 @@ const InviteMemberModal: React.FC<InviteMemberModalProps> = ({
                                             {isSelected && (
                                                 <span className="absolute top-2 right-2 w-1.5 h-1.5 rounded-full bg-[#388160] animate-pulse" />
                                             )}
+                                            {/* Role label */}
                                             <span
                                                 className={`flex items-center gap-1.5 text-[12.5px] font-semibold tracking-tight ${
                                                     isSelected
                                                         ? "text-[#388160]"
-                                                        : "text-gray-700"
+                                                        : "text-gray-400"
                                                 }`}
                                             >
+                                            {/* Role label icon*/}
+
                                                 <span
                                                     className={
                                                         isSelected
                                                             ? "text-[#388160]"
-                                                            : "text-gray-500"
+                                                            : "text-gray-400"
                                                     }
                                                 >
                                                     {r.icon}
                                                 </span>
                                                 {r.label}
                                             </span>
+                                            {/* Role description */}
                                             <span
                                                 className={`text-[10.5px] leading-tight ${
                                                     isSelected
-                                                        ? "text-[#388160]/70"
-                                                        : "text-gray-400"
+                                                        ? "text-gray-600"
+                                                        : "text-gray-600"
                                                 }`}
                                             >
                                                 {r.description}

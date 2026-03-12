@@ -1,20 +1,40 @@
 import React, { useState } from "react";
-import { Users, UserPlus } from "lucide-react";
+import { Users, Search, ChevronsUpDown, Plus } from "lucide-react";
 import toast from "react-hot-toast";
 import {
     useMembers,
     useUpdateMemberRole,
     useRemoveMember,
     useInviteMember,
+    useMemberSearch,
+    useMemberSort,
+    useProcessedMembers,
 } from "../../../../../hooks/useProjectMembers";
 import { useCurrentMemberRole } from "../../../../../hooks/useCurrentMemberRole";
-import type { MemberRole } from "../../../../../types/member";
+import type {
+    MemberRole,
+    MemberSortKey,
+    MemberSortConfig,
+} from "../../../../../types/member";
 import MemberRow from "./MemberRow";
 import InviteMemberModal from "./InviteMemberModal";
 
 type MembersTabProps = {
     projectId?: string;
     projectOwnerId?: string;
+};
+
+const SortIcon: React.FC<{
+    columnKey: MemberSortKey;
+    sortConfig: MemberSortConfig;
+}> = ({ columnKey, sortConfig }) => {
+    if (sortConfig.key !== columnKey)
+        return <ChevronsUpDown className="w-3.5 h-3.5 text-gray-400" />;
+    return sortConfig.direction === "asc" ? (
+        <ChevronsUpDown className="w-3.5 h-3.5 text-gray-600" />
+    ) : (
+        <ChevronsUpDown className="w-3.5 h-3.5 text-gray-600" />
+    );
 };
 
 const SkeletonRow: React.FC = () => (
@@ -56,6 +76,15 @@ const MembersTab: React.FC<MembersTabProps> = ({
     const { canInvite, canManageMembers, currentUserId } = useCurrentMemberRole(
         projectId,
         projectOwnerId,
+    );
+
+    const { searchTerm, setSearchTerm, debouncedSearchTerm } =
+        useMemberSearch();
+    const { sortConfig, handleSort } = useMemberSort();
+    const processedMembers = useProcessedMembers(
+        members,
+        debouncedSearchTerm,
+        sortConfig,
     );
 
     const [isInviteOpen, setIsInviteOpen] = useState(false);
@@ -110,41 +139,34 @@ const MembersTab: React.FC<MembersTabProps> = ({
             <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
                     <h2 className="text-base font-semibold text-gray-700">
-                        Membres
+                        Membres du projet
                     </h2>
                     {!isLoading && (
                         <span className="text-xs text-gray-400 font-medium">
-                            ({members.length})
+                            ({processedMembers.length})
                         </span>
                     )}
                 </div>
 
-                <button
-                    onClick={handleInviteClick}
-                    className="flex items-center gap-2 px-3.5 py-1.5  bg-[#388160] rounded-lg hover:bg-[#2d664c] text-white text-[12px] transition-colors border border-transparent relative group cursor-pointer"
-                    // style={{
-                    //     background: "#fff",
-                    //     position: "relative",
-                    //     zIndex: 1,
-                    // }}
-                >
-                    <UserPlus className="w-4 h-4 transition-transform group-hover:rotate-6" />
-                    <span className="font-semibold">Inviter</span>
-                    {/* <span
-                        aria-hidden="true"
-                        className="pointer-events-none absolute inset-0 rounded-[7px]"
-                        style={{
-                            padding: 1,
-                            zIndex: -1,
-                            background:
-                                "linear-gradient(60deg, #E1E1E1 0%, #737373 50%, #E1E1E1 100%)",
-                            WebkitMask:
-                                "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
-                            WebkitMaskComposite: "xor",
-                            maskComposite: "exclude",
-                        }}
-                    /> */}
-                </button>
+                {/* Search + Invite */}
+                <div className="flex items-center gap-2">
+                    <div className="relative">
+                        <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-600" />
+                        <input
+                            type="text"
+                            placeholder="Rechercher..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="pl-8 pr-2.5 py-1.5 text-xs w-40 focus:w-50 border border-gray-300 rounded-[10px] focus:outline-none transition-[width] duration-300 ease-in-out"
+                        />
+                    </div>
+                    <button
+                        onClick={handleInviteClick}
+                        className="flex items-center px-1.5 py-1.5 bg-[#388160] rounded-lg hover:bg-[#2d664c] text-white transition-colors cursor-pointer group"
+                    >
+                        <Plus className="w-4 h-4 transition-transform group-hover:rotate-10" />
+                    </button>
+                </div>
             </div>
 
             {/* Table */}
@@ -152,25 +174,53 @@ const MembersTab: React.FC<MembersTabProps> = ({
                 <table className="w-full">
                     <thead className="bg-gray-50 border-b border-gray-200">
                         <tr>
-                            <th className="px-6 py-3 text-left w-full">
-                                <span className="text-sm font-medium text-gray-700">
+                            <th className="py-3 text-left w-full">
+                                <button
+                                    onClick={() => handleSort("name")}
+                                    className="flex cursor-pointer items-center gap-1.5 text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors"
+                                >
                                     Membre
-                                </span>
+                                    <SortIcon
+                                        columnKey="name"
+                                        sortConfig={sortConfig}
+                                    />
+                                </button>
                             </th>
                             <th className="px-8 py-3 text-center whitespace-nowrap">
-                                <span className="text-sm font-medium text-gray-700">
+                                <button
+                                    onClick={() => handleSort("role")}
+                                    className="flex cursor-pointer items-center gap-1.5 text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors mx-auto"
+                                >
                                     Rôle
-                                </span>
+                                    <SortIcon
+                                        columnKey="role"
+                                        sortConfig={sortConfig}
+                                    />
+                                </button>
                             </th>
                             <th className="px-8 py-3 text-center whitespace-nowrap">
-                                <span className="text-sm font-medium text-gray-700">
+                                <button
+                                    onClick={() => handleSort("status")}
+                                    className="flex cursor-pointer items-center gap-1.5 text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors mx-auto"
+                                >
                                     Statut
-                                </span>
+                                    <SortIcon
+                                        columnKey="status"
+                                        sortConfig={sortConfig}
+                                    />
+                                </button>
                             </th>
                             <th className="px-8 py-3 text-center whitespace-nowrap">
-                                <span className="text-sm font-medium text-gray-700">
+                                <button
+                                    onClick={() => handleSort("joinedAt")}
+                                    className="flex cursor-pointer items-center gap-1.5 text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors mx-auto"
+                                >
                                     Rejoint le
-                                </span>
+                                    <SortIcon
+                                        columnKey="joinedAt"
+                                        sortConfig={sortConfig}
+                                    />
+                                </button>
                             </th>
                             <th className="px-8 py-3 text-center whitespace-nowrap">
                                 <span className="text-sm font-medium text-gray-700">
@@ -185,7 +235,7 @@ const MembersTab: React.FC<MembersTabProps> = ({
                             ? Array.from({ length: 4 }).map((_, i) => (
                                   <SkeletonRow key={i} />
                               ))
-                            : members.map((member) => (
+                            : processedMembers.map((member) => (
                                   <MemberRow
                                       key={member.id}
                                       member={member}
@@ -199,13 +249,23 @@ const MembersTab: React.FC<MembersTabProps> = ({
                 </table>
 
                 {/* Empty state */}
-                {!isLoading && members.length === 0 && (
+                {!isLoading && processedMembers.length === 0 && (
                     <div className="py-12 text-center text-gray-500 font-normal">
                         <Users className="w-8 h-8 text-gray-300 mx-auto mb-2" />
-                        <p className="text-sm">Aucun membre dans ce projet</p>
-                        <p className="text-xs text-gray-400 mt-1">
-                            Invitez des collaborateurs pour commencer
-                        </p>
+                        {members.length === 0 ? (
+                            <>
+                                <p className="text-sm">
+                                    Aucun membre dans ce projet
+                                </p>
+                                <p className="text-xs text-gray-400 mt-1">
+                                    Invitez des collaborateurs pour commencer
+                                </p>
+                            </>
+                        ) : (
+                            <p className="text-sm">
+                                Aucun membre ne correspond à la recherche
+                            </p>
+                        )}
                     </div>
                 )}
             </div>

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Trash2 } from "lucide-react";
 import type { MemberRole, MemberResponse } from "../../../../../types/member";
 import { formatDate } from "../../../../../utils/project";
+import Avatar from "../../../../../components/avatar/Avatar";
 import RoleDropdown from "./RoleDropdown";
 
 type MemberRowProps = {
@@ -57,8 +58,12 @@ const MemberRow: React.FC<MemberRowProps> = ({
     return (
         <tr className="hover:bg-gray-50/50 transition-colors">
             {/* Member info */}
-            <td className="px-6 py-4">
+            <td className="py-4">
                 <div className="flex items-center gap-3">
+                    <Avatar
+                        profilePicture={member.profilePicture}
+                        size="w-8 h-8"
+                    />
                     <div className="min-w-0">
                         <p className="text-sm font-medium text-gray-900 truncate max-w-[180px]">
                             {displayName}

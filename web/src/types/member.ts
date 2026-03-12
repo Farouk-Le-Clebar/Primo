@@ -1,5 +1,11 @@
-export type MemberRole = "owner" | "admin"| "co-admin" | "editor" | "viewer";
+export type MemberRole = "owner" | "admin" | "co-admin" | "editor" | "viewer";
 export type MemberStatus = "pending" | "accepted" | "declined";
+
+export type MemberSortKey = "name" | "role" | "status" | "joinedAt";
+export type MemberSortConfig = {
+    key: MemberSortKey | null;
+    direction: "asc" | "desc";
+};
 
 export interface MemberResponse {
     id: string;
