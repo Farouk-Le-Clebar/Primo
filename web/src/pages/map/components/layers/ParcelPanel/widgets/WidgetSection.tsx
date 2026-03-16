@@ -1,6 +1,8 @@
 import React, { useState } from "react";
-import { ChevronDown, ChevronUp } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+
+// ICONS
+import { ChevronDown, ChevronUp } from "lucide-react";
 
 interface WidgetProps {
   title: string;

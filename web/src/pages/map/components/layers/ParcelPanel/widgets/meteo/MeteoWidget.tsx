@@ -2,9 +2,13 @@ import { useEffect } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { Thermometer, Droplets, Sun, Snowflake } from "lucide-react";
 
-import { getAverageMeteoForParcel } from "../../../../../../../requests/geoserver/worldClim";
-import { WidgetCard, StatBlock, MetricItem, IconStat } from "../WidgetCard";
+// COMPONENTS
+import { WidgetCard } from "../WidgetCard";
+import { StatBlock, MetricItem, IconStat } from "../WiddgetItems";
 import type { ParcelWidgetProps } from "../../types";
+
+// REQUESTS
+import { getAverageMeteoForParcel } from "../../../../../../../requests/geoserver/worldClim";
 
 export default function MeteoWidget({ feature }: ParcelWidgetProps) {
   const { mutate, data, isPending } = useMutation({
