@@ -18,6 +18,8 @@ export type MainStackParamList = {
     Search: undefined;
     Favorites: undefined;
     Profile: undefined;
+    Settings: undefined;
+    EditProfile: undefined;
 };
 
 export type MainTabParamList = {

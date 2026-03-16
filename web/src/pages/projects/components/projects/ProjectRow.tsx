@@ -1,18 +1,16 @@
 import React, { useState } from "react";
 import { Sparkle, Trash2 } from "lucide-react";
-import type { ClientProject } from "../../../../types/project";
+import type { ClientProject } from "../../../../types/project/project";
 import { formatDate, formatDateTime } from "../../../../utils/project";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
 import { FAVORITE_GRADIENT } from "../../../../constants/favorite-gradient";
 
-
-type ProjectRowProps =  {
+type ProjectRowProps = {
     project: ClientProject;
     onProjectClick: (project: ClientProject) => void;
     onToggleFavorite: (projectId: string, e: React.MouseEvent) => void;
     onDeleteProject: (projectId: string) => void;
 };
-
 
 const ProjectRow: React.FC<ProjectRowProps> = ({
     project,
@@ -24,10 +22,7 @@ const ProjectRow: React.FC<ProjectRowProps> = ({
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
     return (
-        <tr
-            onClick={() => onProjectClick(project)}
-            className="cursor-pointer"
-        >
+        <tr onClick={() => onProjectClick(project)} className="cursor-pointer">
             {/* Name column */}
             <td className="px-6 py-4">
                 <div className="flex items-center gap-3">
@@ -37,13 +32,13 @@ const ProjectRow: React.FC<ProjectRowProps> = ({
                         </span>
                     </div>
                     <div className="relative w-40 max-w-[12rem]">
-                            <span
-                                className="text-sm text-gray-900 overflow-hidden whitespace-nowrap text-ellipsis block pr-8"
-                                style={{ display: "block" }}
-                            >
-                                {project.name}
-                            </span>
-                        </div>
+                        <span
+                            className="text-sm text-gray-900 overflow-hidden whitespace-nowrap text-ellipsis block pr-8"
+                            style={{ display: "block" }}
+                        >
+                            {project.name}
+                        </span>
+                    </div>
                 </div>
             </td>
 
@@ -160,7 +155,7 @@ const ProjectRow: React.FC<ProjectRowProps> = ({
                         <Trash2 className="w-5 h-5 text-gray-400 hover:text-red-500" />
                     </button>
                 </div>
-                
+
                 <DeleteConfirmationModal
                     isOpen={showDeleteConfirm}
                     onClose={() => setShowDeleteConfirm(false)}

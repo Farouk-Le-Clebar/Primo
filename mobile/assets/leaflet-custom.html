@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="map"></div>
+    <script>
+        const canvasRenderer = L.canvas({ padding: 0.5 });
+
+        const map = L.map('map', {
+            zoomControl: false,
+            preferCanvas: true,
+            renderer: canvasRenderer
+        }).setView([46.603354, 1.888334], 6);
+
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+            maxZoom: 19,
+        }).addTo(map);
+
+        let geoJsonLayer = null;
+
+        const defaultStyle = {
+            color: '#50B587',
+            weight: 2,
+            fillColor: '#50B587',
+            fillOpacity: 0.1,
+            renderer: canvasRenderer
+        };
+
+        const selectedStyle = {
+            color: '#50B587',
+            weight: 2,
+            fillColor: '#50B587',
+            fillOpacity: 0.3
+        };
+
+        let selectedLayer = null;
+
+        function onEachFeature(feature, layer) {
+            layer.on('click', function (e) {
+                const actualZoom = map.getZoom();
+
+                if (actualZoom >= 18 && (layer instanceof L.Polygon || layer instanceof L.Polyline)) {
+                    const bounds = layer.getBounds();
+                    const center = bounds.getCenter();
+                    const mapCenter = map.getCenter();
+
+                    const centerPoint = map.latLngToContainerPoint(center);
+                    const mapCenterPoint = map.latLngToContainerPoint(mapCenter);
+                    const distance = Math.sqrt(
+                        Math.pow(centerPoint.x - mapCenterPoint.x, 2) +
+                        Math.pow(centerPoint.y - mapCenterPoint.y, 2)
+                    );
+
+                    if (distance < 50) {
+                        if (selectedLayer && selectedLayer !== layer) {
+                            selectedLayer.setStyle(defaultStyle);
+                        }
+
+                        layer.setStyle(selectedStyle);
+                        selectedLayer = layer;
+
+                        sendToRN('onShapeClick', {
+                            properties: feature.properties,
+                            id: feature.id || feature.properties?.id,
+                            geometry: feature.geometry,
+                            alreadyCentered: true
+                        });
+
+                        L.DomEvent.stopPropagation(e);
+                        return;
+                    }
+                }
+
+                if (selectedLayer && selectedLayer !== layer) {
+                    selectedLayer.setStyle(defaultStyle);
+                }
+
+                layer.setStyle(selectedStyle);
+                selectedLayer = layer;
+
+                sendToRN('onShapeClick', {
+                    properties: feature.properties,
+                    id: feature.id || feature.properties?.id,
+                    geometry: feature.geometry,
+                    alreadyCentered: false
+                });
+
+                L.DomEvent.stopPropagation(e);
+            });
+        }
+
+        function handleMessage(event) {
+            try {
+                const data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
+
+                if (data.type === 'setGeoJSON') {
+                    if (geoJsonLayer) {
+                        map.removeLayer(geoJsonLayer);
+                        geoJsonLayer = null;
+                    }
+
+                    selectedLayer = null;
+
+                    geoJsonLayer = L.geoJSON(data.geojson, {
+                        style: defaultStyle,
+                        onEachFeature: onEachFeature,
+                        renderer: canvasRenderer
+                    }).addTo(map);
+                }
+
+                if (data.type === 'flyTo') {
+                    map.flyTo([data.lat, data.lng], data.zoom || map.getZoom(), {
+                        duration: data.duration || 1.5
+                    });
+                }
+                if (data.type === 'setZoom') {
+                    map.setZoom(data.zoom);
+                }
+
+                if (data.type === 'clearSelection') {
+                    if (selectedLayer) {
+                        selectedLayer.setStyle(defaultStyle);
+                        selectedLayer = null;
+                    }
+                }
+            } catch (e) {
+                console.error('Error handling message:', e);
+            }
+        }
+
+        document.addEventListener('message', handleMessage);
+        window.addEventListener('message', handleMessage);
+
+        function sendToRN(event, payload) {
+            if (window.ReactNativeWebView) {
+                window.ReactNativeWebView.postMessage(JSON.stringify({ event, payload }));
+            }
+        }
+
+        let moveTimeout = null;
+        map.on('moveend', function () {
+            clearTimeout(moveTimeout);
+            moveTimeout = setTimeout(() => {
+                sendToRN('onMoveEnd', {
+                    bounds: map.getBounds(),
+                    zoom: map.getZoom(),
+                    center: map.getCenter()
+                });
+            }, 150);
+        });
+
+        map.on('zoomend', function () {
+            sendToRN('onZoomEnd', {
+                bounds: map.getBounds(),
+                zoom: map.getZoom(),
+                center: map.getCenter()
+            });
+        });
+
+        map.on('click', function () {
+            if (selectedLayer) {
+                selectedLayer.setStyle(defaultStyle);
+                selectedLayer = null;
+                sendToRN('onMapClick', {});
+            }
+        });
+
+        sendToRN('onMapReady', {});
+    </script>
+</body>
+
+</html>

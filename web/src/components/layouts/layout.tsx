@@ -12,7 +12,7 @@ export default function Layout() {
 
       {/* 2. CONTAINER INFERIEUR : Sidebar + Content */}
       <div className="relative z-10 flex flex-1 overflow-hidden">
-        
+
         {/* SIDEBAR : Commence sous la navbar et s'arrête en bas */}
         <aside className="w-[17%] h-full bg-white border-r border-gray-200 flex-shrink-0">
           <Sidebar />

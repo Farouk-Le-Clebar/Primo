@@ -48,3 +48,16 @@ export const changeMapPreference = async (mapType: string) => {
     throw error;
   });
 }
+
+export const checkAdminStatus = async () => {
+  return axios.get(`${apiUrl}/user/is-admin`, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+  .then((response) => response.data)
+  .catch((error) => {
+    console.error("Error checking admin status:", error);
+    throw error;
+  });
+}
