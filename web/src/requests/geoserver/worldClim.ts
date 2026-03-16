@@ -209,7 +209,7 @@ function convertGeoJSONToWKT(geometry: any): string {
     return `MULTIPOLYGON(${polygons})`;
   } else if (geometry.type === 'Polygon') {
     const rings = geometry.coordinates.map((ring: number[][]) => {
-      const coords = ring.map(([lng, lat]: [number, number]) => `${lng} ${lat}`).join(', ');
+      const coords = ring.map(([lng, lat]) => `${lng} ${lat}`).join(', ');
       return `(${coords})`;
     }).join(', ');
     
