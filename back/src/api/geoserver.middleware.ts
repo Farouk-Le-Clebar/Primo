@@ -5,7 +5,7 @@ import { Request, Response, NextFunction } from 'express';
 @Injectable()
 export class GeoServerProxyMiddleware implements NestMiddleware {
   private proxy = createProxyMiddleware({
-    target: process.env.EXTERNE_GEOSERVER_URL,
+    target: process.env.EXTERNE_GEOSERVER_URL || 'http://api.primo-data.fr:8080/geoserver',
     changeOrigin: true,
     pathRewrite: { '^/geoserver': '' },
     logger: console,
