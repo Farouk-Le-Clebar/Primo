@@ -35,7 +35,6 @@ export class Project {
   @Column({ type: 'json', nullable: true })
   parameters: Record<string, any> | null;
 
-  // Relation avec l'utilisateur propriétaire
   @ManyToOne(() => User, { nullable: false, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'userId' })
   user: User;

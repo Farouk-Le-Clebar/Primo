@@ -5,12 +5,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { User } from './database/user.entity';
 import { Project } from './database/project.entity';
+import { DvfMutation } from './database/dvf.entity'; // <-- NOUVEL IMPORT
 import { AddokProxyMiddleware } from './api/addok.middleware';
 import { AuthModule } from './auth/auth.module';
 import { GeoServerProxyMiddleware } from './api/geoserver.middleware';
 import { GeoModule } from './geo/geo.module';
 import { UserModule } from './user/user.module';
 import { ProjectModule } from './project/project.module';
+import { DvfModule } from './dvf/dvf.module';
 
 @Module({
   imports: [
@@ -26,13 +28,14 @@ import { ProjectModule } from './project/project.module';
       username: process.env.MYSQL_USER,
       password: process.env.MYSQL_PASSWORD,
       database: process.env.MYSQL_DATABASE,
-      entities: [User, Project],
-      synchronize: true,
+      entities: [User, Project, DvfMutation], // <-- AJOUT DE L'ENTITÉ ICI
+      synchronize: true, // C'est lui qui va créer la table MySQL automatiquement !
     }),
     TypeOrmModule.forFeature([User]),
     AuthModule,
     GeoModule,
     UserModule,
+    DvfModule,
     ProjectModule,
   ],
   controllers: [AppController],

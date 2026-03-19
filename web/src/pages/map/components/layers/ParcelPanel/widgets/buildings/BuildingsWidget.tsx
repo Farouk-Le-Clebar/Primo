@@ -3,53 +3,34 @@ import { useMutation } from "@tanstack/react-query";
 import { Building2 } from "lucide-react";
 
 // COMPONENTS
-import { Widget } from "../Widget";
+import { WidgetSection } from "../WidgetSection.tsx";
 import { BuildingCard } from "./BuildingCard";
-import { getBuildingsByBbox } from "../../../../../../../requests/parcel-info";
+import { getBuildingsByGeometry } from "../../../../../../../requests/geoserver/bdTopo";
 import { WALL_MATERIALS, ROOF_MATERIALS, getMaterialLabel } from "../../../../../../../utils/building-dictionaries";
 import type { ParcelWidgetProps } from "../../types";
 
 export default function BuildingsWidget({ feature }: ParcelWidgetProps) {
   const { mutate, data, isPending } = useMutation({
-    mutationFn: async ({ bbox, departement }: { bbox: string; departement: string }) => 
-      await getBuildingsByBbox(bbox, departement),
+    mutationFn: async ({ geometry, departement }: { geometry: any; departement: string }) => 
+      await getBuildingsByGeometry(geometry, departement),
   });
 
   useEffect(() => {
     if (!feature?.geometry) return;
 
-
     const departement = String(feature.id).split('_')[1]?.split('.')[0] || "";
 
-    
     if (!('coordinates' in feature.geometry)) {
-      console.warn("La géométrie n'a pas de coordonnées (GeometryCollection)");
       return;
     }
 
-    // 2. Maintenant TypeScript sait que 'coordinates' existe !
-    // On force le type car 'flat' sur des tableaux multi-dimensionnels GeoJSON peut être complexe
-    const allCoords = (feature.geometry.coordinates as any).flat(2);
+    console.log("Feature", feature);
 
-    let minLng = Infinity;
-    let minLat = Infinity;
-    let maxLng = -Infinity;
-    let maxLat = -Infinity;
-
-    allCoords.forEach(([lng, lat]: [number, number]) => {
-      if (lng < minLng) minLng = lng;
-      if (lat < minLat) minLat = lat;
-      if (lng > maxLng) maxLng = lng;
-      if (lat > maxLat) maxLat = lat;
+    mutate({ 
+      geometry: feature.geometry, 
+      departement 
     });
-
-    const bbox = `${minLng},${minLat},${maxLng},${maxLat}`;
-
-    if (minLng !== Infinity) {
-      mutate({ bbox, departement });
-    }
   }, [feature, mutate]);
-
 
   const buildings = data?.features || [];
   const badgeText = isPending ? "Chargement..." : 
@@ -57,7 +38,7 @@ export default function BuildingsWidget({ feature }: ParcelWidgetProps) {
                     `${buildings.length} détection${buildings.length > 1 ? 's' : ''}`;
 
   return (
-    <Widget 
+    <WidgetSection 
       title="Bâtiments" 
       icon={Building2} 
       loading={isPending} 
@@ -76,6 +57,6 @@ export default function BuildingsWidget({ feature }: ParcelWidgetProps) {
           />
         );
       })}
-    </Widget>
+    </WidgetSection>
   );
 }

@@ -60,7 +60,7 @@ export default function AuthEntryModal({
 
       <div className="relative z-10 bg-white rounded-2xl shadow-[0_4px_4px_rgba(0,0,0,0.25)] max-w-md sm:max-w-lg md:max-w-116 p-6 sm:p-8 md:p-10 text-left animate-fade-in">
         {/* Title and desc */}
-        <h2 className="text-2xl sm:text-2xl font-UberMoveBold text-gray-800 mb-2">Bienvenue sur Primo.</h2>
+        <h2 className="text-2xl sm:text-2xl font-UberMoveBold text-gray-800 mb-2">Bienvenue sur Primo</h2>
 
         <p className="text-gray-600 font-UberMoveMedium mb-6 text-sm sm:text-sm">
           Pas encore de compte ? Vous pouvez vous connecter directement avec Facebook, Apple ou Google, 
