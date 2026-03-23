@@ -17,14 +17,14 @@ export default function CustomToaster() {
           boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
         },
         success: {
-          duration: 4000,
+          duration: 2000,
           iconTheme: {
             primary: "#16a34a",
             secondary: "#ffffff",
           },
         },
         error: {
-          duration: 5000,
+          duration: 2000,
           iconTheme: {
             primary: "#ef4444",
             secondary: "#ffffff",

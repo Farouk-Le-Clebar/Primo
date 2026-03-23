@@ -14,8 +14,11 @@ export class User {
   @Column()
   email: string;
 
-  @Column()
-  password: string;
+  @Column({ type: 'varchar', nullable: true })
+  password?: string;
+
+  @Column({ type: 'varchar', default: 'local' })
+  provider: string;
 
   @Column({ type: 'varchar', nullable: true, default: null })
   profilePicture: string | null;

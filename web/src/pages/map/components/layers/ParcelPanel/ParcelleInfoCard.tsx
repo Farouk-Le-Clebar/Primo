@@ -15,7 +15,6 @@ export const ParcelInfoCard = ({ properties }: { properties: ParcelProperties })
   if (!properties) return null;
 
   const code_dep = properties.commune?.substring(0, 2);
-
   const formatSurface = (m2: number) => {
     if (m2 >= 10000) {
       return `${(m2 / 10000).toFixed(2)} ha`;
@@ -30,7 +29,6 @@ export const ParcelInfoCard = ({ properties }: { properties: ParcelProperties })
 
   return (
     <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden mb-6">
-      {/* Header : Section et Numéro */}
       <div className="p-5 border-b border-gray-50 bg-gradient-to-r from-white to-gray-50/50">
         <div className="flex justify-between items-start mb-2">
           <div className="flex items-center gap-2 text-green-600">
@@ -41,7 +39,6 @@ export const ParcelInfoCard = ({ properties }: { properties: ParcelProperties })
             SECTION {properties.section}
           </span>
         </div>
-        
         <p className="text-gray-500 text-sm font-medium mt-1">
           Parcelle n° <span className="text-gray-900">{properties.numero}</span> 
           {properties.prefixe && properties.prefixe !== "000" && (
@@ -49,7 +46,6 @@ export const ParcelInfoCard = ({ properties }: { properties: ParcelProperties })
           )}
         </p>
       </div>
-
       <div className="grid grid-cols-2 border-b border-gray-100">
         <div className="p-4 border-r border-gray-100 flex flex-col">
           <span className="flex items-center gap-1.5 text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">
@@ -68,7 +64,6 @@ export const ParcelInfoCard = ({ properties }: { properties: ParcelProperties })
           </span>
         </div>
       </div>
-
       <div className="bg-gray-50/50 px-4 py-3 flex flex-col gap-2">
         <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -79,7 +74,6 @@ export const ParcelInfoCard = ({ properties }: { properties: ParcelProperties })
                 {properties.id}
             </code>
         </div>
-        
         {properties.updated && (
             <div className="flex items-center gap-2 pt-1 border-t border-gray-200/50">
                 <Calendar size={12} className="text-gray-400" />
