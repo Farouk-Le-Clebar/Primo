@@ -3,6 +3,7 @@ import {
   Get,
   Post,
   Patch,
+  Delete,
   Param,
   UseGuards,
   Request,
@@ -41,6 +42,15 @@ export class NotificationController {
   @HttpCode(HttpStatus.NO_CONTENT)
   async markAllAsRead(@Request() req: any): Promise<void> {
     return this.notificationService.markAllAsRead(req.user.id);
+  }
+
+  @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async deleteNotification(
+    @Param('id') id: string,
+    @Request() req: any,
+  ): Promise<void> {
+    return this.notificationService.deleteNotification(id, req.user.id);
   }
 
   @Post('seed-welcome')

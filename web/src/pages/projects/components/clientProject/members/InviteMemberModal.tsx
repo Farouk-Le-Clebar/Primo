@@ -26,13 +26,13 @@ const ROLES: {
     [
         {
             value: "viewer",
-            label: "Lecteur",
+            label: "LECTEUR",
             description: "Consultation uniquement",
             icon: <Eye className="w-3.5 h-3.5" />,
         },
         {
             value: "editor",
-            label: "Éditeur",
+            label: "ÉDITEUR",
             description: "Peut modifier le contenu",
             icon: <Pen className="w-3.5 h-3.5" />,
         },
@@ -40,13 +40,13 @@ const ROLES: {
     [
         {
             value: "co-admin",
-            label: "Co-Admin",
+            label: "Co-ADMIN",
             description: "Gestion partielle",
             icon: <ShieldCheck className="w-3.5 h-3.5" />,
         },
         {
             value: "admin",
-            label: "Admin",
+            label: "ADMIN",
             description: "Accès complet",
             icon: <Crown className="w-3.5 h-3.5" />,
         },
@@ -99,51 +99,51 @@ const InviteMemberModal: React.FC<InviteMemberModalProps> = ({
 
             {/* Modal */}
             <div
-                className="relative bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-black/[0.06] w-full max-w-sm mx-4 overflow-hidden"
+                className="relative bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-black/[0.06] w-full max-w-sm mx-4 overflow-hidden"
                 style={{
                     boxShadow:
                         "0 32px 64px -12px rgba(0,0,0,0.14), 0 0 0 1px rgba(0,0,0,0.04)",
                 }}
             >
-                <div className="p-6">
-                    {/* Close button */}
-                    <button
-                        onClick={handleClose}
-                        className="absolute right-4 top-4 w-7 h-7 flex items-center justify-center rounded-full  hover:bg-black/[0.03] transition-all cursor-pointer"
-                    >
-                        <X className="w-3.5 h-3.5 text-gray-500" />
-                    </button>
+                {/* Close button */}
+                <button
+                    onClick={handleClose}
+                    className="absolute right-4 top-4 w-7 h-7 flex items-center justify-center rounded-full hover:bg-black/[0.03] transition-all cursor-pointer"
+                >
+                    <X className="w-3.5 h-3.5 text-gray-500" />
+                </button>
 
-                    {/* Header */}
-                    <div className="flex items-center gap-3.5 mb-7">
-                        <div
-                            className="w-9 h-9 rounded-xl flex items-center justify-center"
-                            style={{
-                                background:
-                                    "linear-gradient(135deg, #388160 0%, #2d6650 100%)",
-                            }}
-                        >
-                            <UserPlus
-                                className="w-4 h-4 text-white"
-                                strokeWidth={2.5}
-                            />
+                {/* Form */}
+                <form onSubmit={handleSubmit}>
+                    <div className="px-6 pt-6 pb-6 space-y-8">
+                        {/* Header */}
+                        <div className="flex items-center gap-3.5">
+                            <div
+                                className="w-9 h-9 rounded-xl flex items-center justify-center"
+                                style={{
+                                    background:
+                                        "linear-gradient(135deg, #388160 0%, #2d6650 100%)",
+                                }}
+                            >
+                                <UserPlus
+                                    className="w-4 h-4 text-white"
+                                    strokeWidth={2.5}
+                                />
+                            </div>
+                            <div>
+                                <h3 className="text-[15px] font-semibold text-gray-900 tracking-tight">
+                                    Inviter un membre
+                                </h3>
+                                <p className="text-[12px] text-gray-400 mt-0.5">
+                                    Ajoutez un collaborateur au projet
+                                </p>
+                            </div>
                         </div>
-                        <div>
-                            <h3 className="text-[15px] font-semibold text-gray-900 tracking-tight">
-                                Inviter un membre
-                            </h3>
-                            <p className="text-[12px] text-gray-400 mt-0.5">
-                                Ajoutez un collaborateur au projet
-                            </p>
-                        </div>
-                    </div>
 
-                    {/* Form */}
-                    <form onSubmit={handleSubmit} className="space-y-5">
                         {/* Email */}
                         <div>
                             <label className="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-2">
-                                email du collaborateur
+                                email
                             </label>
                             <input
                                 type="email"
@@ -153,7 +153,7 @@ const InviteMemberModal: React.FC<InviteMemberModalProps> = ({
                                     setError("");
                                 }}
                                 placeholder="collaborateur@email.com"
-                                className="w-full px-3.5 py-2.5 text-[13.5px] bg-gray-50 border border-gray-200/80 rounded-md focus:outline-none focus:ring-2 focus:ring-[#388160]/25 focus:border-[#388160]/50 focus:bg-white transition-all placeholder:text-gray-300 text-gray-800"
+                                className="w-full px-3.5 py-2.5 text-[13.5px] bg-[#EFEFF4] border-none focus:ring-1 focus:ring-[#388160] border border-gray-500 rounded-xl resize-none focus:outline-none focus:border-agendai "
                                 autoFocus
                                 disabled={isLoading}
                             />
@@ -193,13 +193,13 @@ const InviteMemberModal: React.FC<InviteMemberModalProps> = ({
                                             )}
                                             {/* Role label */}
                                             <span
-                                                className={`flex items-center gap-1.5 text-[12.5px] font-semibold tracking-tight ${
+                                                className={`flex items-center gap-1.5 text-[11.5px] font-medium tracking-tight ${
                                                     isSelected
                                                         ? "text-[#388160]"
                                                         : "text-gray-400"
                                                 }`}
                                             >
-                                            {/* Role label icon*/}
+                                                {/* Role label icon*/}
 
                                                 <span
                                                     className={
@@ -214,7 +214,7 @@ const InviteMemberModal: React.FC<InviteMemberModalProps> = ({
                                             </span>
                                             {/* Role description */}
                                             <span
-                                                className={`text-[10.5px] leading-tight ${
+                                                className={`text-[10.5px] leading-tight font-semibold ${
                                                     isSelected
                                                         ? "text-gray-600"
                                                         : "text-gray-600"
@@ -227,13 +227,15 @@ const InviteMemberModal: React.FC<InviteMemberModalProps> = ({
                                 })}
                             </div>
                         </div>
+                    </div>
 
-                        {/* Actions */}
-                        <div className="flex gap-2 pt-1">
+                    {/* Actions */}
+                    <div className="bg-gray-50/80 border-t border-gray-200/80 px-6 py-5">
+                        <div className="flex gap-2">
                             <button
                                 type="button"
                                 onClick={handleClose}
-                                className="flex-1 px-4 py-2.5 text-[13px] font-medium text-gray-500 bg-gray-100 hover:bg-gray-150 rounded-md transition-colors cursor-pointer"
+                                className="flex-1 px-4 py-2.5 text-[13px] font-medium text-gray-500 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors cursor-pointer"
                                 disabled={isLoading}
                             >
                                 Annuler
@@ -250,8 +252,8 @@ const InviteMemberModal: React.FC<InviteMemberModalProps> = ({
                                 )}
                             </button>
                         </div>
-                    </form>
-                </div>
+                    </div>
+                </form>
             </div>
         </div>
     );

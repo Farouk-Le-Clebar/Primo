@@ -88,6 +88,27 @@ export class NotificationService {
     );
   }
 
+  async deleteNotification(
+    notificationId: string,
+    userId: string,
+  ): Promise<void> {
+    const notification = await this.notificationRepository.findOne({
+      where: { id: notificationId },
+    });
+
+    if (!notification) {
+      throw new NotFoundException(
+        `Notification avec l'ID ${notificationId} non trouvée`,
+      );
+    }
+
+    if (notification.userId !== userId) {
+      throw new ForbiddenException('Accès non autorisé à cette notification');
+    }
+
+    await this.notificationRepository.remove(notification);
+  }
+
   async getUnreadCount(userId: string): Promise<number> {
     return this.notificationRepository.count({
       where: { userId, isRead: false },

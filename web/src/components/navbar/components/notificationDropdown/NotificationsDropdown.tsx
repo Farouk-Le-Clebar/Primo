@@ -9,16 +9,24 @@ import type { NotificationResponse } from "../../../../requests/notificationRequ
 export interface NotificationCardProps {
     notification: NotificationResponse;
     onMarkAsRead: (id: string) => void;
+    onDeleteNotification: (id: string) => void;
+    deletingNotificationId: string | null;
     timeAgo: string;
 }
-
 
 export default function NotificationsDropdown() {
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
-    const { notifications, unreadCount, isLoading, markAsRead, markAllAsRead } =
-        useNotifications();
+    const {
+        notifications,
+        unreadCount,
+        isLoading,
+        markAsRead,
+        markAllAsRead,
+        deleteOneNotification,
+        deletingNotificationId,
+    } = useNotifications();
 
     // Close on outside click
     useEffect(() => {
@@ -80,6 +88,12 @@ export default function NotificationsDropdown() {
                                         key={notif.id}
                                         notification={notif}
                                         onMarkAsRead={markAsRead}
+                                        onDeleteNotification={
+                                            deleteOneNotification
+                                        }
+                                        deletingNotificationId={
+                                            deletingNotificationId
+                                        }
                                     />
                                 ))
                             )}
@@ -88,7 +102,7 @@ export default function NotificationsDropdown() {
                             <div className="p-3 bg-gray-50 text-center">
                                 <button
                                     onClick={() => markAllAsRead()}
-                                    className="text-xs font-UberMoveBold text-[#388160] hover:underline"
+                                    className="text-xs font-UberMoveBold text-[#388160] hover:underline cursor-pointer"
                                 >
                                     Tout marquer comme lu
                                 </button>

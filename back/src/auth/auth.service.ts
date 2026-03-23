@@ -40,7 +40,7 @@ export class AuthService {
 
     await this.userRepository.save(user);
 
-    // Notification de bienvenue
+    // Notification de bienvenue !!! à changer une fois qu'on a panel admin -> on enverra des notifications depuis ce panel.
     await this.notificationService.createNotification(
       user.id,
       NotificationType.SYSTEM,
@@ -118,6 +118,7 @@ export class AuthService {
     }
 
     return {
+      id: user.id,
       email: user.email,
       firstName: user.firstName,
       surName: user.surName,

@@ -21,6 +21,8 @@ import {
 } from './dto/project-members.dto';
 import { NotificationService } from '../notification/notification.service';
 import { NotificationType } from '../database/notification.entity';
+import { ActivityHistoryService } from '../history/history.service';
+import { ActivityEventType } from '../database/history.entity';
 
 @Injectable()
 export class ProjectMembersService {
@@ -32,14 +34,20 @@ export class ProjectMembersService {
     @InjectRepository(User)
     private userRepository: Repository<User>,
     private readonly notificationService: NotificationService,
+    private readonly activityHistoryService: ActivityHistoryService,
   ) {}
+
+  private resolveUserDisplayName(user: User): string {
+    return `${user.firstName} ${user.surName}`.trim() || user.email;
+  }
+
 
   async invite(
     projectId: string,
     inviterId: string,
     dto: InviteMemberDto,
   ): Promise<MemberResponseDto> {
-    // projet existe ?
+    // Vérifier que le projet existe
     const project = await this.projectRepository.findOne({
       where: { id: projectId },
     });
@@ -47,13 +55,13 @@ export class ProjectMembersService {
       throw new NotFoundException(`Projet avec l'ID ${projectId} non trouvé`);
     }
 
-    // Vérifier que l'inviteur est owner ou admin/co-admin du projet
+    // Vérifier que l'inviteur est owner ou admin du projet
     await this.assertRole(projectId, inviterId, [
       ProjectMemberRole.OWNER,
       ProjectMemberRole.ADMIN,
-      ProjectMemberRole.CO_ADMIN,
     ]);
 
+    // Trouver l'utilisateur invité par email
     const invitedUser = await this.userRepository.findOne({
       where: { email: dto.email },
     });
@@ -63,48 +71,49 @@ export class ProjectMembersService {
       );
     }
 
-    // empêcher de s'inviter soi-même
+    // Empêcher de s'inviter soi-même
     if (invitedUser.id === inviterId) {
       throw new BadRequestException(
         'Vous ne pouvez pas vous inviter vous-même',
       );
     }
 
-    // empecher d'inviter le meme
+    // Empecher d'inviter quelqu'un qui est déjà membre ou invité (même en pending)
     const existing = await this.memberRepository.findOne({
       where: { projectId, userId: invitedUser.id },
     });
     if (existing) {
       throw new ConflictException(
-        'Cet utilisateur est déjà membre ou invité sur ce projet',
+        'Cet.te utilisateur.ice est déjà membre ou invité.e sur ce projet',
       );
     }
 
+    // Empêcher d'assigner le rôle owner via invitation
     if (dto.role === ProjectMemberRole.OWNER) {
       throw new ForbiddenException(
         'Le rôle owner ne peut pas être attribué via invitation',
       );
     }
 
-    const member = this.memberRepository.create({
+       const member = this.memberRepository.create({
       projectId,
       userId: invitedUser.id,
       role: dto.role ?? ProjectMemberRole.VIEWER,
       invitedBy: inviterId,
       status: ProjectMemberStatus.PENDING,
     });
-
+ 
     const saved = await this.memberRepository.save(member);
-
+ 
     const inviter = await this.userRepository.findOne({
       where: { id: inviterId },
     });
     const inviterName = inviter
-      ? `${inviter.firstName} ${inviter.surName}`.trim() || inviter.email
+      ? this.resolveUserDisplayName(inviter)
       : "Quelqu'un";
+ 
 
-    // Envoyer une notification d'invitation au membre invité
-    await this.notificationService.createNotification(
+      await this.notificationService.createNotification(
       invitedUser.id,
       NotificationType.PROJECT_INVITATION,
       'Invitation à un projet',
@@ -117,21 +126,20 @@ export class ProjectMembersService {
         inviterId,
       },
     );
-
-    // Notifier tous les autres membres existants (acceptés) du projet
+ 
     const existingMembers = await this.memberRepository.find({
       where: { projectId, status: ProjectMemberStatus.ACCEPTED },
     });
     const notifyIds = existingMembers
       .map((m) => m.userId)
       .filter((uid) => uid !== inviterId && uid !== invitedUser.id);
-
+ 
     await Promise.all(
       notifyIds.map((uid) =>
         this.notificationService.createNotification(
           uid,
           NotificationType.PROJECT_ACTIVITY,
-          'Nouvel invité sur vos projets',
+          'Nouvel.le invité.e sur vos projets',
           `${inviterName} a invité un nouveau membre à rejoindre le projet : ${project.name}`,
           {
             inviterName,
@@ -142,14 +150,31 @@ export class ProjectMembersService {
         ),
       ),
     );
-
+ 
+    // activity history 
+    await this.activityHistoryService.record({
+      projectId,
+      actorUserId: inviterId,
+      actorDisplayName: inviterName,
+      eventType: ActivityEventType.MEMBER_INVITED,
+      payload: {
+        type: ActivityEventType.MEMBER_INVITED,
+        invitedEmail: invitedUser.email,
+        invitedUserId: invitedUser.id,
+        role: saved.role,
+        projectName: project.name,
+      },
+    });
+ 
     return this.toResponseDto(saved, invitedUser);
   }
+
 
   async getMembers(
     projectId: string,
     requesterId: string,
   ): Promise<MemberResponseDto[]> {
+    // Vérifier que le requester a accès au projet
     await this.assertMember(projectId, requesterId);
 
     const members = await this.memberRepository.find({
@@ -161,16 +186,17 @@ export class ProjectMembersService {
     return members.map((m) => this.toResponseDto(m, m.user));
   }
 
+
   async updateRole(
     projectId: string,
     memberId: string,
     requesterId: string,
     dto: UpdateMemberRoleDto,
   ): Promise<MemberResponseDto> {
+    // permission 
     await this.assertRole(projectId, requesterId, [
       ProjectMemberRole.OWNER,
       ProjectMemberRole.ADMIN,
-      ProjectMemberRole.CO_ADMIN,
     ]);
 
     const member = await this.memberRepository.findOne({
@@ -183,37 +209,73 @@ export class ProjectMembersService {
       );
     }
 
+    // Empêcher de modifier le rôle du owner
     if (member.role === ProjectMemberRole.OWNER) {
       throw new ForbiddenException(
         'Le rôle du propriétaire ne peut pas être modifié',
       );
     }
 
+    // Empêcher de modifier son propre rôle
     if (member.userId === requesterId) {
       throw new ForbiddenException(
         'Vous ne pouvez pas modifier votre propre rôle',
       );
     }
 
+    // Empêcher d'attribuer owner
     if (dto.role === ProjectMemberRole.OWNER) {
       throw new ForbiddenException('Le rôle owner ne peut pas être attribué');
     }
 
+    const previousRole = member.role;
     member.role = dto.role;
     const updated = await this.memberRepository.save(member);
+ 
+    const requester = await this.userRepository.findOne({
+      where: { id: requesterId },
+    });
+    const requesterName = requester
+      ? this.resolveUserDisplayName(requester)
+      : 'Unknown user';
+    const targetDisplayName = member.user
+      ? this.resolveUserDisplayName(member.user)
+      : member.userId;
+ 
+    const project = await this.projectRepository.findOne({
+      where: { id: projectId },
+    });
 
+
+    //activity history
+    await this.activityHistoryService.record({
+      projectId,
+      actorUserId: requesterId,
+      actorDisplayName: requesterName,
+      eventType: ActivityEventType.MEMBER_ROLE_UPDATED,
+      payload: {
+        type: ActivityEventType.MEMBER_ROLE_UPDATED,
+        targetUserId: member.userId,
+        targetDisplayName,
+        previousRole,
+        newRole: dto.role,
+        projectName: project?.name ?? projectId,
+      },
+    });
+ 
     return this.toResponseDto(updated, member.user);
   }
+
 
   async removeMember(
     projectId: string,
     memberId: string,
     requesterId: string,
   ): Promise<void> {
+    //permission
     await this.assertRole(projectId, requesterId, [
       ProjectMemberRole.OWNER,
       ProjectMemberRole.ADMIN,
-      ProjectMemberRole.CO_ADMIN,
     ]);
 
     const member = await this.memberRepository.findOne({
@@ -225,14 +287,47 @@ export class ProjectMembersService {
       );
     }
 
+    // Empêcher de supprimer le owner
     if (member.role === ProjectMemberRole.OWNER) {
       throw new ForbiddenException(
         'Le propriétaire du projet ne peut pas être retiré',
       );
     }
 
+    const removedUserId = member.userId;
+    const removedDisplayName = member.user
+      ? this.resolveUserDisplayName(member.user)
+      : member.userId;
+    const removedRole = member.role;
+ 
     await this.memberRepository.remove(member);
+ 
+    const requester = await this.userRepository.findOne({
+      where: { id: requesterId },
+    });
+    const requesterName = requester
+      ? this.resolveUserDisplayName(requester)
+      : 'Unknown user';
+    const project = await this.projectRepository.findOne({
+      where: { id: projectId },
+    });
+ 
+    // activity history
+    await this.activityHistoryService.record({
+      projectId,
+      actorUserId: requesterId,
+      actorDisplayName: requesterName,
+      eventType: ActivityEventType.MEMBER_REMOVED,
+      payload: {
+        type: ActivityEventType.MEMBER_REMOVED,
+        removedUserId,
+        removedDisplayName,
+        role: removedRole,
+        projectName: project?.name ?? projectId,
+      },
+    });
   }
+ 
 
   async respondToInvitation(
     projectId: string,
@@ -250,6 +345,7 @@ export class ProjectMembersService {
       );
     }
 
+    // Seul l'invité peut répondre
     if (member.userId !== userId) {
       throw new ForbiddenException(
         "Vous ne pouvez répondre qu'à vos propres invitations",
@@ -270,6 +366,7 @@ export class ProjectMembersService {
 
     const updated = await this.memberRepository.save(member);
 
+    // Récupérer le projet et l'invité pour les noms
     const project = await this.projectRepository.findOne({
       where: { id: projectId },
     });
@@ -279,7 +376,7 @@ export class ProjectMembersService {
         respondent.email
       : 'Un utilisateur';
 
-    // Envoyer une notification à l'inviteur
+    // Envoyer une notification à l'inviteur (si existant)
     if (member.invitedBy) {
       await this.notificationService.createNotification(
         member.invitedBy,
@@ -297,20 +394,38 @@ export class ProjectMembersService {
       );
     }
 
+    // activity history
+    await this.activityHistoryService.record({
+      projectId,
+      actorUserId: userId,
+      actorDisplayName: respondentName,
+      eventType: accept
+        ? ActivityEventType.MEMBER_ACCEPTED
+        : ActivityEventType.MEMBER_DECLINED,
+      payload: {
+        type: accept
+          ? ActivityEventType.MEMBER_ACCEPTED
+          : ActivityEventType.MEMBER_DECLINED,
+        memberId,
+        projectName: project?.name ?? projectId,
+      },
+    });
+
     return this.toResponseDto(updated, member.user);
   }
 
-  /**
-   * vérifie que l'utilisateur est membre du projet
-   */
+
+// verifie que le userId est membre du projet
   private async assertMember(
     projectId: string,
     userId: string,
   ): Promise<ProjectMember> {
+    // Le propriétaire du projet (via projects.userId) a toujours accès
     const project = await this.projectRepository.findOne({
       where: { id: projectId },
     });
     if (project && project.userId === userId) {
+      // Retourner un membre virtuel owner
       const virtual = new ProjectMember();
       virtual.role = ProjectMemberRole.OWNER;
       virtual.userId = userId;
@@ -327,9 +442,8 @@ export class ProjectMembersService {
     return member;
   }
 
-  /**
-   * Vérifie que l'utilisateur a un rôle autorisé sur le projet.
-   */
+
+// verifie que le userId a un des roles permis sur le projet
   private async assertRole(
     projectId: string,
     userId: string,

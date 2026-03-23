@@ -7,6 +7,7 @@ import { User } from './database/user.entity';
 import { Project } from './database/project.entity';
 import { Notification } from './database/notification.entity';
 import { ProjectMember } from './database/project-member.entity';
+import { ActivityEvent } from './database/history.entity';
 import { AddokProxyMiddleware } from './api/addok.middleware';
 import { AuthModule } from './auth/auth.module';
 import { GeoServerProxyMiddleware } from './api/geoserver.middleware';
@@ -15,6 +16,7 @@ import { UserModule } from './user/user.module';
 import { ProjectModule } from './project/project.module';
 import { NotificationModule } from './notification/notification.module';
 import { ProjectMembersModule } from './project-members/project-members.module';
+import { ActivityHistoryModule } from './history/history.module';
 
 @Module({
   imports: [
@@ -30,7 +32,7 @@ import { ProjectMembersModule } from './project-members/project-members.module';
       username: process.env.MYSQL_USER,
       password: process.env.MYSQL_PASSWORD,
       database: process.env.MYSQL_DATABASE,
-      entities: [User, Project, Notification, ProjectMember],
+      entities: [User, Project, Notification, ProjectMember, ActivityEvent],
       synchronize: true,
       timezone: 'Z',
     }),
@@ -41,6 +43,7 @@ import { ProjectMembersModule } from './project-members/project-members.module';
     ProjectModule,
     NotificationModule,
     ProjectMembersModule,
+    ActivityHistoryModule,
   ],
   controllers: [AppController],
   providers: [AppService],

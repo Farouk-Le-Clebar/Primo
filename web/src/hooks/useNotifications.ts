@@ -4,6 +4,7 @@ import {
     getUnreadCount,
     markNotificationAsRead,
     markAllNotificationsAsRead,
+    deleteNotification,
     type NotificationResponse,
 } from "../requests/notificationRequests";
 
@@ -28,7 +29,7 @@ export function useNotifications() {
         queryKey: UNREAD_COUNT_KEY,
         queryFn: getUnreadCount,
         staleTime: 30_000,
-        refetchInterval: 30_000,
+        refetchInterval: 30_000, // 30s pour refetcher automatiquement les notifs
     });
 
     const { mutate: markAsRead } = useMutation({
@@ -119,6 +120,64 @@ export function useNotifications() {
         },
     });
 
+    const deleteNotificationMutation = useMutation({
+        mutationFn: (notificationId: string) =>
+            deleteNotification(notificationId),
+        onMutate: async (notificationId) => {
+            await queryClient.cancelQueries({ queryKey: NOTIFICATIONS_KEY });
+            await queryClient.cancelQueries({ queryKey: UNREAD_COUNT_KEY });
+
+            const previousNotifications =
+                queryClient.getQueryData<NotificationResponse[]>(
+                    NOTIFICATIONS_KEY,
+                ) ?? [];
+            const previousCount =
+                queryClient.getQueryData<number>(UNREAD_COUNT_KEY) ?? 0;
+
+            const deletedNotification = previousNotifications.find(
+                (notification) => notification.id === notificationId,
+            );
+            const unreadDelta = deletedNotification?.isRead ? 0 : 1;
+
+            queryClient.setQueryData<NotificationResponse[]>(
+                NOTIFICATIONS_KEY,
+                previousNotifications.filter(
+                    (notification) => notification.id !== notificationId,
+                ),
+            );
+            queryClient.setQueryData<number>(
+                UNREAD_COUNT_KEY,
+                Math.max(0, previousCount - unreadDelta),
+            );
+
+            return { previousNotifications, previousCount };
+        },
+        onError: (_err, _notificationId, context) => {
+            if (context?.previousNotifications) {
+                queryClient.setQueryData(
+                    NOTIFICATIONS_KEY,
+                    context.previousNotifications,
+                );
+            }
+            if (context?.previousCount !== undefined) {
+                queryClient.setQueryData(
+                    UNREAD_COUNT_KEY,
+                    context.previousCount,
+                );
+            }
+        },
+        onSettled: () => {
+            queryClient.invalidateQueries({ queryKey: NOTIFICATIONS_KEY });
+            queryClient.invalidateQueries({ queryKey: UNREAD_COUNT_KEY });
+        },
+    });
+
+    const { mutate: deleteOneNotification, isPending: isDeletingNotification } =
+        deleteNotificationMutation;
+    const deletingNotificationId = isDeletingNotification
+        ? deleteNotificationMutation.variables
+        : null;
+
     return {
         notifications,
         unreadCount,
@@ -126,5 +185,8 @@ export function useNotifications() {
         error,
         markAsRead,
         markAllAsRead,
+        deleteOneNotification,
+        isDeletingNotification,
+        deletingNotificationId,
     };
 }

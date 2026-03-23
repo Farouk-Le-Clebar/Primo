@@ -15,22 +15,22 @@ type MemberRowProps = {
 
 const STATUS_CONFIG: Record<
     string,
-    { label: string; color: string; borderbg: string }
+    { label: string; color: string; bg: string }
 > = {
     accepted: {
         label: "Accepté",
-        color: "text-green-700",
-        borderbg: "border-green-500",
+        color: "text-white",
+        bg: "bg-[#388160]",
     },
     pending: {
         label: "En attente",
-        color: "text-amber-700",
-        borderbg: "border-amber-500",
+        color: "text-white",
+        bg: "bg-[#F59E0B]/50 hover:bg-[#F59E0B]/70 cursor-default",
     },
     declined: {
         label: "Refusé",
-        color: "text-red-700",
-        borderbg: "border-red-500",
+        color: "text-white",
+        bg: "bg-[#EF4444]",
     },
 };
 
@@ -92,7 +92,7 @@ const MemberRow: React.FC<MemberRowProps> = ({
             <td className="px-18 py-4 whitespace-nowrap">
                 <div className="flex justify-center">
                     <span
-                        className={`inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium border ${status.color} ${status.borderbg}`}
+                        className={`inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold ${status.color} ${status.bg}`}
                     >
                         {status.label}
                     </span>

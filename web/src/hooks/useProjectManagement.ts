@@ -20,16 +20,10 @@ import {
     deleteProject,
 } from "../requests/projectRequests";
 
-/**
- * Vérifie si un token est présent dans le localStorage.
- * Permet de court-circuiter les requêtes API quand l'utilisateur n'est
- * clairement pas connecté, évitant ainsi des allers-retours inutiles.
- */
+// verifie si token -> sinon, pas de requete API, erreur UNAUTHORIZED immédiate
 const hasToken = (): boolean => !!localStorage.getItem("token");
 
-/**
- * Convertit une réponse API en ClientProject pour l'affichage dashboard
- */
+// Convertit une ProjectResponse API en ClientProject pour l'affichage
 const toClientProject = (p: ProjectResponse): ClientProject => ({
     id: p.id,
     name: p.name,
@@ -41,10 +35,8 @@ const toClientProject = (p: ProjectResponse): ClientProject => ({
     isFavorite: p.isFavorite,
 });
 
-/**
- * Extrait un ProjectError structuré depuis l'erreur brute de React Query.
- * Retourne `null` quand il n'y a pas d'erreur.
- */
+
+// Convertit une ApiError en ProjectError pour l'affichage
 const toProjectError = (error: Error | null): ProjectError | null => {
     if (!error) return null;
 
@@ -58,9 +50,7 @@ const toProjectError = (error: Error | null): ProjectError | null => {
     };
 };
 
-/**
- * Hook pour recherche debounce
- */
+// hook recherche projet avec debounce
 export const useSearch = (initialValue = "", delay = 500) => {
     const [searchTerm, setSearchTerm] = useState(initialValue);
     const [debouncedSearchTerm, setDebouncedSearchTerm] =
@@ -77,9 +67,7 @@ export const useSearch = (initialValue = "", delay = 500) => {
     return { searchTerm, setSearchTerm, debouncedSearchTerm };
 };
 
-/**
- * Hook tri des colonnes
- */
+// hook tri projet
 export const useSort = (initialKey: SortKey | null = null) => {
     const [sortConfig, setSortConfig] = useState<SortConfig>({
         key: initialKey,
@@ -102,9 +90,7 @@ export const useSort = (initialKey: SortKey | null = null) => {
     return { sortConfig, handleSort };
 };
 
-/**
- * Hook filtres
- */
+// hook filtres projet
 export const useFilters = () => {
     const [filters, setFilters] = useState<ProjectFilters>(getDefaultFilters());
     const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -150,11 +136,10 @@ export const useProjects = () => {
     });
 
     // Si pas de token, on renvoie immédiatement une erreur UNAUTHORIZED
-    // sans attendre de réponse serveur
     const resolvedError: ProjectError | null = !isAuthenticated
         ? {
               code: PROJECT_ERROR_CODES.UNAUTHORIZED,
-              message: "Vous n'êtes pas connecté",
+              message: "Vous n'êtes pas connecté.e",
               detail: "Connectez-vous ou créez un compte pour accéder à vos projets.",
           }
         : toProjectError(error);
@@ -226,9 +211,8 @@ export const useProjects = () => {
     };
 };
 
-/**
- * Hook modal de suppression
- */
+
+//hook gestion du modal de suppression
 export const useDeleteModal = () => {
     const [deleteModal, setDeleteModal] = useState<DeleteModalState>({
         isOpen: false,
@@ -250,9 +234,7 @@ export const useDeleteModal = () => {
     };
 };
 
-/**
- * Hook traitement et filtrage des projets
- */
+// hook pour appliquer recherche, filtres et tri sur la liste des projets
 export const useProcessedProjects = (
     projects: ClientProject[],
     searchTerm: string,

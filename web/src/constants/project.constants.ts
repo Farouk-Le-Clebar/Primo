@@ -1,4 +1,4 @@
-import type { Tab } from "../types/projectTab";
+import type { Tab } from "../types/project/projectTab";
 
 export const MAX_NAME_LENGTH = 64;
 

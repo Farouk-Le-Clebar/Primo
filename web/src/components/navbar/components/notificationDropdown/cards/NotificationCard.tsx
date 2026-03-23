@@ -1,4 +1,5 @@
 import type { NotificationResponse } from "../../../../../requests/notificationRequests";
+import { Loader2, Trash2 } from "lucide-react";
 import SystemCard from "./SystemCard";
 import ProjectInvitationCard from "./ProjectInvitationCard";
 import ProjectUpdateCard from "./ProjectUpdateCard";
@@ -36,22 +37,51 @@ const CARD_MAP: Record<string, React.ComponentType<NotificationCardProps>> = {
     DOCUMENT_UPDATE: DocumentUpdateCard,
 };
 
-interface Props {
+type Props = {
     notification: NotificationResponse;
     onMarkAsRead: (id: string) => void;
-}
+    onDeleteNotification: (id: string) => void;
+    deletingNotificationId: string | null;
+};
 
 export default function NotificationCard({
     notification,
     onMarkAsRead,
+    onDeleteNotification,
+    deletingNotificationId,
 }: Props) {
     const Card = CARD_MAP[notification.type] ?? SystemCard;
+    const isDeletingThisNotification =
+        deletingNotificationId === notification.id;
+
+    const handleDelete = (event: React.MouseEvent<HTMLButtonElement>) => {
+        event.stopPropagation();
+        onDeleteNotification(notification.id);
+    };
 
     return (
-        <Card
-            notification={notification}
-            onMarkAsRead={onMarkAsRead}
-            timeAgo={timeAgo(notification.createdAt)}
-        />
+        <div className="relative group">
+            <Card
+                notification={notification}
+                onMarkAsRead={onMarkAsRead}
+                onDeleteNotification={onDeleteNotification}
+                deletingNotificationId={deletingNotificationId}
+                timeAgo={timeAgo(notification.createdAt)}
+            />
+
+            <button
+                type="button"
+                onClick={handleDelete}
+                disabled={isDeletingThisNotification}
+                aria-label="Supprimer la notification"
+                className="absolute bottom-2 right-2 p-1 rounded-md text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+                {isDeletingThisNotification ? (
+                    <Loader2 size={14} className="animate-spin" />
+                ) : (
+                    <Trash2 size={14} />
+                )}
+            </button>
+        </div>
     );
 }

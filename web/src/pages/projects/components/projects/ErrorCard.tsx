@@ -90,7 +90,7 @@ const ErrorCard: React.FC<ErrorCardProps> = ({
 
     return (
         <div
-            className={`max-w-md mx-auto mt-20 bg-white rounded-2xl border border-gray-200 p-7 ${className ?? ""}`}
+            className={`max-w-md mx-auto mt-20 p-7  ${className ?? ""}`}
         >
             {/* Header */}
             <div className="flex items-start gap-3">

@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
 import { PROJECT_TABS } from "../../../../constants/project.constants";
-import type { TabKey } from "../../../../types/projectTab";
+import type { TabKey } from "../../../../types/project/projectTab";
 
 type ProjectTabsProps = {
     activeTab: TabKey;

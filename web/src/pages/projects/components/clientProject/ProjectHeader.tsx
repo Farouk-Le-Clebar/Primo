@@ -2,7 +2,7 @@ import React from "react";
 import { ChevronLeft, Sparkle, HelpCircle } from "lucide-react";
 import { FAVORITE_GRADIENT } from "../../../../constants/favorite-gradient";
 import ProjectTabs from "./ProjectTabs";
-import type { TabKey } from "../../../../types/projectTab";
+import type { TabKey } from "../../../../types/project/projectTab";
 
 type ProjectHeaderProps = {
     name: string;

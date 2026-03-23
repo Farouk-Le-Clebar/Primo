@@ -13,7 +13,7 @@ import { ParcelsTab } from "./parcels";
 import { DocumentsTab } from "./documents";
 import { ActivitiesTab } from "./activities";
 import { MembersTab } from "./members";
-import type { TabKey } from "../../../../types/projectTab";
+import type { TabKey } from "../../../../types/project/projectTab";
 
 type ProjectDetailPageProps = {
     projectId?: string;
@@ -85,7 +85,7 @@ export const ClientProjectPage: React.FC<ProjectDetailPageProps> = ({
             case "documents":
                 return <DocumentsTab />;
             case "activities":
-                return <ActivitiesTab />;
+                return <ActivitiesTab projectId={projectId} projectName={project?.name} />;
             case "members":
                 return (
                     <MembersTab

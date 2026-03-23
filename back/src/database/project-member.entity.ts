@@ -6,6 +6,7 @@ import {
   ManyToOne,
   JoinColumn,
   Unique,
+  Index,
 } from 'typeorm';
 import { User } from './user.entity';
 import { Project } from './project.entity';
@@ -26,6 +27,8 @@ export enum ProjectMemberStatus {
 
 @Entity('project_members')
 @Unique(['projectId', 'userId'])
+@Index('IDX_PROJECT_MEMBERS_PROJECT_STATUS', ['projectId', 'status'])
+@Index('IDX_PROJECT_MEMBERS_USER_STATUS', ['userId', 'status'])
 export class ProjectMember {
   @PrimaryGeneratedColumn('uuid')
   id: string;
