@@ -1,6 +1,9 @@
 import React from "react";
-import type { ActivityEventResponse, EventStyle } from "../types/project/projectHistory";
-import { ActivityEventType } from "../types/project/projectHistory";
+import type {
+    ActivityEventResponse,
+    EventStyle,
+} from "../types/project/projectHistoryTimeline";
+import { ActivityEventType } from "../types/project/projectHistoryTimeline";
 import {
     History,
     FilePen,
@@ -140,7 +143,6 @@ export function getEventLabel(
             );
     }
 }
-
 
 export function getEventStyle(eventType: ActivityEventType): EventStyle {
     const size = "w-3.5 h-3.5";

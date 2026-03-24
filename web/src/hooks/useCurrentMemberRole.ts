@@ -7,8 +7,6 @@ import type { MemberRole } from "../types/member";
  *
  * - Si l'utilisateur est le propriétaire du projet (project.userId === currentUserId) -> "owner"
  * - Sinon, cherche dans la liste des membres -> rôle trouvé ou null
- *
- * Retourne { role, canEdit, canManageMembers, isLoading }
  */
 export function useCurrentMemberRole(
     projectId?: string,
