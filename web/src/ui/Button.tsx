@@ -26,7 +26,7 @@ const Button = ({
   height,
   textSize = "text-[1.4em]",
   textColor = TextColors.white,
-  textHoverColor = TextColors.white,
+  textHoverColor = TextColors.whiteHover,
   disabled = false,
   isLoading = false,
   shadowHover = "hover:shadow-lg",
