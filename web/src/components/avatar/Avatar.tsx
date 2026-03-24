@@ -11,7 +11,6 @@ import PPWhite from "../../assets/profilePictures/white.svg?react";
 import PPWhitePink from "../../assets/profilePictures/whitepink.svg?react";
 import PPYellow from "../../assets/profilePictures/yellow.svg?react";
 
-/** Mapping entre le nom stocké en base (ex: "green.png") et le composant SVG */
 export const AVATAR_COMPONENTS: Record<
     string,
     React.FC<React.SVGProps<SVGSVGElement>>
@@ -29,7 +28,6 @@ export const AVATAR_COMPONENTS: Record<
 
 export const DEFAULT_AVATAR = "green.png";
 
-/** Liste des avatars sélectionnables (sans red qui est réservé) */
 export const PRESET_AVATARS = [
     "blue.png",
     "cyan.png",
@@ -49,14 +47,14 @@ export function getAvatarComponent(
 
 interface AvatarProps {
     profilePicture: string | null | undefined;
-    /** Taille en classes Tailwind, ex: "w-8 h-8" (défaut: "w-10 h-10") */
+    /* (défaut: "w-10 h-10") */
     size?: string;
     className?: string;
 }
 
 /**
  * Composant Avatar réutilisable.
- * Affiche la photo de profil correspondant au nom stocké en base.
+ * Example : <Avatar profilePicture={member.profilePicture} size="w-8 h-8" />
  */
 export default function Avatar({
     profilePicture,
@@ -73,3 +71,4 @@ export default function Avatar({
         </div>
     );
 }
+
