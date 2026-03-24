@@ -2,6 +2,10 @@ import { useState, useRef, useEffect } from "react";
 import { Bell } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
+// ICONS
+import SettingsIcons from "../../../../assets/icons/notifications.svg?react";
+
+
 export default function NotificationsDropdown() {
   const [isOpen, setIsOpen] = useState(false);
   const [hasNotifications] = useState(true);
@@ -23,12 +27,9 @@ export default function NotificationsDropdown() {
       {/* Trigger : La Cloche */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="relative p-2.5 text-gray-400 hover:text-gray-600 hover:bg-gray-50 rounded-xl transition-all group"
+        className="relative p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-50 rounded-xl transition-all group"
       >
-        <Bell size={20} className={`transition-transform ${isOpen ? 'scale-110' : 'group-hover:rotate-12'}`} />
-        {hasNotifications && (
-          <span className="absolute top-2.5 right-2.5 w-2.5 h-2.5 bg-red-500 border-2 border-white rounded-full"></span>
-        )}
+        <SettingsIcons className="w-4.5 h-4.5" />
       </button>
 
       {/* Menu des Notifications */}
