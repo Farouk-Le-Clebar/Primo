@@ -1,5 +1,5 @@
 import { memo } from "react";
-import type { ActivityEventResponse } from "../../../../../../../types/project/projectHistory";
+import type { ActivityEventResponse } from "../../../../../../../types/project/projectHistoryTimeline";
 import {
     getEventLabel,
     getEventStyle,

@@ -85,7 +85,7 @@ const RoleDropdown: React.FC<RoleDropdownProps> = ({
             </button>
 
             {isOpen && (
-                <div className="absolute left-0 top-full mt-1 w-36 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50">
+                <div className="absolute left-0 top-full mt-1 w-25 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50">
                     {ASSIGNABLE_ROLES.map((role) => {
                         const rc = ROLE_CONFIG[role];
                         return (

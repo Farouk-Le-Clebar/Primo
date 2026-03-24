@@ -1,5 +1,5 @@
 import React, { memo, useCallback } from "react";
-import type { ActivityEventResponse } from "../../../../../types/project/projectHistory";
+import type { ActivityEventResponse } from "../../../../../types/project/projectHistoryTimeline";
 import { CreationAnchor } from "./components/timeline/CreationAnchor";
 import { Sentinel } from "./components/timeline/Sentinel";
 import { TimelineItem } from "./components/timeline/TimelineItem";
@@ -9,7 +9,6 @@ export const TimelineSkeleton: React.FC = () => (
     <ul className="px-4 pt-2 animate-pulse" aria-label="Chargement…">
         {Array.from({ length: 5 }).map((_, i) => (
             <li key={i} className="relative flex gap-3 pb-8">
-                {/* dashed rail placeholder */}
                 <span className="absolute left-[7px] top-[22px] bottom-0 w-[2px] border-l-2 border-dashed border-gray-100" />
                 <span className="relative z-10 mt-1 flex-shrink-0 h-[18px] w-[18px] rounded-md bg-gray-200" />
                 <div className="flex-1 pt-[1px] space-y-2">
@@ -21,13 +20,11 @@ export const TimelineSkeleton: React.FC = () => (
     </ul>
 );
 
-
 const FetchingMore: React.FC = () => (
     <div className="flex justify-center py-2" aria-label="Chargement…">
         <span className="inline-block h-3.5 w-3.5 rounded-full border-2 border-gray-200 border-t-[#388160] animate-spin" />
     </div>
 );
-
 
 const TimelineEmptyState: React.FC = () => (
     <div className="py-12 text-center text-gray-500">
