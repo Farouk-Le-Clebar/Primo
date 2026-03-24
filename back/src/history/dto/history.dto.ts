@@ -2,13 +2,8 @@ import { IsOptional, IsString, IsInt, Min, Max } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ActivityEventType } from '../../database/history.entity';
 
-// ── Query DTO ────────────────────────────────────────────────────────────────
 
 export class ActivityHistoryQueryDto {
-  /**
-   * Opaque cursor returned by a previous page.
-   * Format (before base64 encoding): "<createdAt ISO>__<id UUID>"
-   */
   @IsOptional()
   @IsString()
   cursor?: string;
@@ -21,13 +16,13 @@ export class ActivityHistoryQueryDto {
   limit?: number = 20;
 }
 
-// ── Response DTOs ─────────────────────────────────────────────────────────────
 
 export class ActivityEventResponseDto {
   id: string;
   projectId: string;
   actorUserId: string | null;
   actorDisplayName: string;
+  actorProfilePicture: string | null;
   eventType: ActivityEventType;
   payload: Record<string, any>;
   version: number;
@@ -36,15 +31,10 @@ export class ActivityEventResponseDto {
 
 export class ActivityHistoryPageDto {
   items: ActivityEventResponseDto[];
-  /**
-   * Pass this value as `cursor` in the next request to fetch the following page.
-   * Null when `hasMore` is false.
-   */
   nextCursor: string | null;
   hasMore: boolean;
 }
 
-// ── Internal write DTO (used by service, not exposed via HTTP) ─────────────────
 
 export interface CreateActivityEventDto {
   projectId: string;

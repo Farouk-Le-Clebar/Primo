@@ -75,11 +75,6 @@ export class ActivityEvent {
   @Column({ type: 'uuid', nullable: true })
   actorUserId: string | null;
 
-  /**
-   * Denormalized snapshot of the actor's display name at the time of the event.
-   * Ensures the history remains accurate even if the user changes their name or
-   * is deleted from the system.
-   */
   @Column({ type: 'varchar', length: 255 })
   actorDisplayName: string;
 
@@ -89,16 +84,9 @@ export class ActivityEvent {
   })
   eventType: ActivityEventType;
 
-  /**
-   * Typed JSON payload. The shape depends on `eventType` (see ActivityEventPayload).
-   */
   @Column({ type: 'json' })
   payload: ActivityEventPayload;
 
-  /**
-   * Schema version — increment when the payload shape changes to allow
-   * consumers to handle multiple payload versions gracefully.
-   */
   @Column({ type: 'int', default: 1 })
   version: number;
 
