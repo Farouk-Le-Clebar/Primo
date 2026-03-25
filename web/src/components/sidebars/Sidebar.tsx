@@ -74,30 +74,9 @@ export default function Sidebar({ isExpanded }: SidebarProps) {
           </div>
 
           <div className="space-y-1">
-            <CustomNavLink
-              to="/search"
-              textColor="text-black"
-              rounded="rounded-xl"
-              label={isExpanded ? "Carte" : ""}
-              icon={renderIcon(MapIcon)}
-              className="h-8"
-            />
-            <CustomNavLink
-              to="/ai-search"
-              textColor="text-black"
-              rounded="rounded-xl"
-              label={isExpanded ? "IA Primo" : ""}
-              icon={renderIcon(IaIcon)}
-              className="h-8"
-            />
-            <CustomNavLink
-              to="/support"
-              textColor="text-black"
-              rounded="rounded-xl"
-              label={isExpanded ? "Support" : ""}
-              icon={renderIcon(SupportIcon)}
-              className="h-8"
-            />
+            <CustomNavLink to="/search" textColor="text-black" rounded="rounded-xl" label={isExpanded ? "Carte" : ""} icon={renderIcon(MapIcon)} className="h-8" />
+            <CustomNavLink to="/ai-search" textColor="text-black" rounded="rounded-xl" label={isExpanded ? "IA Primo" : ""} icon={renderIcon(IaIcon)} className="h-8" />
+            <CustomNavLink to="/support" textColor="text-black" rounded="rounded-xl" label={isExpanded ? "Support" : ""} icon={renderIcon(SupportIcon)} className="h-8" />
             {isAdmin && (
               <CustomNavLink
                 to="/admin/dashboard"
@@ -112,11 +91,13 @@ export default function Sidebar({ isExpanded }: SidebarProps) {
         </section>
       </div>
 
-      <div className="flex w-full items-center justify-center mb-4">
-        <div className={`flex items-center transition-all duration-300 ${isExpanded ? "p-4 gap-3 justify-start w-full px-6" : "p-4 justify-center"}`}>
+      <div className="mt-auto flex w-full items-center justify-center mb-6 ">
+        <div className={`flex items-center transition-all duration-300 justify-center ${isExpanded ? "gap-0" : "gap-0"}`}>
           <PrimoIcon className="w-7 h-auto flex-shrink-0 text-black" />
           <span className={`font-UberMove font-medium text-2xl tracking-tighter text-black transition-all duration-300 whitespace-nowrap ${
-              isExpanded ? "opacity-100 w-auto translate-x-0" : "opacity-0 w-0 -translate-x-2 pointer-events-none overflow-hidden"
+              isExpanded 
+                ? "opacity-100 w-auto translate-x-0" 
+                : "opacity-0 w-0 -translate-x-2 pointer-events-none overflow-hidden"
             }`}>
             Primo
           </span>
