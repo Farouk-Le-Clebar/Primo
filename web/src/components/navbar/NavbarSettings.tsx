@@ -1,7 +1,7 @@
 
 // COMPONENTS
 import NotificationsDropdown from "./components/notificationDropdown/NotificationsDropdown";
-import SettingsDropdown from "./components/settingsDropdown/SettingsDropdown";
+import SettingsDropdown from "../sidebars/components/settingsDropdown/SettingsDropdown";
 
 
 export default function NavbarSettings() {
