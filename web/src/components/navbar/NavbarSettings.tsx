@@ -1,7 +1,6 @@
 
 // COMPONENTS
 import NotificationsDropdown from "./components/notificationDropdown/NotificationsDropdown";
-import SettingsDropdown from "../sidebars/components/settingsDropdown/SettingsDropdown";
 
 
 export default function NavbarSettings() {
@@ -15,7 +14,6 @@ export default function NavbarSettings() {
       <div className="flex h-full min-w-[285px] gap-4">
         <div className="flex h-full w-3/4 items-center justify-end gap-3 bg-bl">
           <NotificationsDropdown />
-          <SettingsDropdown />
         </div>
       </div>
     </nav>

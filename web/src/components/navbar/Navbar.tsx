@@ -1,6 +1,5 @@
 import { useLocation } from "react-router-dom";
 import NotificationsDropdown from "./components/notificationDropdown/NotificationsDropdown";
-import SettingsDropdown from "../sidebars/components/settingsDropdown/SettingsDropdown";
 
 // ICONS
 import PageIcons from "../../assets/icons/page.svg?react";

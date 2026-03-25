@@ -49,11 +49,11 @@ export default function UserProfileSidebar({ isExpanded }: UserProfileSidebarPro
     >
       <button 
         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-        className={`flex h-10 w-full items-center transition-all duration-300 rounded-xl hover:bg-gray-100 active:scale-95 group ${
-          isExpanded ? "px-3 gap-3" : "px-0 justify-center"
+        className={`flex h-8 w-full items-center transition-all duration-300 rounded-xl hover:bg-gray-100 active:scale-95 group ${
+          isExpanded ? "px-2 gap-1" : "px-0 justify-center"
         } ${isDropdownOpen ? "bg-gray-100" : ""}`}
       >
-        <div className="w-7 h-7 rounded-full overflow-hidden border border-gray-100 shadow-sm flex-shrink-0 transition-transform duration-300 group-hover:border-gray-300">
+        <div className="w-6 h-6 rounded-full overflow-hidden border border-gray-100 shadow-sm flex-shrink-0 transition-transform duration-300 group-hover:border-gray-300">
           <AvatarComponent className="w-full h-full" />
         </div>
 
