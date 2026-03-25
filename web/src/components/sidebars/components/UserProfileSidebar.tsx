@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
+import DropdownMenu from "./settingsDropdown/settingsDropdownMenu";
+import { useOutsideClick } from "../../../hooks/useOutsideClick";
 
 // ASSETS
 import PPGreen from "../../../assets/profilePictures/green.svg?react";
@@ -11,11 +13,13 @@ import PPWhite from "../../../assets/profilePictures/white.svg?react";
 import PPWhitePink from "../../../assets/profilePictures/whitepink.svg?react";
 import PPYellow from "../../../assets/profilePictures/yellow.svg?react";
 
+// ICONS
+import ChevronDownIcon from "../../../assets/icons/chevronDownIcon.svg?react";
+
 interface UserProfileSidebarProps {
   isExpanded: boolean;
 }
 
-// Dictionnaire des avatars (typé pour TypeScript)
 const AVATAR_COMPONENTS: Record<string, React.FC<React.SVGProps<SVGSVGElement>>> = {
   "green.png": PPGreen,
   "cyan.png": PPCyan,
@@ -29,35 +33,59 @@ const AVATAR_COMPONENTS: Record<string, React.FC<React.SVGProps<SVGSVGElement>>>
 };
 
 export default function UserProfileSidebar({ isExpanded }: UserProfileSidebarProps) {
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const user = JSON.parse(localStorage.getItem("user") || "{}");
-
-  const truncate = (str: string, max: number) => {
-    if (!str) return "";
-    return str.length > max ? str.slice(0, max) + "..." : str;
-  };
+  
+  const dropdownRef = useOutsideClick(() => setIsDropdownOpen(false));
 
   const fileName = user?.profilePicture || "green.png";
   const AvatarComponent = AVATAR_COMPONENTS[fileName] || PPGreen;
 
   return (
-      <div className={`flex h-10 w-full items-center justify-center transition-all duration-300 ${isExpanded ? "gap-3 px-2" : "gap-0 px-0"}`}>
-        <div className="w-9 h-9 rounded-full overflow-hidden border border-gray-100 shadow-sm flex-shrink-0 transition-transform duration-300">
+    <div 
+      className="relative w-full" 
+      ref={dropdownRef}
+      onMouseLeave={() => setIsDropdownOpen(false)}
+    >
+      <button 
+        onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+        className={`flex h-10 w-full items-center transition-all duration-300 rounded-xl hover:bg-gray-100 active:scale-95 group ${
+          isExpanded ? "px-3 gap-3" : "px-0 justify-center"
+        } ${isDropdownOpen ? "bg-gray-100" : ""}`}
+      >
+        <div className="w-7 h-7 rounded-full overflow-hidden border border-gray-100 shadow-sm flex-shrink-0 transition-transform duration-300 group-hover:border-gray-300">
           <AvatarComponent className="w-full h-full" />
         </div>
+
         <div 
-          className={`flex flex-col min-w-0 justify-center transition-all duration-300 ease-in-out ${
+          className={`items-center justify-between min-w-0 transition-all duration-300 ease-in-out ${
             isExpanded 
-              ? "opacity-100 translate-x-0 w-full" 
-              : "opacity-0 -translate-x-2 w-0 overflow-hidden"
+              ? "flex flex-1 opacity-100 translate-x-0" 
+              : "hidden opacity-0 -translate-x-2 w-0"
           }`}
         >
-          <div className="font-inter font-bold text-sm text-gray-800 truncate leading-tight whitespace-nowrap">
+          <div className="font-UberMove font-bold text-sm text-gray-800 truncate leading-tight whitespace-nowrap">
             {user.firstName || "Utilisateur"}
           </div>
-          <div className="font-inter font-normal text-[11px] text-gray-500 truncate leading-none mt-1 whitespace-nowrap">
-            {user.email ? truncate(user.email, 20) : "Compte Primo"}
-          </div>
+
+          <ChevronDownIcon 
+            className={`w-4 h-4 text-gray-400 transition-all duration-300 flex-shrink-0 ${
+              isDropdownOpen ? "rotate-180 text-black" : "rotate-0"
+            }`} 
+          />
         </div>
-      </div>
+      </button>
+
+      {isDropdownOpen && (
+        <div className={`absolute z-[100] transition-all duration-200 ${
+          isExpanded 
+            ? "left-0 top-full mt-2 w-full min-w-[240px]" 
+            : "left-[calc(100%+12px)] top-0 w-64"
+        }`}>
+          <div className="absolute -top-2 left-0 w-full h-2 bg-transparent" />
+          <DropdownMenu onClose={() => setIsDropdownOpen(false)} />
+        </div>
+      )}
+    </div>
   );
 }
