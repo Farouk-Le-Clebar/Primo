@@ -9,7 +9,10 @@ type CustomNavLinkProps = {
   className?: string;
   iconColor?: string;
   textColor?: string;
+  textClass?: string;
   textHoverColor?: string;
+  BgColor?: string;
+  hoverBgColor?: string;
   onClick?: () => void;
   variant?: "default" | "danger";
   showChevronOnHover?: boolean;
@@ -24,7 +27,10 @@ export default function CustomNavLink({
   className = "",
   iconColor = "text-black",
   textColor = "text-[#757575]",
+  textClass = "",
   textHoverColor = "text-black",
+  BgColor = "bg-white",
+  hoverBgColor = "hover:bg-gray-100",
   onClick,
   variant = "default",
   showChevronOnHover = false,
@@ -37,7 +43,7 @@ export default function CustomNavLink({
 
   const colors = isDanger
     ? "text-red-600 hover:bg-red-50 hover:text-red-700"
-    : `${isActive ? "bg-gray-100 text-black" : `bg-white ${textColor} hover:bg-gray-100 hover:${textHoverColor}`}`;
+    : `${isActive ? "bg-gray-100 text-black" : `${BgColor} ${textColor} ${hoverBgColor} hover:${textHoverColor}`}`;
 
   const sizeClasses = isCollapsed
     ? "w-10 h-10 mx-auto justify-center px-0"
@@ -46,7 +52,7 @@ export default function CustomNavLink({
   const sharedClasses = `
     flex items-center transition-all duration-300
     ${sizeClasses}
-    ${rounded} font-medium ${colors} group
+    ${rounded} ${colors} group
   `;
 
   const content = (
@@ -59,23 +65,27 @@ export default function CustomNavLink({
         )}
         
         {!isCollapsed && (
-          <span className={`whitespace-nowrap ${!showChevronOnHover ? "text-xs" : "text-sm"} font-inter font-medium`}>
+          <span className={`whitespace-nowrap transition-all duration-300 ${
+            textClass 
+              ? textClass 
+              : `${!showChevronOnHover ? "text-xs" : "text-sm"} font-inter font-medium`
+          }`}>
             {label}
           </span>
         )}
       </div>
 
       {!isCollapsed && (
-        <>
+        <div className="flex items-center">
           {showChevronOnHover ? (
             <ChevronRight
               size={14}
-              className={`transition-all duration-200 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 ${isDanger ? "text-red-400" : "text-gray-400"}`}
+              className="transition-all duration-200 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 text-gray-400"
             />
           ) : (
             isActive && <ChevronRight className="w-4 h-4 text-black" />
           )}
-        </>
+        </div>
       )}
     </>
   );
@@ -83,7 +93,7 @@ export default function CustomNavLink({
   const finalProps = {
     onClick,
     className: sharedClasses,
-    title: isCollapsed ? undefined : label 
+    title: isCollapsed ? label : undefined 
   };
 
   if (to) {
@@ -95,7 +105,7 @@ export default function CustomNavLink({
   }
 
   return (
-    <button {...finalProps}>
+    <button type="button" {...finalProps}>
       {content}
     </button>
   );
