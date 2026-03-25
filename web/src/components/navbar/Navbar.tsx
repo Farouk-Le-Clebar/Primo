@@ -1,6 +1,6 @@
 import { useLocation } from "react-router-dom";
 import NotificationsDropdown from "./components/notificationDropdown/NotificationsDropdown";
-import SettingsDropdown from "./components/settingsDropdown/SettingsDropdown";
+import SettingsDropdown from "../sidebars/components/settingsDropdown/SettingsDropdown";
 
 // ICONS
 import PageIcons from "../../assets/icons/page.svg?react";
@@ -42,7 +42,6 @@ export default function Navbar() {
       </div>
       <div className="flex h-full min-w-[285px] items-center justify-end gap-4 pr-6">
           <NotificationsDropdown />
-          <SettingsDropdown />
       </div>
     </nav>
   );
