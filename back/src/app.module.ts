@@ -9,6 +9,7 @@ import { DvfMutation } from './database/dvf.entity'; // <-- NOUVEL IMPORT
 import { AddokProxyMiddleware } from './api/addok.middleware';
 import { AuthModule } from './auth/auth.module';
 import { GeoServerProxyMiddleware } from './api/geoserver.middleware';
+import { OllamaProxyMiddleware } from './api/ollama.middleware';
 import { GeoModule } from './geo/geo.module';
 import { UserModule } from './user/user.module';
 import { ProjectModule } from './project/project.module';
@@ -45,5 +46,6 @@ export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(AddokProxyMiddleware).forRoutes('/addok');
     consumer.apply(GeoServerProxyMiddleware).forRoutes('/geoserver');
+    consumer.apply(OllamaProxyMiddleware).forRoutes('/ai/ask');
   }
 }
