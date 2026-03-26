@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import LogoAi from "../../../../../assets/logos/LogoAI.svg?react";
 import { Send, X } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { aiStreamRequest } from "../../../../../requests/ai";
+import ModalRedirectAiCoordinates from "./ModalRedirectAiCoordinates";
 
 type HistoryItem = {
     question: string;
@@ -12,26 +13,13 @@ type HistoryItem = {
 const AiLayer = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [inputValue, setInputValue] = useState("");
-    const [prompt, setPrompt] = useState("");
-
+    const [isDisabled, setIsDisabled] = useState(false);
     const [history, setHistory] = useState<HistoryItem[]>([]);
+    const [coordinates, setCoordinates] = useState("");
+    const [isFinished, setIsFinished] = useState(false);
 
-
-    const handleSend = () => {
-        if (inputValue.trim() === "") return;
-
-        const userMessage: HistoryItem = { question: inputValue, who: "user" };
-        const aiPlaceholder: HistoryItem = { question: "", who: "ai" };
-
-        setHistory((prev) => [...prev, userMessage, aiPlaceholder]);
-        setPrompt(inputValue);
-        setInputValue("");
-        mutateAiRequest();
-    };
-
-    const { mutate: mutateAiRequest } = useMutation({
-        mutationFn: () => aiStreamRequest(prompt, onResponseChunk),
-    });
+    const streamingCoords = useRef("");
+    const isJsonFinishedRef = useRef(false);
 
     const onResponseChunk = (chunk: string) => {
         const lines = chunk.split("\n");
@@ -40,14 +28,24 @@ const AiLayer = () => {
             if (!line.trim()) continue;
 
             try {
-                const parsed_chunk = JSON.parse(line);
-                const content = parsed_chunk.response || parsed_chunk.text || ""; // Vérifie la clé selon ton API
+                const json_chunk = JSON.parse(line);
+                const content = json_chunk.response || "";
 
-                if (!parsed_chunk.done) {
+                if (!isJsonFinishedRef.current) {
+                    streamingCoords.current += content;
+                    if (streamingCoords.current.includes("---")) {
+                        const [coords] = streamingCoords.current.split("---");
+
+                        isJsonFinishedRef.current = true;
+                        setCoordinates(coords);
+                        setIsFinished(true);
+                    } else {
+                        setCoordinates(streamingCoords.current);
+                    }
+                } else {
                     setHistory((prev) => {
                         const newHistory = [...prev];
                         const lastIndex = newHistory.length - 1;
-
                         if (lastIndex >= 0 && newHistory[lastIndex].who === "ai") {
                             newHistory[lastIndex] = {
                                 ...newHistory[lastIndex],
@@ -58,9 +56,38 @@ const AiLayer = () => {
                     });
                 }
             } catch (e) {
-                console.error("Erreur parsing chunk:", line);
+                console.error(e);
             }
         }
+    };
+
+    const { mutate: mutateAiRequest } = useMutation({
+        mutationFn: (prompt: string) => aiStreamRequest(prompt, onResponseChunk),
+        onSuccess: () => {
+            setIsDisabled(false);
+            isJsonFinishedRef.current = false;
+            streamingCoords.current = "";
+        },
+        onError: () => {
+            setIsDisabled(false);
+        }
+    });
+
+    const handleSend = () => {
+        if (inputValue.trim() === "" || isDisabled) return;
+
+        const currentInput = inputValue;
+        setIsFinished(false);
+        setCoordinates("");
+        setHistory((prev) => [...prev, { question: currentInput, who: "user" }, { question: "", who: "ai" }]);
+        setInputValue("");
+        setIsDisabled(true);
+        mutateAiRequest(currentInput);
+    };
+
+    const handleCloseModal = () => {
+        setCoordinates("");
+        setIsFinished(false);
     };
 
     return (
@@ -98,21 +125,33 @@ const AiLayer = () => {
                     <div className="w-full h-[1px] bg-gray-200" />
                     <div className="w-full p-3 flex flex-row gap-2 items-center justify-between">
                         <textarea
-                            className="w-full h-12 border border-gray-200 focus:outline-none p-1 pl-2 pr-2 rounded-lg resize-none" placeholder="Demander à l'IA..."
+                            className="disabled:cursor-not-allowed w-full h-12 border border-gray-200 focus:outline-none p-1 pl-2 pr-2 rounded-lg resize-none"
+                            placeholder="Demander à l'IA..."
                             value={inputValue}
                             onChange={(e) => setInputValue(e.target.value)}
+                            disabled={isDisabled}
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter" && !e.shiftKey) {
+                                    e.preventDefault();
+                                    handleSend();
+                                }
+                            }}
                         />
                         <button
-                            className={`w-7 h-7 aspect-square rounded-full bg-[#388160] flex items-center justify-center cursor-pointer`}
+                            className="disabled:cursor-not-allowed w-7 h-7 aspect-square rounded-full bg-[#388160] flex items-center justify-center cursor-pointer disabled:opacity-50"
                             onClick={handleSend}
+                            disabled={isDisabled}
                         >
                             <Send size={20} className="mt-0.5 mr-1 text-white" />
                         </button>
                     </div>
                 </div>
             )}
+            {isFinished && coordinates !== "" && JSON.parse(coordinates).found && (
+                <ModalRedirectAiCoordinates coordinates={coordinates} onClose={handleCloseModal} />
+            )}
         </div>
-    )
-}
+    );
+};
 
 export default AiLayer;
