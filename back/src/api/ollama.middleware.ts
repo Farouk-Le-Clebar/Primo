@@ -7,7 +7,6 @@ export class OllamaProxyMiddleware implements NestMiddleware {
     async use(req: Request, res: Response, next: NextFunction) {
         const targetUrl = process.env.OLLAMA_API_URL || 'http://api.primo-data.fr:7293';
 
-
         const bodyData = JSON.stringify(req.body);
 
         try {
