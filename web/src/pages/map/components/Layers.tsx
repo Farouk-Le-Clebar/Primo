@@ -14,6 +14,7 @@ import Navbar from "./layers/Navbar/Navbar";
 import MapPreference from "./layers/preference/MapPreference";
 import { mapPreference } from "../../../utils/map";
 import NoScrollZone from "../wrapper/NoScrollZone";
+import AiLayer from "./layers/AI/AiLayer";
 
 const Layers = () => {
     const [mapBounds, setMapBounds] = useState<L.LatLngBounds | null>(null);
@@ -92,13 +93,14 @@ const Layers = () => {
             <TileLayer url={mapPreference[mapType]} />
             <MapBounds onChange={handleMapBoundsChange} />
             <ZoomHandler onZoomChange={handleZoomChange} />
-            <MapPreference
-                onChangeMapType={handleChangeMapType}
-                currentMapType={mapType}
-            />
-
             <NoScrollZone>
+                <MapPreference
+                    onChangeMapType={handleChangeMapType}
+                    currentMapType={mapType}
+                />
                 <Navbar />
+                <AiLayer />
+                <ParcelInfoPanel selectedParcelle={selectedParcelle} />
             </NoScrollZone>
 
             <PoiWidget
@@ -128,9 +130,6 @@ const Layers = () => {
                 enabledPoiTypes={enabledPoiTypes}
                 dataPois={{ pois: poisData }}
             />
-            <NoScrollZone>
-                <ParcelInfoPanel selectedParcelle={selectedParcelle} />
-            </NoScrollZone>
         </>
     );
 };
