@@ -85,7 +85,12 @@ export const ClientProjectPage: React.FC<ProjectDetailPageProps> = ({
             case "documents":
                 return <DocumentsTab />;
             case "activities":
-                return <ActivitiesTab projectId={projectId} projectName={project?.name} />;
+                return (
+                    <ActivitiesTab
+                        projectId={projectId}
+                        projectName={project?.name}
+                    />
+                );
             case "members":
                 return (
                     <MembersTab

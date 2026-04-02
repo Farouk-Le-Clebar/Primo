@@ -138,7 +138,7 @@ export const ActivityFeed: React.FC<ActivityFeedProps> = ({
     return (
         <div
             className={`flex flex-col min-h-0 ${
-                isWidget ? "bg-gray-100 rounded-2xl p-3" : ""
+                isWidget ? "border border-gray-200 rounded-2xl p-3" : ""
             } ${className}`}
         >
             {/* header : bucket nav + granularity switcher */}
