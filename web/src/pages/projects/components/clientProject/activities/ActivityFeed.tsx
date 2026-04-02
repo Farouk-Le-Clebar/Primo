@@ -1,7 +1,9 @@
 import React, { useState, useMemo, useEffect, useCallback } from "react";
 import type {
+    ActivityDisplayItem,
     ActivityFeedProps,
     Granularity,
+    MemberOption,
 } from "../../../../../types/project/projectHistoryFeed";
 import { buildBuckets } from "../../../../../utils/history-feed";
 import {
@@ -13,6 +15,7 @@ import {
 import { ActivityItemRow } from "./components/feed/ActivityItemRow";
 import { BucketNav } from "./components/feed/BucketNav";
 import { GranularitySwitcher } from "./components/feed/GranularitySwitcher";
+import { MemberFilter } from "./components/feed/MemberFilter";
 
 const FeedSkeleton: React.FC<{ rows?: number }> = ({ rows = 3 }) => (
     <div className="animate-pulse space-y-4 py-3">
@@ -55,14 +58,46 @@ export const ActivityFeed: React.FC<ActivityFeedProps> = ({
     const [granularity, setGranularity] =
         useState<Granularity>(resolvedDefault);
 
+    //nul = "tout le monde"
+    const [selectedActor, setSelectedActor] = useState<string | null>(null);
+
+    const memberOptions = useMemo<MemberOption[]>(() => {
+        const seen = new Map<string, MemberOption>();
+        for (const item of items) {
+            if (!seen.has(item.actorName)) {
+                seen.set(item.actorName, {
+                    actorName: item.actorName,
+                    avatarUrl: item.actorAvatarUrl,
+                });
+            }
+        }
+        return Array.from(seen.values()).sort((a, b) =>
+            (a.actorName ?? "").localeCompare(b.actorName ?? "", "fr"),
+        );
+    }, [items]);
+
+    useEffect(() => {
+        setSelectedActor(null);
+    }, [items]);
+
+    // Filtering happens BEFORE buildBuckets so the green activity dots on each
+    // day/week/month bucket also reflect the current member filter.
+    const filteredItems = useMemo<ActivityDisplayItem[]>(
+        () =>
+            selectedActor === null
+                ? items
+                : items.filter((item) => item.actorName === selectedActor),
+        [items, selectedActor],
+    );
+
     const resolvedBucketWindow =
         variant === "widget"
             ? (dayWindow ?? DEFAULT_DAY_WINDOW)
             : (bucketWindow ?? DEFAULT_BUCKET_WINDOW);
 
     const buckets = useMemo(
-        () => buildBuckets(items, variant, granularity, resolvedBucketWindow),
-        [items, variant, granularity, resolvedBucketWindow],
+        () => buildBuckets(filteredItems, variant, granularity, resolvedBucketWindow),
+        [filteredItems, variant, granularity, resolvedBucketWindow],
     );
 
     const defaultSelectedKey = useMemo(
@@ -118,11 +153,16 @@ export const ActivityFeed: React.FC<ActivityFeedProps> = ({
                     onSelect={handleSelectBucket}
                 />
                 {!isWidget && (
-                    <div className="self-start">
+                    <div className="self-start mr-5">
                         <GranularitySwitcher
                             allowed={resolvedAllowed}
                             active={granularity}
                             onChange={setGranularity}
+                        />
+                        <MemberFilter
+                            options={memberOptions}
+                            selected={selectedActor}
+                            onChange={setSelectedActor}
                         />
                     </div>
                 )}

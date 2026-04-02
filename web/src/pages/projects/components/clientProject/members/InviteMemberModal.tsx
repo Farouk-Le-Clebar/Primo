@@ -230,12 +230,12 @@ const InviteMemberModal: React.FC<InviteMemberModalProps> = ({
                     </div>
 
                     {/* Actions */}
-                    <div className="bg-gray-50/80 border-t border-gray-200/80 px-6 py-5">
+                    <div className="bg-[#EFEFF3] border-t border-gray-200/80 px-6 py-5">
                         <div className="flex gap-2">
                             <button
                                 type="button"
                                 onClick={handleClose}
-                                className="flex-1 px-4 py-2.5 text-[13px] font-medium text-gray-500 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors cursor-pointer"
+                                className="flex-1 px-4 py-2.5 text-[13px] font-medium text-gray-500 bg-gray-200 hover:bg-gray-300 rounded-md transition-colors cursor-pointer"
                                 disabled={isLoading}
                             >
                                 Annuler

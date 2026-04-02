@@ -1,6 +1,7 @@
-import React, { memo, useCallback } from "react";
+import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
 import type { ActivityEventResponse } from "../../../../../types/project/projectHistoryTimeline";
-import { CreationAnchor } from "./components/timeline/CreationAnchor";
+import type { MemberOption } from "../../../../../types/project/projectHistoryFeed";
+import { FeedFooter } from "./components/timeline/Footer";
 import { Sentinel } from "./components/timeline/Sentinel";
 import { TimelineItem } from "./components/timeline/TimelineItem";
 import { History } from "lucide-react";
@@ -57,6 +58,51 @@ export const ActivityTimeline = memo(
         hasNextPage,
         fetchNextPage,
     }: ActivityTimelineProps) => {
+        const [selectedActor, setSelectedActor] = useState<string | null>(null);
+
+        const memberOptions = useMemo<MemberOption[]>(() => {
+            const seen = new Map<string, MemberOption>();
+
+            for (const event of timelineEvents) {
+                if (!seen.has(event.actorDisplayName)) {
+                    seen.set(event.actorDisplayName, {
+                        actorName: event.actorDisplayName,
+                        avatarUrl: event.actorProfilePicture,
+                    });
+                }
+            }
+
+            if (creationEvent && !seen.has(creationEvent.actorDisplayName)) {
+                seen.set(creationEvent.actorDisplayName, {
+                    actorName: creationEvent.actorDisplayName,
+                    avatarUrl: creationEvent.actorProfilePicture,
+                });
+            }
+
+            return Array.from(seen.values()).sort((a, b) =>
+                (a.actorName ?? "").localeCompare(b.actorName ?? "", "fr"),
+            );
+        }, [timelineEvents, creationEvent]);
+
+        useEffect(() => {
+            if (
+                selectedActor !== null &&
+                !memberOptions.some((opt) => opt.actorName === selectedActor)
+            ) {
+                setSelectedActor(null);
+            }
+        }, [selectedActor, memberOptions]);
+
+        const filteredTimelineEvents = useMemo(
+            () =>
+                selectedActor === null
+                    ? timelineEvents
+                    : timelineEvents.filter(
+                          (event) => event.actorDisplayName === selectedActor,
+                      ),
+            [timelineEvents, selectedActor],
+        );
+
         const handleIntersect = useCallback(() => {
             if (hasNextPage && !isFetchingNextPage) fetchNextPage();
         }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
@@ -71,7 +117,7 @@ export const ActivityTimeline = memo(
                 >
                     {isLoading ? (
                         <TimelineSkeleton />
-                    ) : timelineEvents.length === 0 && !hasNextPage ? (
+                    ) : filteredTimelineEvents.length === 0 && !hasNextPage ? (
                         <TimelineEmptyState />
                     ) : (
                         <>
@@ -84,12 +130,13 @@ export const ActivityTimeline = memo(
                             {isFetchingNextPage && <FetchingMore />}
 
                             <ul className="relative px-4 pt-3" role="list">
-                                {timelineEvents.map((event, index) => (
+                                {filteredTimelineEvents.map((event, index) => (
                                     <TimelineItem
                                         key={event.id}
                                         event={event}
                                         isLast={
-                                            index === timelineEvents.length - 1
+                                            index ===
+                                            filteredTimelineEvents.length - 1
                                         }
                                     />
                                 ))}
@@ -110,9 +157,12 @@ export const ActivityTimeline = memo(
                 </div>
 
                 {/* footer -> la date de création */}
-                <CreationAnchor
+                <FeedFooter
                     event={creationEvent}
                     projectName={projectName}
+                    memberOptions={memberOptions}
+                    selectedActor={selectedActor}
+                    onSelectActor={setSelectedActor}
                 />
             </div>
         );
