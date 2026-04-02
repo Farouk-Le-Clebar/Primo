@@ -2,6 +2,11 @@ import type { ReactNode } from "react";
 
 export type Granularity = "day" | "week" | "month";
 
+export type MemberOption = {
+    actorName: string | null;
+    avatarUrl: string | null | undefined;
+};
+
 export type ActivityDisplayItem = {
     id: string;
     occurredAt: string | Date;
