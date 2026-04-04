@@ -34,16 +34,14 @@ export default function ParcelInfoPanel({ selectedParcelle }: ParcelInfoPanelPro
 
   const properties = selectedParcelle?.feature?.properties;
   const parcelId = properties?.id || "Parcelle inconnue";
-  
+
   if (!hasSelectedOnce && !selectedParcelle?.feature) return null;
 
   return (
     <div className="relative h-full w-full pointer-events-none">
-      
-      <div 
-        className={`absolute top-4 left-4 z-[500] transition-all duration-500 ease-out pointer-events-auto ${
-          !isVisible && selectedParcelle?.feature ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-10 pointer-events-none"
-        }`}
+      <div
+        className={`absolute top-4 left-4 z-[500] transition-all duration-500 ease-out pointer-events-auto ${!isVisible && selectedParcelle?.feature ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-10 pointer-events-none"
+          }`}
       >
         <button
           onClick={() => setIsVisible(true)}
@@ -58,9 +56,8 @@ export default function ParcelInfoPanel({ selectedParcelle }: ParcelInfoPanelPro
 
       <aside
         ref={panelRef}
-        className={`absolute inset-y-0 left-0 w-full sm:w-[350px] lg:w-[400px] bg-[#F8F9FB] shadow-[20px_0_25px_-5px_rgba(0,0,0,0.1)] z-[500] transform transition-transform duration-500 ease-in-out flex flex-col pointer-events-auto ${
-          isVisible ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={`absolute inset-y-0 left-0 w-full sm:w-[350px] lg:w-[400px] bg-[#F8F9FB] shadow-[20px_0_25px_-5px_rgba(0,0,0,0.1)] z-[500] transform transition-transform duration-500 ease-in-out flex flex-col pointer-events-auto ${isVisible ? "translate-x-0" : "-translate-x-full"
+          }`}
       >
         <ParcelPanelHeader parcelId={parcelId} onClose={() => setIsVisible(false)} />
 
@@ -82,7 +79,7 @@ export default function ParcelInfoPanel({ selectedParcelle }: ParcelInfoPanelPro
             </>
           ) : (
             <div className="h-full flex flex-col items-center justify-center text-gray-400 opacity-50">
-               <p>Aucune donnée disponible</p>
+              <p>Aucune donnée disponible</p>
             </div>
           )}
         </div>

@@ -2,7 +2,7 @@ import MapBounds from "./layers/MapBounds";
 import ZoomHandler from "./layers/ZoomHandler";
 import { TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import type { FeatureCollection } from "geojson";
 import L from "leaflet";
 import ShapesLayer from "./layers/ShapesLayer";
@@ -32,6 +32,7 @@ const Layers = () => {
         feature: any;
         layer: L.Path;
     } | null>(null);
+    const selectedIdRef = useRef<string | null>(null);
 
     const user = JSON.parse(localStorage.getItem("user") || "{}");
     const [mapType, setMapType] = useState<"basic" | "satellite">(user.mapPreference);
@@ -78,8 +79,9 @@ const Layers = () => {
     }, []);
 
     const handleParcelleSelect = (bounds: L.LatLngBounds, feature: any, layer: L.Path) => {
+        const id = feature.id;
+        selectedIdRef.current = id;
         setSelectedParcelle({ bounds, feature, layer });
-        console.log(selectedParcelle);
     };
 
     const handleChangeMapType = (type: "basic" | "satellite") => {
@@ -98,7 +100,10 @@ const Layers = () => {
                     onChangeMapType={handleChangeMapType}
                     currentMapType={mapType}
                 />
-                <Navbar />
+                <Navbar
+                    parcelleBounds={pacellesBoundData}
+                    onParcelleSelect={handleParcelleSelect}
+                />
                 <AiLayer />
                 <ParcelInfoPanel selectedParcelle={selectedParcelle} />
             </NoScrollZone>
@@ -122,6 +127,7 @@ const Layers = () => {
                     divisions: divisionsBoundData,
                 }}
                 onParcelleSelect={handleParcelleSelect}
+                selectedIdRef={selectedIdRef}
             />
             <PoiLayer
                 onPoisChange={handlePoisChange}
