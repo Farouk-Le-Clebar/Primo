@@ -14,6 +14,7 @@ import ProfileDropdown from "../../../../../components/navbar/components/profile
 // ICONS / LOGOS
 import PrimoLogo from "../../../../../assets/logos/logoPrimoWhite.svg?react";
 import { useMap } from "react-leaflet";
+import L from "leaflet";
 
 type NavbarProps = {
   parcelleBounds: any;
