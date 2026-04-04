@@ -44,7 +44,7 @@ const ProjectRow: React.FC<ProjectRowProps> = ({
 
             {/* Parameters column */}
             <td className="px-6 py-4">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-green-100 text-green-600 rounded-md text-xs">
+                <span className="inline-flex whitespace-nowrap items-center gap-1.5 pr-2.5 pl-2 py-1 bg-green-600 text-white font-medium rounded-md text-xs">
                     <svg
                         className="w-3.5 h-3.5"
                         fill="none"
@@ -64,7 +64,7 @@ const ProjectRow: React.FC<ProjectRowProps> = ({
 
             {/* Parcels column */}
             <td className="px-6 py-4">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-purple-100 text-purple-600 rounded-md text-xs">
+                <span className="inline-flex whitespace-nowrap items-center gap-1.5 pr-2.5 pl-2 py-1 bg-[#4F6367] text-white font-medium rounded-md text-xs">
                     <svg
                         className="w-3.5 h-3.5"
                         fill="none"
@@ -88,8 +88,29 @@ const ProjectRow: React.FC<ProjectRowProps> = ({
                 </span>
             </td>
 
-            {/* Created date column */}
+            {/* Members column */}
             <td className="px-6 py-4">
+                <span className="inline-flex whitespace-nowrap items-center gap-1.5 pr-2.5 pl-2 py-1 bg-[#20A4F3] text-white font-medium rounded-md text-xs">
+                    <svg
+                        className="w-3.5 h-3.5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                        />
+                    </svg>
+                    {project.memberCount} membre
+                    {project.memberCount > 1 ? "s" : ""}
+                </span>
+            </td>
+
+            {/* Created date column */}
+            <td className="px-16 py-4">
                 <span className="text-sm text-gray-600">
                     {formatDate(project.createdAt)}
                 </span>

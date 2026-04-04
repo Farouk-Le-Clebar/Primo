@@ -17,16 +17,16 @@ const ListView: React.FC<ListViewProps> = ({ itemCount = 8 }) => {
                             <div className="flex-1">
                                 <div className="h-4 bg-gray-300 rounded animate-pulse w-2/3 group-hover:bg-gray-400 transition-colors" />
                             </div>
-                            
+
                             <div className="flex-1">
                                 <div className="h-4 bg-gray-200 rounded animate-pulse w-1/2 group-hover:bg-gray-300 transition-colors" />
                             </div>
-                            
+
                             <div className="flex-1">
                                 <div className="h-4 bg-gray-200 rounded animate-pulse w-3/5 group-hover:bg-gray-300 transition-colors" />
                             </div>
 
-                             <div className="flex-1">
+                            <div className="flex-1">
                                 <div className="h-4 bg-gray-200 rounded animate-pulse w-2/5 group-hover:bg-gray-300 transition-colors" />
                             </div>
                         </div>

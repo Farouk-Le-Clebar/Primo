@@ -2,8 +2,7 @@ export type CreateProjectPayload = {
     name: string;
     isFavorite?: boolean;
     notes?: string;
-}
-
+};
 
 export type UpdateProjectPayload = {
     name?: string;
@@ -15,8 +14,7 @@ export type UpdateProjectPayload = {
         properties?: Record<string, any>;
     }>;
     parameters?: Record<string, any>;
-}
-
+};
 
 export interface ProjectResponse {
     id: string;
@@ -32,4 +30,5 @@ export interface ProjectResponse {
     userId: string;
     createdAt: string;
     modifiedAt: string;
+    memberCount: number;
 }
