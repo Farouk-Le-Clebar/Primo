@@ -14,10 +14,18 @@ import ProfileDropdown from "../../../../../components/navbar/components/profile
 // ICONS / LOGOS
 import PrimoLogo from "../../../../../assets/logos/logoPrimoWhite.svg?react";
 import { useMap } from "react-leaflet";
+import L from "leaflet";
 
-export default function Navbar() {
+type NavbarProps = {
+  parcelleBounds: any;
+  onParcelleSelect: (bounds: L.LatLngBounds, feature: any, layer: L.Path) => void;
+}
+
+export default function Navbar({ parcelleBounds, onParcelleSelect }: NavbarProps) {
   const location = useLocation();
   const [isUserConnected, setIsUserConnected] = useState<boolean | null>(null);
+  const [coordsSelected, setCoordsSelected] = useState<[number, number] | null>(null);
+  const [newSearchSelected, setNewSearchSelected] = useState(true);
   const map = useMap();
 
   useEffect(() => {
@@ -38,8 +46,37 @@ export default function Navbar() {
 
   const pageName = getPageName(location.pathname);
 
+  useEffect(() => {
+    if (!coordsSelected) return;
+    if (parcelleBounds === null) return;
+    if (newSearchSelected) return;
+    const timer = setTimeout(() => {
+      let found = false;
+
+      map.eachLayer((layer: any) => {
+        if (layer instanceof L.Polygon && layer.getBounds().contains(coordsSelected)) {
+          layer.setStyle({
+            fillOpacity: 0.7,
+            weight: 3
+          });
+          layer.bringToFront();
+          found = true;
+          onParcelleSelect(layer.getBounds(), layer.feature, layer);
+          setNewSearchSelected(true);
+        }
+      });
+      if (found) {
+        setCoordsSelected(null);
+      }
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, [parcelleBounds, coordsSelected, map]);
+
   const handleAdressSelect = (coords: [number, number]) => {
     map.flyTo(coords, 18, { duration: 1.5 });
+    setCoordsSelected(coords);
+    setNewSearchSelected(false);
   }
 
   if (isUserConnected === null) {

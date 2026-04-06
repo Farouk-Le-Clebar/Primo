@@ -14,7 +14,23 @@ type ShapesLayerProps = {
     currentZoom: number;
     dataShape: DataType;
     onParcelleSelect: (bounds: L.LatLngBounds, feature: any, layer: L.Path) => void;
+    selectedIdRef: React.RefObject<string | null>;
 };
+
+const defaultStyle = {
+    fillColor: "#54bb8dff",
+    color: "#51b789ff",
+    fillOpacity: 0.2,
+    weight: 2
+};
+
+const selectedStyle = {
+    fillColor: "#54bb8dff",
+    color: "#51b789ff",
+    fillOpacity: 0.7,
+    weight: 3,
+};
+
 
 const ShapesLayer = ({
     onCityBoundChange,
@@ -25,6 +41,7 @@ const ShapesLayer = ({
     currentZoom,
     dataShape,
     onParcelleSelect,
+    selectedIdRef
 }: ShapesLayerProps) => {
     const map = useMap();
 
@@ -173,8 +190,11 @@ const ShapesLayer = ({
                 <GeoJSON
                     key={JSON.stringify(dataShape.parcelles)}
                     data={dataShape.parcelles}
-                    style={style}
-                    onEachFeature={(feature, layer) => onEachFeature(feature, layer, map, onParcelleSelect)}
+                    style={(feature) => {
+                        const id = feature?.id;
+                        return id === selectedIdRef.current ? selectedStyle : defaultStyle;
+                    }}
+                    onEachFeature={(feature, layer) => onEachFeature(feature, layer, map, onParcelleSelect, selectedIdRef)}
                 />
             )}
             {dataShape.city && ( // La meme pour les city
