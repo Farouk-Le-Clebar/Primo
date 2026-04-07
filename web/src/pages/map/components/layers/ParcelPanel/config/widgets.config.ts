@@ -1,4 +1,4 @@
-import type { ParcelWidgetComponent } from "../types";
+import type { ParcelWidgetComponent } from "../../ParcelDetailedDashboard/types";
 
 // WIDGETS
 import BuildingsWidget from "../widgets/buildings/BuildingsWidget";
@@ -11,7 +11,6 @@ import DvfWidget from "../widgets/dvf/DvfWidget";
 export const getWidgetsFromUserProfile = (): ParcelWidgetComponent[] => {
   return [
     BuildingsWidget,
-    MeteoWidget,
     GpuUrbanAreasWidget,
     GpuPrescriptionsWidget,
     GpuInformationsWidget,
