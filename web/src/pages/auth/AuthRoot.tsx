@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
-import { useGoogleLogin } from "@react-oauth/google"; // 👈 Ajout du hook Google
+import { useGoogleLogin } from "@react-oauth/google";
 
 // COMPONENTS
 import { checkUserByMail } from "../../requests/UserRequests";
-import { loginWithGoogle } from "../../requests/AuthRequests"; // 👈 Ajout de ta nouvelle requête
+import { loginWithGoogle } from "../../requests/AuthRequests";
 import Button from "../../ui/Button";
 import Input from "../../ui/Input";
 import LogoGoogle from "../../assets/logos/LogoGoogle.svg";
@@ -15,7 +15,6 @@ export default function AuthRoot() {
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
-  // 1. Mutation classique (Email check)
   const { mutate: checkEmailMutate, isPending: isCheckingEmail } = useMutation({
     mutationFn: () => checkUserByMail(email),
     onSuccess: (data) => {
@@ -31,7 +30,6 @@ export default function AuthRoot() {
     },
   });
 
-  // 2. NOUVELLE MUTATION : Connexion Google
   const { mutate: googleMutate, isPending: isGoogleLoading } = useMutation({
     mutationFn: (token: string) => loginWithGoogle(token),
     onSuccess: (data) => {
@@ -41,7 +39,6 @@ export default function AuthRoot() {
           localStorage.setItem("user", JSON.stringify(data.user));
         }
 
-        // 👈 La magie du isNewUser calculé dans ton backend !
         if (data.isNewUser) {
           navigate("/onboarding");
         } else {
@@ -54,11 +51,9 @@ export default function AuthRoot() {
     },
   });
 
-  // 3. Fonction déclenchée par le clic sur le bouton Google
   const handleGoogleConnect = useGoogleLogin({
     onSuccess: (tokenResponse) => {
       setErrorMessage("");
-      // On envoie le token récupéré à notre backend NestJS
       googleMutate(tokenResponse.access_token);
     },
     onError: () => {
