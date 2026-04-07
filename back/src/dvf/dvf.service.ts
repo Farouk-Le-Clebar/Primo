@@ -11,7 +11,6 @@ export class DvfService {
   ) {}
 
   async getHistoriqueByParcelle(idParcelle: string) {
-    // Utilisation du QueryBuilder de TypeORM optimisé pour MySQL
     const ventes = await this.dvfRepository
       .createQueryBuilder('dvf')
       .select([
@@ -20,14 +19,13 @@ export class DvfService {
         'dvf.valeurFonciere AS prix',
         'dvf.surfaceReelleBati AS surface',
         'dvf.typeLocal AS typeLocal',
-        // Calcul du prix au m² géré par MySQL (ROUND et division)
         'ROUND((dvf.valeurFonciere / dvf.surfaceReelleBati), 2) AS prixM2',
       ])
       .where('dvf.idParcelle = :idParcelle', { idParcelle })
       .andWhere('dvf.valeurFonciere IS NOT NULL')
       .andWhere('dvf.surfaceReelleBati > 0')
       .orderBy('dvf.dateMutation', 'DESC')
-      .getRawMany(); // getRawMany permet de récupérer les calculs (prixM2) proprement
+      .getRawMany();
 
     if (!ventes || ventes.length === 0) {
       throw new NotFoundException(`Aucune transaction trouvée pour la parcelle ${idParcelle}`);
