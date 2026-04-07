@@ -32,7 +32,7 @@ const PoiWidget = ({ onTogglePoi }: PoiWidgetProps) => {
 
     return (
         <div
-            className={`absolute top-4 right-4 z-[1000] transition-all duration-300 ${
+            className={`absolute transition-all duration-300 ${
                 isOpen ? openWidth : closedWidth
             } ${isOpen ? openHeight : closedHeight}`}
             style={{ minHeight: isOpen ? 200 : undefined }}
