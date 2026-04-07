@@ -1,5 +1,6 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import NotificationsDropdown from "./components/notificationDropdown/NotificationsDropdown";
+import SearchingBar from "../../components/search/SearchBar";
 
 // ICONS
 import PageIcons from "../../assets/icons/page.svg?react";
@@ -10,10 +11,12 @@ const ROUTE_NAMES: Record<string, string> = {
   "/cartographie": "Carte Interactive",
   "/settings": "Paramètres",
   "/dashboard": "Aperçu",
+  "/search": "Carte",
 };
 
 export default function Navbar() {
   const location = useLocation();
+  const navigate = useNavigate();
 
   const getPageName = () => {
     const path = location.pathname;
@@ -25,11 +28,18 @@ export default function Navbar() {
 
   const pageName = getPageName();
 
+  const handleAddressSelect = (coords: [number, number]) => {
+    navigate("/search", { 
+      state: { centerOn: coords } 
+    });
+  };
+
   return (
     <nav className="flex w-full h-full items-center bg-white font-UberMove border-b border-gray-100">
+      
       <div className="flex h-full flex-1 items-center gap-2 px-4">
         <PageIcons className="w-5 h-5 text-gray-800" />
-        <div className="flex items-center gap-1 font-inter font-medium text-xs text-[#999999]">
+        <div className="flex items-center gap-1 font-inter font-medium text-xs text-[#999999] min-w-max">
           <span>Dashboard</span>
           {pageName && (
             <>
@@ -39,7 +49,12 @@ export default function Navbar() {
           )}
         </div>
       </div>
-      <div className="flex h-full min-w-[285px] items-center justify-end gap-4 pr-6">
+
+      <div className="flex h-full items-center justify-end gap-4 pr-6">
+          <div className="w-[200px] hover:w-[350px] focus-within:w-[350px] transition-all duration-300 ease-in-out">
+            <SearchingBar onAdressSelect={handleAddressSelect} />
+          </div>
+
           <NotificationsDropdown />
       </div>
     </nav>
