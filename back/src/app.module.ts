@@ -28,8 +28,8 @@ import { DvfModule } from './dvf/dvf.module';
       username: process.env.MYSQL_USER,
       password: process.env.MYSQL_PASSWORD,
       database: process.env.MYSQL_DATABASE,
-      entities: [User, Project, DvfMutation], // <-- AJOUT DE L'ENTITÉ ICI
-      synchronize: true, // C'est lui qui va créer la table MySQL automatiquement !
+      entities: [User, Project, DvfMutation],
+      synchronize: true,
     }),
     TypeOrmModule.forFeature([User]),
     AuthModule,
