@@ -53,11 +53,11 @@ const SearchBar = ({ onAdressSelect }: SearchBarProps) => {
   };
 
   return (
-    <div className="relative flex w-full flex-col">
+    <div className="relative flex w-full h-7.5 flex-col">
       <div className="relative w-full h-full">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-700 w-4 h-4" />
         <input
-          className="w-full rounded-xl h-9 pl-10 pr-2 focus:outline-none bg-[#EFEFF4] text-sm"
+          className="w-full rounded-xl h-full pl-10 pr-2 focus:outline-none bg-[#EFEFF4] text-sm"
           type="text"
           placeholder="Rechercher une adresse..."
           value={selectedAddress ? selectedAddress : address}
