@@ -1,87 +1,61 @@
-import { useLocation } from "react-router-dom";
-import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-
-// UTILS
-import { checkAuth } from "../../utils/auth";
-
-// COMPONENTS
-import SearchingBar from "../search/SearchBar";
-import LoginButton from "./components/LoginButton";
+import { useLocation, useNavigate } from "react-router-dom";
 import NotificationsDropdown from "./components/notificationDropdown/NotificationsDropdown";
-import ProfileDropdown from "./components/profileDropdown/ProfileDropdown";
+import SearchingBar from "../../components/search/SearchBar";
 
-// ICONS / LOGOS
-import PrimoLogo from "../../assets/logos/logoPrimoWhite.svg";
+// ICONS
+import PageIcons from "../../assets/icons/page.svg?react";
+
+const ROUTE_NAMES: Record<string, string> = {
+  "/": "Vue d'ensemble",
+  "/parcelles": "Gestion Parcellaire",
+  "/cartographie": "Carte Interactive",
+  "/settings": "Paramètres",
+  "/dashboard": "Aperçu",
+  "/search": "Carte",
+};
 
 export default function Navbar() {
   const location = useLocation();
-  const [isUserConnected, setIsUserConnected] = useState<boolean | null>(null);
+  const navigate = useNavigate();
 
-  useEffect(() => {   
-    verify();
-  }, []);
+  const getPageName = () => {
+    const path = location.pathname;
+    if (ROUTE_NAMES[path]) return ROUTE_NAMES[path];
 
-  const verify = async () => {
-      const isConnected = await checkAuth();
-      setIsUserConnected(isConnected);
+    const slug = path.split("/").filter(Boolean).pop();
+    return slug ? slug.charAt(0).toUpperCase() + slug.slice(1).replace(/-/g, " ") : "";
   };
 
-  const getPageName = (path: string) => {
-    const parts = path.split("/").filter(Boolean);
-    if (parts.length === 0) return "Dashboard";
-    const page = parts[parts.length - 1];
-    return page.charAt(0).toUpperCase() + page.slice(1);
+  const pageName = getPageName();
+
+  const handleAddressSelect = (coords: [number, number]) => {
+    navigate("/search", { 
+      state: { centerOn: coords } 
+    });
   };
-
-  const pageName = getPageName(location.pathname);
-
-  if (isUserConnected === null) {
-    return <nav className="w-full h-[70px] bg-white border-b border-gray-100" />;
-  }
 
   return (
-    <nav className="flex w-full h-[70px] items-center bg-white font-UberMove">
+    <nav className="flex w-full h-full items-center bg-white font-UberMove border-b border-gray-100">
       
-      {/* GAUCHE : Logo Primo */}
-      <Link 
-        to="/dashboard" 
-        className="flex h-full items-center min-w-[245px] cursor-pointer hover:opacity-80 transition-opacity duration-200"
-      >
-        <div className="p-2 ml-5">
-          <img src={PrimoLogo} alt="Primo" className="w-9 h-9 invert" />
-        </div>
-        <span className="text-2xl font-UberMoveBold text-gray-900 tracking-tight">
-          Primo.
-        </span>
-      </Link>
-
-      {/* CENTRE : Breadcrumbs & Recherche */}
-      <div className="flex h-full flex-1 items-center gap-20 px-8">
-        <div className="flex flex-col min-w-[120px]">
-          <span className="text-[10px] text-gray-400 uppercase tracking-widest">
-            Pages / {pageName}
-          </span>
-          <span className="text-sm font-UberMoveBold text-gray-800">{pageName}</span>
-        </div>
-
-        <div className="flex-1 max-w-xl">
-          <SearchingBar onAddressSelect={(coords) => console.log(coords)}/>
+      <div className="flex h-full flex-1 items-center gap-2 px-4">
+        <PageIcons className="w-5 h-5 text-gray-800" />
+        <div className="flex items-center gap-1 font-inter font-medium text-xs text-[#999999] min-w-max">
+          <span>Dashboard</span>
+          {pageName && (
+            <>
+              <span>/</span>
+              <span className="text-gray-800 font-semibold">{pageName}</span>
+            </>
+          )}
         </div>
       </div>
 
-      {/* DROITE : Actions Auth */}
-      <div className="flex h-full min-w-[285px] gap-4">
-        {!isUserConnected ? (
-          <div className="flex h-full w-3/4 items-center justify-end"> 
-            <LoginButton />
+      <div className="flex h-full items-center justify-end gap-4 pr-6">
+          <div className="w-[200px] hover:w-[350px] focus-within:w-[350px] transition-all duration-300 ease-in-out">
+            <SearchingBar onAdressSelect={handleAddressSelect} />
           </div>
-        ) : (
-          <div className="flex h-full w-3/4 items-center justify-end gap-3">
-            <NotificationsDropdown />
-            <ProfileDropdown />
-          </div>
-        )}
+
+          <NotificationsDropdown />
       </div>
     </nav>
   );

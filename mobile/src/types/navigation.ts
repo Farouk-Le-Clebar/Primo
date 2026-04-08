@@ -1,3 +1,5 @@
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+
 export type RootStackParamList = {
     Auth: undefined;
     Main: undefined;
@@ -8,6 +10,16 @@ export type AuthStackParamList = {
     Login: { email: string };
     Register: { email: string };
     ForgotPassword: undefined;
+};
+
+export type MainStackParamList = {
+    Dashboard: undefined;
+    Map: undefined;
+    Search: undefined;
+    Favorites: undefined;
+    Profile: undefined;
+    Settings: undefined;
+    EditProfile: undefined;
 };
 
 export type MainTabParamList = {
@@ -24,3 +36,5 @@ export type SettingsStackParamList = {
     Notifications: undefined;
     Privacy: undefined;
 };
+
+export type NavigationProp = NativeStackNavigationProp<MainStackParamList>;

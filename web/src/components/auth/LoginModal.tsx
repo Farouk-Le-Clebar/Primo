@@ -7,15 +7,13 @@ import { Eye, EyeOff, ArrowLeft } from "lucide-react";
 
 import Button from "../../ui/Button";
 import Input from "../../ui/Input";
-import {BackgroundColors, TextColors}  from "../../utils/colors";
-import { useDispatch } from "react-redux";
-import { setUser } from "../../store/userSlice";
+import { BackgroundColors, TextColors } from "../../utils/colors";
 
-export default function LoginModal({ 
+export default function LoginModal({
   email,
   onBack,
   onClose,
-}: { 
+}: {
   email: string;
   onBack: () => void;
   onClose: () => void;
@@ -23,7 +21,6 @@ export default function LoginModal({
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const dispatch = useDispatch();
 
   const { mutate, isPending } = useMutation({
     mutationFn: () => login(email, password),
@@ -32,7 +29,7 @@ export default function LoginModal({
         try {
           localStorage.setItem("token", data.access_token);
           if (data.user) {
-            dispatch(setUser(data.user));
+            localStorage.setItem("user", JSON.stringify(data.user));
             window.location.reload();
           }
           onClose();
@@ -81,8 +78,8 @@ export default function LoginModal({
         <div>
           <h2 className="text-2xl sm:text-2xl font-UberMoveBold text-gray-800 mb-2">Heureux de vous revoir 👋</h2>
           <p className="text-gray-600 font-UberMoveMedium mb-6 text-sm sm:text-sm">
-              Connectez-vous à votre compte Primo pour retrouver vos projets, vos favoris et votre progression.
-              Saisissez simplement votre mot de passe ci-dessous.
+            Connectez-vous à votre compte Primo pour retrouver vos projets, vos favoris et votre progression.
+            Saisissez simplement votre mot de passe ci-dessous.
           </p>
 
         </div>
@@ -111,40 +108,40 @@ export default function LoginModal({
             </button>
           </div>
 
-        {/* Button Connexion */}
-        <Button
-          onClick={handleConnect}
-          disabled={isPending}
-          isLoading={isPending}
-          textSize="text-md font-medium"
-          className={`mt-6`}
-          children={<>
-            <p>Se connecter</p>
-          </>
-          }
-        />
+          {/* Button Connexion */}
+          <Button
+            onClick={handleConnect}
+            disabled={isPending}
+            isLoading={isPending}
+            textSize="text-md font-medium"
+            className={`mt-6`}
+            children={<>
+              <p>Se connecter</p>
+            </>
+            }
+          />
 
-        {/* Button Back */}
-        <Button
-          onClick={onBack}
-          disabled={isPending}
-          isLoading={isPending}
-          className={`mt-3`}
-          textSize="text-md font-normal"
-          textColor={TextColors.black}
-          backgroundColor={BackgroundColors.gray}
-          backgroundHoverColor={BackgroundColors.grayHover}
-          children={<>
-                      <ArrowLeft
-                        size={24}
-                        className="text-black opacity-0 -translate-x-2 transition-all duration-200 group-hover:opacity-100 group-hover:translate-x-0 group-hover:stroke-2"
-                      />
-                      <p className="mr-9">Retour</p>
-                    </>
-          }
-        />
+          {/* Button Back */}
+          <Button
+            onClick={onBack}
+            disabled={isPending}
+            isLoading={isPending}
+            className={`mt-3`}
+            textSize="text-md font-normal"
+            textColor={TextColors.black}
+            backgroundColor={BackgroundColors.gray}
+            backgroundHoverColor={BackgroundColors.grayHover}
+            children={<>
+              <ArrowLeft
+                size={24}
+                className="text-black opacity-0 -translate-x-2 transition-all duration-200 group-hover:opacity-100 group-hover:translate-x-0 group-hover:stroke-2"
+              />
+              <p className="mr-9">Retour</p>
+            </>
+            }
+          />
 
-        {/* Text Error */}
+          {/* Text Error */}
           {errorMessage && (
             <p className="text-red-600 text-sm mt-2">{errorMessage}</p>
           )}

@@ -25,7 +25,7 @@ services:
       JWT_SECRET: S3cReT
       ADDOK_URL: http://addok:7878
       FRONT_URL: app.primo-data.fr
-      GEOSERVER_URL: http://geoserver:8080/geoserver
+      EXTERNE_GEOSERVER_URL: http://geoserver:8080/geoserver
 
     labels:
       - "traefik.enable=true"

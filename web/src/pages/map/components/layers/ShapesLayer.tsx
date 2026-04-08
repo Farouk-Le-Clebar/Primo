@@ -4,7 +4,6 @@ import { boundToBbox, FRANCE_BBOX, isFeatureCollection, MIN_ZOOM_FOR_CITY, MIN_Z
 import { GeoJSON, useMap } from "react-leaflet";
 import { onEachFeature } from "./ShapesClick";
 import { getCityByBbox, getDepartementByBbox, getDivisionsByBboxAndDepartments, getParcellesByBboxAndDepartments } from "../../../../requests/map";
-import { useParcelle } from '../../../../context/ParcelleContext';
 
 type ShapesLayerProps = {
     onCityBoundChange: (data: any) => void;
@@ -14,7 +13,24 @@ type ShapesLayerProps = {
     mapBounds: L.LatLngBounds | null;
     currentZoom: number;
     dataShape: DataType;
+    onParcelleSelect: (bounds: L.LatLngBounds, feature: any, layer: L.Path) => void;
+    selectedIdRef: React.RefObject<string | null>;
 };
+
+const defaultStyle = {
+    fillColor: "#54bb8dff",
+    color: "#51b789ff",
+    fillOpacity: 0.2,
+    weight: 2
+};
+
+const selectedStyle = {
+    fillColor: "#54bb8dff",
+    color: "#51b789ff",
+    fillOpacity: 0.7,
+    weight: 3,
+};
+
 
 const ShapesLayer = ({
     onCityBoundChange,
@@ -24,9 +40,10 @@ const ShapesLayer = ({
     mapBounds,
     currentZoom,
     dataShape,
+    onParcelleSelect,
+    selectedIdRef
 }: ShapesLayerProps) => {
     const map = useMap();
-    const { setSelectedParcelle } = useParcelle();
 
     const { data: allDepartements } = useQuery({ // Ici l'ékip ya une requette initiale qui charge et garde en cache les départements de toute la france pour pouvoir faire des check de visibilité plus tard
         queryKey: ['allDepartements'],
@@ -40,19 +57,10 @@ const ShapesLayer = ({
         }
     }, [allDepartements]);
 
-    const handleParcelleSelect = (bounds: L.LatLngBounds, feature: any, layer: L.Path) => {
-        setSelectedParcelle({
-            bounds,
-            feature,
-            layer
-        });
-    }
-
     const departementsVisibles = useMemo(() => { // Si jamais quelqun lis ceci, en gros cette fonction sert a savoir dans quel département tu es peut importe le niveau de zoom sur la carte et ca permet d'optimiser un maximum les requettes des parcelles / division. Bref gros banger wallah !
         if (!allDepartements?.features || !mapBounds) return [];
 
         const bounds = mapBounds;
-        console.log(allDepartements)
 
         return allDepartements.features
             .filter((dept: any) => {
@@ -175,15 +183,18 @@ const ShapesLayer = ({
                     key={JSON.stringify(dataShape.departements)}
                     data={dataShape.departements}
                     style={style}
-                    onEachFeature={(feature, layer) => onEachFeature(feature, layer, map, handleParcelleSelect)}
+                    onEachFeature={(feature, layer) => onEachFeature(feature, layer, map, onParcelleSelect)}
                 />
             )}
             {dataShape.parcelles && ( // La meme pour les parcelles
                 <GeoJSON
                     key={JSON.stringify(dataShape.parcelles)}
                     data={dataShape.parcelles}
-                    style={style}
-                    onEachFeature={(feature, layer) => onEachFeature(feature, layer, map, handleParcelleSelect)}
+                    style={(feature) => {
+                        const id = feature?.id;
+                        return id === selectedIdRef.current ? selectedStyle : defaultStyle;
+                    }}
+                    onEachFeature={(feature, layer) => onEachFeature(feature, layer, map, onParcelleSelect, selectedIdRef)}
                 />
             )}
             {dataShape.city && ( // La meme pour les city
@@ -191,7 +202,7 @@ const ShapesLayer = ({
                     key={JSON.stringify(dataShape.city)}
                     data={dataShape.city}
                     style={style}
-                    onEachFeature={(feature, layer) => onEachFeature(feature, layer, map, handleParcelleSelect)}
+                    onEachFeature={(feature, layer) => onEachFeature(feature, layer, map, onParcelleSelect)}
                 />
             )}
             {dataShape.divisions && ( // Et ta capté la meme pour les section cadastrale
@@ -199,7 +210,7 @@ const ShapesLayer = ({
                     key={JSON.stringify(dataShape.divisions)}
                     data={dataShape.divisions}
                     style={style}
-                    onEachFeature={(feature, layer) => onEachFeature(feature, layer, map, handleParcelleSelect)}
+                    onEachFeature={(feature, layer) => onEachFeature(feature, layer, map, onParcelleSelect)}
                 />
             )}
         </>

@@ -10,6 +10,7 @@ interface AuthContextType {
     token: string | null;
     handleAuthSuccess: (data: AuthResponse) => Promise<void>;
     logout: () => Promise<void>;
+    updateUser: (user: User) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -28,7 +29,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 const storedUser = await AsyncStorage.getItem('user');
 
                 if (storedToken && storedUser) {
-                    const verifiedData = await verifyToken();
+                    const verifiedData = await verifyToken(storedToken);
                     setToken(storedToken);
                     setUser(verifiedData.user);
                 }
@@ -54,6 +55,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setToken(null);
     }, []);
 
+    const updateUser = useCallback(async (updatedUser: User) => {
+        await AsyncStorage.setItem('user', JSON.stringify(updatedUser));
+        setUser(updatedUser);
+    }, []);
+
     const value = useMemo(() => ({
         isAuthenticated,
         isLoading,
@@ -61,7 +67,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         token,
         handleAuthSuccess,
         logout,
-    }), [isAuthenticated, isLoading, user, token, handleAuthSuccess, logout]);
+        updateUser,
+    }), [isAuthenticated, isLoading, user, token, handleAuthSuccess, logout, updateUser]);
 
     return (
         <AuthContext.Provider value={value}>

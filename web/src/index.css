@@ -1,69 +1,65 @@
 @import "tailwindcss";
+@import "./styles/fonts.css";
+@import "./styles/animations.css";
 
-@font-face {
-  font-family: UberMove;
-  src: url('./assets/fonts/UberMoveMedium.otf') format('opentype');
-  font-weight: 500;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: UberMoveBold;
-  src: url('./assets/fonts/UberMoveBold.otf') format('opentype');
-  font-weight: 700;
-  font-style: normal;
-}
+@custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --font-UberMove: UberMove, "Fira Sans";
-  --font-UberMoveBold: UberMoveBold, "Fira Sans";
-}
+  --font-inter: "Inter", ui-sans-serif, system-ui;
+  --font-ubermove: "UberMove", sans-serif;
 
-@keyframes fade-in {
-  from {
-    opacity: 0;
-    transform: scale(0.97);
+  --animate-fade-in: fade-in 0.2s ease-out;
+  --animate-slide-in-left: slideInLeft 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  --animate-spin-slow: spin-slow 1s linear infinite;
+
+  @keyframes fade-in {
+    from { opacity: 0; transform: scale(0.97); }
+    to { opacity: 1; transform: scale(1); }
   }
-
-  to {
-    opacity: 1;
-    transform: scale(1);
+  @keyframes slideInLeft {
+    from { opacity: 0; transform: translateX(-50px); }
+    to { opacity: 1; transform: translateX(0); }
   }
-}
-
-.animate-fade-in {
-  animation: fade-in 0.2s ease-out;
-}
-
-@keyframes slideInLeft {
-  from {
-    opacity: 0;
-    transform: translateX(-50px);
+  @keyframes spin-slow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
   }
-
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-.animate-slide-in-left {
-  animation: slideInLeft 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 .scrollbar-custom::-webkit-scrollbar {
-  width: 8px;
-  background: transparent;
+    width: 8px;
+    background: transparent;
 }
 
 .scrollbar-custom::-webkit-scrollbar-thumb {
-  background-color: rgba(100, 100, 100, 0.5);
-  border-radius: 10px;
-  border: 2px solid transparent;
-  background-clip: content-box;
+    background-color: rgba(100, 100, 100, 0.5);
+    border-radius: 10px;
+    border: 2px solid transparent;
+    background-clip: content-box;
 }
 
 .scrollbar-custom {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(100, 100, 100, 0.5) transparent;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(100, 100, 100, 0.5) transparent;
+}
+
+.poi-marker {
+    background: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    overflow: visible !important;
+}
+
+.leaflet-popup-tip-container {
+    display: none !important;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0px 1000px #EFEFF4 inset !important;
+    box-shadow: 0 0 0px 1000px #EFEFF4 inset !important;
+    -webkit-text-fill-color: #1f2937 !important;
+    background-clip: content-box !important;
 }

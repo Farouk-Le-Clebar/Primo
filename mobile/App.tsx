@@ -8,9 +8,9 @@ import { ActivityIndicator, View } from 'react-native';
 
 import { queryClient } from './src/services/queryClient';
 import AuthNavigator from './src/navigation/AuthNavigator';
-import DashboardScreen from './src/screens/dashboard/DashboardScreen';
 import { AuthProvider, useAuth } from './src/context/AuthContext';
 import { SnackbarProvider } from './src/context/SnackbarContext';
+import MainNavigator from "./src/navigation/MainNavigator";
 
 const RootNavigator = () => {
     const { isAuthenticated, isLoading } = useAuth();
@@ -23,7 +23,7 @@ const RootNavigator = () => {
         );
     }
 
-    return isAuthenticated ? <DashboardScreen /> : <AuthNavigator />;
+    return isAuthenticated ? <MainNavigator /> : <AuthNavigator />;
 };
 
 export default function App() {

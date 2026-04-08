@@ -7,6 +7,7 @@ import {
   Post,
   Req,
   UseGuards,
+  BadRequestException,
 } from '@nestjs/common';
 import type { Request } from 'express';
 import { CheckEmailDto } from './dto/check-email.dto';
@@ -14,6 +15,7 @@ import { UserService } from './user.service';
 import { JwtAuthGuard } from '../guard/jwt-auth.guard';
 import { User } from '../database/user.entity';
 import { UpdateProfileDto } from './dto/update-profile';
+import { AdminGuard } from 'src/guard/admin.guard';
 
 interface RequestWithUser extends Request {
   user: User;
@@ -21,7 +23,7 @@ interface RequestWithUser extends Request {
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) { }
 
   @Post('check-email')
   async checkEmail(@Body() dto: CheckEmailDto) {
@@ -33,11 +35,27 @@ export class UserController {
     return this.userService.getUserByEmail(email);
   }
 
-  @Get('me')
-  @UseGuards(JwtAuthGuard)
-  async getCurrentUser(@Req() req: RequestWithUser): Promise<Partial<User>> {
-    const { password, ...safeUser } = await this.userService.getUserByEmail(req.user.email);
-    return safeUser;
+  @Get(':from/:to')
+  @UseGuards(JwtAuthGuard, AdminGuard)
+  async getUsers(@Param('from') from: number, @Param('to') to: number) {
+    return this.userService.getUsers(from, to);
+  }
+
+  @Get('admin/search/:query')
+  @UseGuards(JwtAuthGuard, AdminGuard)
+  async searchUsers(@Param('query') query: string) {
+    return this.userService.searchUsers(query);
+  }
+
+  @Post('admin/delete')
+  @UseGuards(JwtAuthGuard, AdminGuard)
+  async deleteUser(@Body('userId') userId: string) {
+    return this.userService.deleteUser(userId);
+  }
+
+  @Get('is-admin')
+  @UseGuards(JwtAuthGuard, AdminGuard)
+  async isAdmin(@Req() req: RequestWithUser) {
   }
 
   @Put('profile')
@@ -46,6 +64,20 @@ export class UserController {
     @Req() req: RequestWithUser,
     @Body() dto: UpdateProfileDto,
   ) {
-    return await this.userService.updateProfile(req.user.email, dto);
+    return await this.userService.updateProfile(req.user.id, dto);
+  }
+
+  @Put('map')
+  @UseGuards(JwtAuthGuard)
+  async updateMapPreference(
+    @Req() req: RequestWithUser,
+    @Body('mapPreference') mapPreference: string,
+  ) {
+    if (mapPreference == null) {
+      throw new BadRequestException('mapPreference is required');
+    } else if (mapPreference !== 'basic' && mapPreference !== 'satellite') {
+      throw new BadRequestException('Invalid mapPreference value');
+    }
+    return await this.userService.updateMapPreference(req.user.id, mapPreference);
   }
 }

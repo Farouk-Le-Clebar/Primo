@@ -5,11 +5,14 @@ import { Ionicons } from '@expo/vector-icons';
 import { useSnackbar } from '../../context/SnackbarContext';
 import ScreenLayout from '../../components/ui/ScreenLayout';
 import Spacer from '../../components/ui/Spacer';
+import UserAvatar from '../../components/ui/UserAvatar';
 import { useAuth } from '../../context/AuthContext';
 import QuickAction from '../../components/dashboard/QuickAction';
 import MenuItem from '../../components/dashboard/MenuItem';
 import StatsCard from '../../components/dashboard/StatsCard';
 import { IconName } from '../../types/icons';
+import { useNavigation } from '@react-navigation/native';
+import { NavigationProp } from '../../types/navigation';
 
 interface QuickActionConfig {
     icon: IconName;
@@ -40,9 +43,18 @@ const MENU_ITEMS: readonly MenuItemConfig[] = [
 
 const DashboardScreen = memo(() => {
     const { showComingSoon } = useSnackbar();
-    const { logout } = useAuth();
+    const { logout, user } = useAuth();
+    const navigation = useNavigation<NavigationProp>();
 
-    const handleFeaturePress = showComingSoon;
+    const handleFeaturePress = (feature: string) => {
+        if (feature === 'Carte' || feature === 'Explorer la carte') {
+            navigation.navigate('Map');
+        } else if (feature === 'Mon profil' || feature === 'Paramètres') {
+            navigation.navigate('Settings');
+        } else {
+            showComingSoon(feature);
+        }
+    }
 
     return (
         <ScreenLayout className="bg-gray-50" contentContainerClassName="px-5 py-6">
@@ -52,10 +64,10 @@ const DashboardScreen = memo(() => {
                     <Text className="text-2xl font-bold text-gray-900 mt-1">Mon Dashboard</Text>
                 </View>
                 <Pressable
-                    onPress={() => handleFeaturePress('Mon profil')}
-                    className="w-12 h-12 rounded-full bg-primary items-center justify-center active:opacity-70"
+                    onPress={() => navigation.navigate('Settings')}
+                    className="active:opacity-70"
                 >
-                    <Ionicons name="person" size={22} color="#fff" />
+                    <UserAvatar avatarName={user?.profilePicture} size={48} />
                 </Pressable>
             </View>
 

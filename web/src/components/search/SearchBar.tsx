@@ -4,10 +4,10 @@ import { useMutation } from "@tanstack/react-query";
 import { Search } from 'lucide-react';
 
 type SearchBarProps = {
-  onAddressSelect: (coords: [number, number]) => void;
+  onAdressSelect: (coords: [number, number]) => void;
 }
 
-const SearchBar = ({ onAddressSelect }: SearchBarProps) => {
+const SearchBar = ({ onAdressSelect }: SearchBarProps) => {
   const [address, setAddress] = useState("");
   const [selectedAddress, setSelectedAddress] = useState<string | null>(null);
   
@@ -49,15 +49,15 @@ const SearchBar = ({ onAddressSelect }: SearchBarProps) => {
   const handleAddressClick = (coords: [number, number], label: string) => {
     setSelectedAddress(label);
     setAdressList([]);
-    onAddressSelect(coords);
+    onAdressSelect(coords);
   };
 
   return (
-    <div className="relative flex w-full flex-col">
+    <div className="relative flex w-full h-7.5 flex-col">
       <div className="relative w-full h-full">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-700 w-4 h-4" />
         <input
-          className="w-full rounded-xl h-9 pl-10 pr-2 focus:outline-none bg-[#EFEFF4] text-sm"
+          className="w-full rounded-xl h-full pl-10 pr-2 focus:outline-none bg-[#EFEFF4] text-sm"
           type="text"
           placeholder="Rechercher une adresse..."
           value={selectedAddress ? selectedAddress : address}

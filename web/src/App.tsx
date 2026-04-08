@@ -3,15 +3,19 @@ import { Routes, Route, Navigate } from "react-router-dom";
 // COMPONENTS
 import Layout from "./components/layouts/layout";
 import LayoutSettings from "./components/layouts/layoutSettings";
-import LayoutMap from "./components/layouts/layoutMap";
 import ProtectedRoute from "./components/protectedRoute/ProtectedRoute";
+import AdminRoute from "./components/adminRoute/AdminRoute";
 
-// PUBLIC PAGES
+// AUTH PAGES (Nouveaux imports)
+import AuthLayout from "./pages/auth/AuthLayout";
+import AuthRoot from "./pages/auth/AuthRoot";
+import AuthLogin from "./pages/auth/AuthLogin";
+import AuthRegister from "./pages/auth/AuthRegister";
+
+// PAGES
 import Dashboard from "./pages/dashboard/Dashboard";
 import Projects from "./pages/projects/Projects";
 import Map from "./pages/map/Map";
-
-// PROTECTED PAGES
 import Profile from "./pages/profile/Profile";
 import EditProfile from "./pages/settings/editProfile/EditProfile";
 import Notifications from "./pages/settings/Notifications";
@@ -20,33 +24,49 @@ import Privacy from "./pages/settings/Privacy";
 import Security from "./pages/settings/Security";
 import Subscriptions from "./pages/settings/Subscriptions";
 import CustomToaster from "./components/toaster/CustomToaster";
+import ProjectDetail from "./pages/projects/ProjectDetail";
+import ProjectCreate from "./pages/projects/ProjectCreate";
+import AdminPanel from "./pages/admin/AdminPanel";
+import OnboardingRoot from "./pages/onBoarding/OnboardingRoot";
 
 export default function App() {
   return (
     <>
-      {/* Toaster pour les notifications */}
       <CustomToaster />
-    
+
       <Routes>
-        {/* Routes Publiques */}
-        <Route path="/" element={<Layout />}>
-          <Route index element={<Dashboard />} />
-          <Route path="dashboard" element={<Dashboard />} />
-          <Route path="projects" element={<Projects />} />
+        {/* Routes Auth */}
+        <Route path="/auth" element={<AuthLayout />}>
+          <Route index element={<AuthRoot />} />
+          <Route path="login" element={<AuthLogin />} />
+          <Route path="register" element={<AuthRegister />} />
         </Route>
 
-        {/* Routes de la carte */}
-        <Route element={<LayoutMap />}>
-            <Route path="search" element={<Map />} />
-        </Route>
-
-        {/* Routes Protégées */}
+        {/* Routes Protegé */}
         <Route element={<ProtectedRoute />}>
+          <Route path="/onboarding" element={<OnboardingRoot />} />
+          
+          {/* Layout Principal */}
+          <Route path="/" element={<Layout />}>
+            <Route index element={<Navigate to="/dashboard" replace />} />
+            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="projects" element={<Projects />} />
+            <Route path="projects/new" element={<ProjectCreate />} />
+            <Route path="projects/:id" element={<ProjectDetail />} />
+            
+            {/* Routes Admin */}
+            <Route path="admin" element={<AdminRoute />}>
+              <Route path="dashboard" element={<AdminPanel />} />
+            </Route>
+          </Route>
+
+          {/* Route Carte (Plein écran, hors Layout standard j'imagine) */}
+          <Route path="/search" element={<Map />} />
+
+          {/* Layout Settings */}
           <Route path="/" element={<LayoutSettings />}>
             <Route path="profile" element={<Profile />} />
-
-            {/* Routes de paramètres */}
-            <Route path="settings" element={<EditProfile />} />
+            <Route path="settings" element={<Navigate to="/settings/edit-profile" replace />} />
             <Route path="settings/edit-profile" element={<EditProfile />} />
             <Route path="settings/notifications" element={<Notifications />} />
             <Route path="settings/billing" element={<Billing />} />
@@ -54,9 +74,10 @@ export default function App() {
             <Route path="settings/security" element={<Security />} />
             <Route path="settings/subscriptions" element={<Subscriptions />} />
           </Route>
+
         </Route>
-        
-        {/* Redirection pour les routes non trouvées */}
+
+        {/* Fallback 404 - Redirige vers le dashboard (qui redirigera vers /auth si non connecté) */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </>

@@ -1,5 +1,6 @@
 import axios from "axios";
 const apiUrl = window?._env_?.API_URL;
+const token = localStorage.getItem("token");
 
 export const checkUserByMail = async (email: string) => {
   const response = await axios.post(apiUrl + "/user/check-email", { email });
@@ -28,4 +29,35 @@ export const updateUserProfile = async (token: string, profileData: any) => {
     }
   });
   return response.data;
+}
+
+export const changeMapPreference = async (mapType: string) => {
+  return axios
+    .put(
+      `${apiUrl}/user/map`,
+      { mapPreference: mapType },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    )
+    .then((response) => response.data)
+  .catch((error) => {
+    console.error("Error changing map preference:", error);
+    throw error;
+  });
+}
+
+export const checkAdminStatus = async () => {
+  return axios.get(`${apiUrl}/user/is-admin`, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+  .then((response) => response.data)
+  .catch((error) => {
+    console.error("Error checking admin status:", error);
+    throw error;
+  });
 }

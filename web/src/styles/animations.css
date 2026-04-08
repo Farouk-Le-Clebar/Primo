@@ -1,0 +1,60 @@
+@keyframes fade-in {
+    from { opacity: 0; transform: scale(0.97); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.animate-fade-in {
+    animation: fade-in 0.2s ease-out;
+}
+
+@keyframes slideInLeft {
+    from { opacity: 0; transform: translateX(-50px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+.animate-slide-in-left {
+    animation: slideInLeft 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes spin-slow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.group:hover .animate-spin-slow {
+    animation: spin-slow 1s linear infinite;
+}
+
+.animated-primo-svg {
+  animation: fadeOutLogo 0.4s ease-in-out 1.6s forwards;
+}
+
+@keyframes fadeOutLogo {
+  0% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(0.92); }
+}
+
+.animated-primo-svg path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: 
+    drawLogo 1.2s ease-in-out forwards,
+    fillLogo 0.3s ease-in-out 1.2s forwards;
+}
+
+@keyframes drawLogo {
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes fillLogo {
+  to { fill: black; stroke-width: 0; }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}

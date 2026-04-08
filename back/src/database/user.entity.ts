@@ -3,7 +3,7 @@ import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 @Entity()
 export class User {
   @PrimaryGeneratedColumn('uuid')
-  id: number;
+  id: string;
 
   @Column({ type: 'varchar', nullable: false, default: '' })
   firstName: string;
@@ -14,9 +14,18 @@ export class User {
   @Column()
   email: string;
 
-  @Column()
-  password: string;
+  @Column({ type: 'varchar', nullable: true })
+  password?: string;
+
+  @Column({ type: 'varchar', default: 'local' })
+  provider: string;
 
   @Column({ type: 'varchar', nullable: true, default: null })
   profilePicture: string | null;
+
+  @Column({ type: 'varchar', nullable: false, default: 'basic' })
+  mapPreference: string;
+
+  @Column({ type: 'boolean', nullable: false, default: false })
+  isAdmin: boolean;
 }

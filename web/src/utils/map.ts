@@ -32,3 +32,8 @@ export const boundToBbox = (bounds: L.LatLngBounds) => {
 };
 
 export const FRANCE_BBOX = "-180,-90,180,90";
+
+export const mapPreference = {
+    "basic": "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+    "satellite": "https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}"
+};

@@ -15,7 +15,7 @@ services:
       - web
 
   backend:
-    image: garoverr/primo-backend:latest
+    image: garoverr/primo-backend:dev
     environment:
       MYSQL_HOST: mysql_db
       MYSQL_PORT: 3306
@@ -25,7 +25,7 @@ services:
       JWT_SECRET: S3cReT
       ADDOK_URL: http://addok:7878
       FRONT_URL: app.primo-data.fr
-      GEOSERVER_URL: http://geoserver:8080/geoserver
+      EXTERNE_GEOSERVER_URL: http://geoserver:8080/geoserver
 
     labels:
       - "traefik.enable=true"
@@ -110,7 +110,7 @@ services:
       GEOSERVER_ADMIN_USER: admin
       GEOSERVER_ADMIN_PASSWORD: geoserver_primo
       INITIAL_MEMORY: 2G
-      MAXIMUM_MEMORY: 4G
+      MAXIMUM_MEMORY: 32G
       STABLE_EXTENSIONS: wps,csw
       COMMUNITY_EXTENSIONS: ""
     ports:
@@ -127,11 +127,45 @@ services:
       retries: 5
     networks:
       - web
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.geoserver.rule=Host(`geoserver.primo-data.fr`)"
+      - "traefik.http.routers.geoserver.entrypoints=websecure"
+      - "traefik.http.routers.geoserver.tls.certresolver=myresolver"
+      - "traefik.http.services.geoserver.loadbalancer.server.port=8080"
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin_primo
+    restart: always
+    environment:
+      PMA_HOST: mysql_db
+      PMA_PORT: 3306
+    depends_on:
+      - mysql_db
+    networks:
+      - web
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.database.rule=Host(`database.primo-data.fr`)"
+      - "traefik.http.routers.database.entrypoints=websecure"
+      - "traefik.http.routers.database.tls.certresolver=myresolver"
+      - "traefik.http.services.database.loadbalancer.server.port=80"
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    ports:
+      - "7293:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    restart: always
 
 volumes:
   mysql_data:
   postgis_data:
   geoserver_data:
+  ollama_data:
 
 networks:
   web:

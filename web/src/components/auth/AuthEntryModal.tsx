@@ -59,15 +59,13 @@ export default function AuthEntryModal({
     >
 
       <div className="relative z-10 bg-white rounded-2xl shadow-[0_4px_4px_rgba(0,0,0,0.25)] max-w-md sm:max-w-lg md:max-w-116 p-6 sm:p-8 md:p-10 text-left animate-fade-in">
-        {/* Title and desc */}
-        <h2 className="text-2xl sm:text-2xl font-UberMoveBold text-gray-800 mb-2">Bienvenue sur Primo.</h2>
+        <h2 className="text-2xl sm:text-2xl font-UberMoveBold text-gray-800 mb-2">Bienvenue sur Primo</h2>
 
         <p className="text-gray-600 font-UberMoveMedium mb-6 text-sm sm:text-sm">
           Pas encore de compte ? Vous pouvez vous connecter directement avec Facebook, Apple ou Google, 
           ou bien simplement saisir votre adresse e-mail pour commencer la création de votre compte.
         </p>
 
-        {/* Buttons Social */}
         <div className="space-y-4">
           <button onClick={onClose} className="flex items-center justify-start bg-blue-600 text-white pl-4 px-6 py-2.5 rounded-lg hover:bg-blue-700 transition w-full">
             <img src={LogoFacebook} alt="icone" className="h-6 w-6 mr-2" />
@@ -85,7 +83,6 @@ export default function AuthEntryModal({
           </button>
         </div>
 
-        {/* Input Email */}
         <div className="space-y-1 mt-8">
           <h3 className="font-UberMoveMedium text-sm">Ou entrez votre adresse e-mail  </h3>
           <Input
@@ -96,7 +93,6 @@ export default function AuthEntryModal({
             className=""
           />
 
-        {/* Button Connexion */}
         <Button
           onClick={handleConnect}
           disabled={isPending}
