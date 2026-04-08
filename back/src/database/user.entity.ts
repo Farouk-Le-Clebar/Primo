@@ -28,4 +28,7 @@ export class User {
 
   @Column({ type: 'boolean', nullable: false, default: false })
   isAdmin: boolean;
+
+  @Column({ type: 'boolean', nullable: false, default: false })
+  verified: boolean;
 }
