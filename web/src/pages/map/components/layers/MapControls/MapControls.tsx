@@ -1,11 +1,9 @@
-import React, { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 
-// COMPONENTS
 import MapPreference from "../preference/MapPreference";
 import PoiWidget from "../POI/PoiWidget";
 import AiLayer from "../AI/AiLayer";
 
-// ICONS
 import PlusIcon from "../../../../../assets/icons/map/PlusIcon.svg?react";
 import MinusIcon from "../../../../../assets/icons/map/MinusIcon.svg?react";
 import LayersIcon from "../../../../../assets/icons/map/LayerIcon.svg?react";
@@ -22,6 +20,8 @@ interface MapControlsProps {
     onChangeMapType: (type: "basic" | "satellite") => void;
     enabledPoiTypes: string[];
     onTogglePoi: (type: string, enabled: boolean) => void;
+    currentZoom: number;
+    minZoomForPois: number;
 }
 
 export default function MapControls({
@@ -31,7 +31,9 @@ export default function MapControls({
     currentMapType,
     onChangeMapType,
     enabledPoiTypes,
-    onTogglePoi
+    onTogglePoi,
+    currentZoom,
+    minZoomForPois
 }: MapControlsProps) {
     const [isPreferenceOpen, setIsPreferenceOpen] = useState(false);
     const [isPoiOpen, setIsPoiOpen] = useState(false);
@@ -74,7 +76,6 @@ export default function MapControls({
                     type="button"
                     onClick={onZoomIn}
                     className="h-10 w-10 text-xl font-medium flex items-center justify-center hover:bg-gray-50 transition-colors"
-                    title="Zoom avant"
                 >
                     <PlusIcon className="w-4.5 h-4.5" />
                 </button>
@@ -83,7 +84,6 @@ export default function MapControls({
                     type="button"
                     onClick={onZoomOut}
                     className="h-10 w-10 text-xl font-medium flex items-center justify-center hover:bg-gray-50 transition-colors"
-                    title="Zoom arrière"
                 >
                     <MinusIcon className="w-4.5 h-4.5" />
                 </button>
@@ -105,7 +105,6 @@ export default function MapControls({
                         className={`h-10 w-10 flex items-center justify-center transition-colors ${
                             isPreferenceOpen ? "bg-gray-50 text-green-600" : "hover:bg-gray-50"
                         }`}
-                        title="Gérer les fonds de plan"
                     >
                         <LayersIcon className="w-4.5 h-4.5" />
                     </button>
@@ -116,7 +115,6 @@ export default function MapControls({
                         type="button"
                         onClick={onLocateUser}
                         className="h-10 w-10 flex items-center justify-center hover:bg-gray-50 transition-colors"
-                        title="Me localiser"
                     >
                         <LocateIcon className="w-4.5 h-4.5" />
                     </button>
@@ -138,7 +136,6 @@ export default function MapControls({
                     className={`h-10 w-10 rounded-xl shadow-md border border-gray-100 flex items-center justify-center transition-colors ${
                         isAiOpen ? "bg-gray-50 text-green-600" : "bg-white hover:bg-gray-50"
                     }`}
-                    title="Assistant IA Primo"
                 >
                     <IaIcon className="w-4.5 h-4.5" />
                 </button>
@@ -152,6 +149,8 @@ export default function MapControls({
                         <PoiWidget 
                             enabledPoiTypes={enabledPoiTypes}
                             onTogglePoi={onTogglePoi}
+                            currentZoom={currentZoom}
+                            minZoomForPois={minZoomForPois}
                         />
                     </div>
                 </div>
@@ -162,7 +161,6 @@ export default function MapControls({
                     className={`h-10 w-10 rounded-xl shadow-md border border-gray-100 flex items-center justify-center transition-colors ${
                         isPoiOpen ? "bg-gray-50 text-green-600" : "bg-white hover:bg-gray-50"
                     }`}
-                    title="Points d'intérêts"
                 >
                     <PoiIcon className="w-4.5 h-4.5" />
                 </button>

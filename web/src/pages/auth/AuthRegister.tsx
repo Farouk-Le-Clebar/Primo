@@ -3,7 +3,6 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { Eye, EyeOff } from "lucide-react";
-import LogoPrimo from "../../assets/logos/logoPrimoBlack.svg";
 
 // COMPONENTS
 import { register } from "../../requests/AuthRequests";
@@ -21,9 +20,6 @@ export default function AuthRegister() {
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   
-  // États pour le Splash Screen
-  const [showSplash, setShowSplash] = useState(false);
-
   useEffect(() => {
     if (!email) {
       navigate("/auth");
@@ -201,16 +197,6 @@ export default function AuthRegister() {
           </Button>
         </div>
       </div>
-
-      {showSplash && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-white animate-fade-in">
-          <img 
-            src={LogoPrimo} 
-            alt="Chargement Primo..." 
-            className="h-[80px] w-[80px] animate-pulse" 
-          />
-        </div>
-      )}
     </>
   );
 }

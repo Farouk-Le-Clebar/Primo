@@ -3,14 +3,12 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { Eye, EyeOff } from "lucide-react";
-import LogoPrimo from "../../assets/logos/logoPrimoBlack.svg";
 
 // COMPONENTS
 import UserInfo from "../../components/user/UserPreview";
 import Button from "../../ui/Button";
 import Input from "../../ui/Input";
 import { login } from "../../requests/AuthRequests";
-import AnimatedPrimoLogo from "../../components/animations/AnimatedPrimoLogo";
 
 export default function AuthLogin() {
   const [searchParams] = useSearchParams();
@@ -20,9 +18,6 @@ export default function AuthLogin() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  
-  // États pour le Splash Screen
-  const [showSplash, setShowSplash] = useState(false);
 
   useEffect(() => {
     if (!email) {

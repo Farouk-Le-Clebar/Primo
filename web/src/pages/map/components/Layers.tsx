@@ -3,7 +3,6 @@ import { TileLayer, useMap } from "react-leaflet";
 import L from "leaflet";
 import type { FeatureCollection } from "geojson";
 
-// COMPONENTS
 import MapBounds from "./layers/MapBounds";
 import ZoomHandler from "./layers/ZoomHandler";
 import ShapesLayer from "./layers/ShapesLayer";
@@ -12,10 +11,8 @@ import { MIN_ZOOM_FOR_POIS, POI_CONFIGS } from "./PoiConfig";
 import LocationHandler from "./layers/LocationHandler";
 import NoScrollZone from "../wrapper/NoScrollZone";
 import MapControls from "./layers/MapControls/MapControls";
-
 import ParcelInfoPanel from "./layers/ParcelPanel/ParcelInfoPanel";
 import ParcelDetailedDashboard from "./layers/ParcelDetailedDashboard/ParcelDetailedDashboard";
-
 import Navbar from "./layers/Navbar/Navbar";
 import { mapPreference } from "../../../utils/map";
 
@@ -159,6 +156,8 @@ const Layers = () => {
                                         onChangeMapType={handleChangeMapType}
                                         enabledPoiTypes={enabledPoiTypes}
                                         onTogglePoi={handleTogglePoi}
+                                        currentZoom={currentZoom}
+                                        minZoomForPois={MIN_ZOOM_FOR_POIS}
                                     />
                                 </NoScrollZone>
                             </div>
