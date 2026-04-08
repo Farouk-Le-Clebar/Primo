@@ -25,12 +25,8 @@ export default function ProtectedRoute() {
   }, []);
 
   if (isAuth === null) {
-    return (
-      <div className="flex h-screen w-full items-center justify-center bg-white">
-        <div className="h-10 w-10 animate-spin rounded-full border-4 border-gray-200 border-t-blue-600"></div>
-      </div>
-    );
+    return <div className="h-screen w-full bg-white"></div>;
   }
 
-  return isAuth ? <Outlet /> : <Navigate to="/" replace />;
+  return isAuth ? <Outlet /> : <Navigate to="/auth" replace />;
 }

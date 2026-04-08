@@ -138,7 +138,6 @@ export default function RegisterModal({
           </div>
         </div>
 
-        {/* Input Password */}
         <div className="space-y-1 mt-4 relative">
           <h3 className="font-UberMoveMedium text-sm">Mot de passe</h3>
           <div className="relative">
@@ -158,7 +157,6 @@ export default function RegisterModal({
             </button>
           </div>
 
-          {/* Horizontal progress bar */}
           <div className="w-full h-2 bg-gray-200 rounded-full mt-3 overflow-hidden">
             <div
               className={`h-full transition-all duration-300 rounded-full ${
@@ -168,7 +166,6 @@ export default function RegisterModal({
             ></div>
           </div>
 
-          {/* List of criteria */}
           <ul className="text-xs text-gray-600 mt-2 space-y-1">
             <li className={password.length >= 8 ? "text-green-600" : ""}>
               • Minimum 8 caractères
@@ -183,7 +180,6 @@ export default function RegisterModal({
         </div>
 
 
-        {/* Button Connexion */}
         <Button
           onClick={handleConnect}
           disabled={isPending}
@@ -196,7 +192,6 @@ export default function RegisterModal({
           }
         />
 
-        {/* Button Back */}
         <Button
           onClick={onBack}
           disabled={isPending}
@@ -216,7 +211,6 @@ export default function RegisterModal({
           }
         />
 
-        {/* Text Error */}
           {errorMessage && (
             <p className="text-red-600 text-sm mt-2">{errorMessage}</p>
           )}

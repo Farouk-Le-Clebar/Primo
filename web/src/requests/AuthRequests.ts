@@ -12,6 +12,11 @@ export const register  = async (email: string, firstName: string, surName: strin
   return response.data;
 };
 
+export const loginWithGoogle = async (token: string) => {
+  const response = await axios.post(apiUrl + "/auth/google", { token });
+  return response.data;
+};
+
 export const verifyToken = async (token: string) => {
   const response = await axios.get(apiUrl + "/auth/verify", {
     headers: {
@@ -20,3 +25,4 @@ export const verifyToken = async (token: string) => {
   });
   return response.data;
 };
+
