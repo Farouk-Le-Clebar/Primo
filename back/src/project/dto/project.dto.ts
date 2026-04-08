@@ -5,7 +5,6 @@ import {
   IsObject,
   IsArray,
   MaxLength,
-  ValidateNested,
 } from 'class-validator';
 
 export class CreateProjectDto {
@@ -75,6 +74,7 @@ export class ProjectResponseDto {
   userId: string;
   createdAt: Date;
   modifiedAt: Date;
+  memberCount: number;
 }
 
 export class UpdateNotesDto {

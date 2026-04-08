@@ -1,6 +1,6 @@
 import L from "leaflet";
 
-let selectedLayer: L.Path | null = null;
+export let selectedLayer: L.Path | null = null;
 
 const defaultStyle = {
     fillOpacity: 0.2,
@@ -18,10 +18,11 @@ const hoverStyle = {
 };
 
 export const onEachFeature = (
-    feature: GeoJSON.Feature, 
-    layer: L.Layer, 
+    feature: GeoJSON.Feature,
+    layer: L.Layer,
     map: L.Map,
-    onParcelleSelect?: (bounds: L.LatLngBounds, feature: GeoJSON.Feature, layer: L.Path) => void
+    onParcelleSelect?: (bounds: L.LatLngBounds, feature: GeoJSON.Feature, layer: L.Path) => void,
+    selectedIdRef?: React.RefObject<string | null>
 ) => {
     layer.on({
         click: (e: L.LeafletMouseEvent) => {
@@ -35,6 +36,7 @@ export const onEachFeature = (
             }
 
             if (layer instanceof L.Polygon || layer instanceof L.Polyline) {
+                const target = e.target as L.Path;
                 const bounds = layer.getBounds();
                 const center = bounds.getCenter();
                 const mapCenter = map.getCenter();
@@ -48,13 +50,13 @@ export const onEachFeature = (
                 );
 
                 if (distance < 50 && actualZoom >= 18) {
-                    e.target.setStyle(selectedStyle);
-                    selectedLayer = e.target as L.Path;
-                    
+                    target.setStyle(selectedStyle);
+                    selectedLayer = target;
+
                     if (onParcelleSelect) {
                         onParcelleSelect(bounds, feature, selectedLayer);
                     }
-                    
+
                     return;
                 }
 
@@ -66,9 +68,24 @@ export const onEachFeature = (
                     map.flyTo(center, 15, {
                         duration: 0.5
                     });
-                } else if (actualZoom >= 15) {
+                } else if (actualZoom >= 15 && actualZoom < 18) {
                     map.flyTo(center, 18, {
                         duration: 0.5
+                    });
+                } else if (actualZoom >= 18) {
+                    map.flyTo(center, actualZoom, {
+                        duration: 0.5
+                    });
+                    map.once('moveend', () => {
+                        if (selectedLayer) {
+                            selectedLayer.setStyle(defaultStyle);
+                        }
+                        target.setStyle(selectedStyle);
+                        selectedLayer = target;
+
+                        if (onParcelleSelect) {
+                            onParcelleSelect(bounds, feature, target);
+                        }
                     });
                 }
             }
@@ -80,8 +97,11 @@ export const onEachFeature = (
             }
         },
         mouseout: (e: L.LeafletMouseEvent) => {
-            const target = e.target as L.Path;
-            if (target !== selectedLayer) {
+            const target = e.target as L.Path & { feature?: GeoJSON.Feature };
+            const currentId = selectedIdRef?.current;
+            if (target === selectedLayer || target.feature?.id === currentId) {
+                target.setStyle(selectedStyle);
+            } else {
                 target.setStyle(defaultStyle);
             }
         }

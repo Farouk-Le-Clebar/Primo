@@ -5,14 +5,13 @@ export interface ProjectDetail {
     parcels?: Parcel[];
     parameters?: any; // À définir
     notes?: string;
+    userId: string;
     createdAt: string;
     modifiedAt: string;
 }
 
-
 export interface Parcel {
     id: string;
     coordinates: [number, number];
-    // le reste é à definir 
+    // le reste é à definir
 }
-

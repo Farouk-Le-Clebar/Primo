@@ -1,19 +1,18 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import { TileLayer, useMap } from "react-leaflet";
 import L from "leaflet";
 import type { FeatureCollection } from "geojson";
 
-// LAYERS & MAP LOGIC
+// COMPONENTS
 import MapBounds from "./layers/MapBounds";
 import ZoomHandler from "./layers/ZoomHandler";
 import ShapesLayer from "./layers/ShapesLayer";
 import PoiLayer from "./layers/POI/PoiLayer";
-import { POI_CONFIGS } from "./PoiConfig";
+import { MIN_ZOOM_FOR_POIS, POI_CONFIGS } from "./PoiConfig";
 import LocationHandler from "./layers/LocationHandler";
 import NoScrollZone from "../wrapper/NoScrollZone";
 import MapControls from "./layers/MapControls/MapControls";
 
-// PANNEAUX DE DONNÉES (Séparés proprement)
 import ParcelInfoPanel from "./layers/ParcelPanel/ParcelInfoPanel";
 import ParcelDetailedDashboard from "./layers/ParcelDetailedDashboard/ParcelDetailedDashboard";
 
@@ -25,6 +24,7 @@ const getUserMapPreference = (): "basic" | "satellite" => {
         const user = JSON.parse(localStorage.getItem("user") || "{}");
         return user.mapPreference === "satellite" ? "satellite" : "basic";
     } catch (e) {
+        console.warn("Impossible de lire les préférences utilisateur, utilisation de 'basic' par défaut.");
         return "basic";
     }
 };
@@ -36,6 +36,7 @@ const Layers = () => {
     
     const [selectedParcelle, setSelectedParcelle] = useState<{bounds: L.LatLngBounds; feature: any; layer: L.Path;} | null>(null);
     const [isDashboardOpen, setIsDashboardOpen] = useState(false);
+    const selectedIdRef = useRef<string | null>(null);
 
     const [departementsBoundData, setDepartementsBoundData] = useState<FeatureCollection | null>(null);
     const [pacellesBoundData, setPacellesBoundData] = useState<FeatureCollection | null>(null);
@@ -51,14 +52,29 @@ const Layers = () => {
     const handleMapBoundsChange = useCallback((bounds: L.LatLngBounds) => setMapBounds(bounds), []);
     const handleZoomChange = useCallback((zoom: number) => setCurrentZoom(zoom), []);
     
+    const handleCityBoundChange = useCallback((data: any) => setCityBoundData(data), []);
+    const handleDepartementsBoundChange = useCallback((data: any) => setDepartementsBoundData(data), []);
+    const handleDivisionsBoundChange = useCallback((data: any) => setDivisionsBoundData(data), []);
+    const handlePacellesBoundChange = useCallback((data: any) => setPacellesBoundData(data), []);
+    const handlePoisChange = useCallback((data: FeatureCollection | null) => setPoisData(data), []);
+
     const handleParcelleSelect = useCallback((bounds: L.LatLngBounds, feature: any, layer: L.Path) => {
+        const id = feature.id;
+        selectedIdRef.current = id;
         setSelectedParcelle({ bounds, feature, layer });
         setIsDashboardOpen(false);
     }, []);
 
-    const handleChangeMapType = (type: "basic" | "satellite") => {
+    const handleChangeMapType = useCallback((type: "basic" | "satellite") => {
         setMapType(type);
-    };
+        try {
+            const user = JSON.parse(localStorage.getItem("user") || "{}");
+            user.mapPreference = type;
+            localStorage.setItem("user", JSON.stringify(user));
+        } catch (e) {
+            console.error("Erreur lors de la sauvegarde des préférences.");
+        }
+    }, []);
 
     const handleTogglePoi = useCallback((type: string, enabled: boolean) => {
         setEnabledPoiTypes(prev => enabled ? [...prev, type] : prev.filter(t => t !== type));
@@ -72,26 +88,41 @@ const Layers = () => {
             <ZoomHandler onZoomChange={handleZoomChange} />
             
             <ShapesLayer
-                onCityBoundChange={setCityBoundData}
-                onDepartementsBoundChange={setDepartementsBoundData}
-                onDivisionsBoundChange={setDivisionsBoundData}
-                onPacellesBoundChange={setPacellesBoundData}
+                onCityBoundChange={handleCityBoundChange}
+                onDepartementsBoundChange={handleDepartementsBoundChange}
+                onDivisionsBoundChange={handleDivisionsBoundChange}
+                onPacellesBoundChange={handlePacellesBoundChange}
                 currentZoom={currentZoom}
                 mapBounds={mapBounds}
-                dataShape={{ departements: departementsBoundData, parcelles: pacellesBoundData, city: cityBoundData, divisions: divisionsBoundData }}
+                dataShape={{ 
+                    departements: departementsBoundData, 
+                    parcelles: pacellesBoundData, 
+                    city: cityBoundData, 
+                    divisions: divisionsBoundData 
+                }}
                 onParcelleSelect={handleParcelleSelect}
+                selectedIdRef={selectedIdRef}
             />
             
-            <PoiLayer onPoisChange={setPoisData} mapBounds={mapBounds} currentZoom={currentZoom} enabledPoiTypes={enabledPoiTypes} dataPois={{ pois: poisData }} />
+            <PoiLayer 
+                onPoisChange={handlePoisChange} 
+                mapBounds={mapBounds} 
+                currentZoom={currentZoom} 
+                enabledPoiTypes={enabledPoiTypes} 
+                dataPois={{ pois: poisData }} 
+            />
 
             <div className="flex fixed inset-0 z-[1001] flex-col pointer-events-none">
-                
                 <header className="flex w-full h-15 items-center shrink-0 pointer-events-auto">
-                    <NoScrollZone><Navbar /></NoScrollZone>
+                    <NoScrollZone>
+                        <Navbar 
+                            parcelleBounds={pacellesBoundData}
+                            onParcelleSelect={handleParcelleSelect}
+                        />
+                    </NoScrollZone>
                 </header>
 
                 <div className="flex-1 flex w-full overflow-hidden relative">
-                    
                     <aside 
                         className={`h-full pointer-events-auto bg-transparent flex-shrink-0 z-30 transition-all duration-500 ease-in-out ${
                             !selectedParcelle ? "w-0 -translate-x-full opacity-0" :
@@ -119,15 +150,17 @@ const Layers = () => {
                     {!isDashboardOpen && (
                         <main className="flex-1 relative w-full h-full pointer-events-none animate-in fade-in duration-300">
                             <div className="absolute top-1 right-1 pointer-events-auto flex flex-col gap-2 items-end z-[1002]">
-                                <MapControls 
-                                    onZoomIn={() => map.zoomIn()} 
-                                    onZoomOut={() => map.zoomOut()}
-                                    onLocateUser={() => map.locate({ setView: true, maxZoom: 16 })}
-                                    currentMapType={mapType}
-                                    onChangeMapType={handleChangeMapType}
-                                    enabledPoiTypes={enabledPoiTypes}
-                                    onTogglePoi={handleTogglePoi}
-                                />
+                                <NoScrollZone>
+                                    <MapControls 
+                                        onZoomIn={() => map.zoomIn()} 
+                                        onZoomOut={() => map.zoomOut()}
+                                        onLocateUser={() => map.locate({ setView: true, maxZoom: 16 })}
+                                        currentMapType={mapType}
+                                        onChangeMapType={handleChangeMapType}
+                                        enabledPoiTypes={enabledPoiTypes}
+                                        onTogglePoi={handleTogglePoi}
+                                    />
+                                </NoScrollZone>
                             </div>
 
                             <div className="absolute bottom-6 right-6 pointer-events-auto flex flex-col items-end gap-3 z-[1002]">

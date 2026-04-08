@@ -3,13 +3,14 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import * as dotenv from 'dotenv';
 import morgan from 'morgan';
+import * as express from 'express';
 
 async function bootstrap() {
   dotenv.config();
 
   const app = await NestFactory.create(AppModule);
   app.use(morgan('dev'));
-
+  app.use(express.json());
   app.enableCors({
     origin: "*",
     credentials: false,

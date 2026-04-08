@@ -1,13 +1,11 @@
 import React from "react";
 import { ChevronRight } from "lucide-react";
 
-
 type ParametersCardProps = {
     data?: any;
     isLoading: boolean;
     onViewAll: () => void;
 };
-
 
 const ParametersCard: React.FC<ParametersCardProps> = ({
     // data,
@@ -46,7 +44,7 @@ const ParametersCard: React.FC<ParametersCardProps> = ({
                 <img
                     src="/parametercard.svg"
                     alt="Graphique"
-                    className="absolute inset-0 w-full h-full object-contain"
+                    className="w-full object-cover"
                 />
             </div>
         </div>
