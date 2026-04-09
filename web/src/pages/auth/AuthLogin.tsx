@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
-import { AxiosError } from "axios";
 import { Eye, EyeOff } from "lucide-react";
 
 // COMPONENTS
@@ -9,6 +8,7 @@ import UserInfo from "../../components/user/UserPreview";
 import Button from "../../ui/Button";
 import Input from "../../ui/Input";
 import { login } from "../../requests/AuthRequests";
+import { sendVerificationEmail } from "../../requests/mail";
 
 export default function AuthLogin() {
   const [searchParams] = useSearchParams();
@@ -18,6 +18,16 @@ export default function AuthLogin() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+
+  const {mutate: sendVerificationEmailMutation} = useMutation({
+    mutationFn: () => sendVerificationEmail(email),
+    onSuccess: () => {
+      setErrorMessage("Un e-mail de vérification a été renvoyé à votre adresse e-mail.");
+    },
+    onError: (err: any) => {
+      setErrorMessage("Une erreur est survenue lors de l'envoi de l'e-mail de vérification. Veuillez réessayer plus tard.");
+    }
+  });
 
   useEffect(() => {
     if (!email) {
@@ -41,16 +51,8 @@ export default function AuthLogin() {
         }
       }
     },
-    onError: (err: unknown) => {
-      if (err instanceof AxiosError) {
-        if (err.response?.status === 401 || err.response?.data?.message === "Invalid credentials") {
-          setErrorMessage("Le mot de passe est incorrect. Veuillez réessayer.");
-        } else {
-          setErrorMessage("Une erreur est survenue. Veuillez réessayer plus tard.");
-        }
-      } else {
-        setErrorMessage("Erreur inattendue. Merci de réessayer.");
-      }
+    onError: (err: any) => {
+      setErrorMessage(err.response?.data?.message);
     },
   });
 
@@ -68,7 +70,7 @@ export default function AuthLogin() {
         if (document.activeElement?.tagName === "BUTTON") {
           return;
         }
-        
+
         e.preventDefault();
         handleConnect();
       }
@@ -81,18 +83,21 @@ export default function AuthLogin() {
     };
   }, [password, email]);
 
+  const handleResendVerification = () => {
+    sendVerificationEmailMutation();
+  };
 
   return (
     <>
       <div className="animate-fade-in flex flex-col space-y-6">
         <UserInfo email={email} />
-        
+
         <div className="space-y-1">
           <h3 className="font-inter font-medium text-sm text-gray-800">Adresse e-mail</h3>
           <Input
             type="email"
             value={email}
-            onChange={() => {}}
+            onChange={() => { }}
             className="text-gray-500 cursor-not-allowed opacity-70"
             placeholder=""
           />
@@ -118,7 +123,11 @@ export default function AuthLogin() {
           </div>
 
           {errorMessage && (
-            <p className="text-red-600 text-sm mt-2">{errorMessage}</p>
+            errorMessage === "Veuillez vérifier votre adresse e-mail avant de vous connecter." ? (
+              <p className="text-red-600 text-sm mt-2">{errorMessage}<button className="cursor-pointer underline" onClick={handleResendVerification}> Renvoyer un email</button></p>
+            ) : (
+              <p className="text-red-600 text-sm mt-2">{errorMessage}</p>
+            )
           )}
         </div>
 
