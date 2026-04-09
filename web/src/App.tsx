@@ -28,6 +28,8 @@ import ProjectDetail from "./pages/projects/ProjectDetail";
 import ProjectCreate from "./pages/projects/ProjectCreate";
 import AdminPanel from "./pages/admin/AdminPanel";
 import OnboardingRoot from "./pages/onBoarding/OnboardingRoot";
+import EmailVerify from "./pages/emailVerify/EmailVerify";
+import PostRegisterEmailVerify from "./pages/emailVerify/PostRegisterEmailVerify";
 
 export default function App() {
   return (
@@ -35,17 +37,19 @@ export default function App() {
       <CustomToaster />
 
       <Routes>
+        <Route path="/verify" element={<EmailVerify />} />
         {/* Routes Auth */}
         <Route path="/auth" element={<AuthLayout />}>
           <Route index element={<AuthRoot />} />
           <Route path="login" element={<AuthLogin />} />
           <Route path="register" element={<AuthRegister />} />
+          <Route path="register/verify" element={<PostRegisterEmailVerify />} />
         </Route>
 
         {/* Routes Protegé */}
         <Route element={<ProtectedRoute />}>
           <Route path="/onboarding" element={<OnboardingRoot />} />
-          
+
           {/* Layout Principal */}
           <Route path="/" element={<Layout />}>
             <Route index element={<Navigate to="/dashboard" replace />} />
@@ -53,7 +57,7 @@ export default function App() {
             <Route path="projects" element={<Projects />} />
             <Route path="projects/new" element={<ProjectCreate />} />
             <Route path="projects/:id" element={<ProjectDetail />} />
-            
+
             {/* Routes Admin */}
             <Route path="admin" element={<AdminRoute />}>
               <Route path="dashboard" element={<AdminPanel />} />
