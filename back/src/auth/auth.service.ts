@@ -7,6 +7,7 @@ import { NotificationType } from '../database/notification.entity';
 import { NotificationService } from '../notification/notification.service';
 import * as bcrypt from 'bcrypt';
 import { OAuth2Client } from 'google-auth-library';
+import { MailService } from '../mail/mail.service';
 
 @Injectable()
 export class AuthService {
@@ -15,16 +16,17 @@ export class AuthService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    private mailService: MailService,
     private jwtService: JwtService,
     private notificationService: NotificationService,
   ) {
-    this.googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID || 'CLIENT_ID'); 
+    this.googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID || 'CLIENT_ID');
   }
 
   async register(email: string, firstName: string, surName: string, password: string) {
     const existingUser = await this.userRepository.findOne({ where: { email } });
     if (existingUser) throw new UnauthorizedException('Email déjà utilisé');
-    
+
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = this.userRepository.create({
       firstName,
@@ -45,43 +47,35 @@ export class AuthService {
       { welcomeNotification: true },
     );
 
-    const payload = { sub: user.id, email: user.email };
-    const token = this.jwtService.sign(payload);
-
-    return {
-      access_token: token,
-      user: {
-        id: user.id,
-        email: user.email,
-        firstName: user.firstName,
-        surName: user.surName,
-        profilePicture: user.profilePicture,
-        mapPreference: user.mapPreference,
-      },
-    };
+    const verificationToken = await this.mailService.generateNewVerificationToken(email);
+    await this.mailService.sendVerificationEmail(email, verificationToken);
   }
 
   async login(email: string, password: string) {
     const user = await this.userRepository.findOne({
       where: { email },
-      select: ['id', 'email', 'firstName', 'surName', 'profilePicture', 'password', 'mapPreference', 'isAdmin', 'provider'],
+      select: ['id', 'email', 'firstName', 'surName', 'profilePicture', 'password', 'mapPreference', 'isAdmin', 'provider', 'verified'],
     });
-    
+
     if (!user) {
-      throw new UnauthorizedException('Identifiants invalides');
+      throw new UnauthorizedException('Email ou mot de passe incorrect.');
     }
 
     if (!user.password) {
       if (user.provider === 'google') {
         throw new UnauthorizedException('Ce compte a été créé avec Google. Veuillez utiliser le bouton Google pour vous connecter.');
       }
-      throw new UnauthorizedException('Identifiants invalides');
+      throw new UnauthorizedException('Email ou mot de passe incorrect.');
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
-    
+
     if (!isPasswordValid) {
-      throw new UnauthorizedException('Identifiants invalides');
+      throw new UnauthorizedException('Email ou mot de passe incorrect.');
+    }
+
+    if (!user.verified) {
+      throw new UnauthorizedException('Veuillez vérifier votre adresse e-mail avant de vous connecter.');
     }
 
     const payload = { sub: user.id, email: user.email };
@@ -122,7 +116,7 @@ export class AuthService {
           email,
           firstName: given_name || 'Utilisateur',
           surName: family_name || '',
-          profilePicture: picture || '', 
+          profilePicture: picture || '',
           provider: 'google',
         });
         await this.userRepository.save(user);

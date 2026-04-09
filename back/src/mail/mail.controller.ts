@@ -1,4 +1,4 @@
-import { BadRequestException, Controller, Post, Req, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
 import { randomBytes } from 'crypto';
 import { User } from 'src/database/user.entity';
 import { JwtAuthGuard } from 'src/guard/jwt-auth.guard';
@@ -9,14 +9,23 @@ export class MailController {
     constructor(private readonly mailService: MailService) { }
 
     @Post('send/verification')
-    @UseGuards(JwtAuthGuard)
-    async sendVerificationEmail(@Req() req: any) {
-        const user = req.user as User;
-        if (user.verified)
-            throw new BadRequestException('User is already verified');
+    async sendVerification(@Body() body: any) {
+        const email = body.email;
+        if (!email)
+            throw new BadRequestException('Email is required');
+        if (await this.mailService.checkIfVerifiedByEmail(email))
+            throw new BadRequestException('Email is already verified');
         else {
-            const verificationToken = await this.mailService.generateNewVerificationToken(user);
-            await this.mailService.sendVerificationEmail(user, verificationToken);
+            const verificationToken = await this.mailService.generateNewVerificationToken(email);
+            await this.mailService.sendVerificationEmail(email, verificationToken);
         }
+    }
+
+    @Post('verify')
+    async verifyEmail(@Body('token') verificationToken: string) {
+        if (!verificationToken)
+            throw new BadRequestException('Token is required');
+        else
+            return await this.mailService.verifyEmail(verificationToken);
     }
 }

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { ConflictException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { randomBytes } from 'crypto';
 import { User } from 'src/database/user.entity';
@@ -22,8 +22,11 @@ export class MailService {
         return user.verified;
     }
 
-    async generateNewVerificationToken(user: User): Promise<string> {
+    async generateNewVerificationToken(mail: string): Promise<string> {
         const verificationToken = randomBytes(32).toString('hex');
+        const user = await this.userRepo.findOne({ where: { email: mail } });
+        if (!user)
+            throw new NotFoundException('User not found');
 
         const existingToken = await this.verifiedUserRepo.findOne({ where: { userId: user.id } });
 
@@ -45,8 +48,12 @@ export class MailService {
         return verificationToken;
     }
 
-    async sendVerificationEmail(user: User, verificationToken: string): Promise<void> {
+    async sendVerificationEmail(email: string, verificationToken: string): Promise<void> {
         try {
+            const user = await this.userRepo.findOne({ where: { email } });
+            if (!user)
+                throw new NotFoundException('User not found');
+
             await axios.post(
                 process.env.BREVO_API_URL || '',
                 {
@@ -57,7 +64,7 @@ export class MailService {
                     ],
                     templateId: 3,
                     params: {
-                        VERIFY_URL: 'https://app.primo-data.fr/verify?token=' + verificationToken,
+                        VERIFY_URL: `${process.env.EMAIL_VERIFICATION_URL}?token=${verificationToken}`,
                     },
                 },
                 {
@@ -75,5 +82,50 @@ export class MailService {
             console.error('Error sending verification email:', error);
             throw new InternalServerErrorException('Failed to send verification email');
         }
+    }
+
+    async verifyEmail(token: string) {
+        const verifiedUser = await this.verifiedUserRepo.findOne({ where: { verificationToken: token } });
+        if (!verifiedUser)
+            throw new NotFoundException('Invalid verification token');
+
+        const user = await this.userRepo.findOne({ where: { id: verifiedUser.userId } });
+        if (!user)
+            throw new NotFoundException('User not found');
+        if (user.verified)
+            throw new ConflictException('User is already verified');
+
+        user.verified = true;
+        await this.userRepo.save(user);
+        try {
+            await axios.post(
+                process.env.BREVO_API_URL || '',
+                {
+                    to: [
+                        {
+                            email: user.email,
+                        },
+                    ],
+                    templateId: 2,
+                },
+                {
+                    headers: {
+                        'api-key': process.env.BREVO_API_KEY || '',
+                    },
+                }
+            );
+            return { email: user.email };
+        } catch (error) {
+            console.error('Error sending verification email:', error);
+            throw new InternalServerErrorException('Failed to send verification email');
+        }
+    }
+
+    async checkIfVerifiedByEmail(email: string): Promise<boolean> {
+        const user = await this.userRepo.findOne({ where: { email } });
+        if (!user)
+            throw new NotFoundException('User not found');
+
+        return await this.isVerified(user);
     }
 }
