@@ -8,6 +8,7 @@ import {
   Req,
   UseGuards,
   BadRequestException,
+  ForbiddenException,
 } from '@nestjs/common';
 import type { Request } from 'express';
 import { CheckEmailDto } from './dto/check-email.dto';
@@ -28,6 +29,15 @@ export class UserController {
   @Post('check-email')
   async checkEmail(@Body() dto: CheckEmailDto) {
     return this.userService.checkEmailExists(dto.email);
+  }
+
+  @Get('is-verified')
+  @UseGuards(JwtAuthGuard)
+  async isVerified(@Req() req: RequestWithUser) {
+    if (!req.user.verified) {
+      throw new ForbiddenException('User is not verified');
+    }
+    return { verified: true };
   }
 
   @Get('email/:email')

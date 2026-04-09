@@ -12,6 +12,8 @@
   --animate-slide-in-left: slideInLeft 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
   --animate-spin-slow: spin-slow 1s linear infinite;
 
+  --color-gray-background: #f7f7fa;
+
   @keyframes fade-in {
     from { opacity: 0; transform: scale(0.97); }
     to { opacity: 1; transform: scale(1); }

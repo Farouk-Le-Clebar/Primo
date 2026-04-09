@@ -20,12 +20,12 @@ export default function Layout() {
   return (
     <>
       {showWelcome && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-white">
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center">
           <AnimatedPrimoLogo className="h-[80px] w-[80px]" />
         </div>
       )}
 
-      <div className="relative h-screen flex overflow-hidden bg-[#F7F7FA]">
+      <div className="relative h-screen flex overflow-hidden bg-gray-background">
         
         <aside 
           onMouseEnter={() => setIsExpanded(true)}
