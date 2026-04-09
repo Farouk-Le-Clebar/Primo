@@ -154,9 +154,9 @@ export class AuthService {
   async validateUser(payload: { sub: string; email: string }) {
     const user = await this.userRepository.findOne({
       where: { id: payload.sub },
-      select: ['id', 'email', 'firstName', 'surName', 'profilePicture', 'mapPreference', 'isAdmin'],
+      select: ['id', 'email', 'firstName', 'surName', 'profilePicture', 'mapPreference', 'isAdmin', 'verified'],
     });
-    
+
     if (!user) return null;
 
     return {
@@ -167,6 +167,7 @@ export class AuthService {
       profilePicture: user.profilePicture,
       mapPreference: user.mapPreference,
       isAdmin: user.isAdmin,
+      verified: user.verified,
     };
   }
 }

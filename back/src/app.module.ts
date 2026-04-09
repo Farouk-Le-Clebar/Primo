@@ -20,6 +20,8 @@ import { NotificationModule } from './notification/notification.module';
 import { ProjectMembersModule } from './project-members/project-members.module';
 import { ActivityHistoryModule } from './history/history.module';
 import { DvfModule } from './dvf/dvf.module';
+import { VerifiedUser } from './database/verified-users.entity';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -35,11 +37,11 @@ import { DvfModule } from './dvf/dvf.module';
       username: process.env.MYSQL_USER,
       password: process.env.MYSQL_PASSWORD,
       database: process.env.MYSQL_DATABASE,
-      entities: [User, Project, DvfMutation, Notification, ProjectMember, ActivityEvent],
+      entities: [User, Project, DvfMutation, Notification, ProjectMember, ActivityEvent, VerifiedUser],
       synchronize: true,
       timezone: 'Z',
     }),
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User, Project, DvfMutation, Notification, ProjectMember, ActivityEvent, VerifiedUser]),
     AuthModule,
     GeoModule,
     UserModule,
@@ -48,6 +50,7 @@ import { DvfModule } from './dvf/dvf.module';
     NotificationModule,
     ProjectMembersModule,
     ActivityHistoryModule,
+    MailModule,
   ],
   controllers: [AppController],
   providers: [AppService],
