@@ -39,7 +39,7 @@ export default function AuthRegister() {
 
   const { mutate, isPending } = useMutation({
     mutationFn: () => register(email, firstName, surName, password),
-    onSuccess: (data) => {
+    onSuccess: () => {
         navigate("/auth/register/verify", { state: { email } });
     },
     onError: (err: unknown) => {

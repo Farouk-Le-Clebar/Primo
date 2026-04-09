@@ -24,7 +24,7 @@ export default function AuthLogin() {
     onSuccess: () => {
       setErrorMessage("Un e-mail de vérification a été renvoyé à votre adresse e-mail.");
     },
-    onError: (err: any) => {
+    onError: () => {
       setErrorMessage("Une erreur est survenue lors de l'envoi de l'e-mail de vérification. Veuillez réessayer plus tard.");
     }
   });

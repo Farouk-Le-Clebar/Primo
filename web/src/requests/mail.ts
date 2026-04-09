@@ -1,6 +1,5 @@
 import axios from "axios";
 const apiUrl = window?._env_?.API_URL;
-const token = localStorage.getItem("token");
 
 export function verifyEmail(token: string) {
     return axios.post(apiUrl + `/mail/verify`, { token })
