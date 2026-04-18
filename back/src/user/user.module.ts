@@ -4,9 +4,10 @@ import { UserService } from './user.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../database/user.entity';
 import { JwtModule } from '@nestjs/jwt';
+import { ResetPassword } from 'src/database/reset-password.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User]), JwtModule],
+  imports: [TypeOrmModule.forFeature([User, ResetPassword]), JwtModule],
   controllers: [UserController],
   providers: [UserService],
   exports: [UserService],
