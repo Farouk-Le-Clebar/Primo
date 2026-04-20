@@ -19,7 +19,7 @@ export default function AuthLogin() {
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-  const {mutate: sendVerificationEmailMutation} = useMutation({
+  const { mutate: sendVerificationEmailMutation } = useMutation({
     mutationFn: () => sendVerificationEmail(email),
     onSuccess: () => {
       setErrorMessage("Un e-mail de vérification a été renvoyé à votre adresse e-mail.");
@@ -119,6 +119,14 @@ export default function AuthLogin() {
               className="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700"
             >
               {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+            </button>
+          </div>
+          <div className="flex justify-start mt-2">
+            <button
+              className="cursor-pointer text-sm text-black hover:underline"
+              onClick={() => navigate("/auth/forgot-password")}
+            >
+              Mot de passe oublié ?
             </button>
           </div>
 

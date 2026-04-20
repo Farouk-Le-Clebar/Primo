@@ -12,7 +12,7 @@ import {
   Delete,
 } from '@nestjs/common';
 import type { Request } from 'express';
-import { CheckEmailDto } from './dto/check-email.dto';
+import { CheckEmailDto, ResetPasswordDTO, SendResetEmailDTO } from './dto/check-email.dto';
 import { UserService } from './user.service';
 import { JwtAuthGuard } from '../guard/jwt-auth.guard';
 import { User } from '../database/user.entity';
@@ -30,6 +30,21 @@ export class UserController {
   @Post('check-email')
   async checkEmail(@Body() dto: CheckEmailDto) {
     return this.userService.checkEmailExists(dto.email);
+  }
+
+  @Post('send/reset-password')
+  async sendResetPasswordEmail(@Body() dto: SendResetEmailDTO) {
+    return this.userService.sendResetPasswordEmail(dto.email);
+  }
+
+  @Post('reset-password')
+  async resetPassword(@Body() dto: ResetPasswordDTO) {
+    return this.userService.resetPassword(dto.token, dto.password);
+  }
+
+  @Post('reset-password/valid')
+  async isValidRequestResetPassword(@Body('token') token: string) {
+    return this.userService.isValidRequestResetPassword(token);
   }
 
   @Get('is-verified')
