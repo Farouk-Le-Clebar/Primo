@@ -111,4 +111,40 @@ export class UserService {
 
     return users.map(({ password, mapPreference, ...safeUser }) => safeUser);
   }
+
+  async getAdmins() {
+    const admins = await this.userRepo.find({ where: { isAdmin: true } });
+    return admins.map(({ password, mapPreference, ...safeUser }) => safeUser);
+  }
+
+  async removeAdminPermissionToUser(userId: string) {
+    const user = await this.userRepo.findOne({ where: { id: userId } });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    user.isAdmin = false;
+
+    const updatedUser = await this.userRepo.save(user);
+    if (!updatedUser) {
+      throw new NotFoundException('Failed to update user permissions');
+    }
+  }
+
+  async addAdminPermissionToUser(email: string) {
+    const user = await this.userRepo.findOne({ where: { email: email } });
+
+    if (!user)
+      throw new NotFoundException('User not found');
+
+    if (user.isAdmin)
+      throw new NotFoundException('User is already an admin');
+
+    user.isAdmin = true;
+
+    const updatedUser = await this.userRepo.save(user);
+    if (!updatedUser)
+      throw new NotFoundException('Failed to update user permissions');
+  }
 }

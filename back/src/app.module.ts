@@ -22,6 +22,7 @@ import { ActivityHistoryModule } from './history/history.module';
 import { DvfModule } from './dvf/dvf.module';
 import { VerifiedUser } from './database/verified-users.entity';
 import { MailModule } from './mail/mail.module';
+import { UserStatistics } from './database/user-statistics.entity';
 
 @Module({
   imports: [
@@ -37,11 +38,11 @@ import { MailModule } from './mail/mail.module';
       username: process.env.MYSQL_USER,
       password: process.env.MYSQL_PASSWORD,
       database: process.env.MYSQL_DATABASE,
-      entities: [User, Project, DvfMutation, Notification, ProjectMember, ActivityEvent, VerifiedUser],
+      entities: [User, Project, DvfMutation, Notification, ProjectMember, ActivityEvent, VerifiedUser, UserStatistics],
       synchronize: true,
       timezone: 'Z',
     }),
-    TypeOrmModule.forFeature([User, Project, DvfMutation, Notification, ProjectMember, ActivityEvent, VerifiedUser]),
+    TypeOrmModule.forFeature([User, Project, DvfMutation, Notification, ProjectMember, ActivityEvent, VerifiedUser, UserStatistics]),
     AuthModule,
     GeoModule,
     UserModule,
