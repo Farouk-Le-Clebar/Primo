@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { ChevronRight, Loader2 } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { useState } from "react";
 import { getAdmins } from "../../../../requests/admin";
 import TableBody from "./TableBody";
