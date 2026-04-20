@@ -31,4 +31,7 @@ export class User {
 
   @Column({ type: 'boolean', nullable: false, default: false })
   verified: boolean;
+
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  lastConnection: Date;
 }
