@@ -1,4 +1,4 @@
-const headerStyle = "px-6 py-4 text-xs font-UberMoveBold text-gray-500 uppercase tracking-wider bg-gray-50";
+const headerStyle = "p-4 text-xs font-UberMoveBold text-gray-500 uppercase tracking-wider bg-gray-50";
 
 const TableHeader = () => (
     <thead>
@@ -6,8 +6,8 @@ const TableHeader = () => (
             <th className={headerStyle}>Prénom</th>
             <th className={headerStyle}>Nom</th>
             <th className={headerStyle}>Email</th>
-            <th className={`${headerStyle} text-center`}>Admin</th>
-            <th className={`${headerStyle} text-center`}>Delete</th>
+            <th className={headerStyle}>Dernière connexion</th>
+            <th className={`${headerStyle} text-center`}>Remove Permission</th>
         </tr>
     </thead>
 );

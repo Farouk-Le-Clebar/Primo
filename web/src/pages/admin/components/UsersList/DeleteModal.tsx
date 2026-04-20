@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { deleteUser } from "../../../requests/admin";
+import { deleteUser } from "../../../../requests/admin";
 import toast from 'react-hot-toast';
 
 type DeleteModalProps = {
