@@ -16,6 +16,9 @@ import ParcelDetailedDashboard from "./layers/ParcelDetailedDashboard/ParcelDeta
 import Navbar from "./layers/Navbar/Navbar";
 import { mapPreference } from "../../../utils/map";
 
+// 🟢 NOUVEL IMPORT : La requête vers ton backend Addok local
+import { addOkReverseRequest } from "../../../requests/addok";
+
 const getUserMapPreference = (): "basic" | "satellite" => {
     try {
         const user = JSON.parse(localStorage.getItem("user") || "{}");
@@ -31,7 +34,14 @@ const Layers = () => {
     const [mapBounds, setMapBounds] = useState<L.LatLngBounds | null>(null);
     const [currentZoom, setCurrentZoom] = useState<number>(6);
     
-    const [selectedParcelle, setSelectedParcelle] = useState<{bounds: L.LatLngBounds; feature: any; layer: L.Path;} | null>(null);
+    // 🟢 MISE À JOUR DU TYPE DU STATE POUR ACCEPTER LES DONNÉES ADDOK BRUTES
+    const [selectedParcelle, setSelectedParcelle] = useState<{
+        bounds: L.LatLngBounds; 
+        feature: any; 
+        layer: L.Path;
+        addokData?: any; // Nouveau champ pour stocker la réponse complète Addok
+    } | null>(null);
+    
     const [isDashboardOpen, setIsDashboardOpen] = useState(false);
     const selectedIdRef = useRef<string | null>(null);
 
@@ -55,11 +65,53 @@ const Layers = () => {
     const handlePacellesBoundChange = useCallback((data: any) => setPacellesBoundData(data), []);
     const handlePoisChange = useCallback((data: FeatureCollection | null) => setPoisData(data), []);
 
-    const handleParcelleSelect = useCallback((bounds: L.LatLngBounds, feature: any, layer: L.Path) => {
+    // 🟢 MISE À JOUR : INTERROGATION D'ADDOK AU MOMENT DE LA SÉLECTION
+    const handleParcelleSelect = useCallback(async (bounds: L.LatLngBounds, feature: any, layer: L.Path) => {
         const id = feature.id;
         selectedIdRef.current = id;
+        
+        // Affichage immédiat pour une UI réactive
         setSelectedParcelle({ bounds, feature, layer });
         setIsDashboardOpen(false);
+
+        try {
+            // Récupérer le centre mathématique de la parcelle sélectionnée
+            const center = bounds.getCenter();
+            
+            // Appel vers ton backend Addok pour obtenir le BAN à partir des coordonnées
+            const addokResponse = await addOkReverseRequest(center.lng, center.lat);
+            
+            if (addokResponse && addokResponse.features && addokResponse.features.length > 0) {
+                const adresseData = addokResponse.features[0];
+                const banId = adresseData.properties.id; // L'identifiant BAN officiel
+                
+                // On clone la feature et on injecte les infos Addok dans "properties"
+                // Ainsi, tes widgets comme DpeWidget trouveront "feature.properties.ban" naturellement.
+                const enrichedFeature = {
+                    ...feature,
+                    properties: {
+                        ...feature.properties,
+                        ban: banId,
+                        addok_label: adresseData.properties.label, // L'adresse en texte (utile pour l'affichage)
+                        addok_score: adresseData.properties.score  // Indice de fiabilité (optionnel)
+                    }
+                };
+
+                // On met à jour le state en s'assurant que l'utilisateur n'a pas cliqué sur une autre parcelle entre temps
+                setSelectedParcelle(prev => {
+                    if (prev && prev.feature.id !== id) return prev;
+                    
+                    return {
+                        ...prev!,
+                        feature: enrichedFeature,
+                        addokData: addokResponse // La réponse brute, au cas où d'autres composants en auraient besoin
+                    };
+                });
+            }
+        } catch (error) {
+            console.error("Erreur lors du reverse geocoding avec Addok:", error);
+            // On ne fait rien d'autre : si Addok échoue, le panneau reste ouvert avec les infos cadastrales de base
+        }
     }, []);
 
     const handleChangeMapType = useCallback((type: "basic" | "satellite") => {

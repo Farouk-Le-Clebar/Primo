@@ -1,78 +1,95 @@
+import { Card, Text, Metric, Flex, Badge, Tracker, ProgressBar, Grid, Col } from "@tremor/react";
 import { BuildingThumbnail } from "./BuildingThumbnail";
 
-export const BuildingCard = ({ p, building, matMur, matToit, constructionYear }: any) => {
+export const BuildingCard = ({ id, p, building, matMur, matToit, constructionYear, colorClasses }: any) => {
   
-  const InfoRow = ({ label, value, isLast = false }: { label: string, value: string | React.ReactNode, isLast?: boolean }) => (
-    <div className={`flex justify-between items-center py-2.5 ${!isLast ? 'border-b border-[#F0F0F0]' : ''}`}>
-      <span className="text-[13px] font-medium text-[#878D96]">{label}</span>
-      <span className="text-[13px] font-medium text-[#111111] text-right">{value}</span>
-    </div>
-  );
+  // Fonction pour déterminer la couleur du badge en fonction de l'état
+  const getEtatColor = (etat: string) => {
+    switch (etat?.toLowerCase()) {
+      case "en service": return "emerald";
+      case "en construction": return "amber";
+      case "en ruine": return "rose";
+      default: return "slate";
+    }
+  };
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-      <div className="flex items-center gap-4 mb-4 pb-4 border-b border-[#F0F0F0]">
-        <div className="w-14 h-14 shrink-0 rounded-lg overflow-hidden border border-[#F0F0F0] bg-[#F8F9FB]">
-          <BuildingThumbnail feature={building} />
+    <Card id={id} className="mx-auto max-w-full scroll-mt-10 mb-6 p-4">
+      {/* En-tête : Thumbnail + Infos Principales */}
+      <Flex alignItems="start" className="mb-6">
+        <div className="flex items-center gap-4">
+          <div className="w-16 h-16 shrink-0 rounded-xl overflow-hidden border border-[#F0F0F0] bg-[#F8F9FB] shadow-sm">
+            <BuildingThumbnail feature={building} colorClasses={colorClasses} />
+          </div>
+          <div>
+            <Text className="uppercase font-semibold tracking-wider text-[10px] text-gray-500 mb-1">
+              {p.nature || "Bâtiment"}
+            </Text>
+            <Metric className="text-lg font-bold text-slate-800 leading-tight">
+              {p.usage1 || "Usage non défini"}
+            </Metric>
+            {p.etat && (
+              <Badge color={getEtatColor(p.etat)} className="mt-2 text-[10px]">
+                {p.etat}
+              </Badge>
+            )}
+          </div>
         </div>
-        <div className="flex flex-col">
-          <span className="text-[10px] font-bold text-[#878D96] uppercase tracking-wider mb-1">
-            {p.nature || "Bâtiment"}
-          </span>
-          <h4 className="text-[15px] font-semibold text-[#111111] leading-tight">
-            {p.usage1 || "Usage non défini"}
-          </h4>
-          {p.etat && p.etat !== "En service" && (
-            <span className="text-xs font-medium text-orange-600 mt-1">
-              {p.etat}
+      </Flex>
+
+      {/* Grille d'informations façon Bento */}
+      <Grid numItems={2} numItemsSm={2} className="gap-4">
+        
+        {/* Hauteur / Niveaux */}
+        <Col>
+          <Card className="p-3 bg-slate-50 border-none ring-0 shadow-none">
+            <Text className="text-[11px] text-gray-500 font-medium">Élévation</Text>
+            <div className="mt-1 flex items-baseline gap-2">
+              <span className="text-lg font-bold text-slate-700">{p.hauteur ? `${p.hauteur}m` : '-'}</span>
+              {p.nb_etages && <span className="text-xs text-gray-500">/ {p.nb_etages} niv.</span>}
+            </div>
+            {/* Petite jauge visuelle (Tracker ou ProgressBar) juste pour l'esthétique */}
+            {p.hauteur && (
+              <ProgressBar value={(p.hauteur / 50) * 100} color="indigo" className="mt-2 h-1" />
+            )}
+          </Card>
+        </Col>
+
+        {/* Année de construction */}
+        <Col>
+           <Card className="p-3 bg-slate-50 border-none ring-0 shadow-none flex flex-col justify-between h-full">
+            <Text className="text-[11px] text-gray-500 font-medium">Construction</Text>
+            <span className="text-lg font-bold text-slate-700 mt-1">
+              {constructionYear && constructionYear !== 'N/A' ? constructionYear : '-'}
             </span>
-          )}
+          </Card>
+        </Col>
+
+        {/* Matériaux (prend toute la largeur) */}
+        <Col numColSpan={2} numColSpanSm={2}>
+          <Card className="p-4 bg-slate-50 border-none ring-0 shadow-none">
+             <Text className="text-[11px] text-gray-500 font-medium mb-3">Matériaux</Text>
+             <Flex justifyContent="between" className="border-b border-gray-200 pb-2 mb-2">
+               <span className="text-xs text-gray-500">Murs</span>
+               <span className="text-xs font-semibold text-slate-700">{matMur || '-'}</span>
+             </Flex>
+             <Flex justifyContent="between">
+               <span className="text-xs text-gray-500">Toiture</span>
+               <span className="text-xs font-semibold text-slate-700">{matToit || '-'}</span>
+             </Flex>
+          </Card>
+        </Col>
+      </Grid>
+
+      {/* ID RNB Footer */}
+      {p.ids_rnb && (
+        <div className="mt-4 pt-4 border-t border-gray-100 flex justify-between items-center">
+          <Text className="text-[11px] text-gray-500 font-medium">ID RNB</Text>
+          <span className="font-mono text-[11px] text-slate-600 bg-gray-100 px-2 py-1 rounded-md">
+            {p.ids_rnb}
+          </span>
         </div>
-      </div>
-      <div className="flex flex-col">
-        {p.hauteur && (
-          <InfoRow 
-            label="Hauteur" 
-            value={`${p.hauteur} m`} 
-          />
-        )}
-        {p.nb_etages !== undefined && p.nb_etages !== null && (
-          <InfoRow 
-            label="Niveaux" 
-            value={p.nb_etages} 
-          />
-        )}
-
-        {constructionYear && constructionYear !== 'N/A' && (
-          <InfoRow 
-            label="Année de construction" 
-            value={constructionYear} 
-          />
-        )}
-
-        {matMur && (
-          <InfoRow 
-            label="Matériau des murs" 
-            value={matMur} 
-          />
-        )}
-
-        {matToit && (
-          <InfoRow 
-            label="Matériau de toiture" 
-            value={matToit} 
-            isLast={!p.ids_rnb} // Si pas d'ID RNB, c'est la dernière ligne
-          />
-        )}
-
-        {p.ids_rnb && (
-          <InfoRow 
-            label="ID RNB" 
-            value={<span className="font-mono text-[12px] bg-gray-50 px-1.5 py-0.5 rounded border border-gray-100">{p.ids_rnb}</span>} 
-            isLast={true}
-          />
-        )}
-      </div>
-    </div>
+      )}
+    </Card>
   );
 };

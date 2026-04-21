@@ -1,7 +1,6 @@
 import { useMemo } from "react";
 
-export function BuildingThumbnail({ feature }: { feature: any }) {
-  const geoData = useMemo(() => {
+export function BuildingThumbnail({ feature, colorClasses }: { feature: any, colorClasses: any }) {  const geoData = useMemo(() => {
     if (!feature?.geometry) return null;
 
     const { type, coordinates } = feature.geometry;
@@ -41,27 +40,16 @@ export function BuildingThumbnail({ feature }: { feature: any }) {
     return { d: pathCommands };
   }, [feature]);
 
-  if (!geoData) {
-    return (
-      <div className="w-full h-full bg-[#F8F9FB] flex items-center justify-center">
-        <span className="text-[10px] text-[#878D96] font-medium">N/A</span>
-      </div>
-    );
-  }
+  if (!geoData) return <div className="w-full h-full bg-gray-50 flex items-center justify-center text-[10px]">N/A</div>;
 
   return (
-    <div className="w-full h-full bg-[#F0FDF4] relative flex items-center justify-center overflow-hidden rounded-lg border border-[#DCFCE7]">
-      <svg 
-        viewBox="0 0 100 100" 
-        className="w-[80%] h-[80%] drop-shadow-sm"
-        preserveAspectRatio="xMidYMid meet"
-      >
+    <div className={`w-full h-full ${colorClasses.bg} relative flex items-center justify-center overflow-hidden rounded-lg border border-opacity-20`}>
+      <svg viewBox="0 0 100 100" className="w-[80%] h-[80%] drop-shadow-sm">
         <path 
           d={geoData.d} 
-          className="fill-[#00BA85]/10 stroke-[#00BA85]"
-          strokeWidth="2.5"
+          className={`${colorClasses.fill} ${colorClasses.stroke}`}
+          strokeWidth="3"
           strokeLinejoin="round"
-          strokeLinecap="round"
           fillRule="evenodd"
         />
       </svg>
