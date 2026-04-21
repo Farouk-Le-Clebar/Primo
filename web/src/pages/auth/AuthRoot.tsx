@@ -73,15 +73,15 @@ export default function AuthRoot() {
   return (
     <div className="animate-fade-in-up">
       <div className="space-y-1">
-        
+
         <div className="flex justify-between items-center">
           <h3 className="font-inter font-medium text-base text-gray-800">Adresse e-mail</h3>
-          
+
           <div className="relative group cursor-help flex items-center">
             <div className="flex items-center justify-center w-[18px] h-[18px] bg-black text-white rounded-full text-[11px] font-bold">
               ?
             </div>
-            
+
             <div className="absolute bottom-full right-0 mb-2 hidden w-56 p-3 text-xs text-white bg-gray-900 rounded-lg shadow-lg group-hover:block z-20 animate-fade-in">
               Saisissez votre e-mail. Nous vous redirigerons automatiquement vers la connexion ou la création de compte.
               <div className="absolute top-full right-[5px] -mt-[1px] border-[5px] border-transparent border-t-gray-900"></div>
@@ -100,11 +100,18 @@ export default function AuthRoot() {
           }}
         />
       </div>
+      <div className="flex justify-start mt-2">
+        <button
+          className="cursor-pointer text-sm text-black hover:underline"
+          onClick={() => navigate("/auth/forgot-password")}
+        >
+          Mot de passe oublié ?
+        </button>
+      </div>
 
       {errorMessage && (
         <p className="text-red-600 text-sm mt-2">{errorMessage}</p>
       )}
-
       <div className="mt-6 space-y-4">
         <Button
           onClick={handleContinue}

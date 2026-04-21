@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { UserType } from "../../../types/admin";
+import type { UserType } from "../../../../types/admin";
 import TableHeader from "./TableHeader";
 import TableBody from "./TableBody";
 import TableFooter from "./TableFooter";

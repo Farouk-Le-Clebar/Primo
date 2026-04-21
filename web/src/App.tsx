@@ -28,8 +28,10 @@ import ProjectDetail from "./pages/projects/ProjectDetail";
 import ProjectCreate from "./pages/projects/ProjectCreate";
 import AdminPanel from "./pages/admin/AdminPanel";
 import OnboardingRoot from "./pages/onBoarding/OnboardingRoot";
-import EmailVerify from "./pages/emailVerify/EmailVerify";
-import PostRegisterEmailVerify from "./pages/emailVerify/PostRegisterEmailVerify";
+import EmailVerify from "./pages/mailling/EmailVerify";
+import PostRegisterEmailVerify from "./pages/mailling/PostRegisterEmailVerify";
+import ResetPassword from "./pages/mailling/ResetPassword";
+import SendEmailResetPassword from "./pages/mailling/SendEmailResetPassword";
 
 export default function App() {
   return (
@@ -38,11 +40,13 @@ export default function App() {
 
       <Routes>
         <Route path="/verify" element={<EmailVerify />} />
+        <Route path="/reset/password" element={<ResetPassword />} />
         {/* Routes Auth */}
         <Route path="/auth" element={<AuthLayout />}>
           <Route index element={<AuthRoot />} />
           <Route path="login" element={<AuthLogin />} />
           <Route path="register" element={<AuthRegister />} />
+          <Route path="forgot-password" element={<SendEmailResetPassword />} />
           <Route path="register/verify" element={<PostRegisterEmailVerify />} />
         </Route>
 
