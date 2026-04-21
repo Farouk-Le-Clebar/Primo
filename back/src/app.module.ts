@@ -9,6 +9,7 @@ import { Notification } from './database/notification.entity';
 import { ProjectMember } from './database/project-member.entity';
 import { ActivityEvent } from './database/history.entity';
 import { DvfMutation } from './database/dvf.entity';
+import { DpeLogement } from './database/dpe.entity';
 import { AddokProxyMiddleware } from './api/addok.middleware';
 import { AuthModule } from './auth/auth.module';
 import { GeoServerProxyMiddleware } from './api/geoserver.middleware';
@@ -20,6 +21,7 @@ import { NotificationModule } from './notification/notification.module';
 import { ProjectMembersModule } from './project-members/project-members.module';
 import { ActivityHistoryModule } from './history/history.module';
 import { DvfModule } from './dvf/dvf.module';
+import { DpeModule } from './dpe/dpe.module';
 import { VerifiedUser } from './database/verified-users.entity';
 import { MailModule } from './mail/mail.module';
 
@@ -37,7 +39,7 @@ import { MailModule } from './mail/mail.module';
       username: process.env.MYSQL_USER,
       password: process.env.MYSQL_PASSWORD,
       database: process.env.MYSQL_DATABASE,
-      entities: [User, Project, DvfMutation, Notification, ProjectMember, ActivityEvent, VerifiedUser],
+      entities: [User, Project, DvfMutation, DpeLogement, Notification, ProjectMember, ActivityEvent, VerifiedUser],
       synchronize: true,
       timezone: 'Z',
     }),
@@ -46,6 +48,7 @@ import { MailModule } from './mail/mail.module';
     GeoModule,
     UserModule,
     DvfModule,
+    DpeModule,
     ProjectModule,
     NotificationModule,
     ProjectMembersModule,
