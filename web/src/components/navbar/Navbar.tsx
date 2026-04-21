@@ -4,6 +4,8 @@ import SearchingBar from "../../components/search/SearchBar";
 
 // ICONS
 import PageIcons from "../../assets/icons/page.svg?react";
+import { HelpCircle } from "lucide-react";
+import { startOnboarding } from "../../config/onboarding.service";
 
 const ROUTE_NAMES: Record<string, string> = {
   "/": "Vue d'ensemble",
@@ -50,12 +52,22 @@ export default function Navbar() {
         </div>
       </div>
 
-      <div className="flex h-full items-center justify-end gap-4 pr-6">
-          <div className="w-[200px] hover:w-[350px] focus-within:w-[350px] transition-all duration-300 ease-in-out">
+      <div className="flex h-full items-center justify-end gap-2 pr-6">
+          <div id="search-bar-tour" className="w-[400px]">
             <SearchingBar onAdressSelect={handleAddressSelect} />
           </div>
-
-          <NotificationsDropdown />
+          
+          <button 
+            onClick={() => startOnboarding(location.pathname)}
+            className="p-2 text-gray-400 hover:text-gray-900 transition-colors rounded-full hover:bg-gray-100"
+            title="Aide et tutoriel"
+          >
+            <HelpCircle size={18} />
+          </button>
+  
+          <div id="notifications-tour">
+            <NotificationsDropdown />
+          </div>
       </div>
     </nav>
   );

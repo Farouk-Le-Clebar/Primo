@@ -1,6 +1,10 @@
 @import "tailwindcss";
 @import "./styles/fonts.css";
 @import "./styles/animations.css";
+@import "./styles/onBoarding.css";
+@import "./styles/tremor.css";
+
+@source "../node_modules/@tremor/react";
 
 @custom-variant dark (&:where(.dark, .dark *));
 
