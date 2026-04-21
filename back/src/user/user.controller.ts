@@ -9,6 +9,7 @@ import {
   UseGuards,
   BadRequestException,
   ForbiddenException,
+  Delete,
 } from '@nestjs/common';
 import type { Request } from 'express';
 import { CheckEmailDto, ResetPasswordDTO, SendResetEmailDTO } from './dto/check-email.dto';
@@ -81,6 +82,24 @@ export class UserController {
   @Get('is-admin')
   @UseGuards(JwtAuthGuard, AdminGuard)
   async isAdmin(@Req() req: RequestWithUser) {
+  }
+
+  @Get('admin')
+  @UseGuards(JwtAuthGuard, AdminGuard)
+  async getAdmins() {
+    return this.userService.getAdmins();
+  }
+
+  @Delete('admin/:userId')
+  @UseGuards(JwtAuthGuard, AdminGuard)
+  async deleteAdmin(@Param('userId') userId: string) {
+    return this.userService.removeAdminPermissionToUser(userId);
+  }
+
+  @Put('admin/:email')
+  @UseGuards(JwtAuthGuard, AdminGuard)
+  async addAdmin(@Param('email') email: string) {
+    return this.userService.addAdminPermissionToUser(email);
   }
 
   @Put('profile')

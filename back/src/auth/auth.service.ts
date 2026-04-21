@@ -164,4 +164,11 @@ export class AuthService {
       verified: user.verified,
     };
   }
+
+  async updateLastConnection(userId: string) {
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+    if (!user) return;
+    user.lastConnection = new Date();
+    await this.userRepository.save(user);
+  }
 }

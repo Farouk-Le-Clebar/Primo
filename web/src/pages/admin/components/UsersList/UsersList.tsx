@@ -1,8 +1,8 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { ChevronRight, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { getUsers, searchUsers } from "../../../requests/admin";
-import type { UserType } from "../../../types/admin";
+import { getUsers, searchUsers } from "../../../../requests/admin";
+import type { UserType } from "../../../../types/admin";
 import UsersListTable from "./UsersListTable";
 import toast from 'react-hot-toast';
 import { useNavigate } from "react-router-dom";
@@ -76,7 +76,7 @@ const UsersList = () => {
     }
 
     return (
-        <div className="w-full bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        <div className={`w-full bg-white rounded-xl shadow-sm border border-gray-100  ${isDeployed ? "flex-1 overflow-y-scroll" : "h-auto"}`}>
             <button
                 onClick={handleToggle}
                 className={`w-full flex justify-between items-center p-5 transition-colors ${isDeployed ? "bg-gray-50/50" : "hover:bg-gray-50"
