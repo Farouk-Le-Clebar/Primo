@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 
 <head>
     <meta charset="utf-8">
@@ -29,7 +29,8 @@
         const map = L.map('map', {
             zoomControl: false,
             preferCanvas: true,
-            renderer: canvasRenderer
+            renderer: canvasRenderer,
+            attributionControl: false
         }).setView([46.603354, 1.888334], 6);
 
         L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
@@ -37,6 +38,7 @@
         }).addTo(map);
 
         let geoJsonLayer = null;
+        let customSearchMarker = null;
 
         const defaultStyle = {
             color: '#50B587',
@@ -141,6 +143,33 @@
                     if (selectedLayer) {
                         selectedLayer.setStyle(defaultStyle);
                         selectedLayer = null;
+                    }
+                }
+
+                if (data.type === 'setSearchMarker') {
+                    if (customSearchMarker) {
+                        map.removeLayer(customSearchMarker);
+                        customSearchMarker = null;
+                    }
+
+                    if (data.coords) {
+                        const iconHtml = `<svg width="28" height="38" viewBox="0 0 24 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2C6.48 2 2 6.48 2 12C2 19.33 12 30 12 30C12 30 22 19.33 22 12C22 6.48 17.52 2 12 2ZM12 15C10.34 15 9 13.66 9 12C9 10.34 10.34 9 12 9C13.66 9 15 10.34 15 12C15 13.66 13.66 15 12 15Z" 
+                                  fill="#ef4444" 
+                                  stroke="#ffffff" 
+                                  stroke-width="1.5"
+                            />
+                            <filter id="shadow">
+                                <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000000" flood-opacity="0.3"/>
+                            </filter>
+                        </svg>`;
+                        const customIcon = L.divIcon({
+                            html: iconHtml,
+                            className: '',
+                            iconSize: [28, 38],
+                            iconAnchor: [14, 38]
+                        });
+                        customSearchMarker = L.marker([data.coords[0], data.coords[1]], { icon: customIcon }).addTo(map);
                     }
                 }
             } catch (e) {

@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, TouchableOpacity, Text, FlatList, ActivityIndicator } from 'react-native';
+import { View, TextInput, TouchableOpacity, Text, FlatList, ActivityIndicator, Keyboard } from 'react-native';
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
+import { Search, X } from 'lucide-react-native';
 
 type SearchBarProps = {
     onAddressSelect: (coords: [number, number]) => void;
+    onClearSearch?: () => void;
+    onFocus?: () => void;
 }
 
 const addOkRequest = (data: string) => {
@@ -16,7 +19,7 @@ const addOkRequest = (data: string) => {
         });
 }
 
-const SearchBar = ({ onAddressSelect }: SearchBarProps) => {
+const SearchBar = ({ onAddressSelect, onClearSearch, onFocus }: SearchBarProps) => {
     const [address, setAddress] = useState("");
     const [selectedAddress, setSelectedAddress] = useState<string | null>(null);
     const [adressList, setAdressList] = useState<any[]>([]);
@@ -65,38 +68,70 @@ const SearchBar = ({ onAddressSelect }: SearchBarProps) => {
     return (
         <View className="w-full">
             <View className="relative">
-                <View className="flex-row bg-white rounded-lg shadow-lg items-center">
-                    <Text className="absolute left-3 text-gray-700 text-base z-10">🔍</Text>
+                <View 
+                    className="flex-row bg-white rounded-lg shadow-lg items-center border border-gray-100 pl-3 pr-2" 
+                    style={{ height: 44 }}
+                >
+                    <Search size={18} color="#64748b" strokeWidth={2.5} />
+                    
                     <TextInput
-                        className="flex-1 text-sm pl-10 pr-3 py-2.5 rounded-lg"
+                        className="flex-1 text-[13px] ml-2 text-slate-800 font-semibold"
+                        style={{ padding: 0, margin: 0 }}
                         placeholder="Rechercher une adresse..."
+                        placeholderTextColor="#94a3b8"
                         value={selectedAddress || address}
                         onChangeText={(text) => {
                             setAddress(text);
                             setSelectedAddress(null);
                         }}
+                        onFocus={onFocus}
                         returnKeyType="search"
                     />
-                    {isPending && (
-                        <ActivityIndicator size="small" color="#666" className="mr-3" />
-                    )}
+                    
+                    <View className="justify-center flex-row items-center ml-1">
+                        {isPending ? (
+                            <ActivityIndicator size="small" color="#2563eb" style={{ marginRight: 6 }} />
+                        ) : address.length > 0 ? (
+                            <TouchableOpacity
+                                onPress={() => {
+                                    setAddress("");
+                                    setSelectedAddress(null);
+                                    setAdressList([]);
+                                    onClearSearch?.();
+                                }}
+                                className="p-1.5 rounded-full bg-slate-100"
+                            >
+                                <X size={14} color="#64748b" strokeWidth={2.5} />
+                            </TouchableOpacity>
+                        ) : null}
+                    </View>
                 </View>
             </View>
 
             {adressList.length > 0 && (
-                <View className="w-full border border-gray-300 rounded-xl bg-white mt-1 shadow-lg max-h-60 overflow-hidden">
+                <View 
+                    className="absolute w-full top-[50px] border border-gray-200 rounded-xl bg-white shadow-xl overflow-hidden"
+                    style={{ zIndex: 50, maxHeight: 260 }}
+                >
                     <FlatList
                         data={adressList}
                         keyExtractor={(item) => item.properties.id}
+                        keyboardShouldPersistTaps="handled"
                         renderItem={({ item }) => (
                             <TouchableOpacity
-                                className="p-3 border-b border-gray-100 active:bg-gray-200"
-                                onPress={() => handleAddressClick(
-                                    [item.geometry.coordinates[1], item.geometry.coordinates[0]],
-                                    item.properties.label
-                                )}
+                                className="px-4 py-3.5 border-b border-gray-100 bg-white active:bg-slate-50 flex-row items-center gap-3"
+                                onPress={() => {
+                                    Keyboard.dismiss();
+                                    handleAddressClick(
+                                        [item.geometry.coordinates[1], item.geometry.coordinates[0]],
+                                        item.properties.label
+                                    );
+                                }}
                             >
-                                <Text className="text-sm text-gray-800">{item.properties.label}</Text>
+                                <Search size={14} color="#94a3b8" />
+                                <Text className="text-[13px] font-semibold text-slate-700 flex-1" numberOfLines={1}>
+                                    {item.properties.label}
+                                </Text>
                             </TouchableOpacity>
                         )}
                         nestedScrollEnabled

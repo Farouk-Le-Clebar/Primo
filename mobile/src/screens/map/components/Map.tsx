@@ -1,270 +1,357 @@
-import React, { useEffect, useRef, useCallback, useState, useMemo } from 'react';
-import { ActivityIndicator } from 'react-native';
-import { WebView } from 'react-native-webview';
-import { useMapHtml } from '../hooks/useMapHtml';
-import { useQuery, useMutation } from '@tanstack/react-query';
-import { getDepartementByBbox, getCityByBbox, getDivisionsByBboxAndDepartments, getParcellesByBboxAndDepartments } from '../../../requests/map';
-import { FRANCE_BBOX, isFeatureCollection, boundToBbox } from '../../../utils/map';
-import { geometryToBbox } from '../../../utils/map';
-import { ParcellePayload } from '../../../types/map';
-import ParcelleInfoPanel from './ParcelleInfoPanel';
+import React, {
+  useEffect,
+  useRef,
+  useCallback,
+  useState,
+  useMemo,
+} from "react";
+import { ActivityIndicator } from "react-native";
+import { WebView } from "react-native-webview";
+import { useMapHtml } from "../hooks/useMapHtml";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import {
+  getDepartementByBbox,
+  getCityByBbox,
+  getDivisionsByBboxAndDepartments,
+  getParcellesByBboxAndDepartments,
+} from "../../../requests/map";
+import {
+  FRANCE_BBOX,
+  isFeatureCollection,
+  boundToBbox,
+} from "../../../utils/map";
+import { geometryToBbox } from "../../../utils/map";
+import { ParcellePayload } from "../../../types/map";
+import ParcelleInfoPanel from "./ParcelleInfoPanel";
 
 type MapProps = {
-    center: { lat: number; lng: number };
-    zoom: number;
-    onMessageReceived: (message: any) => void;
-    bounds?: any;
-}
-
-const getGeometryCenter = (geometry: any): { lat: number; lng: number } | null => {
-    if (!geometry) return null;
-
-    let allCoords: number[][] = [];
-
-    if (geometry.type === 'Polygon') {
-        allCoords = geometry.coordinates[0];
-    } else if (geometry.type === 'MultiPolygon') {
-        geometry.coordinates.forEach((polygon: number[][][]) => {
-            allCoords = allCoords.concat(polygon[0]);
-        });
-    }
-
-    if (allCoords.length === 0) return null;
-
-    let sumLng = 0;
-    let sumLat = 0;
-    allCoords.forEach(coord => {
-        sumLng += coord[0];
-        sumLat += coord[1];
-    });
-
-    return {
-        lng: sumLng / allCoords.length,
-        lat: sumLat / allCoords.length
-    };
+  center: { lat: number; lng: number };
+  zoom: number;
+  onMessageReceived: (message: any) => void;
+  bounds?: any;
+  searchMarker?: [number, number] | null;
+  externalClearTrigger?: number;
 };
 
+const getGeometryCenter = (
+  geometry: any,
+): { lat: number; lng: number } | null => {
+  if (!geometry) return null;
 
+  let allCoords: number[][] = [];
 
-const Map = ({ center, zoom, onMessageReceived, bounds }: MapProps) => {
-    const webViewRef = useRef<WebView>(null);
-    const { htmlContent, loading } = useMapHtml();
-    const isMapReady = useRef(false);
-    const pendingGeoJSON = useRef<any>(null);
-    const [departmentsShapes, setDepartmentsShapes] = useState<any>(null);
-    const currentZoom = useRef(zoom);
-    const [selectedParcelle, setSelectedParcelle] = useState<ParcellePayload | null>(null);
-
-
-    const lastPropCenter = useRef<{ lat: number; lng: number }>({ lat: center.lat, lng: center.lng });
-    const ignoreNextCenterUpdate = useRef(false);
-
-    const { data: allDepartements } = useQuery({
-        queryKey: ['allDepartements'],
-        queryFn: () => getDepartementByBbox(FRANCE_BBOX),
-        staleTime: Infinity,
+  if (geometry.type === "Polygon") {
+    allCoords = geometry.coordinates[0];
+  } else if (geometry.type === "MultiPolygon") {
+    geometry.coordinates.forEach((polygon: number[][][]) => {
+      allCoords = allCoords.concat(polygon[0]);
     });
+  }
 
-    const departementsVisibles = useMemo(() => {
-        if (!allDepartements?.features || !bounds) return [];
+  if (allCoords.length === 0) return null;
 
-        const east = bounds._northEast.lng;
-        const west = bounds._southWest.lng;
-        const north = bounds._northEast.lat;
-        const south = bounds._southWest.lat;
+  let sumLng = 0;
+  let sumLat = 0;
+  allCoords.forEach((coord) => {
+    sumLng += coord[0];
+    sumLat += coord[1];
+  });
 
-        return allDepartements.features
-            .filter((dept: any) => {
-                let coords: number[][];
-                if (dept.geometry.type === 'Polygon') {
-                    coords = dept.geometry.coordinates[0];
-                } else if (dept.geometry.type === 'MultiPolygon') {
-                    coords = dept.geometry.coordinates[0][0];
-                } else {
-                    return false;
-                }
+  return {
+    lng: sumLng / allCoords.length,
+    lat: sumLat / allCoords.length,
+  };
+};
 
-                const lons = coords.map((c: number[]) => c[0]);
-                const lats = coords.map((c: number[]) => c[1]);
-                const deptMinLon = Math.min(...lons);
-                const deptMaxLon = Math.max(...lons);
-                const deptMinLat = Math.min(...lats);
-                const deptMaxLat = Math.max(...lats);
+const Map = ({
+  center,
+  zoom,
+  onMessageReceived,
+  bounds,
+  searchMarker,
+  externalClearTrigger,
+}: MapProps) => {
+  const webViewRef = useRef<WebView>(null);
+  const { htmlContent, loading } = useMapHtml();
+  const isMapReady = useRef(false);
+  const pendingGeoJSON = useRef<any>(null);
+  const [departmentsShapes, setDepartmentsShapes] = useState<any>(null);
+  const currentZoom = useRef(zoom);
+  const [selectedParcelle, setSelectedParcelle] =
+    useState<ParcellePayload | null>(null);
 
-                return !(east < deptMinLon ||
-                    west > deptMaxLon ||
-                    north < deptMinLat ||
-                    south > deptMaxLat);
-            })
-            .map((dept: any) => dept.properties.ddep_c_cod);
-    }, [allDepartements, bounds]);
+  const lastPropCenter = useRef<{ lat: number; lng: number }>({
+    lat: center.lat,
+    lng: center.lng,
+  });
+  const ignoreNextCenterUpdate = useRef(false);
 
-    const { mutate: fetchCity } = useMutation({
-        mutationFn: (bbox: string) => getCityByBbox(bbox),
-        onSuccess: (data) => {
-            if (data && isFeatureCollection(data)) {
-                sendGeoJSON(data);
-            }
-        }
-    });
+  const { data: allDepartements } = useQuery({
+    queryKey: ["allDepartements"],
+    queryFn: () => getDepartementByBbox(FRANCE_BBOX),
+    staleTime: Infinity,
+  });
 
-    const { mutate: fetchDivision } = useMutation({
-        mutationFn: ({ bbox, departments }: { bbox: string; departments: string[] }) =>
-            getDivisionsByBboxAndDepartments(bbox, departments),
-        onSuccess: (data) => {
-            if (data && isFeatureCollection(data)) {
-                sendGeoJSON(data);
-            }
-        }
-    });
+  const departementsVisibles = useMemo(() => {
+    if (!allDepartements?.features || !bounds) return [];
 
-    const { mutate: fetchParcelles } = useMutation({
-        mutationFn: ({ bbox, departments }: { bbox: string; departments: string[] }) => getParcellesByBboxAndDepartments(bbox, departments),
-        onSuccess: (data) => {
-            if (data && isFeatureCollection(data)) {
-                sendGeoJSON(data);
-            }
-        }
-    });
+    const east = bounds._northEast.lng;
+    const west = bounds._southWest.lng;
+    const north = bounds._northEast.lat;
+    const south = bounds._southWest.lat;
 
-    const sendGeoJSON = useCallback((geojson: any) => {
-        if (webViewRef.current && isMapReady.current) {
-            webViewRef.current.postMessage(JSON.stringify({
-                type: 'setGeoJSON',
-                geojson
-            }));
+    return allDepartements.features
+      .filter((dept: any) => {
+        let coords: number[][];
+        if (dept.geometry.type === "Polygon") {
+          coords = dept.geometry.coordinates[0];
+        } else if (dept.geometry.type === "MultiPolygon") {
+          coords = dept.geometry.coordinates[0][0];
         } else {
-            pendingGeoJSON.current = geojson;
-        }
-    }, []);
-
-    const flyTo = useCallback((lat: number, lng: number, z?: number, duration?: number) => {
-        if (webViewRef.current && isMapReady.current) {
-            webViewRef.current.postMessage(JSON.stringify({
-                type: 'flyTo',
-                lat,
-                lng,
-                zoom: z,
-                duration: duration ?? 0.75
-            }));
-        }
-    }, []);
-
-    useEffect(() => {
-        if (allDepartements && isFeatureCollection(allDepartements)) {
-            setDepartmentsShapes(allDepartements);
-            sendGeoJSON(allDepartements);
-        }
-    }, [allDepartements, sendGeoJSON]);
-
-    useEffect(() => {
-        if (ignoreNextCenterUpdate.current) {
-            ignoreNextCenterUpdate.current = false;
-            return;
+          return false;
         }
 
-        const centerChanged =
-            lastPropCenter.current.lat !== center.lat ||
-            lastPropCenter.current.lng !== center.lng;
+        const lons = coords.map((c: number[]) => c[0]);
+        const lats = coords.map((c: number[]) => c[1]);
+        const deptMinLon = Math.min(...lons);
+        const deptMaxLon = Math.max(...lons);
+        const deptMinLat = Math.min(...lats);
+        const deptMaxLat = Math.max(...lats);
 
-        if (centerChanged) {
-            lastPropCenter.current = { lat: center.lat, lng: center.lng };
-            flyTo(center.lat, center.lng, zoom);
-        }
-    }, [center, zoom, flyTo]);
+        return !(
+          east < deptMinLon ||
+          west > deptMaxLon ||
+          north < deptMinLat ||
+          south > deptMaxLat
+        );
+      })
+      .map((dept: any) => dept.properties.ddep_c_cod);
+  }, [allDepartements, bounds]);
 
-    useEffect(() => {
-        if (!bounds) return;
+  const { mutate: fetchCity } = useMutation({
+    mutationFn: (bbox: string) => getCityByBbox(bbox),
+    onSuccess: (data) => {
+      if (data && isFeatureCollection(data)) {
+        sendGeoJSON(data);
+      }
+    },
+  });
 
-        const bbox = boundToBbox(bounds);
-        const currentZ = currentZoom.current;
+  const { mutate: fetchDivision } = useMutation({
+    mutationFn: ({
+      bbox,
+      departments,
+    }: {
+      bbox: string;
+      departments: string[];
+    }) => getDivisionsByBboxAndDepartments(bbox, departments),
+    onSuccess: (data) => {
+      if (data && isFeatureCollection(data)) {
+        sendGeoJSON(data);
+      }
+    },
+  });
 
-        if (currentZ < 12) {
-            sendGeoJSON(departmentsShapes);
-        } else if (currentZ >= 12 && currentZ < 15) {
-            fetchCity(bbox);
-        } else if (currentZ >= 15 && currentZ < 18 && departementsVisibles.length > 0) {
-            fetchDivision({ bbox, departments: departementsVisibles });
-        } else if (currentZ >= 18 && departementsVisibles.length > 0) {
-            fetchParcelles({ bbox, departments: departementsVisibles });
-        }
-    }, [bounds, fetchCity, fetchDivision, fetchParcelles, departmentsShapes, departementsVisibles]);
+  const { mutate: fetchParcelles } = useMutation({
+    mutationFn: ({
+      bbox,
+      departments,
+    }: {
+      bbox: string;
+      departments: string[];
+    }) => getParcellesByBboxAndDepartments(bbox, departments),
+    onSuccess: (data) => {
+      if (data && isFeatureCollection(data)) {
+        sendGeoJSON(data);
+      }
+    },
+  });
 
-    useEffect(() => {
-        currentZoom.current = zoom;
-    }, [zoom]);
+  const sendGeoJSON = useCallback((geojson: any) => {
+    if (webViewRef.current && isMapReady.current) {
+      webViewRef.current.postMessage(
+        JSON.stringify({
+          type: "setGeoJSON",
+          geojson,
+        }),
+      );
+    } else {
+      pendingGeoJSON.current = geojson;
+    }
+  }, []);
 
-    const handleMessage = useCallback((event: any) => {
-        try {
-            const data = JSON.parse(event.nativeEvent.data);
+  useEffect(() => {
+    if (webViewRef.current && isMapReady.current) {
+      webViewRef.current.postMessage(
+        JSON.stringify({
+          type: "setSearchMarker",
+          coords: searchMarker || null,
+        }),
+      );
+    }
+  }, [searchMarker]);
 
-            if (data.event === 'onMapReady') {
-                isMapReady.current = true;
-                if (pendingGeoJSON.current) {
-                    sendGeoJSON(pendingGeoJSON.current);
-                    pendingGeoJSON.current = null;
-                }
-            }
+  useEffect(() => {
+    if (externalClearTrigger && externalClearTrigger > 0) {
+      setSelectedParcelle(null);
+      if (webViewRef.current && isMapReady.current) {
+        webViewRef.current.postMessage(
+          JSON.stringify({ type: "clearSelection" }),
+        );
+      }
+    }
+  }, [externalClearTrigger]);
 
-            if (data.event === 'onShapeClick') {
-                const geometry = data.payload?.geometry;
-                const alreadyCentered = data.payload?.alreadyCentered;
-                if (geometry && !alreadyCentered) {
-                    const shapeCenter = getGeometryCenter(geometry);
-                    if (shapeCenter) {
-                        if (currentZoom.current >= 15) {
-                            ignoreNextCenterUpdate.current = true;
-                            flyTo(shapeCenter.lat, shapeCenter.lng, 18);
-                        } else if (currentZoom.current >= 12) {
-                            ignoreNextCenterUpdate.current = true;
-                            flyTo(shapeCenter.lat, shapeCenter.lng, 15);
-                        } else {
-                            ignoreNextCenterUpdate.current = true;
-                            flyTo(shapeCenter.lat, shapeCenter.lng, 12);
-                        }
-                        if (currentZoom.current >= 18) {
-                            setSelectedParcelle({
-                                geometry: geometryToBbox(geometry),
-                                id: data.payload.properties.id
-                            });
-                        }
-                    }
-                }
-            }
+  const flyTo = useCallback(
+    (lat: number, lng: number, z?: number, duration?: number) => {
+      if (webViewRef.current && isMapReady.current) {
+        webViewRef.current.postMessage(
+          JSON.stringify({
+            type: "flyTo",
+            lat,
+            lng,
+            zoom: z,
+            duration: duration ?? 0.75,
+          }),
+        );
+      }
+    },
+    [],
+  );
 
-            onMessageReceived(data);
-        } catch (e) {
-            console.error('Error parsing message:', e);
-        }
-    }, [onMessageReceived, sendGeoJSON, flyTo]);
+  useEffect(() => {
+    if (allDepartements && isFeatureCollection(allDepartements)) {
+      setDepartmentsShapes(allDepartements);
+      sendGeoJSON(allDepartements);
+    }
+  }, [allDepartements, sendGeoJSON]);
 
-    const onClosePanel = () => {
-        setSelectedParcelle(null);
-    };
-
-    if (loading || !htmlContent) {
-        return <ActivityIndicator size="large" />;
+  useEffect(() => {
+    if (ignoreNextCenterUpdate.current) {
+      ignoreNextCenterUpdate.current = false;
+      return;
     }
 
-    return (
-        <>
-            <WebView
-                ref={webViewRef}
-                source={{ html: htmlContent }}
-                style={{ flex: 1 }}
-                onMessage={handleMessage}
-                javaScriptEnabled={true}
-                domStorageEnabled={true}
-                originWhitelist={['*']}
-            />
-            {selectedParcelle &&
-                <ParcelleInfoPanel
-                    selectedParcelle={selectedParcelle}
-                    onClose={onClosePanel}
-                />
+    const centerChanged =
+      lastPropCenter.current.lat !== center.lat ||
+      lastPropCenter.current.lng !== center.lng;
+
+    if (centerChanged) {
+      lastPropCenter.current = { lat: center.lat, lng: center.lng };
+      flyTo(center.lat, center.lng, zoom);
+    }
+  }, [center, zoom, flyTo]);
+
+  useEffect(() => {
+    if (!bounds) return;
+
+    const bbox = boundToBbox(bounds);
+    const currentZ = currentZoom.current;
+
+    if (currentZ < 12) {
+      sendGeoJSON(departmentsShapes);
+    } else if (currentZ >= 12 && currentZ < 15) {
+      fetchCity(bbox);
+    } else if (
+      currentZ >= 15 &&
+      currentZ < 18 &&
+      departementsVisibles.length > 0
+    ) {
+      fetchDivision({ bbox, departments: departementsVisibles });
+    } else if (currentZ >= 18 && departementsVisibles.length > 0) {
+      fetchParcelles({ bbox, departments: departementsVisibles });
+    }
+  }, [
+    bounds,
+    fetchCity,
+    fetchDivision,
+    fetchParcelles,
+    departmentsShapes,
+    departementsVisibles,
+  ]);
+
+  useEffect(() => {
+    currentZoom.current = zoom;
+  }, [zoom]);
+
+  const handleMessage = useCallback(
+    (event: any) => {
+      try {
+        const data = JSON.parse(event.nativeEvent.data);
+
+        if (data.event === "onMapReady") {
+          isMapReady.current = true;
+          if (pendingGeoJSON.current) {
+            sendGeoJSON(pendingGeoJSON.current);
+            pendingGeoJSON.current = null;
+          }
+        }
+
+        if (data.event === "onShapeClick") {
+          const geometry = data.payload?.geometry;
+          const alreadyCentered = data.payload?.alreadyCentered;
+          if (geometry) {
+            if (!alreadyCentered) {
+              const shapeCenter = getGeometryCenter(geometry);
+              if (shapeCenter) {
+                if (currentZoom.current >= 15) {
+                  ignoreNextCenterUpdate.current = true;
+                  flyTo(shapeCenter.lat, shapeCenter.lng, 18);
+                } else if (currentZoom.current >= 12) {
+                  ignoreNextCenterUpdate.current = true;
+                  flyTo(shapeCenter.lat, shapeCenter.lng, 15);
+                } else {
+                  ignoreNextCenterUpdate.current = true;
+                  flyTo(shapeCenter.lat, shapeCenter.lng, 12);
+                }
+              }
             }
-        </>
-    );
+
+            if (currentZoom.current >= 18) {
+              setSelectedParcelle({
+                geometry: geometryToBbox(geometry),
+                rawGeometry: geometry,
+                id: data.payload.properties.id,
+                properties: data.payload.properties,
+                featureId: data.payload.id,
+              });
+            }
+          }
+        }
+
+        onMessageReceived(data);
+      } catch (e) {
+        console.error("Error parsing message:", e);
+      }
+    },
+    [onMessageReceived, sendGeoJSON, flyTo],
+  );
+
+  const onClosePanel = () => {
+    setSelectedParcelle(null);
+  };
+
+  if (loading || !htmlContent) {
+    return <ActivityIndicator size="large" />;
+  }
+
+  return (
+    <>
+      <WebView
+        ref={webViewRef}
+        source={{ html: htmlContent }}
+        style={{ flex: 1 }}
+        onMessage={handleMessage}
+        javaScriptEnabled={true}
+        domStorageEnabled={true}
+        originWhitelist={["*"]}
+      />
+      <ParcelleInfoPanel
+        selectedParcelle={selectedParcelle}
+        onClose={onClosePanel}
+      />
+    </>
+  );
 };
 
 export default Map;
