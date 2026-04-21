@@ -43,6 +43,7 @@ const ProjectTable: React.FC<ProjectTableProps> = ({
         { key: "name", label: "Noms" },
         { key: "parameters", label: "Paramètres" },
         { key: "parcels", label: "Parcelles" },
+        { key: "memberCount", label: "Membres" },
         { key: "createdAt", label: "Date de création" },
         { key: "modifiedAt", label: "Dernière modification" },
     ];

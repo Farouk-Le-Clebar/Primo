@@ -21,6 +21,7 @@ const toProjectDetail = (data: ProjectResponse): ProjectDetail => ({
         coordinates: p.coordinates,
     })),
     parameters: data.parameters,
+    userId: data.userId,
     createdAt: data.createdAt,
     modifiedAt: data.modifiedAt,
 });

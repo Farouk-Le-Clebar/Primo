@@ -1,30 +1,72 @@
-import { 
-  Injectable, 
-  NotFoundException, 
+import {
+  Injectable,
+  NotFoundException,
   ForbiddenException,
-  BadRequestException 
+  BadRequestException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Brackets, Repository } from 'typeorm';
 import { Project } from '../database/project.entity';
-import { 
-  CreateProjectDto, 
-  UpdateProjectDto, 
+import {
+  ProjectMember,
+  ProjectMemberRole,
+  ProjectMemberStatus,
+} from '../database/project-member.entity';
+import { User } from '../database/user.entity';
+import {
+  CreateProjectDto,
+  UpdateProjectDto,
   ProjectResponseDto,
   UpdateNotesDto,
-  UpdateFavoriteDto 
+  UpdateFavoriteDto,
 } from './dto/project.dto';
+import { NotificationService } from '../notification/notification.service';
+import { NotificationType } from '../database/notification.entity';
+import { ActivityHistoryService } from '../history/history.service';
+import { ActivityEventType } from '../database/history.entity';
 
 @Injectable()
 export class ProjectService {
   constructor(
     @InjectRepository(Project)
     private projectRepository: Repository<Project>,
+    @InjectRepository(ProjectMember)
+    private memberRepository: Repository<ProjectMember>,
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
+    private readonly notificationService: NotificationService,
+    private readonly activityHistoryService: ActivityHistoryService,
   ) {}
 
+  private async resolveDisplayName(userId: string): Promise<string> {
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+    if (!user) return 'Unknown user';
+    return `${user.firstName} ${user.surName}`.trim() || user.email;
+  }
+
+  private parseRawCount(value: unknown): number {
+    if (typeof value === 'number') return value;
+    if (typeof value === 'string') {
+      const parsed = Number(value);
+      return Number.isNaN(parsed) ? 0 : parsed;
+    }
+    return 0;
+  }
+
+  private mapProjectsWithSqlCount(
+    projects: Project[],
+    rawRows: Record<string, unknown>[],
+  ): ProjectResponseDto[] {
+    return projects.map((project, index) => {
+      const raw = rawRows[index] ?? {};
+      const memberCount = this.parseRawCount(raw.memberCount);
+      return this.toResponseDto(project, memberCount);
+    });
+  }
+
   async create(
-    createProjectDto: CreateProjectDto, 
-    userId: string
+    createProjectDto: CreateProjectDto,
+    userId: string,
   ): Promise<ProjectResponseDto> {
     try {
       const project = this.projectRepository.create({
@@ -34,41 +76,105 @@ export class ProjectService {
       });
 
       const savedProject = await this.projectRepository.save(project);
-      return this.toResponseDto(savedProject);
+
+      // Créer automatiquement le membership owner pour le créateur
+      const ownerMember = this.memberRepository.create({
+        projectId: savedProject.id,
+        userId,
+        role: ProjectMemberRole.OWNER,
+        status: ProjectMemberStatus.ACCEPTED,
+        invitedBy: null,
+        acceptedAt: new Date(),
+      });
+      await this.memberRepository.save(ownerMember);
+
+      // Enregistrer l'événement d'activité
+      const actorDisplayName = await this.resolveDisplayName(userId);
+      await this.activityHistoryService.record({
+        projectId: savedProject.id,
+        actorUserId: userId,
+        actorDisplayName,
+        eventType: ActivityEventType.PROJECT_CREATED,
+        payload: {
+          type: ActivityEventType.PROJECT_CREATED,
+          projectName: savedProject.name,
+        },
+      });
+
+      const projectWithMembers = await this.projectRepository.findOne({
+        where: { id: savedProject.id },
+        relations: ['members'],
+      });
+
+      return this.toResponseDto(projectWithMembers ?? savedProject);
     } catch (error) {
       throw new BadRequestException('Erreur lors de la création du projet');
     }
   }
 
   async findAllByUser(userId: string): Promise<ProjectResponseDto[]> {
-    const projects = await this.projectRepository.find({
-      where: { userId },
-      order: { modifiedAt: 'DESC' },
-    });
+    const qb = this.projectRepository
+      .createQueryBuilder('project')
+      .leftJoin(
+        ProjectMember,
+        'access',
+        'access.projectId = project.id AND access.userId = :userId AND access.status = :acceptedStatus',
+        {
+          userId,
+          acceptedStatus: ProjectMemberStatus.ACCEPTED,
+        },
+      )
+      .where(
+        new Brackets((subQb) => {
+          subQb
+            .where('project.userId = :userId', { userId })
+            .orWhere('access.id IS NOT NULL');
+        }),
+      )
+      .addSelect(
+        (subQb) =>
+          subQb
+            .select('COUNT(pm.id)', 'count')
+            .from(ProjectMember, 'pm')
+            .where('pm.projectId = project.id')
+            .andWhere('pm.status = :countAcceptedStatus', {
+              countAcceptedStatus: ProjectMemberStatus.ACCEPTED,
+            }),
+        'memberCount',
+      )
+      .orderBy('project.modifiedAt', 'DESC');
 
-    return projects.map(project => this.toResponseDto(project));
+    const { entities, raw } = await qb.getRawAndEntities();
+    return this.mapProjectsWithSqlCount(entities, raw);
   }
 
   async findOne(id: string, userId: string): Promise<ProjectResponseDto> {
     const project = await this.projectRepository.findOne({
       where: { id },
+      relations: ['members'],
     });
 
     if (!project) {
       throw new NotFoundException(`Projet avec l'ID ${id} non trouvé`);
     }
 
+    // accès si propriétaire OU membre accepté
     if (project.userId !== userId) {
-      throw new ForbiddenException('Accès non autorisé à ce projet');
+      const membership = await this.memberRepository.findOne({
+        where: { projectId: id, userId, status: ProjectMemberStatus.ACCEPTED },
+      });
+      if (!membership) {
+        throw new ForbiddenException('Accès non autorisé à ce projet');
+      }
     }
 
     return this.toResponseDto(project);
   }
 
   async update(
-    id: string, 
-    updateProjectDto: UpdateProjectDto, 
-    userId: string
+    id: string,
+    updateProjectDto: UpdateProjectDto,
+    userId: string,
   ): Promise<ProjectResponseDto> {
     const project = await this.projectRepository.findOne({
       where: { id },
@@ -78,34 +184,112 @@ export class ProjectService {
       throw new NotFoundException(`Projet avec l'ID ${id} non trouvé`);
     }
 
-    if (project.userId !== userId) {
-      throw new ForbiddenException('Accès non autorisé à ce projet');
-    }
+    // Vérifier que l'utilisateur a le droit d'écriture (owner/admin/editor)
+    await this.assertWriteAccess(id, userId);
 
     try {
+      const changedFields = Object.keys(updateProjectDto).filter(
+        (key) =>
+          (updateProjectDto as Record<string, any>)[key] !==
+          (project as Record<string, any>)[key],
+      );
+
       Object.assign(project, updateProjectDto);
-      
+
       const updatedProject = await this.projectRepository.save(project);
-      return this.toResponseDto(updatedProject);
+
+      const updatedProjectWithMembers = await this.projectRepository.findOne({
+        where: { id: updatedProject.id },
+        relations: ['members'],
+      });
+
+      // //activity history mais useless pour l'instant ça fait des duplicata
+      // if (changedFields.length > 0) {
+      //   const actorName = await this.resolveDisplayName(userId);
+      //   await this.activityHistoryService.record({
+      //     projectId: updatedProject.id,
+      //     actorUserId: userId,
+      //     actorDisplayName: actorName,
+      //     eventType: ActivityEventType.PROJECT_UPDATED,
+      //     payload: {
+      //       type: ActivityEventType.PROJECT_UPDATED,
+      //       projectName: updatedProject.name,
+      //       changedFields,
+      //     },
+      //   });
+      // }
+
+      return this.toResponseDto(updatedProjectWithMembers ?? updatedProject);
     } catch (error) {
       throw new BadRequestException('Erreur lors de la mise à jour du projet');
     }
   }
 
   async updateNotes(
-    id: string, 
-    updateNotesDto: UpdateNotesDto, 
-    userId: string
+    id: string,
+    updateNotesDto: UpdateNotesDto,
+    userId: string,
   ): Promise<ProjectResponseDto> {
-    return this.update(id, { notes: updateNotesDto.notes }, userId);
+    const result = await this.update(
+      id,
+      { notes: updateNotesDto.notes },
+      userId,
+    );
+
+    const project = await this.projectRepository.findOne({ where: { id } });
+    const editor = await this.userRepository.findOne({ where: { id: userId } });
+    const editorName = editor
+      ? `${editor.firstName} ${editor.surName}`.trim() || editor.email
+      : 'Un membre';
+
+    const members = await this.memberRepository.find({
+      where: { projectId: id, status: ProjectMemberStatus.ACCEPTED },
+    });
+
+    const notifyIds = members
+      .map((m) => m.userId)
+      .filter((uid) => uid !== userId);
+
+    await Promise.all(
+      notifyIds.map((uid) =>
+        this.notificationService.createNotification(
+          uid,
+          NotificationType.PROJECT_ACTIVITY,
+          'Notes modifiées',
+          `${editorName} a modifié les notes du projet : ${project?.name ?? 'votre projet'}`,
+          {
+            editorName,
+            projectName: project?.name ?? 'votre projet',
+            projectId: id,
+          },
+        ),
+      ),
+    );
+
+    await this.activityHistoryService.record({
+      projectId: id,
+      actorUserId: userId,
+      actorDisplayName: editorName,
+      eventType: ActivityEventType.PROJECT_NOTES_UPDATED,
+      payload: {
+        type: ActivityEventType.PROJECT_NOTES_UPDATED,
+        projectName: project?.name ?? 'votre projet',
+      },
+    });
+
+    return result;
   }
 
   async updateFavorite(
-    id: string, 
-    updateFavoriteDto: UpdateFavoriteDto, 
-    userId: string
+    id: string,
+    updateFavoriteDto: UpdateFavoriteDto,
+    userId: string,
   ): Promise<ProjectResponseDto> {
-    return this.update(id, { isFavorite: updateFavoriteDto.isFavorite }, userId);
+    return this.update(
+      id,
+      { isFavorite: updateFavoriteDto.isFavorite },
+      userId,
+    );
   }
 
   async remove(id: string, userId: string): Promise<void> {
@@ -117,8 +301,19 @@ export class ProjectService {
       throw new NotFoundException(`Projet avec l'ID ${id} non trouvé`);
     }
 
-    if (project.userId !== userId) {
-      throw new ForbiddenException('Accès non autorisé à ce projet');
+    // seul le propriétaire (owner) peut supprimer le projet // a voir si on veut pas faire un systeme de demande pour ceux qui sont pas owner -> stp sort moi du projet.
+    const member = await this.memberRepository.findOne({
+      where: {
+        projectId: id,
+        userId,
+        status: ProjectMemberStatus.ACCEPTED,
+        role: ProjectMemberRole.OWNER,
+      },
+    });
+    if (!member) {
+      throw new ForbiddenException(
+        'Seul le propriétaire peut supprimer ce projet',
+      );
     }
 
     try {
@@ -129,31 +324,97 @@ export class ProjectService {
   }
 
   async findFavoritesByUser(userId: string): Promise<ProjectResponseDto[]> {
-    const projects = await this.projectRepository.find({
-      where: { userId, isFavorite: true },
-      order: { modifiedAt: 'DESC' },
-    });
+    const qb = this.projectRepository
+      .createQueryBuilder('project')
+      .where('project.userId = :userId', { userId })
+      .andWhere('project.isFavorite = :isFavorite', { isFavorite: true })
+      .addSelect(
+        (subQb) =>
+          subQb
+            .select('COUNT(pm.id)', 'count')
+            .from(ProjectMember, 'pm')
+            .where('pm.projectId = project.id')
+            .andWhere('pm.status = :countAcceptedStatus', {
+              countAcceptedStatus: ProjectMemberStatus.ACCEPTED,
+            }),
+        'memberCount',
+      )
+      .orderBy('project.modifiedAt', 'DESC');
 
-    return projects.map(project => this.toResponseDto(project));
+    const { entities, raw } = await qb.getRawAndEntities();
+    return this.mapProjectsWithSqlCount(entities, raw);
   }
 
   async searchByName(
-    searchTerm: string, 
-    userId: string
+    searchTerm: string,
+    userId: string,
   ): Promise<ProjectResponseDto[]> {
-    const projects = await this.projectRepository
+    const qb = this.projectRepository
       .createQueryBuilder('project')
       .where('project.userId = :userId', { userId })
-      .andWhere('LOWER(project.name) LIKE LOWER(:searchTerm)', { 
-        searchTerm: `%${searchTerm}%` 
+      .andWhere('LOWER(project.name) LIKE LOWER(:searchTerm)', {
+        searchTerm: `%${searchTerm}%`,
       })
-      .orderBy('project.modifiedAt', 'DESC')
-      .getMany();
+      .addSelect(
+        (subQb) =>
+          subQb
+            .select('COUNT(pm.id)', 'count')
+            .from(ProjectMember, 'pm')
+            .where('pm.projectId = project.id')
+            .andWhere('pm.status = :countAcceptedStatus', {
+              countAcceptedStatus: ProjectMemberStatus.ACCEPTED,
+            }),
+        'memberCount',
+      )
+      .orderBy('project.modifiedAt', 'DESC');
 
-    return projects.map(project => this.toResponseDto(project));
+    const { entities, raw } = await qb.getRawAndEntities();
+    return this.mapProjectsWithSqlCount(entities, raw);
   }
 
-  private toResponseDto(project: Project): ProjectResponseDto {
+  /**
+   * Vérifie que l'utilisateur a un accès en écriture sur le projet.
+   * Rôles autorisés : owner, admin, co-admin, editor.
+   */
+  private async assertWriteAccess(
+    projectId: string,
+    userId: string,
+  ): Promise<void> {
+    const member = await this.memberRepository.findOne({
+      where: {
+        projectId,
+        userId,
+        status: ProjectMemberStatus.ACCEPTED,
+      },
+    });
+
+    if (!member) {
+      throw new ForbiddenException('Accès non autorisé à ce projet');
+    }
+
+    const writeRoles: ProjectMemberRole[] = [
+      ProjectMemberRole.OWNER,
+      ProjectMemberRole.ADMIN,
+      ProjectMemberRole.EDITOR,
+    ];
+
+    if (!writeRoles.includes(member.role)) {
+      throw new ForbiddenException(
+        "Vous n'avez pas les droits nécessaires pour modifier ce projet",
+      );
+    }
+  }
+
+  private toResponseDto(
+    project: Project,
+    memberCountOverride?: number,
+  ): ProjectResponseDto {
+    const relationMemberCount = project.members
+      ? project.members.filter(
+          (member) => member.status === ProjectMemberStatus.ACCEPTED,
+        ).length
+      : 0;
+
     return {
       id: project.id,
       name: project.name,
@@ -164,6 +425,7 @@ export class ProjectService {
       userId: project.userId,
       createdAt: project.createdAt,
       modifiedAt: project.modifiedAt,
+      memberCount: memberCountOverride ?? relationMemberCount,
     };
   }
 }

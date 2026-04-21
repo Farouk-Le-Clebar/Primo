@@ -1,27 +1,31 @@
-import React from "react";
+import React, { useState } from "react";
 import {
     useProjectDetail,
     useNotes,
     useFavorite,
 } from "../../../../hooks/useProjectDetail";
+import { useCurrentMemberRole } from "../../../../hooks/useCurrentMemberRole";
 
 import ProjectHeader from "./ProjectHeader";
-import MapView from "./MapView";
-import ParametersCard from "./ParametersCard";
-import ComparatorCard from "./ComparatorCard";
-import NotesCard from "./NotesCard";
-
+import { OverviewTab } from "./overview";
+import { ParametersTab } from "./parameters";
+import { ParcelsTab } from "./parcels";
+import { DocumentsTab } from "./documents";
+import { ActivitiesTab } from "./activities";
+import { MembersTab } from "./members";
+import type { TabKey } from "../../../../types/project/projectTab";
 
 type ProjectDetailPageProps = {
     projectId?: string;
     onBack?: () => void;
 };
 
-
 export const ClientProjectPage: React.FC<ProjectDetailPageProps> = ({
     projectId,
     onBack,
 }) => {
+    const [activeTab, setActiveTab] = useState<TabKey>("overview");
+
     const { project, isLoading, error } = useProjectDetail(projectId);
 
     const { isFavorite, toggleFavorite } = useFavorite(
@@ -30,6 +34,8 @@ export const ClientProjectPage: React.FC<ProjectDetailPageProps> = ({
     );
 
     const { notes, setNotes } = useNotes(project?.notes || "", projectId);
+
+    const { canEdit } = useCurrentMemberRole(projectId, project?.userId);
 
     const handleBack = () => {
         if (onBack) {
@@ -40,8 +46,7 @@ export const ClientProjectPage: React.FC<ProjectDetailPageProps> = ({
     };
 
     const handleViewAllParameters = () => {
-        console.log("Ouvrir la vue complète des paramètres");
-        // TODO: Naviguer vers la page des paramètres
+        setActiveTab("parameters");
     };
 
     if (error) {
@@ -60,44 +65,62 @@ export const ClientProjectPage: React.FC<ProjectDetailPageProps> = ({
         );
     }
 
+    const renderTabContent = () => {
+        switch (activeTab) {
+            case "overview":
+                return (
+                    <OverviewTab
+                        project={project}
+                        isLoading={isLoading}
+                        notes={notes}
+                        onNotesChange={setNotes}
+                        onViewAllParameters={handleViewAllParameters}
+                        canEdit={canEdit}
+                    />
+                );
+            case "parameters":
+                return <ParametersTab />;
+            case "parcels":
+                return <ParcelsTab />;
+            case "documents":
+                return <DocumentsTab />;
+            case "activities":
+                return (
+                    <ActivitiesTab
+                        projectId={projectId}
+                        projectName={project?.name}
+                    />
+                );
+            case "members":
+                return (
+                    <MembersTab
+                        projectId={projectId}
+                        projectOwnerId={project?.userId}
+                    />
+                );
+            default:
+                return null;
+        }
+    };
+
     return (
-        <div className="w-full h-screen bg-gray-50 flex flex-col overflow-hidden font-UberMove">
-            {/* Header*/}
-            <div className="flex-shrink-0 px-7 pt-1 pb-0 bg-white mb-4 border-b border-gray-200">
+        <div className="w-full h-full bg-gray-50 flex flex-col overflow-hidden font-inter">
+            {/* Header (back + tabs + project info) */}
+            <div className="flex-shrink-0 px-7 bg-white border-b border-gray-200 ">
                 <ProjectHeader
-                    name={project?.name || ""}
+                    name={project?.name || "----"}
                     isFavorite={isFavorite}
                     isLoading={isLoading}
+                    activeTab={activeTab}
                     onBack={handleBack}
                     onToggleFavorite={toggleFavorite}
+                    onTabChange={setActiveTab}
                 />
             </div>
 
-            {/*MapView*/}
-            <div className="flex-shrink-0 mb-4 px-7 h-96">
-                <MapView parcels={project?.parcels} isLoading={isLoading} />
-            </div>
-
-            <div className="flex-1 grid grid-cols-2 lg:grid-cols-2 gap-4 min-h-0 px-7 pb-7">
-                <div className="lg:col-span-1 flex flex-col gap-4 min-h-0">
-                    <div className="flex-1 min-h-0">
-                        <ParametersCard
-                            data={project?.parameters}
-                            isLoading={isLoading}
-                            onViewAll={handleViewAllParameters}
-                        />
-                    </div>
-                    <div className="flex-1 min-h-0">
-                        <ComparatorCard isLoading={isLoading} />
-                    </div>
-                </div>
-                <div className="lg:col-span-1 min-h-0">
-                    <NotesCard
-                        notes={notes}
-                        isLoading={isLoading}
-                        onNotesChange={setNotes}
-                    />
-                </div>
+            {/* Tab content */}
+            <div className="flex-1 overflow-y-auto px-7 pt-4 flex flex-col min-h-0">
+                {renderTabContent()}
             </div>
         </div>
     );

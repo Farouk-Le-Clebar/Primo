@@ -6,12 +6,16 @@ import LayoutSettings from "./components/layouts/layoutSettings";
 import ProtectedRoute from "./components/protectedRoute/ProtectedRoute";
 import AdminRoute from "./components/adminRoute/AdminRoute";
 
-// PUBLIC PAGES
+// AUTH PAGES (Nouveaux imports)
+import AuthLayout from "./pages/auth/AuthLayout";
+import AuthRoot from "./pages/auth/AuthRoot";
+import AuthLogin from "./pages/auth/AuthLogin";
+import AuthRegister from "./pages/auth/AuthRegister";
+
+// PAGES
 import Dashboard from "./pages/dashboard/Dashboard";
 import Projects from "./pages/projects/Projects";
 import Map from "./pages/map/Map";
-
-// PROTECTED PAGES
 import Profile from "./pages/profile/Profile";
 import EditProfile from "./pages/settings/editProfile/EditProfile";
 import Notifications from "./pages/settings/Notifications";
@@ -22,55 +26,66 @@ import Subscriptions from "./pages/settings/Subscriptions";
 import CustomToaster from "./components/toaster/CustomToaster";
 import ProjectDetail from "./pages/projects/ProjectDetail";
 import ProjectCreate from "./pages/projects/ProjectCreate";
-
-// ADMIN PAGES
 import AdminPanel from "./pages/admin/AdminPanel";
+import OnboardingRoot from "./pages/onBoarding/OnboardingRoot";
+import EmailVerify from "./pages/mailling/EmailVerify";
+import PostRegisterEmailVerify from "./pages/mailling/PostRegisterEmailVerify";
+import ResetPassword from "./pages/mailling/ResetPassword";
+import SendEmailResetPassword from "./pages/mailling/SendEmailResetPassword";
 
 export default function App() {
   return (
     <>
-      {/* Toaster pour les notifications */}
       <CustomToaster />
 
       <Routes>
-        <Route path="/" element={<Layout />}>
-          {/* Routes admin */}
-          <Route element={<ProtectedRoute />}>
+        <Route path="/verify" element={<EmailVerify />} />
+        <Route path="/reset/password" element={<ResetPassword />} />
+        {/* Routes Auth */}
+        <Route path="/auth" element={<AuthLayout />}>
+          <Route index element={<AuthRoot />} />
+          <Route path="login" element={<AuthLogin />} />
+          <Route path="register" element={<AuthRegister />} />
+          <Route path="forgot-password" element={<SendEmailResetPassword />} />
+          <Route path="register/verify" element={<PostRegisterEmailVerify />} />
+        </Route>
+
+        {/* Routes Protegé */}
+        <Route element={<ProtectedRoute />}>
+          <Route path="/onboarding" element={<OnboardingRoot />} />
+
+          {/* Layout Principal */}
+          <Route path="/" element={<Layout />}>
+            <Route index element={<Navigate to="/dashboard" replace />} />
+            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="projects" element={<Projects />} />
+            <Route path="projects/new" element={<ProjectCreate />} />
+            <Route path="projects/:id" element={<ProjectDetail />} />
+
+            {/* Routes Admin */}
             <Route path="admin" element={<AdminRoute />}>
               <Route path="dashboard" element={<AdminPanel />} />
             </Route>
           </Route>
-          {/* Routes Publiques */}
-          <Route index element={<Dashboard />} />
-          <Route path="dashboard" element={<Dashboard />} />
-          <Route path="projects" element={<Projects />} />
-          <Route element={<ProtectedRoute />}>
-            <Route path="projects/new" element={<ProjectCreate />} />
-            <Route path="projects/:id" element={<ProjectDetail />} />
-          </Route>
-        </Route>
 
-        {/* Routes de la carte */}
-        <Route path="search" element={<Map />} />
+          {/* Route Carte (Plein écran, hors Layout standard j'imagine) */}
+          <Route path="/search" element={<Map />} />
 
-        {/* Routes Protégées */}
-        <Route element={<ProtectedRoute />}>
+          {/* Layout Settings */}
           <Route path="/" element={<LayoutSettings />}>
             <Route path="profile" element={<Profile />} />
-
-            {/* Routes de paramètres */}
-            <Route path="settings" element={<EditProfile />} />
+            <Route path="settings" element={<Navigate to="/settings/edit-profile" replace />} />
             <Route path="settings/edit-profile" element={<EditProfile />} />
             <Route path="settings/notifications" element={<Notifications />} />
             <Route path="settings/billing" element={<Billing />} />
             <Route path="settings/privacy" element={<Privacy />} />
             <Route path="settings/security" element={<Security />} />
             <Route path="settings/subscriptions" element={<Subscriptions />} />
-
           </Route>
+
         </Route>
 
-        {/* Redirection pour les routes non trouvées */}
+        {/* Fallback 404 - Redirige vers le dashboard (qui redirigera vers /auth si non connecté) */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </>

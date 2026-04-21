@@ -1,5 +1,6 @@
+import React from "react";
 import DateInput from "./DateInput";
-import {BorderColors, TextColors, FocusColors, PlaceholderColors}  from "../utils/colors";
+import { BorderColors, TextColors, FocusColors, PlaceholderColors } from "../utils/colors";
 
 type InputProps = {
     width?: string;
@@ -13,19 +14,24 @@ type InputProps = {
     textColor?: string;
     focusColor?: string;
     placeholderColor?: string;
+    backgroundColor?: string;
+    onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
 }
 
 const Input = ({ 
     width = "w-full",
     height,
     placeholder = "Enter text",
-    value, onChange,
+    value, 
+    onChange,
     className = "",
     type = 'text',
     textColor = TextColors.gray,
     borderColor = BorderColors.gray,
     focusColor = FocusColors.green,
+    backgroundColor = "bg-white",
     placeholderColor = PlaceholderColors.gray,
+    onKeyDown, 
 }: InputProps) => {
     return (
         <>
@@ -39,6 +45,7 @@ const Input = ({
                 <textarea
                     value={value}
                     onChange={(e) => onChange(e.target.value)}
+                    onKeyDown={onKeyDown}
                     placeholder={placeholder}
                     className={`border border-gray-500 rounded-xl p-2 w-full h-24 resize-none focus:outline-none focus:border-agendai ${className}`}
                 />
@@ -48,8 +55,9 @@ const Input = ({
                     placeholder={placeholder}
                     value={value}
                     onChange={(e) => onChange(e.target.value)}
+                    onKeyDown={onKeyDown}
                     className={`
-                        ${width} ${height} px-4 py-2 pr-12 ${textColor} border ${borderColor} ${placeholderColor} rounded-lg focus:outline-none focus:ring-2 ${focusColor} ${className}`}
+                        ${width} ${height} ${backgroundColor} px-4 py-2 pr-12 ${textColor} border ${borderColor} ${placeholderColor} rounded-lg focus:outline-none ${focusColor} ${className}`}
                     lang="fr"
                 />
             )}
@@ -57,4 +65,4 @@ const Input = ({
     )
 }
 
-export default Input
+export default Input;

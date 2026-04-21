@@ -17,15 +17,18 @@ services:
   backend:
     image: garoverr/primo-backend:dev
     environment:
-      MYSQL_HOST: mysql_db
-      MYSQL_PORT: 6673
-      MYSQL_USER: user_primo
-      MYSQL_PASSWORD: V3RyS3eCr3tP@ssw0rd
-      MYSQL_DATABASE: primo
-      JWT_SECRET: S3cReT
-      ADDOK_URL: http://addok:7878
-      FRONT_URL: app.primo-data.fr
-      EXTERNE_GEOSERVER_URL: http://geoserver:8080/geoserver
+      MYSQL_HOST: mysql_host
+      MYSQL_PORT: 667
+      MYSQL_USER: mysql_user
+      MYSQL_PASSWORD: mysql_password
+      MYSQL_DATABASE: mysql_database
+      JWT_SECRET: jwt_secret_key
+      ADDOK_URL: addok_url
+      FRONT_URL: front_url
+      EXTERNE_GEOSERVER_URL: externe_geoserver_url
+      BREVO_API_URL: brevo_api_url
+      BREVO_API_KEY: xkeysib-brevo_api_key
+      EMAIL_VERIFICATION_URL: email_verification_url
 
     labels:
       - "traefik.enable=true"
@@ -42,7 +45,7 @@ services:
     image: etalab/addok
     restart: always
     ports:
-      - '7878:7878'
+      - '667:667'
     volumes:
       - ./addok-data/addok.conf:/etc/addok/addok.conf
       - ./addok-data/addok.db:/data/addok.db
@@ -70,10 +73,10 @@ services:
     ports:
       - '6673:3306'
     environment:
-      MYSQL_DATABASE: primo
-      MYSQL_USER: user_primo
-      MYSQL_PASSWORD: V3RyS3eCr3tP@ssw0rd
-      MYSQL_ROOT_PASSWORD: V3RyS3eCr3tP@ssw0rd
+      MYSQL_DATABASE: mysql_database
+      MYSQL_USER: mysql_user
+      MYSQL_PASSWORD: mysql_password
+      MYSQL_ROOT_PASSWORD: mysql_root_password
     volumes:
       - mysql_data:/var/lib/mysql
     networks:
@@ -85,16 +88,16 @@ services:
     container_name: postgis_primo
     restart: always
     environment:
-      POSTGRES_DB: bdtopo
-      POSTGRES_USER: geo_primo
-      POSTGRES_PASSWORD: G30S3cr3tP@ss
+      POSTGRES_DB: postgis_db
+      POSTGRES_USER: postgres_user
+      POSTGRES_PASSWORD: postgres_password
       POSTGRES_HOST_AUTH_METHOD: trust
     ports:
-      - '5432:5432'
+      - '667:667'
     volumes:
       - postgis_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U geo_primo -d bdtopo"]
+      test: ["CMD-SHELL", "pg_isready -U postgres_user -d postgis_db"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -107,31 +110,67 @@ services:
     container_name: geoserver_primo
     restart: always
     environment:
-      GEOSERVER_ADMIN_USER: admin
-      GEOSERVER_ADMIN_PASSWORD: geoserver_primo
+      GEOSERVER_ADMIN_USER: geoserver_admin_user
+      GEOSERVER_ADMIN_PASSWORD: geoserver_admin_password
       INITIAL_MEMORY: 2G
-      MAXIMUM_MEMORY: 4G
+      MAXIMUM_MEMORY: 32G
       STABLE_EXTENSIONS: wps,csw
       COMMUNITY_EXTENSIONS: ""
     ports:
-      - '8080:8080'
+      - '667:667'
     volumes:
       - geoserver_data:/opt/geoserver/data_dir
     depends_on:
       postgis:
         condition: service_healthy
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:8080/geoserver/web/ || exit 1"]
+      test: ["CMD-SHELL", "curl -f http://localhost:667/geoserver/web/ || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 5
     networks:
       - web
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.geoserver.rule=Host(`geoserver.primo-data.fr`)"
+      - "traefik.http.routers.geoserver.entrypoints=websecure"
+      - "traefik.http.routers.geoserver.tls.certresolver=myresolver"
+      - "traefik.http.services.geoserver.loadbalancer.server.port=8080"
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin_primo
+    restart: always
+    environment:
+      PMA_HOST: mysql_db
+      PMA_PORT: 667
+    depends_on:
+      - mysql_db
+    networks:
+      - web
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.database.rule=Host(`database.primo-data.fr`)"
+      - "traefik.http.routers.database.entrypoints=websecure"
+      - "traefik.http.routers.database.tls.certresolver=myresolver"
+      - "traefik.http.services.database.loadbalancer.server.port=80"
+
+  ollama:
+    image: ollama/ollama:latest
+    environment:
+      - OLLAMA_NUM_PARALLEL=4
+    container_name: ollama
+    ports:
+      - "667:667"
+    volumes:
+      - ollama_data:/root/.ollama
+    restart: always
 
 volumes:
   mysql_data:
   postgis_data:
   geoserver_data:
+  ollama_data:
 
 networks:
   web:

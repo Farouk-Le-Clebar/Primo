@@ -26,7 +26,7 @@ const Button = ({
   height,
   textSize = "text-[1.4em]",
   textColor = TextColors.white,
-  textHoverColor = TextColors.white,
+  textHoverColor = TextColors.whiteHover,
   disabled = false,
   isLoading = false,
   shadowHover = "hover:shadow-lg",
@@ -43,7 +43,7 @@ const Button = ({
         disabled={disabled}
         className={`
           flex ${backgroundColor} ${backgroundHoverColor} ${shadowHover}
-          ${textColor} ${textHoverColor} items-center justify-center font-bold w-full h-full ${rounded}
+          ${textColor} ${textHoverColor} cursor-pointer items-center justify-center font-bold w-full h-full ${rounded}
           disabled:bg-gray-400 disabled:cursor-not-allowed transition-all duration-200 group ${growAnimation ? "transition-transform transform hover:scale-105" : ""} ${textSize} ${className}
         `}
       >
