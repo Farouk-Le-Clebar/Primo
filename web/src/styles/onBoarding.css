@@ -1,0 +1,102 @@
+.driver-popover.driverjs-theme {
+  background-color: #ffffff !important;
+  color: #111827 !important;
+  border: 1px solid rgba(0, 0, 0, 0.05) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1) !important;
+  padding: 12px !important;
+  max-width: 380px !important;
+  font-family: 'Inter', system-ui, sans-serif !important;
+}
+
+.driverjs-theme .driver-popover-close-btn {
+  display: none !important;
+}
+
+/* 2. CONTENU TEXTUEL (Ton HTML injecté) */
+.p-tour-title {
+  font-weight: 700 !important;
+  font-size: 18px !important;
+  letter-spacing: -0.03em !important;
+  color: #000000 !important;
+  margin-bottom: 10px !important;
+}
+
+.p-tour-description {
+  color: #4b5563 !important;
+  line-height: 1.55 !important;
+  font-size: 14.5px !important;
+  margin: 0 !important;
+}
+
+/* 3. LES BOUTONS (Reset et style forcé) */
+
+/* Conteneur des boutons */
+.driverjs-theme .driver-popover-footer {
+  margin-top: 12px !important;
+  display: flex !important;
+  flex-direction: row-reverse !important;
+
+}
+
+/* Base commune des boutons */
+.driverjs-theme .driver-popover-next-btn, 
+.driverjs-theme .driver-popover-prev-btn, 
+.driverjs-theme .driver-popover-done-btn {
+  all: unset !important;
+  box-sizing: border-box !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 25px !important;
+  padding: 0 18px !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  border-radius: 8px !important;
+  transition: all 0.2s ease !important;
+}
+
+/* Bouton SUIVANT & TERMINER (Noir Linear) */
+.driverjs-theme .driver-popover-next-btn, 
+.driverjs-theme .driver-popover-done-btn {
+  margin-left: 10px !important;
+  background-color: #000000 !important;
+  color: #ffffff !important;
+  border: 1px solid #000000 !important;
+}
+
+.driverjs-theme .driver-popover-next-btn:hover, 
+.driverjs-theme .driver-popover-done-btn:hover {
+  background-color: #262626 !important;
+  transform: translateY(-1px) !important;
+}
+
+/* Bouton PRÉCÉDENT (Gris discret) */
+.driverjs-theme .driver-popover-prev-btn {
+  background-color: #ffffff !important;
+  color: #6b7280 !important;
+  border: 1px solid #e5e7eb !important;
+}
+
+.driverjs-theme .driver-popover-prev-btn:hover {
+  background-color: #f9fafb !important;
+  border-color: #d1d5db !important;
+}
+
+/* 4. NETTOYAGE DES ÉLÉMENTS PAR DÉFAUT */
+
+/* Cache le 1 of 3 */
+.driverjs-theme .driver-popover-progress-text {
+  display: none !important;
+}
+
+/* Cache la flèche pour un look plus moderne */
+.driverjs-theme .driver-popover-arrow {
+  display: none !important;
+}
+
+/* Arrondi sur l'élément en surbrillance */
+.driverjs-active-element {
+  border-radius: 12px !important;
+}
