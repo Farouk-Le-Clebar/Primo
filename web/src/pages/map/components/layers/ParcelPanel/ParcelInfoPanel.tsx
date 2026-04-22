@@ -8,7 +8,7 @@ import { ParcelInfoCard } from "./ParcelleInfoCard";
 import { getDvfParcelle } from "../../../../../requests/dvf/information";
 import { getBuildingsByGeometry } from "../../../../../requests/geoserver/bdTopo";
 import { getZonesUrbaByGeometry } from "../../../../../requests/geoserver/urbanAreas";
-import { extractDepartement } from "../ParcelDetailedDashboard/widgets/gpu/UrbanAreas/utils";
+import { extractDepartement } from "../ParcelDetailedDashboard/widgets/gpu/utils";
 
 
 type ParcelInfoPanelProps = {
