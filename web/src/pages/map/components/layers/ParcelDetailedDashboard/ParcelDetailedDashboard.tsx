@@ -4,8 +4,6 @@ import { useState } from "react";
 import GeneralTab from "./tabs/GeneralTab";
 import BatimentsTab from "./tabs/BatimentsTab";
 import UrbanismeTab from "./tabs/UrbanismeTab";
-import PrescriptionsTab from "./tabs/PrescriptionsTab";
-import InformationsTab from "./tabs/InformationsTab";
 import DvfTab from "./tabs/DvfTab";
 import DpeTab from "./tabs/DpeTab";
 

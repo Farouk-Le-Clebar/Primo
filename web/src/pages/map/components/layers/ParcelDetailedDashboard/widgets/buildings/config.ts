@@ -1,16 +1,11 @@
 export const BUILDING_COLORS = [
-  { fill: "fill-emerald-500/20", stroke: "stroke-emerald-600", bg: "bg-emerald-50" },
-  { fill: "fill-blue-500/20", stroke: "stroke-blue-600", bg: "bg-blue-50" },
-  { fill: "fill-amber-500/20", stroke: "stroke-amber-600", bg: "bg-amber-50" },
-  { fill: "fill-purple-500/20", stroke: "stroke-purple-600", bg: "bg-purple-50" },
-  { fill: "fill-rose-500/20", stroke: "stroke-rose-600", bg: "bg-rose-50" },
-  { fill: "fill-indigo-500/20", stroke: "stroke-indigo-600", bg: "bg-indigo-50" },
-  { fill: "fill-cyan-500/20", stroke: "stroke-cyan-600", bg: "bg-cyan-50" },
-  { fill: "fill-orange-500/20", stroke: "stroke-orange-600", bg: "bg-orange-50" },
-  { fill: "fill-teal-500/20", stroke: "stroke-teal-600", bg: "bg-teal-50" },
-  { fill: "fill-violet-500/20", stroke: "stroke-violet-600", bg: "bg-violet-50" },
-  { fill: "fill-sky-500/20", stroke: "stroke-sky-600", bg: "bg-sky-50" },
-  { fill: "fill-fuchsia-500/20", stroke: "stroke-fuchsia-600", bg: "bg-fuchsia-50" },
-  { fill: "fill-lime-500/20", stroke: "stroke-lime-600", bg: "bg-lime-50" },
-  { fill: "fill-pink-500/20", stroke: "stroke-pink-600", bg: "bg-pink-50" },
+  { fill: "fill-[#F5AB2F]", stroke: "stroke-[#F5AB2F]", bg: "bg-white" }, // Orange
+  { fill: "fill-[#35C2B2]", stroke: "stroke-[#35C2B2]", bg: "bg-white" }, // Turquoise
+  { fill: "fill-[#6C66E8]", stroke: "stroke-[#6C66E8]", bg: "bg-white" }, // Indigo
+
+  { fill: "fill-[#F46977]", stroke: "stroke-[#F46977]", bg: "bg-white" },
+  { fill: "fill-[#48A6ED]", stroke: "stroke-[#48A6ED]", bg: "bg-white" }, // Bleu Azur (Doux et très lisible)
+  { fill: "fill-[#7DCE68]", stroke: "stroke-[#7DCE68]", bg: "bg-white" }, // Vert Pomme (Parfait pour les annexes/garages)
+  { fill: "fill-[#D866BA]", stroke: "stroke-[#D866BA]", bg: "bg-white" }, // Magenta Doux (Apporte de la variété)
+  { fill: "fill-[#A06CD5]", stroke: "stroke-[#A06CD5]", bg: "bg-white" }, // Améthyste (Fait le pont entre l'indigo et le magenta)
 ];

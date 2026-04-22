@@ -1,5 +1,7 @@
+// BuildingsWidget.tsx
 import { useEffect, useMemo } from "react";
 import { useMutation } from "@tanstack/react-query";
+import { Grid, Col } from "@tremor/react";
 
 // COMPONENTS
 import { BuildingCard } from "./BuildingCard";
@@ -7,6 +9,7 @@ import { getBuildingsByGeometry } from "../../../../../../../requests/geoserver/
 import type { ParcelWidgetProps } from "../../types";
 import { BuildingInPlot } from "./BuildingInPlot";
 import { BUILDING_COLORS } from "./config";
+import LoadingPrimoLogo from "../../../../../../../components/animations/LoadingPrimoLogo";
 
 // ICONS
 import { WALL_MATERIALS, ROOF_MATERIALS, getMaterialLabel } from "../../../../../../../utils/building-dictionaries";
@@ -47,64 +50,60 @@ export default function BuildingsWidget({ feature }: ParcelWidgetProps) {
   const handleBuildingClick = (index: number) => {
     const element = document.getElementById(`building-card-${index}`);
     if (element) {
-      element.scrollIntoView({ 
-        behavior: "smooth", 
-        block: "start" 
-      });
+      element.scrollIntoView({ behavior: "smooth", block: "center" });
     }
   };
 
-  console.log("Bâtiments détectés data:", data);
-
   return (
-    <div className="font-inter">
+    <div className="font-inter w-full">
       {isPending && (
         <div className="flex items-center gap-2 mb-4">
-          <div className="w-4 h-4 border-2 border-gray-200 border-t-blue-500 rounded-full animate-spin" />
+          <LoadingPrimoLogo className="w-1 h-1 text-black-500" />
           <span className="text-[11px] font-medium text-[#878D96]">Récupération des données BD Topo...</span>
         </div>
       )}
 
-      <div className="w-full gap-10 flex flex-col">
-        {!isPending && sortedBuildings.length === 0 && (
-          <div className="py-8 text-sm text-[#878D96] text-center bg-gray-50 rounded-xl border border-dashed border-gray-200">
-            Aucun bâtiment détecté sur cette parcelle par l'IGN.
-          </div>
-        )}
-
-        {!isPending && sortedBuildings.length > 0 && (
-          <div className="flex flex-col gap-3">
-            <h3 className="text-xs font-bold text-[#878D96] uppercase tracking-wider pl-1">
-              Implantation au sol
-            </h3>
-            <BuildingInPlot 
-              parcelFeature={feature} 
-              buildings={sortedBuildings} 
-              onBuildingClick={handleBuildingClick}
-            />
-          </div>
-        )}
-
-        <div className="flex flex-col gap-12">
-          {sortedBuildings.map((building: any, i: number) => {
-            const p = building.properties;
-            const colorClasses = BUILDING_COLORS[i % BUILDING_COLORS.length];
-
-            return (
-              <BuildingCard 
-                key={p.id || i}
-                id={`building-card-${i}`}
-                building={building}
-                colorClasses={colorClasses}
-                p={p}
-                constructionYear={p.date_app ? new Date(p.date_app).getFullYear() : 'N/A'}
-                matMur={getMaterialLabel(p.mat_murs, WALL_MATERIALS)}
-                matToit={getMaterialLabel(p.mat_toits, ROOF_MATERIALS)}
-              />
-            );
-          })}
+      {!isPending && sortedBuildings.length === 0 && (
+        <div className="py-8 text-sm text-[#878D96] text-center bg-gray-50 rounded-xl border border-dashed border-gray-200">
+          Aucun bâtiment détecté sur cette parcelle par l'IGN.
         </div>
-      </div>
+      )}
+
+      {!isPending && sortedBuildings.length > 0 && (
+        <Grid numItems={1} numItemsMd={3} className="gap-6 w-full relative">
+          
+          <Col numColSpan={1}>
+            <div className="sticky top-0 h-182 flex flex-col">
+              <BuildingInPlot
+                parcelFeature={feature} 
+                buildings={sortedBuildings} 
+                onBuildingClick={handleBuildingClick}
+              />
+            </div>
+          </Col>
+
+          <Col numColSpan={1} numColSpanMd={2} className="pb-10">
+            <Grid numItems={1} numItemsSm={2} className="gap-4">
+              {sortedBuildings.map((building: any, i: number) => {
+                const p = building.properties;
+                const colorClasses = BUILDING_COLORS[i % BUILDING_COLORS.length];
+                return (
+                  <BuildingCard 
+                    key={p.id || i}
+                    id={`building-card-${i}`}
+                    building={building}
+                    colorClasses={colorClasses}
+                    p={p}
+                    constructionYear={p.date_app ? new Date(p.date_app).getFullYear() : 'N/A'}
+                    matMur={getMaterialLabel(p.mat_murs, WALL_MATERIALS)}
+                    matToit={getMaterialLabel(p.mat_toits, ROOF_MATERIALS)}
+                  />
+                );
+              })}
+            </Grid>
+          </Col>
+        </Grid>
+      )}
     </div>
   );
 }

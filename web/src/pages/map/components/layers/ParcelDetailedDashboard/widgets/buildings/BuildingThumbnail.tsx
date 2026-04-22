@@ -43,7 +43,7 @@ export function BuildingThumbnail({ feature, colorClasses }: { feature: any, col
   if (!geoData) return <div className="w-full h-full bg-gray-50 flex items-center justify-center text-[10px]">N/A</div>;
 
   return (
-    <div className={`w-full h-full ${colorClasses.bg} relative flex items-center justify-center overflow-hidden rounded-lg border border-opacity-20`}>
+    <div className={`w-full h-full ${colorClasses.bg} relative flex items-center justify-center overflow-hidden rounded-lg`}>
       <svg viewBox="0 0 100 100" className="w-[80%] h-[80%] drop-shadow-sm">
         <path 
           d={geoData.d} 

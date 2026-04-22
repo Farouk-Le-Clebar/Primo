@@ -1,4 +1,4 @@
-import { MapPin, ChevronRight, Map as MapIcon } from "lucide-react";
+import { ChevronRight, Map as MapIcon } from "lucide-react";
 
 type ParcelDetailedNavbarProps = {
   parcelId: string;
