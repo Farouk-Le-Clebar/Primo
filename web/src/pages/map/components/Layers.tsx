@@ -32,14 +32,14 @@ const Layers = () => {
     const map = useMap();
     const [mapBounds, setMapBounds] = useState<L.LatLngBounds | null>(null);
     const [currentZoom, setCurrentZoom] = useState<number>(6);
-    
+
     const [selectedParcelle, setSelectedParcelle] = useState<{
-        bounds: L.LatLngBounds; 
-        feature: any; 
+        bounds: L.LatLngBounds;
+        feature: any;
         layer: L.Path;
         addokData?: any;
     } | null>(null);
-    
+
     const [isDashboardOpen, setIsDashboardOpen] = useState(false);
     const selectedIdRef = useRef<string | null>(null);
 
@@ -47,7 +47,7 @@ const Layers = () => {
     const [pacellesBoundData, setPacellesBoundData] = useState<FeatureCollection | null>(null);
     const [cityBoundData, setCityBoundData] = useState<FeatureCollection | null>(null);
     const [divisionsBoundData, setDivisionsBoundData] = useState<FeatureCollection | null>(null);
-    
+
     const [mapType, setMapType] = useState<"basic" | "satellite">(getUserMapPreference());
     const [poisData, setPoisData] = useState<FeatureCollection | null>(null);
     const [enabledPoiTypes, setEnabledPoiTypes] = useState<string[]>(
@@ -56,7 +56,7 @@ const Layers = () => {
 
     const handleMapBoundsChange = useCallback((bounds: L.LatLngBounds) => setMapBounds(bounds), []);
     const handleZoomChange = useCallback((zoom: number) => setCurrentZoom(zoom), []);
-    
+
     const handleCityBoundChange = useCallback((data: any) => setCityBoundData(data), []);
     const handleDepartementsBoundChange = useCallback((data: any) => setDepartementsBoundData(data), []);
     const handleDivisionsBoundChange = useCallback((data: any) => setDivisionsBoundData(data), []);
@@ -66,14 +66,14 @@ const Layers = () => {
     const handleParcelleSelect = useCallback(async (bounds: L.LatLngBounds, feature: any, layer: L.Path) => {
         const id = feature.id;
         selectedIdRef.current = id;
-        
+
         setSelectedParcelle({ bounds, feature, layer });
         setIsDashboardOpen(false);
 
         try {
             const center = bounds.getCenter();
             const addokResponse = await addOkReverseRequest(center.lng, center.lat);
-            
+
             if (addokResponse && addokResponse.features && addokResponse.features.length > 0) {
                 const adresseData = addokResponse.features[0];
                 const banId = adresseData.properties.id;
@@ -89,7 +89,7 @@ const Layers = () => {
 
                 setSelectedParcelle(prev => {
                     if (prev && prev.feature.id !== id) return prev;
-                    
+
                     return {
                         ...prev!,
                         feature: enrichedFeature,
@@ -123,7 +123,7 @@ const Layers = () => {
             <LocationHandler />
             <MapBounds onChange={handleMapBoundsChange} />
             <ZoomHandler onZoomChange={handleZoomChange} />
-            
+
             <ShapesLayer
                 onCityBoundChange={handleCityBoundChange}
                 onDepartementsBoundChange={handleDepartementsBoundChange}
@@ -131,28 +131,28 @@ const Layers = () => {
                 onPacellesBoundChange={handlePacellesBoundChange}
                 currentZoom={currentZoom}
                 mapBounds={mapBounds}
-                dataShape={{ 
-                    departements: departementsBoundData, 
-                    parcelles: pacellesBoundData, 
-                    city: cityBoundData, 
-                    divisions: divisionsBoundData 
+                dataShape={{
+                    departements: departementsBoundData,
+                    parcelles: pacellesBoundData,
+                    city: cityBoundData,
+                    divisions: divisionsBoundData
                 }}
                 onParcelleSelect={handleParcelleSelect}
                 selectedIdRef={selectedIdRef}
             />
-            
-            <PoiLayer 
-                onPoisChange={handlePoisChange} 
-                mapBounds={mapBounds} 
-                currentZoom={currentZoom} 
-                enabledPoiTypes={enabledPoiTypes} 
-                dataPois={{ pois: poisData }} 
+
+            <PoiLayer
+                onPoisChange={handlePoisChange}
+                mapBounds={mapBounds}
+                currentZoom={currentZoom}
+                enabledPoiTypes={enabledPoiTypes}
+                dataPois={{ pois: poisData }}
             />
 
             <div className="flex fixed inset-0 z-[1001] flex-col pointer-events-none">
                 <header className="flex w-full h-15 items-center shrink-0 pointer-events-auto">
                     <NoScrollZone>
-                        <Navbar 
+                        <Navbar
                             parcelleBounds={pacellesBoundData}
                             onParcelleSelect={handleParcelleSelect}
                         />
@@ -160,22 +160,21 @@ const Layers = () => {
                 </header>
 
                 <div className="flex-1 flex w-full overflow-hidden relative">
-                    <aside 
-                        className={`h-full pointer-events-auto bg-transparent flex-shrink-0 z-30 transition-all duration-500 ease-in-out ${
-                            !selectedParcelle ? "w-0 -translate-x-full opacity-0" :
-                            isDashboardOpen ? "w-full translate-x-0 opacity-100" : 
-                            "w-[450px] translate-x-0 opacity-100"
-                        }`}
+                    <aside
+                        className={`h-full pointer-events-auto bg-transparent flex-shrink-0 z-30 transition-all duration-500 ease-in-out ${!selectedParcelle ? "w-0 -translate-x-full opacity-0" :
+                            isDashboardOpen ? "w-full translate-x-0 opacity-100" :
+                                "w-[450px] translate-x-0 opacity-100"
+                            }`}
                     >
                         <div className="w-full h-full bg-white shadow-[20px_0_25px_-5px_rgba(0,0,0,0.1)] overflow-hidden relative">
                             <NoScrollZone>
                                 {isDashboardOpen ? (
-                                    <ParcelDetailedDashboard 
+                                    <ParcelDetailedDashboard
                                         selectedParcelle={selectedParcelle}
                                         onClose={() => setIsDashboardOpen(false)}
                                     />
                                 ) : (
-                                    <ParcelInfoPanel 
+                                    <ParcelInfoPanel
                                         selectedParcelle={selectedParcelle}
                                         onOpenDashboard={() => setIsDashboardOpen(true)}
                                     />
@@ -188,8 +187,8 @@ const Layers = () => {
                         <main className="flex-1 relative w-full h-full pointer-events-none animate-in fade-in duration-300">
                             <div className="absolute top-1 right-1 pointer-events-auto flex flex-col gap-2 items-end z-[1002]">
                                 <NoScrollZone>
-                                    <MapControls 
-                                        onZoomIn={() => map.zoomIn()} 
+                                    <MapControls
+                                        onZoomIn={() => map.zoomIn()}
                                         onZoomOut={() => map.zoomOut()}
                                         onLocateUser={() => map.locate({ setView: true, maxZoom: 16 })}
                                         currentMapType={mapType}

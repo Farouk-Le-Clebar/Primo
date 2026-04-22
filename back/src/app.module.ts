@@ -26,6 +26,7 @@ import { VerifiedUser } from './database/verified-users.entity';
 import { MailModule } from './mail/mail.module';
 import { UserStatistics } from './database/user-statistics.entity';
 import { ResetPassword } from './database/reset-password.entity';
+import { ProjectPlots } from './database/project-plots.entity';
 
 @Module({
   imports: [
@@ -41,11 +42,11 @@ import { ResetPassword } from './database/reset-password.entity';
       username: process.env.MYSQL_USER,
       password: process.env.MYSQL_PASSWORD,
       database: process.env.MYSQL_DATABASE,
-      entities: [User, Project, DvfMutation, DpeLogement, Notification, ProjectMember, ActivityEvent, VerifiedUser, ResetPassword, UserStatistics],
+      entities: [User, Project, DvfMutation, DpeLogement, Notification, ProjectMember, ActivityEvent, VerifiedUser, ResetPassword, UserStatistics, ProjectPlots],
       synchronize: true,
       timezone: 'Z',
     }),
-    TypeOrmModule.forFeature([User, Project, DvfMutation, Notification, ProjectMember, ActivityEvent, VerifiedUser, ResetPassword, UserStatistics]),
+    TypeOrmModule.forFeature([User, Project, DvfMutation, DpeLogement, Notification, ProjectMember, ActivityEvent, VerifiedUser, ResetPassword, UserStatistics, ProjectPlots]),
     AuthModule,
     GeoModule,
     UserModule,

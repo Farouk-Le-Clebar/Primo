@@ -19,11 +19,13 @@ import {
   ProjectResponseDto,
   UpdateNotesDto,
   UpdateFavoriteDto,
+  AddPlotDto,
 } from './dto/project.dto';
 import { NotificationService } from '../notification/notification.service';
 import { NotificationType } from '../database/notification.entity';
 import { ActivityHistoryService } from '../history/history.service';
 import { ActivityEventType } from '../database/history.entity';
+import { ProjectPlots } from 'src/database/project-plots.entity';
 
 @Injectable()
 export class ProjectService {
@@ -34,6 +36,8 @@ export class ProjectService {
     private memberRepository: Repository<ProjectMember>,
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    @InjectRepository(ProjectPlots)
+    private projectPlotsRepository: Repository<ProjectPlots>,
     private readonly notificationService: NotificationService,
     private readonly activityHistoryService: ActivityHistoryService,
   ) {}
@@ -427,5 +431,27 @@ export class ProjectService {
       modifiedAt: project.modifiedAt,
       memberCount: memberCountOverride ?? relationMemberCount,
     };
+  }
+
+  async addPlotToProject(addPlotDto: AddPlotDto, userId: string) {
+    const project = await this.projectRepository.findOne({
+      where: { id: addPlotDto.projectId },
+    });
+
+    if (!project)
+      throw new NotFoundException(`Projet avec l'ID ${addPlotDto.projectId} non trouvé`);
+
+    if (project.userId !== userId)
+      throw new ForbiddenException('Accès non autorisé à ce projet');
+
+    const projectPlot = this.projectPlotsRepository.insert({
+      projectId: addPlotDto.projectId,
+      plotId: addPlotDto.plotId,
+      plotBanId: addPlotDto.plotBanId,
+      adress: addPlotDto.adress,
+    });
+
+    if (!projectPlot)
+      throw new BadRequestException('Erreur lors de l\'ajout du plot au projet');
   }
 }

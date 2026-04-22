@@ -86,3 +86,17 @@ export class UpdateFavoriteDto {
   @IsBoolean()
   isFavorite: boolean;
 }
+
+export class AddPlotDto {
+  @IsString()
+  projectId: string;
+
+  @IsString()
+  plotId: string;
+
+  @IsString()
+  plotBanId: string;
+
+  @IsString()
+  adress: string;
+}

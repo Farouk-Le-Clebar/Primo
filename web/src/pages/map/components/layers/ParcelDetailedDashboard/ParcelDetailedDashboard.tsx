@@ -24,8 +24,8 @@ export default function ParcelDetailedDashboard({ selectedParcelle, onClose }: P
 
   return (
     <div className="flex flex-col h-full w-full bg-[#F8F9FB] animate-in fade-in duration-300">
-      
-      <ParcelDetailedNavbar 
+
+      <ParcelDetailedNavbar
         parcelId={parcelId}
         address={address}
         activeTab={activeTab}

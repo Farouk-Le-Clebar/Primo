@@ -19,6 +19,7 @@ import {
   ProjectResponseDto,
   UpdateNotesDto,
   UpdateFavoriteDto,
+  AddPlotDto,
 } from './dto/project.dto';
 import { JwtAuthGuard } from '../guard/jwt-auth.guard';
 
@@ -98,5 +99,11 @@ export class ProjectController {
   @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Param('id') id: string, @Request() req: any): Promise<void> {
     return this.projectService.remove(id, req.user.id);
+  }
+
+  @Post('plots')
+  async addPlotToProject(@Body() body: AddPlotDto, @Request() req: any) {
+    const userId = req.user.id;
+    return this.projectService.addPlotToProject(body, userId);
   }
 }

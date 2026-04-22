@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef, useMemo } from "react";
-import { ChevronRight, MapPin, ExternalLink } from "lucide-react";
+import { ChevronRight, MapPin, ExternalLink, Plus } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 
 // COMPONENTS
@@ -17,7 +17,7 @@ type ParcelInfoPanelProps = {
 };
 
 export default function ParcelInfoPanel({ selectedParcelle, onOpenDashboard }: ParcelInfoPanelProps) {
-const [isVisible, setIsVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
   const panelRef = useRef<HTMLElement>(null);
 
   useStopPropagation(panelRef);
@@ -61,7 +61,7 @@ const [isVisible, setIsVisible] = useState(false);
 
   return (
     <div className="relative h-full w-full pointer-events-none">
-      
+
       <div className={`absolute top-4 left-4 z-[500] transition-all duration-500 ease-out pointer-events-auto ${!isVisible ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-10 pointer-events-none"}`}>
         <button onClick={() => setIsVisible(true)} className="flex items-center gap-2 bg-white text-gray-800 px-3 py-2 rounded-lg shadow-lg hover:shadow-2xl hover:scale-105 transition-all border border-gray-100 font-medium text-sm group">
           <span className="bg-green-100 text-green-700 p-1.5 rounded-full group-hover:bg-green-600 group-hover:text-white transition-colors">
@@ -82,7 +82,7 @@ const [isVisible, setIsVisible] = useState(false);
             <span className="font-inter font-medium text-xs truncate">{address}</span>
           </div>
           <div className="flex items-center gap-2">
-            <button 
+            <button
               onClick={onOpenDashboard}
               className="flex-1 h-[40px] bg-[#111111] hover:bg-gray-800 text-white rounded-lg flex items-center justify-center gap-2 transition-colors shadow-sm cursor-pointer"
             >
@@ -91,14 +91,23 @@ const [isVisible, setIsVisible] = useState(false);
             </button>
           </div>
         </div>
-        <div className="flex-1 overflow-hidden px-9 py-6 flex flex-col">
-          <ParcelInfoCard 
-            properties={properties} 
+        <div className="flex-1 overflow-hidden px-9 py-6 flex flex-col gap-4">
+          <ParcelInfoCard
+            properties={properties}
             buildingCount={buildData?.features?.length}
             pluZone={urbanData?.features?.[0]?.properties?.typezone}
             avgPriceM2={dvfData?.stats?.prixMoyenM2}
             isLoadingStats={isDvfLoading || isBuildLoading || isUrbaLoading}
           />
+          <div className="flex items-center justify-center">
+            <button
+              onClick={() => alert("Fonctionnalité d'ajout au projet à implémenter")}
+              className="w-full h-[40px] bg-[#111111] hover:bg-gray-800 text-white rounded-lg flex items-center justify-center gap-2 transition-colors shadow-sm cursor-pointer"
+            >
+              <Plus size={15} />
+              <span className="font-inter font-medium text-sm">Ajouter au projet</span>
+            </button>
+          </div>
         </div>
       </aside>
     </div>
