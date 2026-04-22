@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { useGoogleLogin } from "@react-oauth/google";
 
@@ -125,6 +125,12 @@ export default function AuthRoot() {
           Continuer
         </Button>
 
+        <div className="flex items-center my-4">
+          <div className="flex-grow h-px bg-gray-200"></div>
+          <span className="flex-shrink mx-4 text-gray-400 font-inter text-xs font-medium">OU</span>
+          <div className="flex-grow h-px bg-gray-200"></div>
+        </div>
+        
         <button
           onClick={() => handleGoogleConnect()}
           disabled={isCheckingEmail || isGoogleLoading}
@@ -135,6 +141,25 @@ export default function AuthRoot() {
             {isGoogleLoading ? "Connexion en cours..." : "Se connecter avec Google"}
           </span>
         </button>
+
+        <div className="flex items-center justify-center w-full mt-7">
+          <p className="font-inter font-regular text-[#99A1AF] text-sm text-center w-80">
+            En continuant, vous acceptez nos{" "}
+            <Link 
+              to="/conditions" 
+              className="underline hover:text-gray-700 transition-colors"
+            >
+              Conditions d'utilisation
+            </Link>{" "}
+            et notre{" "}
+            <Link 
+              to="/confidentialite" 
+              className="underline hover:text-gray-700 transition-colors"
+            >
+              Politique de confidentialité
+            </Link>.
+          </p>
+        </div>
       </div>
     </div>
   );

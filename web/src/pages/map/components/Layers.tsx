@@ -3,6 +3,7 @@ import { TileLayer, useMap } from "react-leaflet";
 import L from "leaflet";
 import type { FeatureCollection } from "geojson";
 
+// COMPONENTS
 import MapBounds from "./layers/MapBounds";
 import ZoomHandler from "./layers/ZoomHandler";
 import ShapesLayer from "./layers/ShapesLayer";
@@ -15,6 +16,7 @@ import ParcelInfoPanel from "./layers/ParcelPanel/ParcelInfoPanel";
 import ParcelDetailedDashboard from "./layers/ParcelDetailedDashboard/ParcelDetailedDashboard";
 import Navbar from "./layers/Navbar/Navbar";
 import { mapPreference } from "../../../utils/map";
+import { addOkReverseRequest } from "../../../requests/addok";
 
 const getUserMapPreference = (): "basic" | "satellite" => {
     try {
@@ -31,7 +33,13 @@ const Layers = () => {
     const [mapBounds, setMapBounds] = useState<L.LatLngBounds | null>(null);
     const [currentZoom, setCurrentZoom] = useState<number>(6);
     
-    const [selectedParcelle, setSelectedParcelle] = useState<{bounds: L.LatLngBounds; feature: any; layer: L.Path;} | null>(null);
+    const [selectedParcelle, setSelectedParcelle] = useState<{
+        bounds: L.LatLngBounds; 
+        feature: any; 
+        layer: L.Path;
+        addokData?: any;
+    } | null>(null);
+    
     const [isDashboardOpen, setIsDashboardOpen] = useState(false);
     const selectedIdRef = useRef<string | null>(null);
 
@@ -55,11 +63,43 @@ const Layers = () => {
     const handlePacellesBoundChange = useCallback((data: any) => setPacellesBoundData(data), []);
     const handlePoisChange = useCallback((data: FeatureCollection | null) => setPoisData(data), []);
 
-    const handleParcelleSelect = useCallback((bounds: L.LatLngBounds, feature: any, layer: L.Path) => {
+    const handleParcelleSelect = useCallback(async (bounds: L.LatLngBounds, feature: any, layer: L.Path) => {
         const id = feature.id;
         selectedIdRef.current = id;
+        
         setSelectedParcelle({ bounds, feature, layer });
         setIsDashboardOpen(false);
+
+        try {
+            const center = bounds.getCenter();
+            const addokResponse = await addOkReverseRequest(center.lng, center.lat);
+            
+            if (addokResponse && addokResponse.features && addokResponse.features.length > 0) {
+                const adresseData = addokResponse.features[0];
+                const banId = adresseData.properties.id;
+                const enrichedFeature = {
+                    ...feature,
+                    properties: {
+                        ...feature.properties,
+                        ban: banId,
+                        addok_label: adresseData.properties.label,
+                        addok_score: adresseData.properties.score
+                    }
+                };
+
+                setSelectedParcelle(prev => {
+                    if (prev && prev.feature.id !== id) return prev;
+                    
+                    return {
+                        ...prev!,
+                        feature: enrichedFeature,
+                        addokData: addokResponse
+                    };
+                });
+            }
+        } catch (error) {
+            console.error("Erreur lors du reverse geocoding avec Addok:", error);
+        }
     }, []);
 
     const handleChangeMapType = useCallback((type: "basic" | "satellite") => {

@@ -19,6 +19,8 @@ export default function DvfWidget({ feature }: ParcelWidgetProps) {
     retry: false,
   });
 
+  console.log("DATA DVF PARCELLE:", data);
+
   const isEmpty = !data || !data.historique || data.historique.length === 0;
 
   const InfoRow = ({ label, value, isLast = false, valueColor = "text-[#111111]" }: { label: string, value: string | React.ReactNode, isLast?: boolean, valueColor?: string }) => (
