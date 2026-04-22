@@ -2,7 +2,6 @@ import { useQuery } from "@tanstack/react-query";
 import React from "react";
 
 // COMPONENTS
-// On met à jour les props pour accepter selectedParcelle
 import { getDpeBan } from "../../../../../../../requests/dpe/information";
 import { formatCurrency, formatDate, getDpeColorStyle } from "./utils";
 import { DpeTooltip } from "./InfoTooltip";
@@ -10,14 +9,12 @@ import { DpeTooltip } from "./InfoTooltip";
 // ICONS
 import { Calendar, Maximize, Flame, ThermometerSnowflake } from "lucide-react";
 
-// ⚠️ N'oublie pas de mettre à jour ton interface de props si tu utilises TypeScript
 interface DpeWidgetProps {
   selectedParcelle: any; 
 }
 
 export default function DpeWidget({ selectedParcelle }: DpeWidgetProps) {
   
-  // 🟢 LA MAGIE EST ICI : On navigue dans l'objet Addok de manière sécurisée
   const addokFeatures = selectedParcelle?.addokData?.features;
   const identifiantBan = addokFeatures && addokFeatures.length > 0 
     ? addokFeatures[0].properties.id 
@@ -28,9 +25,7 @@ export default function DpeWidget({ selectedParcelle }: DpeWidgetProps) {
 
   const { data, isLoading } = useQuery({
     queryKey: ['dpe-ban', identifiantBan],
-    // On lance la requête avec l'identifiant BAN (ex: "32013_0340_00074")
     queryFn: () => getDpeBan(String(identifiantBan)),
-    // La requête ne part que si on a bien trouvé un identifiant BAN
     enabled: !!identifiantBan,
     retry: false,
   });
@@ -58,7 +53,6 @@ export default function DpeWidget({ selectedParcelle }: DpeWidgetProps) {
       </div>
 
       <div className="flex flex-col gap-6">
-        {/* En-tête avec le DPE principal (le plus récent) */}
         {!isLoading && !isEmpty && data.dpePrincipal && (
           <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-row items-center justify-around">
             <div className="flex flex-col items-center">

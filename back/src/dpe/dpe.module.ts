@@ -1,4 +1,3 @@
-// dpe/dpe.module.ts
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DpeController } from './dpe.controller';

@@ -1,4 +1,3 @@
-// BuildingsWidget.tsx
 import { useEffect, useMemo } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { Grid, Col } from "@tremor/react";
