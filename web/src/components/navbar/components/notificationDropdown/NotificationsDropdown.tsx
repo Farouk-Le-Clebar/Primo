@@ -48,10 +48,10 @@ export default function NotificationsDropdown() {
             {/* Bell */}
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="relative p-2.5 text-gray-400 hover:text-gray-600 hover:bg-gray-50 rounded-xl transition-all group"
+                className="relative p-2.5 text-gray-400 hover:text-gray-600 hover:bg-gray-50 rounded-full transition-all group"
             >
                 <Bell
-                    size={20}
+                    size={18}
                     className={`transition-transform ${isOpen ? "scale-110" : "group-hover:rotate-12"}`}
                 />
                 {unreadCount > 0 && (

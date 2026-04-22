@@ -2,6 +2,7 @@ import { NavLink, useLocation } from "react-router-dom";
 import { ChevronRight } from "lucide-react";
 
 type CustomNavLinkProps = {
+  id?: string;
   to?: string;
   label: string;
   icon?: React.ReactNode;
@@ -20,6 +21,7 @@ type CustomNavLinkProps = {
 };
 
 export default function CustomNavLink({
+  id,
   to,
   label,
   icon,
@@ -91,6 +93,7 @@ export default function CustomNavLink({
   );
 
   const finalProps = {
+    id,
     onClick,
     className: sharedClasses,
     title: isCollapsed ? label : undefined 

@@ -24,7 +24,7 @@ export default function Sidebar({ isExpanded }: SidebarProps) {
   );
 
   return (
-    <nav className="flex flex-col h-full w-full overflow-hidden bg-white">
+    <nav id="sidebar-tour" className="flex flex-col h-full w-full overflow-hidden bg-white">
       <div className={`mt-2 transition-all duration-300 ${isExpanded ? "p-4" : "p-2"}`}>
         <UserProfileSidebar isExpanded={isExpanded} />
       </div>
@@ -52,6 +52,7 @@ export default function Sidebar({ isExpanded }: SidebarProps) {
               className="h-8"
             />
             <CustomNavLink
+              id="sidebar-projects-tour"
               to="/projects"
               textColor="text-black"
               rounded="rounded-xl"
@@ -74,7 +75,7 @@ export default function Sidebar({ isExpanded }: SidebarProps) {
           </div>
 
           <div className="space-y-1">
-            <CustomNavLink to="/search" textColor="text-black" rounded="rounded-xl" label={isExpanded ? "Carte" : ""} icon={renderIcon(MapIcon)} className="h-8" />
+            <CustomNavLink id="sidebar-map-tour" to="/search" textColor="text-black" rounded="rounded-xl" label={isExpanded ? "Carte" : ""} icon={renderIcon(MapIcon)} className="h-8" />
             <CustomNavLink to="/ai-search" textColor="text-black" rounded="rounded-xl" label={isExpanded ? "IA Primo" : ""} icon={renderIcon(IaIcon)} className="h-8" />
             <CustomNavLink to="/support" textColor="text-black" rounded="rounded-xl" label={isExpanded ? "Support" : ""} icon={renderIcon(SupportIcon)} className="h-8" />
             {isAdmin && (

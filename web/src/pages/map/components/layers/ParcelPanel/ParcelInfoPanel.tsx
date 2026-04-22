@@ -1,7 +1,15 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
 import { ChevronRight, MapPin, ExternalLink } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+
+// COMPONENTS
 import { useStopPropagation } from "../ParcelDetailedDashboard/hooks/useStopPropagation";
 import { ParcelInfoCard } from "./ParcelleInfoCard";
+import { getDvfParcelle } from "../../../../../requests/dvf/information";
+import { getBuildingsByGeometry } from "../../../../../requests/geoserver/bdTopo";
+import { getZonesUrbaByGeometry } from "../../../../../requests/geoserver/urbanAreas";
+import { extractDepartement } from "../ParcelDetailedDashboard/widgets/gpu/utils";
+
 
 type ParcelInfoPanelProps = {
   selectedParcelle: any;
@@ -9,19 +17,46 @@ type ParcelInfoPanelProps = {
 };
 
 export default function ParcelInfoPanel({ selectedParcelle, onOpenDashboard }: ParcelInfoPanelProps) {
-  const [isVisible, setIsVisible] = useState(false);
+const [isVisible, setIsVisible] = useState(false);
   const panelRef = useRef<HTMLElement>(null);
 
   useStopPropagation(panelRef);
+
+
+  const feature = selectedParcelle?.feature;
+  const properties = feature?.properties;
+  const geometry = feature?.geometry;
+  const parcelId = properties?.id || "Parcelle inconnue";
+  const address = selectedParcelle?.addokData?.features?.[0]?.properties?.label || "Adresse non renseignée";
+  const inseeCode = feature?.properties?.commune;
+
+  const departement = useMemo(() => {
+    if (!inseeCode) return extractDepartement(String(feature?.id)) || "";
+    return inseeCode.startsWith('97') ? inseeCode.substring(0, 3) : inseeCode.substring(0, 2);
+  }, [inseeCode, feature?.id]);
+
+  const { data: dvfData, isLoading: isDvfLoading } = useQuery({
+    queryKey: ['dvf-summary', parcelId],
+    queryFn: () => getDvfParcelle(String(parcelId)),
+    enabled: !!parcelId && isVisible,
+  });
+
+  const { data: buildData, isLoading: isBuildLoading } = useQuery({
+    queryKey: ['buildings-summary', parcelId],
+    queryFn: () => getBuildingsByGeometry(geometry, departement),
+    enabled: !!geometry && !!departement && isVisible,
+  });
+
+  const { data: urbanData, isLoading: isUrbaLoading } = useQuery({
+    queryKey: ['urban-summary', parcelId],
+    queryFn: () => getZonesUrbaByGeometry(geometry, departement),
+    enabled: !!geometry && !!departement && isVisible,
+  });
 
   useEffect(() => {
     setIsVisible(!!selectedParcelle?.feature);
   }, [selectedParcelle?.feature]);
 
-  const properties = selectedParcelle?.feature?.properties;
-  const parcelId = properties?.id || "Parcelle inconnue";
-  const address = properties?.address || "14 Rue des Lilas, 75020 Paris";
-  
   if (!selectedParcelle?.feature) return null;
 
   return (
@@ -52,12 +87,18 @@ export default function ParcelInfoPanel({ selectedParcelle, onOpenDashboard }: P
               className="flex-1 h-[40px] bg-[#111111] hover:bg-gray-800 text-white rounded-lg flex items-center justify-center gap-2 transition-colors shadow-sm cursor-pointer"
             >
               <ExternalLink size={15} />
-              <span className="font-inter font-medium text-sm">Ouvrir dans le SIG</span>
+              <span className="font-inter font-medium text-sm">Ouvrir l'analyse complète</span>
             </button>
           </div>
         </div>
         <div className="flex-1 overflow-hidden px-9 py-6 flex flex-col">
-          <ParcelInfoCard properties={properties} />
+          <ParcelInfoCard 
+            properties={properties} 
+            buildingCount={buildData?.features?.length}
+            pluZone={urbanData?.features?.[0]?.properties?.typezone}
+            avgPriceM2={dvfData?.stats?.prixMoyenM2}
+            isLoadingStats={isDvfLoading || isBuildLoading || isUrbaLoading}
+          />
         </div>
       </aside>
     </div>
