@@ -1,4 +1,4 @@
-import { driver, type DriveStep } from "driver.js";
+import { driver, type DriveStep, type AllowedButtons } from "driver.js"; // Import du type
 import "driver.js/dist/driver.css";
 import "../styles/onBoarding.css";
 
@@ -7,7 +7,7 @@ import { dashboardSteps } from "./onboardingTours/dashboard.steps";
 const baseConfig = {
   popoverClass: 'driverjs-theme',
   showProgress: false,
-  showButtons: true,
+  showButtons: ['next', 'previous', 'close'] as AllowedButtons[], // Assertion de type explicite
   animate: true,
   allowClose: true,
   overlayColor: '#000000',

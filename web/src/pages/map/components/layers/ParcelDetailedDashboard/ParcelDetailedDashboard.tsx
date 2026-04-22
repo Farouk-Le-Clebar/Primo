@@ -38,8 +38,6 @@ export default function ParcelDetailedDashboard({ selectedParcelle, onClose }: P
           {activeTab === "general" && <GeneralTab feature={selectedParcelle?.feature} />}
           {activeTab === "urbanisme" && <UrbanismeTab feature={selectedParcelle?.feature} />}
           {activeTab === "batiments" && <BatimentsTab feature={selectedParcelle?.feature} />}
-          {activeTab === "prescriptions" && <PrescriptionsTab feature={selectedParcelle?.feature} />}
-          {activeTab === "informations" && <InformationsTab feature={selectedParcelle?.feature} />}
           {activeTab === "dvf" && <DvfTab feature={selectedParcelle?.feature} />}
           {activeTab === "dpe" && <DpeTab feature={selectedParcelle} />}
         </div>
