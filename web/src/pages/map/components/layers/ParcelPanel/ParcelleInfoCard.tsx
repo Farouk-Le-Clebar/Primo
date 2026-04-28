@@ -94,11 +94,11 @@ export const ParcelInfoCard = ({
 
       <InfoRow 
         label="Surface cadastrale" 
-        value={`${properties.contenance.toLocaleString('fr-FR')} m²`} 
+        value={`${properties.contenance?.toLocaleString('fr-FR') ?? '0'} m²`} 
       />
       <InfoRow 
         label="Contenance" 
-        value={formatContenance(properties.contenance)} 
+        value={formatContenance(properties.contenance ?? 0)} 
       />
 
       {properties.created && (

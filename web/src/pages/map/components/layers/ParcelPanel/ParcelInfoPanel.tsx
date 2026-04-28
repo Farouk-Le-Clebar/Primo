@@ -1,15 +1,13 @@
-import { useEffect, useState, useRef, useMemo } from "react";
-import { ChevronRight, MapPin, ExternalLink } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
+import { useRef } from "react";
+import { MapPin, ExternalLink } from "lucide-react";
 
 // COMPONENTS
 import { useStopPropagation } from "../ParcelDetailedDashboard/hooks/useStopPropagation";
-import { ParcelInfoCard } from "./ParcelleInfoCard";
 import { getDvfParcelle } from "../../../../../requests/dvf/information";
 import { getBuildingsByGeometry } from "../../../../../requests/geoserver/bdTopo";
 import { getZonesUrbaByGeometry } from "../../../../../requests/geoserver/urbanAreas";
 import { extractDepartement } from "../ParcelDetailedDashboard/widgets/gpu/utils";
-
+import { useQuery } from "@tanstack/react-query";
 
 type ParcelInfoPanelProps = {
   selectedParcelle: any;
@@ -17,90 +15,91 @@ type ParcelInfoPanelProps = {
 };
 
 export default function ParcelInfoPanel({ selectedParcelle, onOpenDashboard }: ParcelInfoPanelProps) {
-const [isVisible, setIsVisible] = useState(false);
   const panelRef = useRef<HTMLElement>(null);
-
   useStopPropagation(panelRef);
-
-
   const feature = selectedParcelle?.feature;
   const properties = feature?.properties;
   const geometry = feature?.geometry;
   const parcelId = properties?.id || "Parcelle inconnue";
   const address = selectedParcelle?.addokData?.features?.[0]?.properties?.label || "Adresse non renseignée";
   const inseeCode = feature?.properties?.commune;
-
-  const departement = useMemo(() => {
-    if (!inseeCode) return extractDepartement(String(feature?.id)) || "";
-    return inseeCode.startsWith('97') ? inseeCode.substring(0, 3) : inseeCode.substring(0, 2);
-  }, [inseeCode, feature?.id]);
+  const departement = (inseeCode ? (inseeCode.startsWith('97') ? inseeCode.substring(0, 3) : inseeCode.substring(0, 2)) : extractDepartement(String(feature?.id))) || "";
 
   const { data: dvfData, isLoading: isDvfLoading } = useQuery({
     queryKey: ['dvf-summary', parcelId],
     queryFn: () => getDvfParcelle(String(parcelId)),
-    enabled: !!parcelId && isVisible,
+    enabled: !!parcelId,
   });
 
   const { data: buildData, isLoading: isBuildLoading } = useQuery({
     queryKey: ['buildings-summary', parcelId],
     queryFn: () => getBuildingsByGeometry(geometry, departement),
-    enabled: !!geometry && !!departement && isVisible,
+    enabled: !!geometry,
   });
 
   const { data: urbanData, isLoading: isUrbaLoading } = useQuery({
     queryKey: ['urban-summary', parcelId],
     queryFn: () => getZonesUrbaByGeometry(geometry, departement),
-    enabled: !!geometry && !!departement && isVisible,
+    enabled: !!geometry,
   });
-
-  useEffect(() => {
-    setIsVisible(!!selectedParcelle?.feature);
-  }, [selectedParcelle?.feature]);
 
   if (!selectedParcelle?.feature) return null;
 
   return (
-    <div className="relative h-full w-full pointer-events-none">
-      
-      <div className={`absolute top-4 left-4 z-[500] transition-all duration-500 ease-out pointer-events-auto ${!isVisible ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-10 pointer-events-none"}`}>
-        <button onClick={() => setIsVisible(true)} className="flex items-center gap-2 bg-white text-gray-800 px-3 py-2 rounded-lg shadow-lg hover:shadow-2xl hover:scale-105 transition-all border border-gray-100 font-medium text-sm group">
-          <span className="bg-green-100 text-green-700 p-1.5 rounded-full group-hover:bg-green-600 group-hover:text-white transition-colors">
-            <ChevronRight size={16} />
-          </span>
-          <span>Afficher la parcelle</span>
-        </button>
-      </div>
-      <aside ref={panelRef} className={`absolute inset-y-0 left-0 w-full bg-white shadow-[20px_0_25px_-5px_rgba(0,0,0,0.1)] z-[500] transform transition-transform duration-500 ease-in-out pointer-events-auto flex flex-col ${isVisible ? "translate-x-0" : "-translate-x-full"}`}>
-        <div className="px-9 pt-9 pb-6 border-b border-[#F0F0F0] shrink-0">
-          <div className="flex items-center justify-between gap-4 mb-2">
+    <aside ref={panelRef} className="flex flex-col w-full h-full bg-white rounded-xl overflow-hidden">
+      <div className="px-6 py-4 border-b border-[#F0F0F0] shrink-0">
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center gap-2">
+            <span className="h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
             <h2 className="font-inter font-semibold text-lg text-[#111111] truncate">
               Parcelle {parcelId.replace('Parcelle ', '')}
             </h2>
           </div>
-          <div className="flex items-center gap-1.5 text-[#6B7280] mb-6">
-            <MapPin size={14} className="shrink-0" />
+          <button 
+            onClick={onOpenDashboard}
+            className="h-[36px] px-4 bg-[#111111] hover:bg-gray-800 text-white rounded-lg flex items-center justify-center gap-2 transition-colors shadow-sm cursor-pointer"
+          >
+            <ExternalLink size={14} />
+            <span className="font-inter font-medium text-xs">Analyse complète</span>
+          </button>
+        </div>
+
+        <div className="flex items-center gap-3 text-[#6B7280] mt-3 flex-wrap">
+          <div className="flex items-center gap-1.5">
+            <MapPin size={13} className="shrink-0" />
             <span className="font-inter font-medium text-xs truncate">{address}</span>
           </div>
-          <div className="flex items-center gap-2">
-            <button 
-              onClick={onOpenDashboard}
-              className="flex-1 h-[40px] bg-[#111111] hover:bg-gray-800 text-white rounded-lg flex items-center justify-center gap-2 transition-colors shadow-sm cursor-pointer"
-            >
-              <ExternalLink size={15} />
-              <span className="font-inter font-medium text-sm">Ouvrir l'analyse complète</span>
-            </button>
-          </div>
+          <div className="w-1 h-1 rounded-full bg-gray-300"></div>
+          {isBuildLoading ? (
+            <span className="text-xs text-gray-400">Chargement...</span>
+          ) : (
+            <span className="font-inter font-medium text-xs">
+              {buildData?.features?.length || 0} bâtiment{buildData?.features?.length !== 1 ? 's' : ''}
+            </span>
+          )}
+
+          <div className="w-1 h-1 rounded-full bg-gray-300"></div>
+          {isUrbaLoading ? (
+            <span className="text-xs text-gray-400">Chargement...</span>
+          ) : (
+            <span className="font-inter font-medium text-xs text-gray-700">
+              {urbanData?.features?.[0]?.properties?.typezone || 'Zone non renseignée'}
+            </span>
+          )}
+
+          <div className="w-1 h-1 rounded-full bg-gray-300"></div>
+          {isDvfLoading ? (
+            <span className="text-xs text-gray-400">Chargement...</span>
+          ) : (
+            <span className="font-inter font-medium text-xs text-emerald-600">
+              {dvfData?.stats?.prixMoyenM2 
+                ? `${Math.round(dvfData.stats.prixMoyenM2).toLocaleString('fr-FR')} €/m²`
+                : 'Pas de données DVF'
+              }
+            </span>
+          )}
         </div>
-        <div className="flex-1 overflow-hidden px-9 py-6 flex flex-col">
-          <ParcelInfoCard 
-            properties={properties} 
-            buildingCount={buildData?.features?.length}
-            pluZone={urbanData?.features?.[0]?.properties?.typezone}
-            avgPriceM2={dvfData?.stats?.prixMoyenM2}
-            isLoadingStats={isDvfLoading || isBuildLoading || isUrbaLoading}
-          />
-        </div>
-      </aside>
-    </div>
+      </div>
+    </aside>
   );
 }

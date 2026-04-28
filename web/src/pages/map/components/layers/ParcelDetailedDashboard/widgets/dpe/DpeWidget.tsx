@@ -1,135 +1,59 @@
 import { useQuery } from "@tanstack/react-query";
-import React from "react";
+import { Grid, Col } from "@tremor/react";
 
-// COMPONENTS
+// COMPOENENTS
 import { getDpeBan } from "../../../../../../../requests/dpe/information";
-import { formatCurrency, formatDate, getDpeColorStyle } from "./utils";
-import { DpeTooltip } from "./InfoTooltip";
+import LoadingPrimoLogo from "../../../../../../../components/animations/LoadingPrimoLogo";
+import DpeSummaryCard from "./DpeSummaryCard";
+import DpeDistributionCard from "./DpeDistributionCard";
+import DpeList from "./DpeList";
 
-// ICONS
-import { Calendar, Maximize, Flame, ThermometerSnowflake } from "lucide-react";
+export default function DpeWidget({ selectedParcelle }: { selectedParcelle: any }) {
+  const addokFeatures  = selectedParcelle?.addokData?.features;
+  const identifiantBan = addokFeatures?.length > 0 ? addokFeatures[0].properties.id : null;
 
-interface DpeWidgetProps {
-  selectedParcelle: any; 
-}
-
-export default function DpeWidget({ selectedParcelle }: DpeWidgetProps) {
-  
-  const addokFeatures = selectedParcelle?.addokData?.features;
-  const identifiantBan = addokFeatures && addokFeatures.length > 0 
-    ? addokFeatures[0].properties.id 
-    : null;
-
-  console.log("🔍 DpeWidget - Identifiant BAN extrait :", identifiantBan);
-  console.log("SelectedParcelle:", selectedParcelle);
-
-  const { data, isLoading } = useQuery({
-    queryKey: ['dpe-ban', identifiantBan],
-    queryFn: () => getDpeBan(String(identifiantBan)),
-    enabled: !!identifiantBan,
-    retry: false,
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["dpe-ban", identifiantBan],
+    queryFn:  () => getDpeBan(String(identifiantBan)),
+    enabled:  !!identifiantBan,
+    retry:    false,
   });
+  
 
-  const isEmpty = !data || !data.historique || data.historique.length === 0;
+  const dpeList: any[] = Array.isArray(data) ? data : (data?.historique ?? []);
+  const isEmpty        = !dpeList || dpeList.length === 0;
 
-  const InfoRow = ({ label, value, isLast = false, valueColor = "text-[#111111]" }: { label: string, value: string | React.ReactNode, isLast?: boolean, valueColor?: string }) => (
-    <div className={`flex justify-between items-center py-3 ${!isLast ? 'border-b border-[#F0F0F0]' : ''}`}>
-      <span className="text-[13px] font-medium text-[#878D96] shrink-0 pr-4">{label}</span>
-      <span className={`text-[13px] font-medium ${valueColor} text-right truncate`}>{value}</span>
-    </div>
-  );
+  console.log("DPE List:", dpeList);
 
   return (
-    <div className="font-inter">
-      <div className="flex items-center gap-2 mb-3">
-        {isLoading && (
-          <div className="flex items-center gap-2 shrink-0">
-            <span className="text-[11px] font-medium text-[#878D96]">Analyse énergétique...</span>
-          </div>
-        )}
-        <div className="ml-auto">
-          <DpeTooltip />
+    <div className="font-inter w-full">
+      {isLoading ? (
+        <div className="flex items-center gap-2 mb-4 bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
+          <LoadingPrimoLogo className="w-6 h-6 text-emerald-500" />
+          <span className="text-[13px] font-medium text-[#878D96]">
+            Analyse énergétique en cours…
+          </span>
         </div>
-      </div>
-
-      <div className="flex flex-col gap-6">
-        {!isLoading && !isEmpty && data.dpePrincipal && (
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-row items-center justify-around">
-            <div className="flex flex-col items-center">
-               <p className="text-[11px] font-bold text-[#878D96] uppercase tracking-wider mb-2">DPE</p>
-               <div className={`w-12 h-12 flex items-center justify-center rounded-lg text-2xl font-black ${getDpeColorStyle(data.dpePrincipal.etiquetteDpe)}`}>
-                 {data.dpePrincipal.etiquetteDpe || '?'}
-               </div>
-            </div>
-             <div className="flex flex-col items-center">
-               <p className="text-[11px] font-bold text-[#878D96] uppercase tracking-wider mb-2">GES</p>
-               <div className={`w-12 h-12 flex items-center justify-center rounded-lg text-2xl font-black ${getDpeColorStyle(data.dpePrincipal.etiquetteGes)}`}>
-                 {data.dpePrincipal.etiquetteGes || '?'}
-               </div>
-            </div>
-          </div>
-        )}
-
-        <div className="flex flex-col gap-6">
-          {isEmpty && !isLoading ? (
-            <div className="py-4 text-sm text-[#878D96] text-center bg-gray-50 rounded-lg border border-gray-100">
-              Aucun DPE enregistré pour cette adresse depuis juillet 2021.
-            </div>
-          ) : (
-            data?.historique.map((dpe: any, index: number) => {
-              return (
-                <div key={index} className="flex flex-col bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-3">
-                      <div className="flex-shrink-0 w-8 h-8 rounded-full bg-orange-50 border border-orange-100 flex items-center justify-center text-orange-500">
-                        <Flame size={14} />
-                      </div>
-                      <h4 className="text-[13px] font-semibold text-[#111111] capitalize">
-                        {dpe.typeBatiment || "Logement"}
-                      </h4>
-                    </div>
-                     <span className="text-[13px] font-medium text-[#878D96]">
-                       N° {dpe.numeroDpe}
-                     </span>
-                  </div>
-
-                  <div className="flex flex-col border-t border-[#F0F0F0]">
-                    <InfoRow 
-                      label="Établi le" 
-                      value={<div className="flex items-center gap-1.5 justify-end"><Calendar size={12} className="text-[#878D96]" /> {formatDate(dpe.dateEtablissement)}</div>} 
-                    />
-                    {dpe.surface && (
-                      <InfoRow 
-                        label="Surface habitable" 
-                        value={<div className="flex items-center gap-1.5 justify-end"><Maximize size={12} className="text-[#878D96]" /> {dpe.surface} m²</div>} 
-                      />
-                    )}
-                    {dpe.consoM2 && (
-                      <InfoRow 
-                        label="Consommation" 
-                        value={<div className="flex items-center gap-1.5 justify-end"><ThermometerSnowflake size={12} className="text-[#878D96]" /> {dpe.consoM2} kWh/m²/an</div>} 
-                      />
-                    )}
-                     {dpe.energieChauffage && (
-                      <InfoRow 
-                        label="Chauffage principal" 
-                        value={dpe.energieChauffage} 
-                      />
-                    )}
-                    {dpe.coutTotal && (
-                      <InfoRow 
-                        label="Coût annuel estimé" 
-                        value={<div className="flex items-center gap-1.5 justify-end text-emerald-600 font-bold">{formatCurrency(dpe.coutTotal)}</div>}
-                        isLast={true}
-                      />
-                    )}
-                  </div>
-                </div>
-              );
-            })
-          )}
+      ) : isError || isEmpty ? (
+        <div className="py-8 text-sm text-[#878D96] text-center bg-gray-50 rounded-xl border border-dashed border-gray-200">
+          Aucun DPE enregistré pour cette adresse depuis la réforme de juillet 2021.
         </div>
-      </div>
+      ) : (
+        <Grid numItems={1} numItemsMd={3} className="gap-6 w-full relative">
+
+          <Col numColSpan={1}>
+            <div className="sticky top-0 h-182 flex flex-col">
+              <DpeSummaryCard dpeList={dpeList} />
+            </div>
+          </Col>
+
+          <Col numColSpan={1} numColSpanMd={2} className="pb-10 flex flex-col gap-6">
+             <DpeDistributionCard dpeList={dpeList} />
+             <DpeList dpeList={dpeList} />
+          </Col>
+
+        </Grid>
+      )}
     </div>
   );
 }
