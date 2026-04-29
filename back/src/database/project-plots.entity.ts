@@ -1,8 +1,8 @@
-import { Column, Entity } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity('project_plots')
 export class ProjectPlots {
-    @Column({ type: 'uuid', primary: true })
+    @PrimaryGeneratedColumn('uuid')
     id: string;
 
     @Column({ type: 'uuid', nullable: false })

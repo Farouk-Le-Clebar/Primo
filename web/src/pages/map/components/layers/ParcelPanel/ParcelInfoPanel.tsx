@@ -9,6 +9,7 @@ import { getDvfParcelle } from "../../../../../requests/dvf/information";
 import { getBuildingsByGeometry } from "../../../../../requests/geoserver/bdTopo";
 import { getZonesUrbaByGeometry } from "../../../../../requests/geoserver/urbanAreas";
 import { extractDepartement } from "../ParcelDetailedDashboard/widgets/gpu/utils";
+import AddPlotToProjectModal from "./AddPlotToProjectModal";
 
 
 type ParcelInfoPanelProps = {
@@ -19,6 +20,7 @@ type ParcelInfoPanelProps = {
 export default function ParcelInfoPanel({ selectedParcelle, onOpenDashboard }: ParcelInfoPanelProps) {
   const [isVisible, setIsVisible] = useState(false);
   const panelRef = useRef<HTMLElement>(null);
+  const [addPlotToProjectOpen, setAddPlotToProjectOpen] = useState(false);
 
   useStopPropagation(panelRef);
 
@@ -91,7 +93,7 @@ export default function ParcelInfoPanel({ selectedParcelle, onOpenDashboard }: P
             </button>
           </div>
         </div>
-        <div className="flex-1 overflow-hidden px-9 py-6 flex flex-col gap-4">
+        <div className="flex-1 overflow-hidden px-9 py-6 flex flex-col overflow-y-auto">
           <ParcelInfoCard
             properties={properties}
             buildingCount={buildData?.features?.length}
@@ -101,7 +103,7 @@ export default function ParcelInfoPanel({ selectedParcelle, onOpenDashboard }: P
           />
           <div className="flex items-center justify-center">
             <button
-              onClick={() => alert("Fonctionnalité d'ajout au projet à implémenter")}
+              onClick={() => setAddPlotToProjectOpen(true)}
               className="w-full h-[40px] bg-[#111111] hover:bg-gray-800 text-white rounded-lg flex items-center justify-center gap-2 transition-colors shadow-sm cursor-pointer"
             >
               <Plus size={15} />
@@ -110,6 +112,16 @@ export default function ParcelInfoPanel({ selectedParcelle, onOpenDashboard }: P
           </div>
         </div>
       </aside>
+      {addPlotToProjectOpen && (
+        <AddPlotToProjectModal
+          onClose={() => setAddPlotToProjectOpen(false)}
+          plotData={{
+            plotBanId: selectedParcelle?.feature?.properties?.ban,
+            plotId: selectedParcelle?.feature?.properties?.id,
+            adress: selectedParcelle?.feature?.properties?.addok_label,
+          }}
+        />
+      )}
     </div>
   );
 }
