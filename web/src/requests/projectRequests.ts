@@ -6,6 +6,7 @@ import type {
 } from "../types/project/projectCreate";
 import { ApiError, PROJECT_ERROR_CODES } from "../types/project/projectError";
 import { getAuthHeaders } from "../utils/auth";
+import type { AddPlotToProjectPayload } from "../types/project/plots";
 
 const apiUrl = window?._env_?.API_URL;
 
@@ -185,3 +186,14 @@ export const fetchFavoriteProjects = (): Promise<ProjectResponse[]> =>
         .catch((err) =>
             handleApiError(err, "Impossible de charger les favoris"),
         );
+
+export const addPlotToProject = async (payload: AddPlotToProjectPayload) => {
+    return axios.post(`${apiUrl}/projects/plots`, payload, {
+        headers: getAuthHeaders(),
+    })
+        .then((response) => response.data)
+        .catch((error) => {
+            console.error(error);
+            throw error;
+        });
+}
