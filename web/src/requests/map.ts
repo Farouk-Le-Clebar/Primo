@@ -40,6 +40,7 @@ export const getDepartementByBbox = async (bbox: string) => {
 };
 
 export const getParcellesByBboxAndDepartments = async (bbox: string, departments: string[]) => {
+    console.log("Fetching parcelles for bbox:", bbox, "and departments:", departments);
     const promises = departments.map(dept => {
         const layerName = `primo:parcelles_${dept}`;
         const params = new URLSearchParams({
