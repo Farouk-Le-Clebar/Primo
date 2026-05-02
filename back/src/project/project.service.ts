@@ -449,6 +449,8 @@ export class ProjectService {
       plotId: addPlotDto.plotId,
       plotBanId: addPlotDto.plotBanId,
       adress: addPlotDto.adress,
+      coordinates: addPlotDto.coordinates,
+      geometry: addPlotDto.geometry,
     });
 
     if (!projectPlot)

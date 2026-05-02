@@ -5,6 +5,7 @@ import {
   IsObject,
   IsArray,
   MaxLength,
+  IsJSON,
 } from 'class-validator';
 
 export class CreateProjectDto {
@@ -99,4 +100,10 @@ export class AddPlotDto {
 
   @IsString()
   adress: string;
+
+  @IsString()
+  coordinates: string;
+
+  @IsJSON()
+  geometry: any;
 }

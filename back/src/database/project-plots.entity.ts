@@ -15,7 +15,13 @@ export class ProjectPlots {
     plotBanId: string;
 
     @Column({ type: 'varchar', length: 255, nullable: false })
+    coordinates: string;
+
+    @Column({ type: 'varchar', length: 255, nullable: false })
     adress: string;
+
+    @Column({ type: 'json', nullable: true })
+    geometry: any;
 
     @Column({ type: 'text', nullable: true })
     aiNotes: string | null;
