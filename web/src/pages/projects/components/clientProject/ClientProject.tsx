@@ -81,7 +81,7 @@ export const ClientProjectPage: React.FC<ProjectDetailPageProps> = ({
             case "parameters":
                 return <ParametersTab />;
             case "parcels":
-                return <ParcelsTab />;
+                return <ParcelsTab projectId={projectId} />;
             case "documents":
                 return <DocumentsTab />;
             case "activities":

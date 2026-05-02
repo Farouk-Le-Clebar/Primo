@@ -106,4 +106,16 @@ export class ProjectController {
     const userId = req.user.id;
     return this.projectService.addPlotToProject(body, userId);
   }
+
+  @Get(':id/plots')
+  async getPlotsByProject(@Param('id') id: string, @Request() req: any) {
+    const userId = req.user.id;
+    return this.projectService.getPlotsByProject(id, userId);
+  }
+
+  @Get(':id/plots/count')
+  async getPlotsCountByProject(@Param('id') id: string, @Request() req: any) {
+    const userId = req.user.id;
+    return this.projectService.getPlotsCountByProject(id, userId);
+  }
 }

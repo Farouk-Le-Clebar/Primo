@@ -197,3 +197,14 @@ export const addPlotToProject = async (payload: AddPlotToProjectPayload) => {
             throw error;
         });
 }
+
+export const getProjectPlots = async (projectId: string) => {
+    return axios.get(`${apiUrl}/projects/${projectId}/plots`, {
+        headers: getAuthHeaders(),
+    })
+        .then((response) => response.data)
+        .catch((error) => {
+            console.error(error);
+            throw error;
+        });
+}

@@ -40,7 +40,7 @@ export class ProjectService {
     private projectPlotsRepository: Repository<ProjectPlots>,
     private readonly notificationService: NotificationService,
     private readonly activityHistoryService: ActivityHistoryService,
-  ) {}
+  ) { }
 
   private async resolveDisplayName(userId: string): Promise<string> {
     const user = await this.userRepository.findOne({ where: { id: userId } });
@@ -415,8 +415,8 @@ export class ProjectService {
   ): ProjectResponseDto {
     const relationMemberCount = project.members
       ? project.members.filter(
-          (member) => member.status === ProjectMemberStatus.ACCEPTED,
-        ).length
+        (member) => member.status === ProjectMemberStatus.ACCEPTED,
+      ).length
       : 0;
 
     return {
@@ -453,5 +453,41 @@ export class ProjectService {
 
     if (!projectPlot)
       throw new BadRequestException('Erreur lors de l\'ajout du plot au projet');
+  }
+
+  async getPlotsByProject(projectId: string, userId: string) {
+    const project = await this.projectRepository.findOne({
+      where: { id: projectId },
+    });
+
+    if (!project)
+      throw new NotFoundException(`Project not found`);
+
+    if (project.userId !== userId)
+      throw new ForbiddenException('Access to this project is forbidden');
+
+    const plots = await this.projectPlotsRepository.find({
+      where: { projectId },
+    });
+
+    return plots;
+  }
+
+  async getPlotsCountByProject(projectId: string, userId: string) {
+    const project = await this.projectRepository.findOne({
+      where: { id: projectId },
+    });
+
+    if (!project)
+      throw new NotFoundException(`Project not found`);
+
+    if (project.userId !== userId)
+      throw new ForbiddenException('Access to this project is forbidden');
+
+    const count = await this.projectPlotsRepository.count({
+      where: { projectId },
+    });
+
+    return { count };
   }
 }
