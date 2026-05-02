@@ -24,6 +24,7 @@ export default function ParcelInfoPanel({ selectedParcelle, onOpenDashboard }: P
 
   useStopPropagation(panelRef);
 
+  console.log("Selected parcelle:", selectedParcelle);
 
   const feature = selectedParcelle?.feature;
   const properties = feature?.properties;
@@ -119,6 +120,8 @@ export default function ParcelInfoPanel({ selectedParcelle, onOpenDashboard }: P
             plotBanId: selectedParcelle?.feature?.properties?.ban,
             plotId: selectedParcelle?.feature?.properties?.id,
             adress: selectedParcelle?.feature?.properties?.addok_label,
+            coordinates: selectedParcelle?.addokData?.features?.[0]?.geometry?.coordinates.join(","),
+            geometry: JSON.stringify(selectedParcelle?.feature?.geometry),
           }}
         />
       )}

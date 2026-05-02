@@ -24,7 +24,7 @@ export default function Navbar({ parcelleBounds, onParcelleSelect }: NavbarProps
 
   useEffect(() => {
     if (!coordsSelected || !parcelleBounds || newSearchSelected || !onParcelleSelect) return;
-    
+
     const timer = setTimeout(() => {
       let found = false;
 
@@ -40,7 +40,7 @@ export default function Navbar({ parcelleBounds, onParcelleSelect }: NavbarProps
           setNewSearchSelected(true);
         }
       });
-      
+
       if (found) {
         setCoordsSelected(null);
       }
@@ -63,7 +63,7 @@ export default function Navbar({ parcelleBounds, onParcelleSelect }: NavbarProps
           backgroundColor="bg-transparent"
           backgroundHoverColor="hover:bg-gray-100"
           textHoverColor="hover:text-gray-800"
-          textColor="text-black" 
+          textColor="text-black"
           shadowHover="shadow-none"
           width="w-28"
           height="h-7"
@@ -89,7 +89,7 @@ export default function Navbar({ parcelleBounds, onParcelleSelect }: NavbarProps
           <UserProfile />
         </div>
       </div>
-      
+
     </nav>
   );
 }

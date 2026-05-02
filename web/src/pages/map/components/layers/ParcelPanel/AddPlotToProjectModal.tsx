@@ -22,7 +22,14 @@ const AddPlotToProjectModal = ({ onClose, plotData }: AddPlotToProjectModalProps
     });
 
     const { mutate: addPlotToProjectMutation } = useMutation({
-        mutationFn: () => addPlotToProject({ projectId: selectedProjectId || "", plotId: plotData.plotId, plotBanId: plotData.plotBanId, adress: plotData.adress }),
+        mutationFn: () => addPlotToProject({
+            projectId: selectedProjectId || "",
+            plotId: plotData.plotId,
+            plotBanId: plotData.plotBanId,
+            adress: plotData.adress,
+            coordinates: plotData.coordinates,
+            geometry: plotData.geometry
+        }),
         onSuccess: () => {
             toast.success("Parcelle ajoutée au projet avec succès !", {
                 id: "add-success",
