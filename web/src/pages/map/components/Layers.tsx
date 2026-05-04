@@ -30,9 +30,10 @@ const getUserMapPreference = (): "basic" | "satellite" => {
 
 type LayersProps = {
     initialPlacement: boolean;
+    initialCoordinates?: [number, number];
 };
 
-const Layers = ({ initialPlacement }: LayersProps) => {
+const Layers = ({ initialPlacement, initialCoordinates }: LayersProps) => {
     const map = useMap();
     const [mapBounds, setMapBounds] = useState<L.LatLngBounds | null>(null);
     const [currentZoom, setCurrentZoom] = useState<number>(6);
@@ -144,6 +145,7 @@ const Layers = ({ initialPlacement }: LayersProps) => {
                 onParcelleSelect={handleParcelleSelect}
                 selectedIdRef={selectedIdRef}
                 initialPlacement={initialPlacement}
+                initialCoordinates={initialCoordinates}
             />
 
             <PoiLayer

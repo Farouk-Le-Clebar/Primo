@@ -107,3 +107,11 @@ export class AddPlotDto {
   @IsJSON()
   geometry: any;
 }
+
+export class RemovePlotDto {
+  @IsString()
+  plotId: string;
+
+  @IsString()
+  projectId: string;
+}

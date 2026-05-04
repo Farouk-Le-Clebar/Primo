@@ -10,6 +10,8 @@ const Map = () => {
 
   const center: [number, number] = (coo_x && coo_y) ? [parseFloat(coo_y), parseFloat(coo_x)] : [46.603354, 1.888334];
   const zoom = (coo_x && coo_y) ? 18 : 6;
+
+
   return (
     <div className="h-screen w-screen relative">
       <MapContainer
@@ -20,7 +22,7 @@ const Map = () => {
         preferCanvas={true}
         zoomControl={false}
       >
-        <Layers initialPlacement={!!(coo_x && coo_y)} />
+        <Layers initialPlacement={!!(coo_x && coo_y)} initialCoordinates={center} />
       </MapContainer>
     </div>
   );

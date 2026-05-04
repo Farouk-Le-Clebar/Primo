@@ -107,6 +107,16 @@ export class ProjectController {
     return this.projectService.addPlotToProject(body, userId);
   }
 
+  @Delete(':id/plots/:plotId')
+  async removePlotFromProject(
+    @Param('id') projectId: string,
+    @Param('plotId') plotId: string,
+    @Request() req: any
+  ) {
+    const userId = req.user.id;
+    return this.projectService.removePlotFromProject(projectId, plotId, userId);
+  }
+
   @Get(':id/plots')
   async getPlotsByProject(@Param('id') id: string, @Request() req: any) {
     const userId = req.user.id;

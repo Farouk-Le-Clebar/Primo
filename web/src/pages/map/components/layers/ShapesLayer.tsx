@@ -17,6 +17,7 @@ type ShapesLayerProps = {
     onParcelleSelect: (bounds: L.LatLngBounds, feature: any, layer: L.Path) => void;
     selectedIdRef: React.RefObject<string | null>;
     initialPlacement: boolean;
+    initialCoordinates?: [number, number];
 };
 
 export const defaultStyle = {
@@ -44,12 +45,12 @@ const ShapesLayer = ({
     dataShape,
     onParcelleSelect,
     selectedIdRef,
-    initialPlacement
+    initialPlacement,
+    initialCoordinates
 }: ShapesLayerProps) => {
     const map = useMap();
 
-    // Remplacer isPending par isLoading
-    const { data: allDepartements, isLoading: isAllDepartementsLoading } = useQuery({ 
+    const { data: allDepartements, isLoading: isAllDepartementsLoading } = useQuery({
         queryKey: ['allDepartements'],
         queryFn: () => getDepartementByBbox(FRANCE_BBOX),
         staleTime: Infinity,
@@ -85,7 +86,6 @@ const ShapesLayer = ({
             .map((dept: any) => dept.properties.ddep_c_cod);
     }, [allDepartements, mapBounds]);
 
-    // Remplacer isPending par isLoading
     const { data: plots, isLoading: isPlotsLoading } = useQuery({
         queryKey: ['initialPlots'],
         queryFn: () => getParcellesByBboxAndDepartments(
@@ -120,7 +120,7 @@ const ShapesLayer = ({
         }
     });
 
-    const { mutate: parcellesBoundsMutation, isPending: isParcellesPending } = useMutation({ // Mutation pour récupérer les parcelles en fonction de la bbox et des départements visibles
+    const { mutate: parcellesBoundsMutation } = useMutation({ // Mutation pour récupérer les parcelles en fonction de la bbox et des départements visibles
         mutationFn: () => getParcellesByBboxAndDepartments(
             boundToBbox(mapBounds!),
             departementsVisibles
@@ -153,7 +153,7 @@ const ShapesLayer = ({
         }
     });
 
-    const { mutate: divisionsBoundsMutation, isPending: isDivisionsPending } = useMutation({ // Mutation pour récupérer les divisions en fonction de la bbox et des départements visibles
+    const { mutate: divisionsBoundsMutation } = useMutation({ // Mutation pour récupérer les divisions en fonction de la bbox et des départements visibles
         mutationFn: () => getDivisionsByBboxAndDepartments(
             boundToBbox(mapBounds!),
             departementsVisibles
@@ -200,9 +200,12 @@ const ShapesLayer = ({
         }
     }, [mapBounds, currentZoom]);
 
+    if (initialPlacement && initialCoordinates) {
+        
+    }
+
     return (
         <>
-            {/* Utiliser les nouvelles variables Loading pour les query, et garder Pending pour les mutations */}
             {(isPlotsLoading || isAllDepartementsLoading || isCityPending || isDepartementsPending) && (
                 <div className="absolute top-0 left-0 w-full h-full bg-white/20 backdrop-blur-sm z-[400] flex items-center justify-center">
                     <div className="flex flex-col items-center gap-2">

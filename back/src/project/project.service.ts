@@ -457,6 +457,29 @@ export class ProjectService {
       throw new BadRequestException('Erreur lors de l\'ajout du plot au projet');
   }
 
+  async removePlotFromProject(projectId: string, plotId: string, userId: string) {
+    const project = await this.projectRepository.findOne({
+      where: { id: projectId },
+    });
+
+    if (!project)
+      throw new NotFoundException(`Projet non trouvé.`);
+
+    if (project.userId !== userId)
+      throw new ForbiddenException('Accès non autorisé à ce projet.');
+
+    const deleteResult = await this.projectPlotsRepository.delete({
+      projectId,
+      id: plotId,
+    });
+
+    if (deleteResult.affected === 0) {
+      throw new NotFoundException(
+        `Parcelle non trouvé dans le projet.`,
+      );
+    }
+  }
+
   async getPlotsByProject(projectId: string, userId: string) {
     const project = await this.projectRepository.findOne({
       where: { id: projectId },

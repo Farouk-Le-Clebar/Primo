@@ -10,7 +10,7 @@ export default function LocationHandler() {
   useEffect(() => {
     if (location.state && (location.state as any).centerOn) {
       const coords = (location.state as any).centerOn;
-      
+
       map.flyTo(coords, 18, { duration: 2 });
       navigate(location.pathname, { replace: true, state: {} });
     }

@@ -208,3 +208,14 @@ export const getProjectPlots = async (projectId: string) => {
             throw error;
         });
 }
+
+export const deletePlotFromProject = async (projectId: string, plotId: string) => {
+    return axios.delete(`${apiUrl}/projects/${projectId}/plots/${plotId}`, {
+        headers: getAuthHeaders(),
+    })
+        .then((response) => response.data)
+        .catch((error) => {
+            console.error(error);
+            throw error;
+        });
+}
