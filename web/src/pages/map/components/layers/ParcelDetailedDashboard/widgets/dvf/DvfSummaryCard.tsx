@@ -4,19 +4,13 @@ import { Home, Store } from "lucide-react";
 
 export default function DvfSummaryCard({ transactions }: { transactions: any[] }) {
   const stats = useMemo(() => {
-    // Nettoyage et calculs
     const validTxs = transactions.filter(t => t.valeur_fonciere && t.surface_reelle_bati > 0);
     const pricesM2 = validTxs.map(t => parseFloat(t.valeur_fonciere) / t.surface_reelle_bati).sort((a, b) => a - b);
-    
     const totalValue = validTxs.reduce((sum, t) => sum + parseFloat(t.valeur_fonciere), 0);
-    
-    // Calculs statistiques
     const min = pricesM2.length ? Math.round(pricesM2[0]) : 0;
     const max = pricesM2.length ? Math.round(pricesM2[pricesM2.length - 1]) : 0;
     const avg = pricesM2.length ? Math.round(pricesM2.reduce((a, b) => a + b, 0) / pricesM2.length) : 0;
     const median = pricesM2.length ? Math.round(pricesM2[Math.floor(pricesM2.length / 2)]) : 0;
-
-    // Comptage par type
     const byType = validTxs.reduce((acc, t) => {
       const type = t.type_local || "Autre";
       acc[type] = (acc[type] || 0) + 1;
@@ -31,11 +25,10 @@ export default function DvfSummaryCard({ transactions }: { transactions: any[] }
       style: 'currency', 
       currency: 'EUR', 
       maximumFractionDigits: 0 
-    }).format(val).replace(/\s/g, '.'); // Remplace les espaces par des points
+    }).format(val).replace(/\s/g, '.');
 
   const formatTotalValue = (val: number) => {
-    // Affiche par exemple "1.250.000 €"
-    return val.toLocaleString('de-DE') + " €"; // Le format allemand (de-DE) utilise le point comme séparateur
+    return val.toLocaleString('de-DE') + " €";
   };
 
   return (
@@ -48,7 +41,6 @@ export default function DvfSummaryCard({ transactions }: { transactions: any[] }
         </div>
       </div>
 
-      {/* Min / Median / Max */}
       <div className="grid grid-cols-3 gap-2 mb-8 border-t border-b border-gray-100 pt-4 pb-4">
         <div className="bg-gray-50 rounded-lg p-3 text-center border border-gray-100">
           <span className="block text-sm font-bold text-gray-900">{formatEuro(stats.median)}</span>
@@ -64,7 +56,6 @@ export default function DvfSummaryCard({ transactions }: { transactions: any[] }
         </div>
       </div>
 
-      {/* Volume */}
       <div className=" pt-4 mb-6">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-[11px] font-bold text-[#878D96] uppercase tracking-wider">Volume</h3>
@@ -76,14 +67,13 @@ export default function DvfSummaryCard({ transactions }: { transactions: any[] }
               <div className="flex items-center gap-2">
                 {type.toLowerCase().includes('appart') ? <Home size={14} className="text-indigo-500" /> : <Store size={14} className="text-amber-500" />}
                 <span className="text-[13px] text-gray-700">{type}</span>
-                <span className="px-1.5 py-0.5 rounded-full bg-indigo-50 text-indigo-600 text-[10px] font-bold">{count}</span>
+                <span className="px-1.5 py-0.5 rounded-full bg-indigo-50 text-indigo-600 text-[10px] font-bold">{String(count)}</span>
               </div>
             </div>
           ))}
         </div>
       </div>
 
-      {/* Valeur Totale */}
       <div className="mt-auto border-t border-gray-100 pt-6">
         <h3 className="text-[11px] font-bold text-[#878D96] uppercase tracking-wider mb-1">Valeur Totale des transactions</h3>
         <span className="text-xl font-bold text-[#111111]">{formatTotalValue(stats.totalValue)}</span>

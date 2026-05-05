@@ -10,7 +10,6 @@ export default function DvfTransactionsTab({ transactions }: { transactions: any
     );
   }
 
-  // Tri par date décroissante (plus récent en premier)
   const sortedTransactions = [...transactions].sort((a, b) => 
     new Date(b.date_mutation).getTime() - new Date(a.date_mutation).getTime()
   );
@@ -34,7 +33,6 @@ export default function DvfTransactionsTab({ transactions }: { transactions: any
                 key={index} 
                 className="hover:bg-blue-50/50 transition-all duration-200 cursor-pointer group border-b border-gray-100 last:border-0 relative"
               >
-                {/* Colonne Date (Style Badge "Code") */}
                 <TableCell className="w-min py-4 pl-5 pr-2">
                   <div className="inline-flex items-center px-2 py-0.5 rounded font-inter font-bold text-xs bg-gray-100 text-gray-700 border border-gray-200 shrink-0">
                     <Calendar size={12} className="mr-1.5 opacity-60" />
@@ -42,7 +40,6 @@ export default function DvfTransactionsTab({ transactions }: { transactions: any
                   </div>
                 </TableCell>
 
-                {/* Colonne Libellé (Prix & Nature) */}
                 <TableCell className="py-4 px-0">
                   <div className="flex flex-col gap-0.5">
                     <div className="flex items-center gap-2.5">
@@ -55,7 +52,6 @@ export default function DvfTransactionsTab({ transactions }: { transactions: any
                       </span>
                     </div>
                     
-                    {/* Détails qui apparaissent au survol */}
                     <div className="max-h-0 opacity-0 group-hover:max-h-20 group-hover:opacity-100 transition-all duration-300 overflow-hidden">
                       <div className="flex items-center gap-4 text-[11px] text-gray-500 italic pl-6 pt-1">
                         <span className="flex items-center gap-1">
@@ -72,7 +68,6 @@ export default function DvfTransactionsTab({ transactions }: { transactions: any
                   </div>
                 </TableCell>
 
-                {/* Badge contextuel facultatif à droite */}
                 <TableCell className="py-4 text-right pr-5">
                    <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 group-hover:text-blue-500 transition-colors">
                      DVF

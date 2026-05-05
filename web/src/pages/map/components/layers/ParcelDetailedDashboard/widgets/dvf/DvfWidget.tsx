@@ -5,8 +5,6 @@ import { Grid, Col } from "@tremor/react";
 import type { ParcelWidgetProps } from "../../types";
 import { getDvfParcelle } from "../../../../../../../requests/dvf/information";
 import LoadingPrimoLogo from "../../../../../../../components/animations/LoadingPrimoLogo";
-
-// SOUS-COMPOSANTS (à créer)
 import DvfSummaryCard from "./DvfSummaryCard.tsx";
 import DvfEvolutionChart from "./DvfEvolutionChart.tsx";
 import DvfDistributionCards from "./DvfDistributionCards.tsx";
@@ -22,7 +20,7 @@ export default function DvfWidget({ feature }: ParcelWidgetProps) {
     retry: false,
   });
 
-  const transactions = data?.historique || data || []; // Adaptation selon la structure exacte renvoyée
+  const transactions = data?.historique || data || [];
   const isEmpty = !transactions || transactions.length === 0;
 
   return (
@@ -38,23 +36,16 @@ export default function DvfWidget({ feature }: ParcelWidgetProps) {
         </div>
       ) : (
         <Grid numItems={1} numItemsMd={3} className="gap-6 w-full relative">
-          
-          {/* COLONNE GAUCHE : Synthèse (Sticky) */}
           <Col numColSpan={1}>
             <div className="sticky top-0 h-182 flex flex-col">
               <DvfSummaryCard transactions={transactions} />
             </div>
           </Col>
 
-          {/* COLONNE DROITE : Graphiques */}
           <Col numColSpan={1} numColSpanMd={2} className="pb-10">
             <div className="flex flex-col gap-6">
-              {/* Graphique d'évolution */}
               <DvfEvolutionChart transactions={transactions} />
-              
-              {/* Distribution Surface & Types de biens */}
               <DvfDistributionCards transactions={transactions} />
-              
               <DvfTransactionsTab transactions={transactions} />
             </div>
           </Col>

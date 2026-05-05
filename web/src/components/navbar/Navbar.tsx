@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 // COMPONENTS
 import NotificationsDropdown from "./components/notificationDropdown/NotificationsDropdown";
@@ -21,7 +21,6 @@ const ROUTE_NAMES: Record<string, string> = {
 
 export default function Navbar() {
   const location = useLocation();
-  const navigate = useNavigate();
 
   const getPageName = () => {
     const path = location.pathname;
@@ -32,12 +31,6 @@ export default function Navbar() {
   };
 
   const pageName = getPageName();
-
-  const handleAddressSelect = (coords: [number, number]) => {
-    navigate("/search", { 
-      state: { centerOn: coords } 
-    });
-  };
 
   return (
     <nav className="flex w-full h-full items-center bg-white font-UberMove">

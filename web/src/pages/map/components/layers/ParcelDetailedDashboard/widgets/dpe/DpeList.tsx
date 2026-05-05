@@ -1,5 +1,5 @@
 import { Card, Table, TableBody, TableRow, TableCell } from "@tremor/react";
-import { Calendar, Maximize, Euro, Flame, Thermometer, Droplets, ShieldCheck, ExternalLink, Info } from "lucide-react";
+import { Calendar, Maximize, Euro, Flame, Thermometer, Droplets, ShieldCheck, Info } from "lucide-react";
 import { getDpeColors, formatEuro } from "./utils";
 
 export default function DpeList({ dpeList }: { dpeList: any[] }) {

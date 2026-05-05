@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { ChevronDown, Search} from "lucide-react";
+import { ChevronDown, Search } from "lucide-react";
 import { NAVIGATION } from "./navigationConfig";
 
 type Props = { activeTab: string; setActiveTab: (tab: string) => void; onOpenSearch: () => void; };
@@ -19,16 +19,17 @@ export default function ParcelNavigation({ activeTab, setActiveTab, onOpenSearch
   return (
     <nav className="flex items-center gap-1 bg-gray-100 p-0.5 rounded-lg" ref={containerRef}>
       {NAVIGATION.map((cat) => {
-        const activeItem = cat.type === "dropdown" ? cat.items.find(i => i.id === activeTab) : null;
+        const activeItem = cat.type === "dropdown" && cat.items ? cat.items.find(i => i.id === activeTab) : null;
         const isCatActive = activeTab === cat.id || !!activeItem;
 
         if (cat.type === "single") {
+          const Icon = cat.icon;
           return (
             <button key={cat.id} onClick={() => setActiveTab(cat.id)} 
               className={`flex items-center gap-2 px-3 py-1 rounded-md text-[12px] font-semibold transition-all ${
                 activeTab === cat.id ? "bg-white text-gray-900 shadow-sm border border-gray-200" : "text-gray-500 hover:text-gray-700"
               }`}>
-              <cat.icon size={13} /> {cat.label}
+              {Icon && <Icon size={13} />} {cat.label}
             </button>
           );
         }
@@ -50,7 +51,7 @@ export default function ParcelNavigation({ activeTab, setActiveTab, onOpenSearch
               <ChevronDown size={11} className={`ml-0.5 transition-transform opacity-40 ${openDropdown === cat.id ? "rotate-180" : ""}`} />
             </button>
             
-            {openDropdown === cat.id && (
+            {openDropdown === cat.id && cat.items && (
               <div className="absolute top-full left-0 mt-2 w-48 bg-white border border-gray-200 rounded-xl shadow-xl z-50 py-1 overflow-hidden">
                 {cat.items.map((item) => (
                   <button key={item.id} onClick={() => { setActiveTab(item.id); setOpenDropdown(null); }} 

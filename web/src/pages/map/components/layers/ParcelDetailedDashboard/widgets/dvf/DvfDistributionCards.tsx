@@ -3,7 +3,6 @@ import { Card, DonutChart, Legend, Grid, Col } from "@tremor/react";
 
 export default function DvfDistributionCards({ transactions }: { transactions: any[] }) {
   
-  // Données pour le Donut (Type de bien)
   const donutData = useMemo(() => {
     const counts: Record<string, number> = {};
     transactions.forEach(t => {
@@ -13,7 +12,6 @@ export default function DvfDistributionCards({ transactions }: { transactions: a
     return Object.entries(counts).map(([name, value]) => ({ name, value }));
   }, [transactions]);
 
-  // Données pour la surface (Simplifié pour l'exemple)
   const surfaceStats = useMemo(() => {
     const bins = { "< 40 m²": 0, "40-60 m²": 0, "60-90 m²": 0, "> 90 m²": 0 };
     transactions.forEach(t => {
@@ -30,7 +28,6 @@ export default function DvfDistributionCards({ transactions }: { transactions: a
   return (
     <Grid numItems={1} numItemsSm={2} className="gap-6">
       
-      {/* Carte Distribution Surface */}
       <Col>
         <Card className="border-gray-200 ring-0 shadow-sm p-6 h-full font-inter">
           <h3 className="font-semibold text-gray-900 mb-6">Distribution par surface</h3>
@@ -53,19 +50,18 @@ export default function DvfDistributionCards({ transactions }: { transactions: a
         </Card>
       </Col>
 
-      {/* Carte Répartition Type */}
       <Col>
         <Card className="border-gray-200 ring-0 shadow-sm p-6 h-full font-inter">
           <h3 className="font-semibold text-gray-900 mb-6">Répartition par type de bien</h3>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-8 mt-4">
             <DonutChart
-              className="w-40 h-40" // Un peu plus grand pour laisser de la place au texte interne
+              className="w-40 h-40"
               data={donutData}
               category="value"
               index="name"
               colors={["indigo", "amber", "cyan", "rose"]}
-              showAnimation={false} // Désactiver l'animation peut aider à fixer l'opacité initiale
-              variant="pie" // Changement en pie (plein) ou donut selon votre préférence
+              showAnimation={false}
+              variant="pie"
             />
             <Legend
               categories={donutData.map(d => d.name)}

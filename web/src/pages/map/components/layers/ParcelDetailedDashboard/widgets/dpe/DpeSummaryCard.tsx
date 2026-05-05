@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { Card } from "@tremor/react";
-import { Home, Store, Zap, Leaf } from "lucide-react";
+import { Home, Store } from "lucide-react";
 import { getDpeColors, formatEuro, DPE_LABELS_FR } from "./utils";
 
 export default function DpeSummaryCard({ dpeList }: { dpeList: any[] }) {
@@ -85,7 +85,7 @@ export default function DpeSummaryCard({ dpeList }: { dpeList: any[] }) {
               <div className="flex items-center gap-2">
                 {type.toLowerCase().includes('appart') ? <Home size={14} className="text-indigo-500" /> : <Store size={14} className="text-amber-500" />}
                 <span className="text-[13px] text-gray-700">{type}</span>
-                <span className="px-1.5 py-0.5 rounded-full bg-indigo-50 text-indigo-600 text-[10px] font-bold">{count}</span>
+                <span className="px-1.5 py-0.5 rounded-full bg-indigo-50 text-indigo-600 text-[10px] font-bold">{String(count)}</span>
               </div>
             </div>
           ))}

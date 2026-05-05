@@ -1,4 +1,4 @@
-import { driver, type DriveStep, type AllowedButtons } from "driver.js"; // Import du type
+import { driver, type DriveStep, type AllowedButtons } from "driver.js";
 import "driver.js/dist/driver.css";
 import "../styles/onBoarding.css";
 

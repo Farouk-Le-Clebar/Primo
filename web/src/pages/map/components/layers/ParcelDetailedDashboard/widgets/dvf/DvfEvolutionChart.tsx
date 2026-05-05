@@ -13,25 +13,22 @@ export default function DvfEvolutionChart({ transactions }: { transactions: any[
       new Date(a.date_mutation).getTime() - new Date(b.date_mutation).getTime()
     );
 
-    // Calcul de la moyenne globale
     const totalM2 = validTransactions.reduce((acc, t) => 
       acc + (Number(t.valeur_fonciere) / Number(t.surface_reelle_bati)), 0
     );
     const averageM2 = Math.round(totalM2 / validTransactions.length);
 
-    // Si une seule transaction, on en crée deux points identiques pour tracer une ligne droite
     const dataToMap = validTransactions.length === 1 
       ? [validTransactions[0], validTransactions[0]] 
       : validTransactions;
 
-    return dataToMap.map((t, index) => {
+    return dataToMap.map((t) => {
       const dateObj = new Date(t.date_mutation);
       const formattedDate = dateObj.toLocaleDateString('fr-FR', {
         day: '2-digit', 
         month: '2-digit', 
         year: 'numeric'
       });
-      
       const priceM2 = Math.round(Number(t.valeur_fonciere) / Number(t.surface_reelle_bati));
 
       return {
@@ -61,7 +58,6 @@ export default function DvfEvolutionChart({ transactions }: { transactions: any[
         showGridLines={true}
         curveType="linear"
         connectNulls={true}
-        // Customisation pour différencier la moyenne
         showLegend={true}
       />
     </Card>
