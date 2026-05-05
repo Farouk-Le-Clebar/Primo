@@ -1,11 +1,14 @@
 import { useLocation, useNavigate } from "react-router-dom";
+
+// COMPONENTS
 import NotificationsDropdown from "./components/notificationDropdown/NotificationsDropdown";
-import SearchingBar from "../../components/search/SearchBar";
+import { startOnboarding } from "../../config/onboarding.service";
 
 // ICONS
 import PageIcons from "../../assets/icons/page.svg?react";
-import { HelpCircle } from "lucide-react";
-import { startOnboarding } from "../../config/onboarding.service";
+import ChevronIcons from "../../assets/icons/chevronRight.svg?react";
+
+import HelpIcon from "../../assets/icons/help.svg?react";
 
 const ROUTE_NAMES: Record<string, string> = {
   "/": "Vue d'ensemble",
@@ -37,32 +40,29 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="flex w-full h-full items-center bg-white font-UberMove border-b border-gray-100">
+    <nav className="flex w-full h-full items-center bg-white font-UberMove">
       
-      <div className="flex h-full flex-1 items-center gap-2 px-4">
-        <PageIcons className="w-5 h-5 text-gray-800" />
-        <div className="flex items-center gap-1 font-inter font-medium text-xs text-[#999999] min-w-max">
+      <div className="flex h-full flex-1 items-center gap-3 px-4">
+        <PageIcons className="w-4 h-4 text-green-500" />
+        <div className="h-3 w-px bg-gray-300"></div>
+        <div className="flex items-center gap-3 font-inter font-light text-sm text-[#999999] min-w-max">
           <span>Dashboard</span>
           {pageName && (
             <>
-              <span>/</span>
-              <span className="text-gray-800 font-semibold">{pageName}</span>
+              <ChevronIcons className="w-3 h-3 text-gray-400" />
+              <span className="text-gray-800 font-normal text-xs">{pageName}</span>
             </>
           )}
         </div>
       </div>
 
       <div className="flex h-full items-center justify-end gap-2 pr-6">
-          <div id="search-bar-tour" className="w-[400px]">
-            <SearchingBar onAdressSelect={handleAddressSelect} />
-          </div>
-          
           <button 
             onClick={() => startOnboarding(location.pathname)}
             className="p-2 text-gray-400 hover:text-gray-900 transition-colors rounded-full hover:bg-gray-100"
             title="Aide et tutoriel"
           >
-            <HelpCircle size={18} />
+            <HelpIcon className="w-4 h-4" />
           </button>
   
           <div id="notifications-tour">
