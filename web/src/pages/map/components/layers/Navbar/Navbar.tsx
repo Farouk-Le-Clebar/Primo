@@ -5,7 +5,6 @@ import L from "leaflet";
 
 // COMPONENTS
 import SearchingBar from "../../../../../components/search/SearchBar";
-import Button from "../../../../../ui/Button";
 import UserProfile from "./UserProfile";
 
 // ICONS
@@ -56,36 +55,26 @@ export default function Navbar({ parcelleBounds, onParcelleSelect }: NavbarProps
   };
 
   return (
-    <nav className="flex left-0 right-0 w-full h-full items-center justify-between bg-white border-b border-gray-100 z-[1010]">
+    <nav className="relative flex left-0 right-0 w-full h-full items-center justify-between bg-white border-b border-gray-100 z-[1010]">
+      
       <div className="flex h-full w-102 items-center ml-4">
-        <Button
+        <button
           onClick={() => navigate("/dashboard")}
-          backgroundColor="bg-transparent"
-          backgroundHoverColor="hover:bg-gray-100"
-          textHoverColor="hover:text-gray-800"
-          textColor="text-black" 
-          shadowHover="shadow-none"
-          width="w-28"
-          height="h-7"
-          className="py-3 transition-all"
+          className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-gray-600 transition-all bg-white border border-gray-200 rounded-lg hover:bg-gray-50 hover:text-gray-900 group shadow-sm"
         >
-          <div className="flex items-center gap-1">
-            <ArrowLeft className="w-5 h-5" />
-            <span className="font-inter font-medium text-xs tracking-tight">
-              Dashboard
-            </span>
-          </div>
-        </Button>
+          <ArrowLeft className="w-4 h-4 text-gray-400 transition-transform duration-200 group-hover:-translate-x-0.5 group-hover:text-gray-600" />
+          <span>Retour au site</span>
+        </button>
       </div>
 
-      <div className="flex h-full flex-1 items-center gap-20 px-8">
-        <div className="flex-1 max-w-xl mx-auto">
+      <div className="absolute inset-y-0 left-0 right-0 flex items-center justify-center pointer-events-none">
+        <div className="w-full max-w-xl pointer-events-auto px-4">
           <SearchingBar onAdressSelect={handleAdressSelect} />
         </div>
       </div>
 
-      <div className="flex h-full justify-end min-w-[285px]">
-        <div className="flex h-full w-3/4 items-center justify-end ">
+      <div className="flex h-full justify-end items-center min-w-[285px]">
+        <div className="flex h-12 w-45 items-center justify-start mr-4">
           <UserProfile />
         </div>
       </div>
