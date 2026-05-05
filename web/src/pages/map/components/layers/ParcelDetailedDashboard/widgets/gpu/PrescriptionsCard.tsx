@@ -64,7 +64,7 @@ export default function PrescriptionsCard({ feature }: ParcelWidgetProps) {
 
       {isPending ? (
         <div className="flex items-center justify-center p-8">
-          <LoadingPrimoLogo className="w-6 h-6 text-blue-500" />
+          <LoadingPrimoLogo className="w-6 h-6 text-black" />
         </div>
       ) : isEmpty ? (
         <div className="p-8 text-sm text-[#878D96] text-center bg-gray-50">

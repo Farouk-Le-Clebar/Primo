@@ -118,6 +118,7 @@ export class AuthService {
           surName: family_name || '',
           profilePicture: picture || '',
           provider: 'google',
+          verified: true,
         });
         await this.userRepository.save(user);
         isNewUser = true;

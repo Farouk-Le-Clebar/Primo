@@ -1,11 +1,11 @@
 import { useState } from "react";
 
 // TABS
-import GeneralTab from "./tabs/GeneralTab";
-import BatimentsTab from "./tabs/BatimentsTab";
-import UrbanismeTab from "./tabs/UrbanismeTab";
-import DvfTab from "./tabs/DvfTab";
-import DpeTab from "./tabs/DpeTab";
+import { ParcelInfoCard } from "../ParcelPanel/ParcelleInfoCard";
+import GpuUrbanAreasWidget from "./widgets/gpu/GpuWidget";
+import BuildingsWidget from "./widgets/buildings/BuildingsWidget";
+import DpeWidget from "./widgets/dpe/DpeWidget";
+import DvfWidget from "./widgets/dvf/DvfWidget";
 
 // COMPONENTS
 import ParcelDetailedNavbar from "./ParcelDetailedNavbar";
@@ -23,7 +23,7 @@ export default function ParcelDetailedDashboard({ selectedParcelle, onClose }: P
   const address = selectedParcelle?.addokData?.features?.[0]?.properties?.label || "Adresse non renseignée";
 
   return (
-    <div className="flex flex-col h-full w-full bg-[#F8F9FB] animate-in fade-in duration-300">
+    <div className="flex flex-col h-screen w-screen bg-[#F8F9FB] animate-in fade-in duration-300">
       
       <ParcelDetailedNavbar 
         parcelId={parcelId}
@@ -33,13 +33,13 @@ export default function ParcelDetailedDashboard({ selectedParcelle, onClose }: P
         onClose={onClose}
       />
 
-      <div className="flex-1 w-full h-full overflow-y-auto p-8 custom-scrollbar relative">
-        <div className="w-full max-w-[1600px] mx-auto">
-          {activeTab === "general" && <GeneralTab feature={selectedParcelle?.feature} />}
-          {activeTab === "urbanisme" && <UrbanismeTab feature={selectedParcelle?.feature} />}
-          {activeTab === "batiments" && <BatimentsTab feature={selectedParcelle?.feature} />}
-          {activeTab === "dvf" && <DvfTab feature={selectedParcelle?.feature} />}
-          {activeTab === "dpe" && <DpeTab feature={selectedParcelle} />}
+      <div className="flex-1 w-full h-full overflow-y-auto p-8 custom-scrollbar">
+        <div className="w-full h-full">
+          {activeTab === "general" && <ParcelInfoCard properties={selectedParcelle?.feature?.properties} />}
+          {activeTab === "plu" && <GpuUrbanAreasWidget feature={selectedParcelle?.feature} />}
+          {activeTab === "batiments" && <BuildingsWidget feature={selectedParcelle?.feature} />}
+          {activeTab === "dvf" && <DvfWidget feature={selectedParcelle?.feature} />}
+          {activeTab === "dpe" && <DpeWidget selectedParcelle={selectedParcelle} />}
         </div>
       </div>
 

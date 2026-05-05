@@ -1,9 +1,11 @@
 import { useState, useRef, useEffect } from "react";
-import { Bell } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNotifications } from "../../../../hooks/useNotifications";
 import NotificationCard from "./cards/NotificationCard";
 
+
+// ICONS
+import NotificationIcon from "../../../../assets/icons/notification.svg?react";
 import type { NotificationResponse } from "../../../../requests/notificationRequests";
 
 export interface NotificationCardProps {
@@ -28,7 +30,6 @@ export default function NotificationsDropdown() {
         deletingNotificationId,
     } = useNotifications();
 
-    // Close on outside click
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (
@@ -45,21 +46,18 @@ export default function NotificationsDropdown() {
 
     return (
         <div className="relative" ref={dropdownRef}>
-            {/* Bell */}
             <button
                 onClick={() => setIsOpen(!isOpen)}
                 className="relative p-2.5 text-gray-400 hover:text-gray-600 hover:bg-gray-50 rounded-full transition-all group"
             >
-                <Bell
-                    size={18}
-                    className={`transition-transform ${isOpen ? "scale-110" : "group-hover:rotate-12"}`}
+                <NotificationIcon
+                    className={`w-4 h-4 transition-transform ${isOpen ? "scale-110" : "group-hover:rotate-12"}`}
                 />
                 {unreadCount > 0 && (
                     <span className="absolute top-2.5 right-2.5 w-2.5 h-2.5 bg-red-500 border-2 border-white rounded-full"></span>
                 )}
             </button>
 
-            {/* Notifications menu */}
             <AnimatePresence>
                 {isOpen && (
                     <motion.div

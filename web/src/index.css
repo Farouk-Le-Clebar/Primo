@@ -6,6 +6,8 @@
 
 @source "../node_modules/@tremor/react";
 
+@safelist stroke-emerald-500, bg-emerald-500, text-emerald-500;
+
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {

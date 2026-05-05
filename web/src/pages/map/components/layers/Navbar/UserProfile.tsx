@@ -1,3 +1,7 @@
+import React, { useState } from "react";
+import { useOutsideClick } from "../../../../../hooks/useOutsideClick";
+import DropdownMenu from "../../../../../components/sidebars/components/settingsDropdown/dropdownMenu";
+
 // ASSETS
 import PPGreen from "../../../../../assets/profilePictures/green.svg?react";
 import PPCyan from "../../../../../assets/profilePictures/cyan.svg?react";
@@ -9,7 +13,9 @@ import PPWhite from "../../../../../assets/profilePictures/white.svg?react";
 import PPWhitePink from "../../../../../assets/profilePictures/whitepink.svg?react";
 import PPYellow from "../../../../../assets/profilePictures/yellow.svg?react";
 
-// Dictionnaire des avatars
+// ICONS
+import DoubleChevron from "../../../../../assets/icons/doubleChevron.svg?react";
+
 const AVATAR_COMPONENTS: Record<string, React.FC<React.SVGProps<SVGSVGElement>>> = {
   "green.png": PPGreen,
   "cyan.png": PPCyan,
@@ -22,35 +28,60 @@ const AVATAR_COMPONENTS: Record<string, React.FC<React.SVGProps<SVGSVGElement>>>
   "yellow.png": PPYellow,
 };
 
-export default function UserProfile() {
+export default function UserProfileS() {
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const user = JSON.parse(localStorage.getItem("user") || "{}");
-
-  const truncate = (str: string, max: number) => {
-    if (!str) return "";
-    return str.length > max ? str.slice(0, max) + "..." : str;
-  };
-
-  const fileName = user?.profilePicture || "green.png";
-  const AvatarComponent = AVATAR_COMPONENTS[fileName] || PPGreen;
+  const dropdownRef = useOutsideClick(() => setIsDropdownOpen(false));
+  const profilePictureValue = user?.profilePicture || "green.png";
+  const isExternalUrl = profilePictureValue.startsWith("http");
+  const AvatarComponent = AVATAR_COMPONENTS[profilePictureValue] || PPGreen;
 
   return (
-    <div className="flex h-full w-full items-center justify-end gap-2 mr-10">
-      <div className="w-7 h-7 rounded-full overflow-hidden border border-gray-100 shadow-sm flex-shrink-0">
-        <AvatarComponent className="w-full h-full" />
-      </div>
+    <div 
+      className="relative w-full" h-full 
+      ref={dropdownRef}
+    >
+      <button 
+        onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+        className="flex h-12 w-full items-center px-2 gap-1 transition-all duration-300 rounded-xl hover:bg-gray-200/50 active:scale-95 group"
+      >
+        <div className="w-8 h-8 rounded-lg overflow-hidden border border-gray-100 shadow-sm flex-shrink-0 transition-transform duration-300 group-hover:border-gray-300 bg-white">
+          {isExternalUrl ? (
+            <img 
+              src={profilePictureValue} 
+              alt={`Profil de ${user.firstName || 'utilisateur'}`} 
+              className="w-full h-full object-cover"
+              referrerPolicy="no-referrer"
+            />
+          ) : (
+            <AvatarComponent className="w-full h-full" />
+          )}
 
-      <div className="flex flex-col min-w-0">
-        {/* Faudras le changer par le psuedo plus tard */}
-        <div className="font-inter font-bold text-xs text-gray-800 truncate leading-none">
-          {user.firstName || "Pas de pseudo"}
         </div>
 
-        <div className="font-inter font-medium text-xs text-gray-500 truncate leading-none mt-0.5">
-          {user.firstName && user.surName 
-            ? truncate(`${user.firstName} ${user.surName}`, 15) 
-            : "Pas de nom"}
+        <div className="flex items-center justify-between flex-1 min-w-0 ml-1">
+          <div className="flex flex-col items-start text-left min-w-0 w-full">
+            <div className="font-inter font-medium text-sm text-gray-800 truncate leading-tight w-full">
+              {user.firstName || "Utilisateur"}
+            </div>
+            <div className="font-inter font-normal text-xs text-gray-500 truncate leading-none w-full mt-0.5">
+              {user.email || "email@exemple.com"}
+            </div>
+          </div>
+
+          <DoubleChevron 
+            className={`w-4 h-4 text-gray-400 transition-all duration-300 flex-shrink-0 ml-2 ${
+              isDropdownOpen ? "rotate-180 text-black" : "rotate-0"
+            }`} 
+          />
         </div>
-      </div>
+      </button>
+
+      {isDropdownOpen && (
+        <div className="absolute top-full right-0 mt-2 z-[99999] transition-all duration-200">
+          <DropdownMenu onClose={() => setIsDropdownOpen(false)} />
+        </div>
+      )}
     </div>
   );
 }
