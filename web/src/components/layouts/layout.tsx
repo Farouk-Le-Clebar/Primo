@@ -24,15 +24,11 @@ export default function Layout() {
       )}
 
       <div className="relative h-screen flex bg-[#FAFAFA]">
-        
-        {/* CORRECTION 1 : On passe la sidebar en z-50 pour s'assurer qu'elle domine tout le reste de l'écran */}
         <aside className="h-full flex-shrink-0 z-50 relative w-64">
           <Sidebar/>
         </aside>
 
-        {/* CORRECTION 2 : On ajoute 'relative z-10' ici pour forcer ce bloc à rester en dessous de la sidebar (z-50) */}
         <div className="flex-1 flex flex-col pt-2 relative z-10">
-          
           <div className="flex-1 flex flex-col bg-white rounded-tl-2xl shadow-sm border border-gray-100 overflow-hidden">            
             <header className="w-full h-14 flex items-center px-2 z-20 relative">
               <Navbar />
@@ -41,7 +37,6 @@ export default function Layout() {
               <Outlet />
             </main>
           </div>
-          
         </div>
       </div>
     </>
