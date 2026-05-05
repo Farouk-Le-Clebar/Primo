@@ -157,7 +157,7 @@ const Layers = () => {
                     </>
                 )}
 
-                <div className="absolute top-20 right-6 z-[1003] pointer-events-auto">
+                <div className="absolute top-14 right-0 z-[1003] pointer-events-auto">
                     <NoScrollZone>
                         <MapControls 
                             onZoomIn={() => map.zoomIn()} 
