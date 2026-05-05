@@ -23,8 +23,6 @@ export default function DpeWidget({ selectedParcelle }: { selectedParcelle: any 
   const dpeList: any[] = Array.isArray(data) ? data : (data?.historique ?? []);
   const isEmpty        = !dpeList || dpeList.length === 0;
 
-  console.log("DPE List:", dpeList);
-
   return (
     <div className="font-inter w-full">
       {isLoading ? (

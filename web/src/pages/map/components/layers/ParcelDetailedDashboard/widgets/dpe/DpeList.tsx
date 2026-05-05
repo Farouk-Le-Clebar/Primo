@@ -128,19 +128,6 @@ export default function DpeList({ dpeList }: { dpeList: any[] }) {
                           )}
                         </div>
 
-                        {dpe.numero_dpe && (
-                          <a 
-                            href={`https://observatoire-dpe-audit.ademe.fr/pub/dpe/${dpe.numero_dpe}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            onClick={(e) => e.stopPropagation()}
-                            className="flex items-center gap-1.5 px-2.5 py-1 bg-white border border-gray-200 hover:border-blue-300 hover:bg-blue-50 text-blue-600 rounded-md font-medium transition-colors shadow-sm ml-auto not-italic whitespace-nowrap"
-                          >
-                            <span>PDF Officiel</span>
-                            <ExternalLink size={12} />
-                          </a>
-                        )}
-
                       </div>
                     </div>
 
