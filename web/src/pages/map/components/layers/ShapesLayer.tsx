@@ -5,6 +5,7 @@ import { GeoJSON, useMap } from "react-leaflet";
 import { onEachFeature } from "./ShapesClick";
 import { getCityByBbox, getDepartementByBbox, getDivisionsByBboxAndDepartments, getParcellesByBboxAndDepartments } from "../../../../requests/map";
 import LoadingPrimoLogo from "../../../../components/animations/LoadingPrimoLogo";
+import L from "leaflet";
 
 type ShapesLayerProps = {
     onCityBoundChange: (data: any) => void;
@@ -102,6 +103,14 @@ const ShapesLayer = ({
             onCityBoundChange(null);
             onDivisionsBoundChange(null);
             onDepartementsBoundChange(null);
+            if (initialCoordinates) {
+                const latlng = L.latLng(initialCoordinates[0], initialCoordinates[1]);
+                const layer = L.geoJSON(plots).getLayers().find((l: any) => l.getBounds().contains(latlng));
+                if (layer && layer instanceof L.Polygon) {
+                    onParcelleSelect(layer.getBounds(), layer.feature, layer);
+                    selectedIdRef.current = layer?.feature?.id?.toString() ?? null;
+                }
+            }
         }
     }, [plots]);
 
@@ -199,10 +208,6 @@ const ShapesLayer = ({
             departementsBoundsMutation();
         }
     }, [mapBounds, currentZoom]);
-
-    if (initialPlacement && initialCoordinates) {
-        
-    }
 
     return (
         <>

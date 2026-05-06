@@ -3,7 +3,7 @@ import LogoPrimo from "../../assets/logos/logoPrimoBlack.svg";
 
 export default function AuthLayout() {
   const location = useLocation();
-  
+
   const isAuthRoot = location.pathname === "/auth" || location.pathname === "/auth/";
 
   return (

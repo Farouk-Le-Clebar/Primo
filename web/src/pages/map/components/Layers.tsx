@@ -72,6 +72,7 @@ const Layers = ({ initialPlacement, initialCoordinates }: LayersProps) => {
         const id = feature.id;
         selectedIdRef.current = id;
 
+
         setSelectedParcelle({ bounds, feature, layer });
         setIsDashboardOpen(false);
 

@@ -4,10 +4,11 @@ import PlotMap from "./PlotMap";
 import type { ProjectPlotResponse } from "../../../../../types/project/plots";
 import LoadingPrimoLogo from "../../../../../components/animations/LoadingPrimoLogo";
 import { useNavigate } from "react-router-dom";
-import { Check, Cross, ExternalLink, ExternalLinkIcon, Trash2, X } from "lucide-react";
+import { Check, ExternalLink, ExternalLinkIcon, Trash2, X } from "lucide-react";
 import toast from "react-hot-toast";
 import Button from "../../../../../ui/Button";
 import { useState } from "react";
+import L from "leaflet";
 
 type ParcelsTabProps = {
     projectId: string;
@@ -40,16 +41,18 @@ const ParcelsTab = ({ projectId }: ParcelsTabProps) => {
     const navigate = useNavigate();
 
     const handlePlotClick = (id: string) => {
-
     };
 
     const handleRemovePlot = (id: string) => {
         removePlotFromProject(id);
-
     };
 
-    const handleMapClick = (coordinates: string) => {
-        const [x, y] = coordinates.split(",");
+    const handleMapClick = (plot: any) => {
+        // récupérer non pas les coordinates mais les calculer par rapport au centre de la geometry
+        const geoJsonLayer = L.geoJSON(plot.geometry);
+        const center = geoJsonLayer.getBounds().getCenter();
+        const x = center.lng;
+        const y = center.lat;
         navigate(`/search?coo_x=${x}&coo_y=${y}`);
     };
 
@@ -72,7 +75,7 @@ const ParcelsTab = ({ projectId }: ParcelsTabProps) => {
                         >
                             <button
                                 className="cursor-pointer h-48 w-full bg-gray-100 flex items-center justify-center overflow-hidden"
-                                onClick={() => handleMapClick(plot.coordinates)}
+                                onClick={() => handleMapClick(plot)}
                             >
                                 <PlotMap plot={plot} />
                             </button>

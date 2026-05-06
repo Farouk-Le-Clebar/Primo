@@ -24,7 +24,6 @@ export default function ParcelInfoPanel({ selectedParcelle, onOpenDashboard }: P
 
   useStopPropagation(panelRef);
 
-  console.log("Selected parcelle:", selectedParcelle);
 
   const feature = selectedParcelle?.feature;
   const properties = feature?.properties;
