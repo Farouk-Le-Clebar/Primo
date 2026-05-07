@@ -2,7 +2,6 @@ import { useState, useRef, useEffect } from "react";
 
 import MapPreference from "../preference/MapPreference";
 import PoiWidget from "../POI/PoiWidget";
-import AiLayer from "../AI/AiLayer";
 
 import PlusIcon from "../../../../../assets/icons/map/PlusIcon.svg?react";
 import MinusIcon from "../../../../../assets/icons/map/MinusIcon.svg?react";
