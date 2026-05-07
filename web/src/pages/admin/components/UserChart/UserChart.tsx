@@ -17,15 +17,15 @@ export default function UserChart() {
     if (!users.length) return [];
 
     const sortedUsers = [...users].sort(
-      (a, b) => new Date(a.lastConnection).getTime() - new Date(b.lastConnection).getTime()
+      (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
     );
 
     const groupedData: Record<string, number> = {};
     let cumulative = 0;
 
     sortedUsers.forEach((user) => {
-      if (!user.lastConnection) return;
-      const date = new Date(user.lastConnection).toLocaleDateString("fr-FR", {
+      if (!user.createdAt) return;
+      const date = new Date(user.createdAt).toLocaleDateString("fr-FR", {
         month: "short",
         day: "numeric",
       });
