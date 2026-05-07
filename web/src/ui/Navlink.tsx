@@ -59,26 +59,25 @@ export default function CustomNavLink({
 
   const content = (
     <>
-      <div className={`flex items-center ${isCollapsed ? "justify-center" : gap}`}>
+      <div className={`flex items-center ${isCollapsed ? "justify-center" : gap} flex-1 min-w-0`}>
         {icon && (
           <div className={`${isDanger ? "text-red-500" : iconColor} flex items-center justify-center flex-shrink-0 dark:invert`}>
             {icon}
           </div>
         )}
-        
+
         {!isCollapsed && (
-          <span className={`whitespace-nowrap transition-all duration-300 ${
-            textClass 
-              ? textClass 
+          <span className={`truncate transition-all duration-300 ${textClass
+              ? textClass
               : `${!showChevronOnHover ? "text-xs" : "text-sm"} font-inter font-base`
-          }`}>
+            }`}>
             {label}
           </span>
         )}
       </div>
 
       {!isCollapsed && (
-        <div className="flex items-center">
+        <div className="flex items-center flex-shrink-0 ml-2">
           {showChevronOnHover ? (
             <ChevronRight
               size={14}
@@ -96,7 +95,7 @@ export default function CustomNavLink({
     id,
     onClick,
     className: sharedClasses,
-    title: isCollapsed ? label : undefined 
+    title: isCollapsed ? label : undefined
   };
 
   if (to) {
