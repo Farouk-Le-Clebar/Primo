@@ -16,6 +16,10 @@ import Search from "../../assets/icons/searchBlack.svg?react";
 import Ia from "../../assets/icons/ia.svg?react";
 import Admin from "../../assets/icons/admin.svg?react";
 import Feedback from "../../assets/icons/send.svg?react";
+import FolderClose from "../../assets/icons/folderClose.svg?react";
+import { useQuery } from "@tanstack/react-query";
+import { fetchProjects } from "../../requests/projectRequests";
+import LoadingPrimoLogo from "../animations/LoadingPrimoLogo";
 
 export default function Sidebar() {
   const isAdmin = JSON.parse(localStorage.getItem("user") || "null")?.isAdmin;
@@ -33,6 +37,11 @@ export default function Sidebar() {
     navigate("/search", { state: { centerOn: coords } });
   };
 
+  const { data: projects, isPending } = useQuery({
+    queryKey: ["projects"],
+    queryFn: fetchProjects,
+  });
+
   return (
     <>
       <nav id="sidebar-tour" className="flex flex-col h-full w-full ">
@@ -41,7 +50,7 @@ export default function Sidebar() {
             <div className="w-8 h-8 flex items-center justify-center rounded-lg bg-black text-white flex-shrink-0 dark:bg-white">
               <PrimoIcon className="w-5 h-5 text-white fill-current dark:invert" />
             </div>
-            
+
             <div className="flex flex-col overflow-hidden">
               <span className="font-semibold text-sm truncate text-black leading-tight dark:text-white">Primo</span>
               <span className="text-xs text-gray-500 truncate leading-tight dark:text-white">Version 1.0</span>
@@ -64,13 +73,13 @@ export default function Sidebar() {
                 BgColor="bg-transparent"
                 hoverBgColor="hover:bg-gray-200/50 dark:hover:bg-[#262626]"
               />
-              
-              <div 
+
+              <div
                 onClickCapture={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
                   setIsModalOpen(true);
-                }} 
+                }}
                 className="cursor-pointer dark:hover:bg-[#262626] rounded-lg"
               >
                 <CustomNavLink
@@ -132,42 +141,62 @@ export default function Sidebar() {
                 />
               )}
             </div>
-            
+
           </section>
 
-          <section className="flex flex-col gap-1">
-            <div className="h-4 flex items-center px-2 mb-2">
+          <section className="flex flex-col gap-1 overflow-y-auto flex-1">
+            <div className="h-4 flex mb-2 flex-col space-y-2 h-full">
               <h3 className="font-inter font-medium text-[12px] tracking-[0.1em] text-[#757575] dark:text-[#999999]">
                 Projets
               </h3>
+              <div className="flex flex-col gap-1 flex-1">
+                {isPending && (
+                  <div className="h-full w-full flex items-center justify-center">
+                    <LoadingPrimoLogo className="w-6 h-6 text-black dark:invert" />
+                  </div>
+                )}
+                {!isPending &&projects?.map((project) => (
+                  <CustomNavLink
+                    id={project.id}
+                    to={`/projects/${project.id}`}
+                    textColor="text-black dark:text-white dark:hover:text-white"
+                    rounded="rounded-lg"
+                    label={project.name}
+                    icon={renderIcon(FolderClose)}
+                    className="h-8"
+                    BgColor="bg-transparent"
+                    hoverBgColor="hover:bg-gray-200/50 dark:hover:bg-[#262626]"
+                  />
+                ))}
+              </div>
             </div>
           </section>
         </div>
 
         <div className="mt-auto flex flex-col gap-1 px-4 pb-6 pt-2">
-          <CustomNavLink 
+          <CustomNavLink
             id="sidebar-support-tour"
-            to="/support" 
-            textColor="text-black dark:text-white" 
-            rounded="rounded-lg" 
-            label="Support" 
-            icon={renderIcon(SupportIcon)} 
-            className="h-8" 
+            to="/support"
+            textColor="text-black dark:text-white"
+            rounded="rounded-lg"
+            label="Support"
+            icon={renderIcon(SupportIcon)}
+            className="h-8"
             BgColor="bg-transparent"
             hoverBgColor="hover:bg-gray-200/50 dark:hover:bg-[#262626]"
           />
-          <CustomNavLink 
+          <CustomNavLink
             id="sidebar-feedback-tour"
-            to="/feedback" 
-            textColor="text-black dark:text-white" 
-            rounded="rounded-lg" 
+            to="/feedback"
+            textColor="text-black dark:text-white"
+            rounded="rounded-lg"
             label="Retours et suggestions"
-            icon={renderIcon(Feedback)} 
-            className="h-8" 
+            icon={renderIcon(Feedback)}
+            className="h-8"
             BgColor="bg-transparent"
             hoverBgColor="hover:bg-gray-200/50 dark:hover:bg-[#262626]"
           />
-          
+
           <div id="sidebar-user-tour" className="mt-3">
             <UserProfileSidebar />
           </div>
@@ -175,7 +204,7 @@ export default function Sidebar() {
 
       </nav>
 
-      <AddressSearchModal 
+      <AddressSearchModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onAdressSelect={handleAddressSelect}
