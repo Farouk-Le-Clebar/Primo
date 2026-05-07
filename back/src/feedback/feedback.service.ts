@@ -30,7 +30,6 @@ export class FeedbackService {
         description: true,
         createdAt: true,
         user: {
-          id: true,
           firstName: true,
           surName: true,
           email: true,
