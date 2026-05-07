@@ -17,6 +17,7 @@ const ROUTE_NAMES: Record<string, string> = {
   "/settings": "Paramètres",
   "/dashboard": "Aperçu",
   "/search": "Carte",
+  "/admin/dashboard": "Administration",
 };
 
 export default function Navbar() {
@@ -33,17 +34,17 @@ export default function Navbar() {
   const pageName = getPageName();
 
   return (
-    <nav className="flex w-full h-full items-center bg-white font-UberMove">
+    <nav className="flex w-full h-full items-center bg-transparent font-UberMove">
       
       <div className="flex h-full flex-1 items-center gap-3 px-4">
-        <PageIcons className="w-4 h-4 text-green-500" />
+        <PageIcons className="w-4 h-4 dark:invert" />
         <div className="h-3 w-px bg-gray-300"></div>
         <div className="flex items-center gap-3 font-inter font-light text-sm text-[#999999] min-w-max">
           <span>Dashboard</span>
           {pageName && (
             <>
-              <ChevronIcons className="w-3 h-3 text-gray-400" />
-              <span className="text-gray-800 font-normal text-xs">{pageName}</span>
+              <ChevronIcons className="w-3 h-3 text-gray-400 dark:invert" />
+              <span className="text-gray-800 font-normal text-xs dark:text-white">{pageName}</span>
             </>
           )}
         </div>
@@ -52,10 +53,10 @@ export default function Navbar() {
       <div className="flex h-full items-center justify-end gap-2 pr-6">
           <button 
             onClick={() => startOnboarding(location.pathname)}
-            className="p-2 text-gray-400 hover:text-gray-900 transition-colors rounded-full hover:bg-gray-100"
+            className="p-2 text-gray-400 hover:text-gray-900 transition-colors rounded-full hover:bg-gray-100 dark:hover:bg-[#171717]"
             title="Aide et tutoriel"
           >
-            <HelpIcon className="w-4 h-4" />
+            <HelpIcon className="w-4 h-4 dark:invert" />
           </button>
   
           <div id="notifications-tour">

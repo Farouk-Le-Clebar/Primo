@@ -29,7 +29,7 @@ export default function UserProfileDropdown() {
 
   return (
     <div className="relative w-full flex items-center gap-2">
-      <div className="w-8 h-8 rounded-lg overflow-hidden border border-gray-100 shadow-sm flex-shrink-0 bg-white">
+      <div className="w-8 h-8 rounded-lg overflow-hidden border border-gray-100 dark:border-[#0A0A0A] shadow-sm flex-shrink-0 bg-white">
         {isExternalUrl ? (
           <img 
             src={profilePictureValue} 
@@ -43,10 +43,10 @@ export default function UserProfileDropdown() {
       </div>
 
       <div className="flex flex-col items-start text-left min-w-0 flex-1">
-        <div className="font-inter font-medium text-sm text-gray-800 truncate leading-tight w-full">
+        <div className="font-inter font-medium text-sm text-gray-800 dark:text-white truncate leading-tight w-full">
           {user.firstName || "Utilisateur"}
         </div>
-        <div className="font-inter font-normal text-xs text-gray-500 truncate leading-none w-full mt-0.5">
+        <div className="font-inter font-normal text-xs text-gray-500 dark:text-white truncate leading-none w-full mt-0.5">
           {user.email || "email@exemple.com"}
         </div>
       </div>

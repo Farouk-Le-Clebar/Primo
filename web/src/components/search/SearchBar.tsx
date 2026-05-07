@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { Search } from 'lucide-react';
+
+// COMPONENTS
 import AddressSearchModal from "./AddressSearchModal";
 
 type SearchBarProps = {
@@ -41,6 +43,7 @@ const SearchBar = ({ onAdressSelect }: SearchBarProps) => {
           </div>
 
           <div className="absolute right-2 top-1/2 -translate-y-1/2 hidden md:flex items-center gap-1 border border-gray-200/80 rounded px-1.5 py-0.5 bg-white">
+            {/* J'ai mis 10px pcq le min c text-xs et c'est trop gros  */}
             <span className="text-[10px] font-medium text-gray-400">
               {isMac ? '⌘K' : 'Ctrl K'}
             </span>
