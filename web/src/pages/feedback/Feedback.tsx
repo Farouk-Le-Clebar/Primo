@@ -18,7 +18,7 @@ export default function Feedback() {
   const [description, setDescription] = useState("");
 
   const { mutate, isPending } = useMutation({
-    mutationFn: () => sendFeedback({ title, description, userId }),
+    mutationFn: () => sendFeedback({ ...(userId ? { userId } : {}), title, description } as any),
     onSuccess: () => {
       toast.success("Merci ! Votre retour a bien été envoyé.");
       setTitle("");

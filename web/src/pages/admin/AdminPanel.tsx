@@ -1,7 +1,7 @@
 import { TabGroup, TabList, Tab, TabPanels, TabPanel } from "@tremor/react";
 
 // COMPONENTS
-import UserChart from "./components/UserChart/userChart";
+import UserChart from "./components/UserChart/UserChart";
 import UsersList from "./components/UsersList/UsersList";
 import AdminList from "./components/AdminList/AdminList";
 import FeedbacksList from "./components/Feedback/FeedbacksList";
