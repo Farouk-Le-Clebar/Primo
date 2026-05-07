@@ -13,7 +13,7 @@ export default function Projects() {
     };
 
     return (
-        <div className="flex flex-col bg-cover bg-center">
+        <div className="flex flex-col bg-cover bg-center ">
             <ProjectsDashboard
                 onProjectClick={handleProjectClick}
                 onCreateNew={handleCreateNew}

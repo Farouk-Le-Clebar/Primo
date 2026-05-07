@@ -28,7 +28,7 @@ const AddPlotToProjectModal = ({ onClose, plotData }: AddPlotToProjectModalProps
             plotBanId: plotData.plotBanId,
             adress: plotData.adress,
             coordinates: plotData.coordinates,
-            geometry: plotData.geometry
+            geometry: JSON.stringify(plotData.geometry)
         }),
         onSuccess: () => {
             toast.success("Parcelle ajoutée au projet avec succès !", {

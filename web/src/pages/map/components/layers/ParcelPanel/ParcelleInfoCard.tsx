@@ -19,12 +19,12 @@ interface ParcelInfoCardProps {
   isLoadingStats?: boolean;
 }
 
-export const ParcelInfoCard = ({ 
-  properties, 
-  buildingCount, 
-  pluZone, 
+export const ParcelInfoCard = ({
+  properties,
+  buildingCount,
+  pluZone,
   avgPriceM2,
-  isLoadingStats 
+  isLoadingStats
 }: ParcelInfoCardProps) => {
   if (!properties) return null;
 
@@ -63,53 +63,53 @@ export const ParcelInfoCard = ({
 
   return (
     <div className="flex flex-col pl-1">
-      <InfoRow 
-        label="Identifiant" 
-        value={<span className="font-inter text-[13px] bg-gray-50 px-1.5 py-0.5 rounded border border-gray-100">{properties.id}</span>} 
+      <InfoRow
+        label="Identifiant"
+        value={<span className="font-inter text-[13px] bg-gray-50 px-1.5 py-0.5 rounded border border-gray-100">{properties.id}</span>}
       />
-      <InfoRow 
-        label="Commune (INSEE)" 
-        value={properties.commune} 
+      <InfoRow
+        label="Commune (INSEE)"
+        value={properties.commune}
       />
-      <InfoRow 
-        label="Section & Numéro" 
-        value={`${properties.section} - ${properties.numero}`} 
-      />
-
-      <InfoRow 
-        label="Zonage PLU" 
-        loading={isLoadingStats}
-        value={<span className="font-bold text-blue-600">{pluZone || "N/C"}</span>} 
-      />
-      <InfoRow 
-        label="Nombre de bâtiments" 
-        loading={isLoadingStats}
-        value={buildingCount !== undefined ? `${buildingCount} bâtiment${buildingCount > 1 ? 's' : ''}` : "—"} 
-      />
-      <InfoRow 
-        label="Prix moyen estimé" 
-        loading={isLoadingStats}
-        value={<span className="text-emerald-600 font-bold">{avgPriceM2 ? `${formatCurrency(avgPriceM2)} / m²` : "—"}</span>} 
+      <InfoRow
+        label="Section & Numéro"
+        value={`${properties.section} - ${properties.numero}`}
       />
 
-      <InfoRow 
-        label="Surface cadastrale" 
-        value={`${properties.contenance.toLocaleString('fr-FR')} m²`} 
+      <InfoRow
+        label="Zonage PLU"
+        loading={isLoadingStats}
+        value={<span className="font-bold text-blue-600">{pluZone || "N/C"}</span>}
       />
-      <InfoRow 
-        label="Contenance" 
-        value={formatContenance(properties.contenance)} 
+      <InfoRow
+        label="Nombre de bâtiments"
+        loading={isLoadingStats}
+        value={buildingCount !== undefined ? `${buildingCount} bâtiment${buildingCount > 1 ? 's' : ''}` : "—"}
+      />
+      <InfoRow
+        label="Prix moyen estimé"
+        loading={isLoadingStats}
+        value={<span className="text-emerald-600 font-bold">{avgPriceM2 ? `${formatCurrency(avgPriceM2)} / m²` : "—"}</span>}
+      />
+
+      <InfoRow
+        label="Surface cadastrale"
+        value={`${properties.contenance?.toLocaleString('fr-FR') ?? '0'} m²`}
+      />
+      <InfoRow
+        label="Contenance"
+        value={formatContenance(properties.contenance ?? 0)}
       />
 
       {properties.created && (
-        <InfoRow 
-          label="Date de création" 
-          value={formatDate(properties.created)} 
+        <InfoRow
+          label="Date de création"
+          value={formatDate(properties.created)}
         />
       )}
-      <InfoRow 
-        label="Mise à jour SIG" 
-        value={formatDate(properties.updated)} 
+      <InfoRow
+        label="Mise à jour SIG"
+        value={formatDate(properties.updated)}
         isLast={true}
       />
     </div>

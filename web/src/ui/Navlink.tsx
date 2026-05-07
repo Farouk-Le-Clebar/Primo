@@ -32,7 +32,7 @@ export default function CustomNavLink({
   textClass = "",
   textHoverColor = "text-black",
   BgColor = "bg-white",
-  hoverBgColor = "hover:bg-gray-100",
+  hoverBgColor = "hover:bg-gray-200/50",
   onClick,
   variant = "default",
   showChevronOnHover = false,
@@ -45,7 +45,7 @@ export default function CustomNavLink({
 
   const colors = isDanger
     ? "text-red-600 hover:bg-red-50 hover:text-red-700"
-    : `${isActive ? "bg-gray-100 text-black" : `${BgColor} ${textColor} ${hoverBgColor} hover:${textHoverColor}`}`;
+    : `${isActive ? "bg-gray-200/50 text-black" : `${BgColor} ${textColor} ${hoverBgColor} hover:${textHoverColor}`}`;
 
   const sizeClasses = isCollapsed
     ? "w-10 h-10 mx-auto justify-center px-0"
@@ -70,7 +70,7 @@ export default function CustomNavLink({
           <span className={`whitespace-nowrap transition-all duration-300 ${
             textClass 
               ? textClass 
-              : `${!showChevronOnHover ? "text-xs" : "text-sm"} font-inter font-medium`
+              : `${!showChevronOnHover ? "text-xs" : "text-sm"} font-inter font-base`
           }`}>
             {label}
           </span>

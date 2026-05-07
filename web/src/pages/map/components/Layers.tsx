@@ -23,7 +23,6 @@ const getUserMapPreference = (): "basic" | "satellite" => {
         const user = JSON.parse(localStorage.getItem("user") || "{}");
         return user.mapPreference === "satellite" ? "satellite" : "basic";
     } catch (e) {
-        console.warn("Impossible de lire les préférences utilisateur, utilisation de 'basic' par défaut.");
         return "basic";
     }
 };
@@ -72,13 +71,16 @@ const Layers = ({ initialPlacement, initialCoordinates }: LayersProps) => {
         const id = feature.id;
         selectedIdRef.current = id;
 
-
         setSelectedParcelle({ bounds, feature, layer });
         setIsDashboardOpen(false);
 
         try {
             const center = bounds.getCenter();
             const addokResponse = await addOkReverseRequest(center.lng, center.lat);
+            setSelectedParcelle(prev => {
+                if (!prev || prev.feature.id !== id) return prev;
+                return { ...prev, addokData: addokResponse };
+            });
 
             if (addokResponse && addokResponse.features && addokResponse.features.length > 0) {
                 const adresseData = addokResponse.features[0];
@@ -104,19 +106,15 @@ const Layers = ({ initialPlacement, initialCoordinates }: LayersProps) => {
                 });
             }
         } catch (error) {
-            console.error("Erreur lors du reverse geocoding avec Addok:", error);
+            console.error("Erreur Addok:", error);
         }
     }, []);
 
     const handleChangeMapType = useCallback((type: "basic" | "satellite") => {
         setMapType(type);
-        try {
-            const user = JSON.parse(localStorage.getItem("user") || "{}");
-            user.mapPreference = type;
-            localStorage.setItem("user", JSON.stringify(user));
-        } catch (e) {
-            console.error("Erreur lors de la sauvegarde des préférences.");
-        }
+        const user = JSON.parse(localStorage.getItem("user") || "{}");
+        user.mapPreference = type;
+        localStorage.setItem("user", JSON.stringify(user));
     }, []);
 
     const handleTogglePoi = useCallback((type: string, enabled: boolean) => {
@@ -157,7 +155,7 @@ const Layers = ({ initialPlacement, initialCoordinates }: LayersProps) => {
                 dataPois={{ pois: poisData }}
             />
 
-            <div className="flex fixed inset-0 z-[1001] flex-col pointer-events-none">
+            <div className="fixed inset-0 z-[1001] flex flex-col pointer-events-none">
                 <header className="flex w-full h-15 items-center shrink-0 pointer-events-auto">
                     <NoScrollZone>
                         <Navbar
@@ -167,57 +165,46 @@ const Layers = ({ initialPlacement, initialCoordinates }: LayersProps) => {
                     </NoScrollZone>
                 </header>
 
-                <div className="flex-1 flex w-full overflow-hidden relative">
-                    <aside
-                        className={`h-full pointer-events-auto bg-transparent flex-shrink-0 z-30 transition-all duration-500 ease-in-out ${!selectedParcelle ? "w-0 -translate-x-full opacity-0" :
-                            isDashboardOpen ? "w-full translate-x-0 opacity-100" :
-                                "w-[450px] translate-x-0 opacity-100"
-                            }`}
-                    >
-                        <div className="w-full h-full bg-white shadow-[20px_0_25px_-5px_rgba(0,0,0,0.1)] overflow-hidden relative">
-                            <NoScrollZone>
-                                {isDashboardOpen ? (
+                {selectedParcelle && (
+                    <>
+                        {isDashboardOpen ? (
+                            <div className="fixed top-15 left-0 right-0 bottom-0 z-[1005] bg-white animate-in fade-in duration-300 pointer-events-auto">
+                                <NoScrollZone>
                                     <ParcelDetailedDashboard
                                         selectedParcelle={selectedParcelle}
                                         onClose={() => setIsDashboardOpen(false)}
                                     />
-                                ) : (
-                                    <ParcelInfoPanel
-                                        selectedParcelle={selectedParcelle}
-                                        onOpenDashboard={() => setIsDashboardOpen(true)}
-                                    />
-                                )}
-                            </NoScrollZone>
-                        </div>
-                    </aside>
-
-                    {!isDashboardOpen && (
-                        <main className="flex-1 relative w-full h-full pointer-events-none animate-in fade-in duration-300">
-                            <div className="absolute top-1 right-1 pointer-events-auto flex flex-col gap-2 items-end z-[1002]">
-                                <NoScrollZone>
-                                    <MapControls
-                                        onZoomIn={() => map.zoomIn()}
-                                        onZoomOut={() => map.zoomOut()}
-                                        onLocateUser={() => map.locate({ setView: true, maxZoom: 16 })}
-                                        currentMapType={mapType}
-                                        onChangeMapType={handleChangeMapType}
-                                        enabledPoiTypes={enabledPoiTypes}
-                                        onTogglePoi={handleTogglePoi}
-                                        currentZoom={currentZoom}
-                                        minZoomForPois={MIN_ZOOM_FOR_POIS}
-                                    />
                                 </NoScrollZone>
                             </div>
-
-                            <div className="absolute bottom-6 right-6 pointer-events-auto flex flex-col items-end gap-3 z-[1002]">
-                                <div className="flex px-4 py-2 bg-white backdrop-blur-sm rounded-lg shadow-lg border border-[#EAEAEA] text-xs text-gray-700 font-inter font-medium items-center gap-4">
-                                    <span>10 m</span>
-                                    <span className="text-gray-300">|</span>
-                                    <span>48.8566° N, 2.3522° E</span>
+                        ) : (
+                            <div className="absolute inset-0 z-[1002] pointer-events-none p-6 flex flex-col justify-end">
+                                <div className="pointer-events-auto w-full max-w-4xl mx-auto rounded-2xl shadow-2xl animate-in slide-in-from-bottom-10 bg-white overflow-hidden">
+                                    <NoScrollZone>
+                                        <ParcelInfoPanel
+                                            selectedParcelle={selectedParcelle}
+                                            onOpenDashboard={() => setIsDashboardOpen(true)}
+                                        />
+                                    </NoScrollZone>
                                 </div>
                             </div>
-                        </main>
-                    )}
+                        )}
+                    </>
+                )}
+
+                <div className="absolute top-14 right-0 z-[1003] pointer-events-auto">
+                    <NoScrollZone>
+                        <MapControls
+                            onZoomIn={() => map.zoomIn()}
+                            onZoomOut={() => map.zoomOut()}
+                            onLocateUser={() => map.locate({ setView: true, maxZoom: 16 })}
+                            currentMapType={mapType}
+                            onChangeMapType={handleChangeMapType}
+                            enabledPoiTypes={enabledPoiTypes}
+                            onTogglePoi={handleTogglePoi}
+                            currentZoom={currentZoom}
+                            minZoomForPois={MIN_ZOOM_FOR_POIS}
+                        />
+                    </NoScrollZone>
                 </div>
             </div>
         </>

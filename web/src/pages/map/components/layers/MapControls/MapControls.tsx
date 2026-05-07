@@ -38,7 +38,7 @@ export default function MapControls({
     const [isPreferenceOpen, setIsPreferenceOpen] = useState(false);
     const [isPoiOpen, setIsPoiOpen] = useState(false);
     const [isAiOpen, setIsAiOpen] = useState(false);
-    
+
     const preferenceRef = useRef<HTMLDivElement>(null);
     const poiRef = useRef<HTMLDivElement>(null);
     const aiRef = useRef<HTMLDivElement>(null);
@@ -46,7 +46,7 @@ export default function MapControls({
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             const target = event.target as Node;
-            
+
             if (preferenceRef.current && !preferenceRef.current.contains(target)) {
                 setIsPreferenceOpen(false);
             }
@@ -70,9 +70,9 @@ export default function MapControls({
 
     return (
         <div className="absolute top-6 right-6 pointer-events-auto flex flex-col gap-2 items-end z-[1002]">
-            
+
             <div className="flex flex-col rounded-xl shadow-md bg-white border border-gray-100 overflow-hidden text-gray-700">
-                <button 
+                <button
                     type="button"
                     onClick={onZoomIn}
                     className="h-10 w-10 text-xl font-medium flex items-center justify-center hover:bg-gray-50 transition-colors"
@@ -80,7 +80,7 @@ export default function MapControls({
                     <PlusIcon className="w-4.5 h-4.5" />
                 </button>
                 <div className="w-full h-px bg-gray-100" />
-                <button 
+                <button
                     type="button"
                     onClick={onZoomOut}
                     className="h-10 w-10 text-xl font-medium flex items-center justify-center hover:bg-gray-50 transition-colors"
@@ -91,7 +91,7 @@ export default function MapControls({
 
             <div ref={preferenceRef} className="relative flex items-center">
                 <div className="absolute right-full mr-3 top-0">
-                    <MapPreference 
+                    <MapPreference
                         isOpen={isPreferenceOpen}
                         currentMapType={currentMapType}
                         onChangeMapType={onChangeMapType}
@@ -99,19 +99,18 @@ export default function MapControls({
                 </div>
 
                 <div className="flex flex-col rounded-xl shadow-md bg-white border border-gray-100 overflow-hidden text-gray-700">
-                    <button 
+                    <button
                         type="button"
                         onClick={() => toggleMenu("preference")}
-                        className={`h-10 w-10 flex items-center justify-center transition-colors ${
-                            isPreferenceOpen ? "bg-gray-50 text-green-600" : "hover:bg-gray-50"
-                        }`}
+                        className={`h-10 w-10 flex items-center justify-center transition-colors ${isPreferenceOpen ? "bg-gray-50 text-green-600" : "hover:bg-gray-50"
+                            }`}
                     >
                         <LayersIcon className="w-4.5 h-4.5" />
                     </button>
-                    
+
                     <div className="w-full h-px bg-gray-100" />
 
-                    <button 
+                    <button
                         type="button"
                         onClick={onLocateUser}
                         className="h-10 w-10 flex items-center justify-center hover:bg-gray-50 transition-colors"
@@ -123,19 +122,16 @@ export default function MapControls({
 
             <div ref={aiRef} className="relative flex items-center">
                 <div className="absolute right-full mr-3 top-0">
-                    <div className={`transition-all duration-300 origin-right ${
-                        isAiOpen ? "opacity-100 scale-100 pointer-events-auto" : "opacity-0 scale-95 pointer-events-none"
-                    }`}>
-                        <AiLayer />
+                    <div className={`transition-all duration-300 origin-right ${isAiOpen ? "opacity-100 scale-100 pointer-events-auto" : "opacity-0 scale-95 pointer-events-none"
+                        }`}>
                     </div>
                 </div>
 
-                <button 
+                <button
                     type="button"
                     onClick={() => toggleMenu("ai")}
-                    className={`h-10 w-10 rounded-xl shadow-md border border-gray-100 flex items-center justify-center transition-colors ${
-                        isAiOpen ? "bg-gray-50 text-green-600" : "bg-white hover:bg-gray-50"
-                    }`}
+                    className={`h-10 w-10 rounded-xl shadow-md border border-gray-100 flex items-center justify-center transition-colors ${isAiOpen ? "bg-gray-50 text-green-600" : "bg-white hover:bg-gray-50"
+                        }`}
                 >
                     <IaIcon className="w-4.5 h-4.5" />
                 </button>
@@ -143,29 +139,29 @@ export default function MapControls({
 
             <div ref={poiRef} className="relative flex items-center">
                 <div className="absolute right-full mr-3 top-0">
-                    <div className={`transition-all duration-300 origin-right ${
-                        isPoiOpen ? "opacity-100 scale-100 pointer-events-auto" : "opacity-0 scale-95 pointer-events-none"
-                    }`}>
-                        <PoiWidget 
-                            enabledPoiTypes={enabledPoiTypes}
-                            onTogglePoi={onTogglePoi}
-                            currentZoom={currentZoom}
-                            minZoomForPois={minZoomForPois}
-                        />
+                    <div className={`transition-all duration-300 origin-right ${isPoiOpen ? "opacity-100 scale-100 pointer-events-auto" : "opacity-0 scale-95 pointer-events-none"
+                        }`}>
+                        {isPoiOpen && (
+                            <PoiWidget
+                                enabledPoiTypes={enabledPoiTypes}
+                                onTogglePoi={onTogglePoi}
+                                currentZoom={currentZoom}
+                                minZoomForPois={minZoomForPois}
+                            />
+                        )}
                     </div>
                 </div>
 
-                <button 
+                <button
                     type="button"
                     onClick={() => toggleMenu("poi")}
-                    className={`h-10 w-10 rounded-xl shadow-md border border-gray-100 flex items-center justify-center transition-colors ${
-                        isPoiOpen ? "bg-gray-50 text-green-600" : "bg-white hover:bg-gray-50"
-                    }`}
+                    className={`h-10 w-10 rounded-xl shadow-md border border-gray-100 flex items-center justify-center transition-colors ${isPoiOpen ? "bg-gray-50 text-green-600" : "bg-white hover:bg-gray-50"
+                        }`}
                 >
                     <PoiIcon className="w-4.5 h-4.5" />
                 </button>
             </div>
-            
+
         </div>
     );
 }

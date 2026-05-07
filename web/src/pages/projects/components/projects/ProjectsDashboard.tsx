@@ -112,8 +112,8 @@ export const ProjectsDashboard: React.FC<ProjectsDashboardProps> = ({
             </div>
 
             {isLoading ? (
-                <div className="rounded-lg overflow-hidden">
-                    <table className="w-full">
+                <div className="rounded-lg overflow-hidden ">
+                    <table className="w-full ">
                         <thead className="bg-gray-50 border-b border-gray-200">
                             <tr>
                                 {[

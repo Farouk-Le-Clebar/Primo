@@ -1,13 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { DpeLogement } from '../database/dpe.entity';
+import { DpeEntity } from '../database/dpe.entity';
 
 @Injectable()
 export class DpeService {
   constructor(
-    @InjectRepository(DpeLogement)
-    private readonly dpeRepository: Repository<DpeLogement>,
+    @InjectRepository(DpeEntity)
+    private readonly dpeRepository: Repository<DpeEntity>,
   ) {}
 
   async getDpeByBan(identifiantBan: string) {

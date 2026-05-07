@@ -9,7 +9,7 @@ import { Notification } from './database/notification.entity';
 import { ProjectMember } from './database/project-member.entity';
 import { ActivityEvent } from './database/history.entity';
 import { DvfMutation } from './database/dvf.entity';
-import { DpeLogement } from './database/dpe.entity';
+import { DpeEntity } from './database/dpe.entity';
 import { AddokProxyMiddleware } from './api/addok.middleware';
 import { AuthModule } from './auth/auth.module';
 import { GeoServerProxyMiddleware } from './api/geoserver.middleware';
@@ -42,11 +42,11 @@ import { ProjectPlots } from './database/project-plots.entity';
       username: process.env.MYSQL_USER,
       password: process.env.MYSQL_PASSWORD,
       database: process.env.MYSQL_DATABASE,
-      entities: [User, Project, DvfMutation, DpeLogement, Notification, ProjectMember, ActivityEvent, VerifiedUser, ResetPassword, UserStatistics, ProjectPlots],
+      entities: [User, Project, DvfMutation, DpeEntity, Notification, ProjectMember, ActivityEvent, VerifiedUser, ResetPassword, UserStatistics, ProjectPlots],
       synchronize: true,
       timezone: 'Z',
     }),
-    TypeOrmModule.forFeature([User, Project, DvfMutation, DpeLogement, Notification, ProjectMember, ActivityEvent, VerifiedUser, ResetPassword, UserStatistics, ProjectPlots]),
+    TypeOrmModule.forFeature([User, Project, DvfMutation, DpeEntity, Notification, ProjectMember, ActivityEvent, VerifiedUser, ResetPassword, UserStatistics, ProjectPlots]),
     AuthModule,
     GeoModule,
     UserModule,

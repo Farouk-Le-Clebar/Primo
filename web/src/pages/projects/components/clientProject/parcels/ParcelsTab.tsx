@@ -40,15 +40,11 @@ const ParcelsTab = ({ projectId }: ParcelsTabProps) => {
 
     const navigate = useNavigate();
 
-    const handlePlotClick = (id: string) => {
-    };
-
     const handleRemovePlot = (id: string) => {
         removePlotFromProject(id);
     };
 
     const handleMapClick = (plot: any) => {
-        // récupérer non pas les coordinates mais les calculer par rapport au centre de la geometry
         const geoJsonLayer = L.geoJSON(plot.geometry);
         const center = geoJsonLayer.getBounds().getCenter();
         const x = center.lng;
@@ -71,7 +67,6 @@ const ParcelsTab = ({ projectId }: ParcelsTabProps) => {
                         <div
                             key={plot.id}
                             className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden flex flex-col hover:shadow-md transition-shadow"
-                            onClick={() => handlePlotClick(plot.id)}
                         >
                             <button
                                 className="cursor-pointer h-48 w-full bg-gray-100 flex items-center justify-center overflow-hidden"
@@ -85,6 +80,7 @@ const ParcelsTab = ({ projectId }: ParcelsTabProps) => {
                                     <button
                                         className="font-semibold flex flex-row gap-1 items-center text-gray-800 text-sm line-clamp-2 cursor-pointer hover:underline"
                                         title={plot.adress}
+                                        onClick={() => handleMapClick(plot)}
                                     >
                                         {plot.adress} <ExternalLink className="w-3 h-3" />
                                     </button>
