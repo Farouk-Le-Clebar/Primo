@@ -1,6 +1,12 @@
 import axios from "axios";
+
 const apiUrl = window?._env_?.API_URL;
-const token = localStorage.getItem("token");
+
+const getHeaders = () => {
+  return {
+    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+  };
+};
 
 export const checkUserByMail = async (email: string) => {
   const response = await axios.post(apiUrl + "/user/check-email", { email });
@@ -33,31 +39,29 @@ export const updateUserProfile = async (token: string, profileData: any) => {
 
 export const changeMapPreference = async (mapType: string) => {
   return axios
-    .put(
-      `${apiUrl}/user/map`,
-      { mapPreference: mapType },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      }
-    )
+    .put(`${apiUrl}/user/map`, { mapPreference: mapType }, getHeaders())
     .then((response) => response.data)
-  .catch((error) => {
-    console.error("Error changing map preference:", error);
-    throw error;
-  });
+    .catch((error) => {
+      console.error("Error changing map preference:", error);
+      throw error;
+    });
 }
 
 export const checkAdminStatus = async () => {
-  return axios.get(`${apiUrl}/user/is-admin`, {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  })
-  .then((response) => response.data)
-  .catch((error) => {
-    console.error("Error checking admin status:", error);
-    throw error;
-  });
+  return axios.get(`${apiUrl}/user/is-admin`, getHeaders())
+    .then((response) => response.data)
+    .catch((error) => {
+      console.error("Error checking admin status:", error);
+      throw error;
+    });
 }
+
+export const getUserSearchHistory = async () => {
+  const response = await axios.get(`${apiUrl}/user/search-history/all`, getHeaders());
+  return response.data;
+};
+
+export const saveUserSearchHistory = async (label: string, lat: number, lng: number) => {
+  const response = await axios.post(`${apiUrl}/user/search-history`, { label, lat, lng }, getHeaders());
+  return response.data;
+};

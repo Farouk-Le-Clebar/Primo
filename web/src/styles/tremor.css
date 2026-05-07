@@ -1,33 +1,68 @@
 @theme {
-  --color-tremor-brand-faint: #eff6ff;
-  --color-tremor-brand-muted: #bfdbfe;
-  --color-tremor-brand-subtle: #60a5fa;
-  --color-tremor-brand: #3b82f6;
-  --color-tremor-brand-emphasis: #1d4ed8;
+  /* --- COULEURS DE MARQUE (VERT) --- */
+  --color-tremor-brand-faint: #f0fdf4;
+  --color-tremor-brand-muted: #bbf7d0;
+  --color-tremor-brand-subtle: #4ade80;
+  --color-tremor-brand: #166534;
+  --color-tremor-brand-emphasis: #14532d;
   --color-tremor-brand-inverted: #ffffff;
 
+  /* --- COULEURS DE MARQUE POUR LE DARK MODE --- */
+  --color-dark-tremor-brand-faint: #052e16;
+  --color-dark-tremor-brand-muted: #14532d;
+  --color-dark-tremor-brand-subtle: #166534;
+  --color-dark-tremor-brand: #22c55e;
+  --color-dark-tremor-brand-emphasis: #4ade80;
+  --color-dark-tremor-brand-inverted: #000000;
+
+  /* --- COULEURS DE FOND - LIGHT MODE --- */
   --color-tremor-background-muted: #f9fafb;
   --color-tremor-background-subtle: #f3f4f6;
-  --color-tremor-background: #ffffff;
+  /* 👇 C'est ici que tu définis ton #FAFAFA global */
+  --color-tremor-background: #fafafa; 
   --color-tremor-background-emphasis: #374151;
 
+  /* --- COULEURS DE FOND - DARK MODE --- */
+  --color-dark-tremor-background-muted: #0a0a0a;
+  --color-dark-tremor-background-subtle: #262626;
+  /* 👇 C'est ici que tu définis ton #171717 global */
+  --color-dark-tremor-background: #171717; 
+  --color-dark-tremor-background-emphasis: #d1d5db;
+
+  /* --- BORDURES ET ANNEAUX - LIGHT MODE --- */
   --color-tremor-border: #e5e7eb;
   --color-tremor-ring: #e5e7eb;
 
+  /* --- BORDURES ET ANNEAUX - DARK MODE --- */
+  /* 👇 J'ajoute ça pour que tes bordures de cartes soient très discrètes en dark mode */
+  --color-dark-tremor-border: rgba(255, 255, 255, 0.05); 
+  --color-dark-tremor-ring: transparent; 
+
+  /* --- TEXTES - LIGHT MODE --- */
   --color-tremor-content-subtle: #9ca3af;
   --color-tremor-content: #6b7280;
   --color-tremor-content-emphasis: #374151;
   --color-tremor-content-strong: #111827;
   --color-tremor-content-inverted: #ffffff;
 
+  /* --- TEXTES - DARK MODE --- */
+  --color-dark-tremor-content-subtle: #4b5563;
+  --color-dark-tremor-content: #9ca3af;
+  --color-dark-tremor-content-emphasis: #d1d5db;
+  --color-dark-tremor-content-strong: #ffffff;
+  --color-dark-tremor-content-inverted: #000000;
+
+  /* --- OMBRES --- */
   --shadow-tremor-input: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --shadow-tremor-card: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
   --shadow-tremor-dropdown: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
 
+  /* --- BORDURES (RADIUS) --- */
   --radius-tremor-small: 0.375rem;
   --radius-tremor-default: 0.5rem;
   --radius-tremor-full: 9999px;
 
+  /* --- TYPOGRAPHIE --- */
   --text-tremor-label: 0.75rem;
   --text-tremor-label--line-height: 1rem;
   
@@ -41,6 +76,7 @@
   --text-tremor-metric--line-height: 2.25rem;
 }
 
+/* --- OVERRIDES RECHARTS ET CUSTOM --- */
 .recharts-line-path {
   stroke-opacity: 1 !important;
   stroke-width: 2.5px !important;
@@ -87,4 +123,30 @@
 
 .recharts-legend-wrapper {
   z-index: 10 !important;
+}
+
+textarea:focus, 
+button[role="combobox"]:focus, 
+select:focus,
+div:has(> input[type="text"]):focus-within,
+div:has(> input[type="email"]):focus-within,
+div:has(> input[type="password"]):focus-within,
+div:has(> input[type="number"]):focus-within,
+div:has(> input[type="search"]):focus-within {
+  --tw-ring-color: transparent !important;
+  --tw-ring-shadow: 0 0 transparent !important;
+  border-color: #d1d5db !important; 
+}
+
+.dark textarea:focus, 
+.dark button[role="combobox"]:focus,
+.dark select:focus,
+.dark div:has(> input[type="text"]):focus-within,
+.dark div:has(> input[type="email"]):focus-within,
+.dark div:has(> input[type="password"]):focus-within,
+.dark div:has(> input[type="number"]):focus-within,
+.dark div:has(> input[type="search"]):focus-within {
+  --tw-ring-color: transparent !important;
+  --tw-ring-shadow: 0 0 transparent !important;
+  border-color: #374151 !important;
 }
