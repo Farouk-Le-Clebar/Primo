@@ -23,13 +23,13 @@ export default function Layout() {
         </div>
       )}
 
-      <div className="relative h-screen flex bg-[#FAFAFA]">
+      <div className="relative h-screen flex bg-[#FAFAFA] dark:bg-[#171717]">
         <aside className="h-full flex-shrink-0 z-50 relative w-64">
           <Sidebar/>
         </aside>
 
         <div className="flex-1 flex flex-col pt-2 relative z-10">
-          <div className="flex-1 flex flex-col bg-white rounded-tl-2xl shadow-sm border border-gray-100 overflow-hidden">            
+          <div className="flex-1 flex flex-col bg-white dark:bg-[#0A0A0A] rounded-tl-2xl shadow-sm border border-gray-100 dark:border-white/5 overflow-hidden">            
             <header className="w-full h-14 flex items-center px-2 z-20 relative">
               <Navbar />
             </header>

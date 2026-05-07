@@ -16,7 +16,7 @@ export default function AuthLayout() {
               Bienvenue sur Primo
             </h1>
             <p className="font-inter text-gray-500 text-sm sm:text-base max-w-md">
-              L'outil d'analyse foncière de référence pour les professionnels.
+              Le moteur de recherche cadastral intelligent par excellence.
             </p>
           </>
         ) : (

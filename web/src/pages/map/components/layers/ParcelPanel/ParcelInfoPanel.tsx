@@ -1,14 +1,14 @@
-import { useRef, useState } from "react";
 import { MapPin, ExternalLink, Plus } from "lucide-react";
+import { useState } from "react";
 
 // COMPONENTS
-import { useStopPropagation } from "../ParcelDetailedDashboard/hooks/useStopPropagation";
 import { getDvfParcelle } from "../../../../../requests/dvf/information";
 import { getBuildingsByGeometry } from "../../../../../requests/geoserver/bdTopo";
 import { getZonesUrbaByGeometry } from "../../../../../requests/geoserver/urbanAreas";
 import { extractDepartement } from "../ParcelDetailedDashboard/widgets/gpu/utils";
 import { useQuery } from "@tanstack/react-query";
 import AddPlotToProjectModal from "./AddPlotToProjectModal";
+import { Tooltip } from "../../../../../ui/Tooltip";
 
 type ParcelInfoPanelProps = {
   selectedParcelle: any;
@@ -17,8 +17,6 @@ type ParcelInfoPanelProps = {
 
 export default function ParcelInfoPanel({ selectedParcelle, onOpenDashboard }: ParcelInfoPanelProps) {
   const [addPlotModalOpen, setAddPlotModalOpen] = useState(false);
-  const panelRef = useRef<HTMLElement>(null);
-  useStopPropagation(panelRef);
   const feature = selectedParcelle?.feature;
   const properties = feature?.properties;
   const geometry = feature?.geometry;
@@ -47,10 +45,8 @@ export default function ParcelInfoPanel({ selectedParcelle, onOpenDashboard }: P
 
   if (!selectedParcelle?.feature) return null;
 
-  console.log("Selected Parcelle:", selectedParcelle);
-
   return (
-    <aside ref={panelRef} className="flex flex-col w-full h-full bg-white rounded-xl overflow-hidden">
+    <aside className="flex flex-col w-full h-full bg-white rounded-xl overflow-hidden pointer-events-auto">
       <div className="px-6 py-4 border-b border-[#F0F0F0] shrink-0">
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-2">
@@ -60,19 +56,20 @@ export default function ParcelInfoPanel({ selectedParcelle, onOpenDashboard }: P
             </h2>
           </div>
           <div className="flex flex-row gap-2">
+            <Tooltip content="Ajouter au projet">
+              <button
+                onClick={() => setAddPlotModalOpen(true)}
+                className="h-[36px] px-3 bg-[#111111] hover:bg-gray-800 text-white rounded-lg flex items-center justify-center gap-2 transition-colors shadow-sm cursor-pointer"
+                >
+                <Plus size={14} />
+              </button>
+            </Tooltip>
             <button
               onClick={onOpenDashboard}
               className="h-[36px] px-4 bg-[#111111] hover:bg-gray-800 text-white rounded-lg flex items-center justify-center gap-2 transition-colors shadow-sm cursor-pointer"
             >
               <ExternalLink size={14} />
               <span className="font-inter font-medium text-xs">Analyse complète</span>
-            </button>
-            <button
-              onClick={() => setAddPlotModalOpen(true)}
-              className="h-[36px] px-4 bg-[#111111] hover:bg-gray-800 text-white rounded-lg flex items-center justify-center gap-2 transition-colors shadow-sm cursor-pointer"
-            >
-              <Plus size={14} />
-              <span className="font-inter font-medium text-xs">Ajouter au projet</span>
             </button>
           </div>
         </div>

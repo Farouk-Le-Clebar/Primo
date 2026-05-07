@@ -32,6 +32,7 @@ import EmailVerify from "./pages/mailling/EmailVerify";
 import PostRegisterEmailVerify from "./pages/mailling/PostRegisterEmailVerify";
 import ResetPassword from "./pages/mailling/ResetPassword";
 import SendEmailResetPassword from "./pages/mailling/SendEmailResetPassword";
+import Feedback from "./pages/feedback/Feedback";
 
 export default function App() {
   return (
@@ -61,6 +62,7 @@ export default function App() {
             <Route path="projects" element={<Projects />} />
             <Route path="projects/new" element={<ProjectCreate />} />
             <Route path="projects/:id" element={<ProjectDetail />} />
+            <Route path="feedback" element={<Feedback />} />
 
             {/* Routes Admin */}
             <Route path="admin" element={<AdminRoute />}>

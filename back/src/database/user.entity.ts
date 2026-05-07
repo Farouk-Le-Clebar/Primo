@@ -1,4 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany, CreateDateColumn } from 'typeorm';
+import { SearchHistory } from './search-history.entity';
+import { Feedback } from './feedback.entity';
 
 @Entity()
 export class User {
@@ -34,4 +36,13 @@ export class User {
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   lastConnection: Date;
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @OneToMany(() => SearchHistory, history => history.user)
+  searchHistory: SearchHistory[];
+
+  @OneToMany(() => Feedback, (feedback) => feedback.user)
+  feedbacks: Feedback[];
 }

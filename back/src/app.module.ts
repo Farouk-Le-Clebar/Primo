@@ -20,12 +20,15 @@ import { ProjectModule } from './project/project.module';
 import { NotificationModule } from './notification/notification.module';
 import { ProjectMembersModule } from './project-members/project-members.module';
 import { ActivityHistoryModule } from './history/history.module';
+import { FeedbackModule } from './feedback/feedback.module';
 import { DvfModule } from './dvf/dvf.module';
 import { DpeModule } from './dpe/dpe.module';
 import { VerifiedUser } from './database/verified-users.entity';
 import { MailModule } from './mail/mail.module';
 import { UserStatistics } from './database/user-statistics.entity';
 import { ResetPassword } from './database/reset-password.entity';
+import { SearchHistory } from './database/search-history.entity';
+import { Feedback } from './database/feedback.entity';
 import { ProjectPlots } from './database/project-plots.entity';
 
 @Module({
@@ -42,11 +45,11 @@ import { ProjectPlots } from './database/project-plots.entity';
       username: process.env.MYSQL_USER,
       password: process.env.MYSQL_PASSWORD,
       database: process.env.MYSQL_DATABASE,
-      entities: [User, Project, DvfMutation, DpeEntity, Notification, ProjectMember, ActivityEvent, VerifiedUser, ResetPassword, UserStatistics, ProjectPlots],
+      entities: [User, SearchHistory, Project, DvfMutation, DpeEntity, Notification, ProjectMember, ActivityEvent, VerifiedUser, ResetPassword, UserStatistics, Feedback, ProjectPlots],
       synchronize: true,
       timezone: 'Z',
     }),
-    TypeOrmModule.forFeature([User, Project, DvfMutation, DpeEntity, Notification, ProjectMember, ActivityEvent, VerifiedUser, ResetPassword, UserStatistics, ProjectPlots]),
+    TypeOrmModule.forFeature([User, SearchHistory, Project, DvfMutation, DpeEntity, Notification, ProjectMember, ActivityEvent, VerifiedUser, ResetPassword, UserStatistics, Feedback, ProjectPlots]),
     AuthModule,
     GeoModule,
     UserModule,
@@ -56,6 +59,7 @@ import { ProjectPlots } from './database/project-plots.entity';
     NotificationModule,
     ProjectMembersModule,
     ActivityHistoryModule,
+    FeedbackModule,
     MailModule,
   ],
   controllers: [AppController],

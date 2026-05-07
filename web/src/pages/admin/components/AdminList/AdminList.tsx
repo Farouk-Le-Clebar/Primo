@@ -1,61 +1,94 @@
 import { useQuery } from "@tanstack/react-query";
-import { ChevronRight } from "lucide-react";
+import { Loader2, Plus } from "lucide-react";
 import { useState } from "react";
+import {
+    Card,
+    Table,
+    TableHead,
+    TableRow,
+    TableHeaderCell,
+    TableBody,
+    TableCell,
+    Button,
+    Title,
+    Text
+} from "@tremor/react";
+
+// COMPONENTS
 import { getAdmins } from "../../../../requests/admin";
-import TableBody from "./TableBody";
-import TableHeader from "./TableHeader";
-import TableFooter from "./TableFooter";
+import type { UserType } from "../../../../types/admin";
+import AddAdminModal from "./AddAdminModal";
 
 const AdminList = () => {
-    const [isDeployed, setIsDeployed] = useState(false);
     const [addAdminModalOpen, setAddAdminModalOpen] = useState(false);
 
-    const { data } = useQuery({
+    const { data: admins = [], isLoading } = useQuery({
         queryKey: ["users", "get", "admins"],
         queryFn: () => getAdmins(),
-    })
-
-    const handleToggle = () => {
-        setIsDeployed(!isDeployed);
-    };
-
-    const handleAddAdminModalOpen = (open: boolean) => {
-        setAddAdminModalOpen(open);
-    }
+    });
 
     return (
-        <div className={`w-full bg-white rounded-xl shadow-sm border border-gray-100  ${isDeployed ? "flex-1 overflow-y-auto" : "h-auto"}`}>
-            <button
-                onClick={handleToggle}
-                className={`w-full flex justify-between items-center p-5 transition-colors ${isDeployed ? "bg-gray-50/50" : "hover:bg-gray-50"
-                    }`}
-            >
-                <div className="flex items-center gap-3">
-                    <span className="text-sm font-semibold text-gray-800">Liste des administrateurs</span>
+        <Card className="w-full rounded-xl border border-gray-100 dark:border-[#171717] transition-colors duration-200 ring-0 dark:ring-0">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                <div>
+                    <Title className="text-gray-900 dark:text-white flex items-center gap-2">
+                        Liste des administrateurs
+                        {isLoading && <Loader2 className="w-4 h-4 text-blue-500 animate-spin" />}
+                    </Title>
+                    <Text className="text-gray-500 dark:text-gray-400">
+                        Gérez les membres ayant un accès complet au système.
+                    </Text>
                 </div>
-                <ChevronRight
-                    className={`text-gray-400 transition-transform duration-200 ${isDeployed ? "rotate-90" : ""}`}
-                />
-            </button>
+                
+                <Button 
+                    icon={Plus} 
+                    onClick={() => setAddAdminModalOpen(true)}
+                    className="dark:bg-white dark:text-white dark:hover:bg-gray-200 transition-colors !bg-green-700 hover:!bg-green-600 !border-green-800 hover:!border-green-700"
+                >
+                    Ajouter un admin
+                </Button>
+            </div>
 
-            {isDeployed && (
-                <div className="p-5 pt-0 border-t border-gray-50">
-                    <div className="bg-white shadow-sm rounded-xl overflow-hidden border border-gray-200">
-                        <div className="overflow-x-auto">
-                            <table className="w-full text-left border-collapse font-UberMove">
-                                <TableHeader />
-                                <TableBody
-                                    userList={data}
-                                    addAdminModalOpen={addAdminModalOpen}
-                                    setAddAdminModalOpen={handleAddAdminModalOpen}
-                                />
-                            </table>
-                        </div>
-                        <TableFooter onAddAdmin={() => handleAddAdminModalOpen(true)} />
+            <div className="overflow-x-auto">
+                <Table className="mt-4">
+                    <TableHead>
+                        <TableRow className="border-b border-gray-200 dark:border-white/5">
+                            <TableHeaderCell className="text-gray-500 dark:text-gray-400">Nom complet</TableHeaderCell>
+                            <TableHeaderCell className="text-gray-500 dark:text-gray-400">Email</TableHeaderCell>
+                            <TableHeaderCell className="text-gray-500 dark:text-gray-400">Dernière connexion</TableHeaderCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {admins.map((admin: UserType) => (
+                            <TableRow key={admin.id} className="hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors">
+                                <TableCell className="font-medium text-gray-900 dark:text-gray-200">
+                                    {admin.firstName} {admin.surName}
+                                </TableCell>
+                                <TableCell className="text-gray-600 dark:text-gray-400">
+                                    {admin.email}
+                                </TableCell>
+                                <TableCell className="text-gray-600 dark:text-gray-400">
+                                    {admin.lastConnection 
+                                        ? new Date(admin.lastConnection).toLocaleDateString('fr-FR', { 
+                                            day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' 
+                                          }) 
+                                        : "Jamais"}
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+                {admins.length === 0 && !isLoading && (
+                    <div className="text-center py-10 text-gray-500 dark:text-gray-400 italic">
+                        Aucun administrateur trouvé.
                     </div>
-                </div>
-            )}
-        </div>
+                )}
+            </div>
+            <AddAdminModal 
+                isOpen={addAdminModalOpen} 
+                onClose={() => setAddAdminModalOpen(false)} 
+            />
+        </Card>
     );
 };
 

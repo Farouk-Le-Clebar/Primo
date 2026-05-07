@@ -45,7 +45,7 @@ export default function CustomNavLink({
 
   const colors = isDanger
     ? "text-red-600 hover:bg-red-50 hover:text-red-700"
-    : `${isActive ? "bg-gray-200/50 text-black" : `${BgColor} ${textColor} ${hoverBgColor} hover:${textHoverColor}`}`;
+    : `${isActive ? `bg-gray-200/50 dark:bg-[#262626] ${textColor}` : `${BgColor} ${textColor} ${hoverBgColor} ${textHoverColor}`}`;
 
   const sizeClasses = isCollapsed
     ? "w-10 h-10 mx-auto justify-center px-0"
@@ -61,7 +61,7 @@ export default function CustomNavLink({
     <>
       <div className={`flex items-center ${isCollapsed ? "justify-center" : gap}`}>
         {icon && (
-          <div className={`${isDanger ? "text-red-500" : iconColor} flex items-center justify-center flex-shrink-0`}>
+          <div className={`${isDanger ? "text-red-500" : iconColor} flex items-center justify-center flex-shrink-0 dark:invert`}>
             {icon}
           </div>
         )}
@@ -85,7 +85,7 @@ export default function CustomNavLink({
               className="transition-all duration-200 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 text-gray-400"
             />
           ) : (
-            isActive && <ChevronRight className="w-4 h-4 text-black" />
+            isActive && <ChevronRight className="w-4 h-4 text-black dark:text-white" />
           )}
         </div>
       )}
