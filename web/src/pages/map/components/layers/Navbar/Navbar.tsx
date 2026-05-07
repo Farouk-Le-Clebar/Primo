@@ -23,7 +23,7 @@ export default function Navbar({ parcelleBounds, onParcelleSelect }: NavbarProps
 
   useEffect(() => {
     if (!coordsSelected || !parcelleBounds || newSearchSelected || !onParcelleSelect) return;
-    
+
     const timer = setTimeout(() => {
       let found = false;
 
@@ -39,7 +39,7 @@ export default function Navbar({ parcelleBounds, onParcelleSelect }: NavbarProps
           setNewSearchSelected(true);
         }
       });
-      
+
       if (found) {
         setCoordsSelected(null);
       }
@@ -78,7 +78,7 @@ export default function Navbar({ parcelleBounds, onParcelleSelect }: NavbarProps
           <UserProfile />
         </div>
       </div>
-      
+
     </nav>
   );
 }

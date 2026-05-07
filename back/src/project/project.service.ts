@@ -19,11 +19,13 @@ import {
   ProjectResponseDto,
   UpdateNotesDto,
   UpdateFavoriteDto,
+  AddPlotDto,
 } from './dto/project.dto';
 import { NotificationService } from '../notification/notification.service';
 import { NotificationType } from '../database/notification.entity';
 import { ActivityHistoryService } from '../history/history.service';
 import { ActivityEventType } from '../database/history.entity';
+import { ProjectPlots } from 'src/database/project-plots.entity';
 
 @Injectable()
 export class ProjectService {
@@ -34,9 +36,11 @@ export class ProjectService {
     private memberRepository: Repository<ProjectMember>,
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    @InjectRepository(ProjectPlots)
+    private projectPlotsRepository: Repository<ProjectPlots>,
     private readonly notificationService: NotificationService,
     private readonly activityHistoryService: ActivityHistoryService,
-  ) {}
+  ) { }
 
   private async resolveDisplayName(userId: string): Promise<string> {
     const user = await this.userRepository.findOne({ where: { id: userId } });
@@ -411,8 +415,8 @@ export class ProjectService {
   ): ProjectResponseDto {
     const relationMemberCount = project.members
       ? project.members.filter(
-          (member) => member.status === ProjectMemberStatus.ACCEPTED,
-        ).length
+        (member) => member.status === ProjectMemberStatus.ACCEPTED,
+      ).length
       : 0;
 
     return {
@@ -427,5 +431,88 @@ export class ProjectService {
       modifiedAt: project.modifiedAt,
       memberCount: memberCountOverride ?? relationMemberCount,
     };
+  }
+
+  async addPlotToProject(addPlotDto: AddPlotDto, userId: string) {
+    const project = await this.projectRepository.findOne({
+      where: { id: addPlotDto.projectId },
+    });
+
+    if (!project)
+      throw new NotFoundException(`Projet avec l'ID ${addPlotDto.projectId} non trouvé`);
+
+    if (project.userId !== userId)
+      throw new ForbiddenException('Accès non autorisé à ce projet');
+
+    const projectPlot = this.projectPlotsRepository.insert({
+      projectId: addPlotDto.projectId,
+      plotId: addPlotDto.plotId,
+      plotBanId: addPlotDto.plotBanId,
+      adress: addPlotDto.adress,
+      coordinates: addPlotDto.coordinates,
+      geometry: addPlotDto.geometry,
+    });
+
+    if (!projectPlot)
+      throw new BadRequestException('Erreur lors de l\'ajout du plot au projet');
+  }
+
+  async removePlotFromProject(projectId: string, plotId: string, userId: string) {
+    const project = await this.projectRepository.findOne({
+      where: { id: projectId },
+    });
+
+    if (!project)
+      throw new NotFoundException(`Projet non trouvé.`);
+
+    if (project.userId !== userId)
+      throw new ForbiddenException('Accès non autorisé à ce projet.');
+
+    const deleteResult = await this.projectPlotsRepository.delete({
+      projectId,
+      id: plotId,
+    });
+
+    if (deleteResult.affected === 0) {
+      throw new NotFoundException(
+        `Parcelle non trouvé dans le projet.`,
+      );
+    }
+  }
+
+  async getPlotsByProject(projectId: string, userId: string) {
+    const project = await this.projectRepository.findOne({
+      where: { id: projectId },
+    });
+
+    if (!project)
+      throw new NotFoundException(`Project not found`);
+
+    if (project.userId !== userId)
+      throw new ForbiddenException('Access to this project is forbidden');
+
+    const plots = await this.projectPlotsRepository.find({
+      where: { projectId },
+    });
+
+    return plots;
+  }
+
+  async getPlotsCountByProject(projectId: string, userId: string) {
+    const project = await this.projectRepository.findOne({
+      where: { id: projectId },
+    });
+
+    if (!project)
+      throw new NotFoundException(`Project not found`);
+
+    if (project.userId !== userId)
+      throw new ForbiddenException('Access to this project is forbidden');
+
+    const count = await this.projectPlotsRepository.count({
+      where: { projectId },
+    });
+
+    return { count };
   }
 }

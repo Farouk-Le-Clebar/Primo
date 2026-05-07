@@ -23,9 +23,8 @@ export default function ParcelDetailedDashboard({ selectedParcelle, onClose }: P
   const address = selectedParcelle?.addokData?.features?.[0]?.properties?.label || "Adresse non renseignée";
 
   return (
-    <div className="flex flex-col h-screen w-screen bg-[#F8F9FB] animate-in fade-in duration-300">
-      
-      <ParcelDetailedNavbar 
+    <div className="flex flex-col h-full w-full bg-[#F8F9FB] animate-in fade-in duration-300">
+      <ParcelDetailedNavbar
         parcelId={parcelId}
         address={address}
         activeTab={activeTab}

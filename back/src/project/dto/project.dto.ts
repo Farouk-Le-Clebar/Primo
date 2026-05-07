@@ -5,6 +5,7 @@ import {
   IsObject,
   IsArray,
   MaxLength,
+  IsJSON,
 } from 'class-validator';
 
 export class CreateProjectDto {
@@ -85,4 +86,32 @@ export class UpdateNotesDto {
 export class UpdateFavoriteDto {
   @IsBoolean()
   isFavorite: boolean;
+}
+
+export class AddPlotDto {
+  @IsString()
+  projectId: string;
+
+  @IsString()
+  plotId: string;
+
+  @IsString()
+  plotBanId: string;
+
+  @IsString()
+  adress: string;
+
+  @IsString()
+  coordinates: string;
+
+  @IsJSON()
+  geometry: any;
+}
+
+export class RemovePlotDto {
+  @IsString()
+  plotId: string;
+
+  @IsString()
+  projectId: string;
 }
