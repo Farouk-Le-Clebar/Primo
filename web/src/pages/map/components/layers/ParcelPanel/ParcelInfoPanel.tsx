@@ -1,4 +1,5 @@
-import { MapPin, ExternalLink } from "lucide-react";
+import { MapPin, ExternalLink, Plus } from "lucide-react";
+import { useState } from "react";
 
 // COMPONENTS
 import { getDvfParcelle } from "../../../../../requests/dvf/information";
@@ -6,6 +7,8 @@ import { getBuildingsByGeometry } from "../../../../../requests/geoserver/bdTopo
 import { getZonesUrbaByGeometry } from "../../../../../requests/geoserver/urbanAreas";
 import { extractDepartement } from "../ParcelDetailedDashboard/widgets/gpu/utils";
 import { useQuery } from "@tanstack/react-query";
+import AddPlotToProjectModal from "./AddPlotToProjectModal";
+import { Tooltip } from "../../../../../ui/Tooltip";
 
 type ParcelInfoPanelProps = {
   selectedParcelle: any;
@@ -13,6 +16,7 @@ type ParcelInfoPanelProps = {
 };
 
 export default function ParcelInfoPanel({ selectedParcelle, onOpenDashboard }: ParcelInfoPanelProps) {
+  const [addPlotModalOpen, setAddPlotModalOpen] = useState(false);
   const feature = selectedParcelle?.feature;
   const properties = feature?.properties;
   const geometry = feature?.geometry;
@@ -51,13 +55,23 @@ export default function ParcelInfoPanel({ selectedParcelle, onOpenDashboard }: P
               Parcelle {parcelId.replace('Parcelle ', '')}
             </h2>
           </div>
-          <button 
-            onClick={onOpenDashboard}
-            className="h-[36px] px-4 bg-[#111111] hover:bg-gray-800 text-white rounded-lg flex items-center justify-center gap-2 transition-colors shadow-sm cursor-pointer"
-          >
-            <ExternalLink size={14} />
-            <span className="font-inter font-medium text-xs">Analyse complète</span>
-          </button>
+          <div className="flex flex-row gap-2">
+            <Tooltip content="Ajouter au projet">
+              <button
+                onClick={() => setAddPlotModalOpen(true)}
+                className="h-[36px] px-3 bg-[#111111] hover:bg-gray-800 text-white rounded-lg flex items-center justify-center gap-2 transition-colors shadow-sm cursor-pointer"
+                >
+                <Plus size={14} />
+              </button>
+            </Tooltip>
+            <button
+              onClick={onOpenDashboard}
+              className="h-[36px] px-4 bg-[#111111] hover:bg-gray-800 text-white rounded-lg flex items-center justify-center gap-2 transition-colors shadow-sm cursor-pointer"
+            >
+              <ExternalLink size={14} />
+              <span className="font-inter font-medium text-xs">Analyse complète</span>
+            </button>
+          </div>
         </div>
 
         <div className="flex items-center gap-3 text-[#6B7280] mt-3 flex-wrap">
@@ -88,7 +102,7 @@ export default function ParcelInfoPanel({ selectedParcelle, onOpenDashboard }: P
             <span className="text-xs text-gray-400">Chargement...</span>
           ) : (
             <span className="font-inter font-medium text-xs text-emerald-600">
-              {dvfData?.stats?.prixMoyenM2 
+              {dvfData?.stats?.prixMoyenM2
                 ? `${Math.round(dvfData.stats.prixMoyenM2).toLocaleString('fr-FR')} €/m²`
                 : 'Pas de données DVF'
               }
@@ -96,6 +110,18 @@ export default function ParcelInfoPanel({ selectedParcelle, onOpenDashboard }: P
           )}
         </div>
       </div>
+      {addPlotModalOpen && (
+        <AddPlotToProjectModal
+          onClose={() => setAddPlotModalOpen(false)}
+          plotData={{
+            plotId: parcelId,
+            plotBanId: selectedParcelle?.addokData?.features?.[0]?.properties?.id,
+            adress: address,
+            coordinates: `${selectedParcelle?.addokData?.features?.[0]?.geometry?.coordinates[0]},${selectedParcelle?.addokData?.features?.[0]?.geometry?.coordinates[1]}`,
+            geometry,
+          }}
+        />
+      )}
     </aside>
   );
 }

@@ -29,6 +29,7 @@ import { UserStatistics } from './database/user-statistics.entity';
 import { ResetPassword } from './database/reset-password.entity';
 import { SearchHistory } from './database/search-history.entity';
 import { Feedback } from './database/feedback.entity';
+import { ProjectPlots } from './database/project-plots.entity';
 
 @Module({
   imports: [
@@ -44,11 +45,11 @@ import { Feedback } from './database/feedback.entity';
       username: process.env.MYSQL_USER,
       password: process.env.MYSQL_PASSWORD,
       database: process.env.MYSQL_DATABASE,
-      entities: [User, SearchHistory, Project, DvfMutation, DpeEntity, Notification, ProjectMember, ActivityEvent, VerifiedUser, ResetPassword, UserStatistics, Feedback],
+      entities: [User, SearchHistory, Project, DvfMutation, DpeEntity, Notification, ProjectMember, ActivityEvent, VerifiedUser, ResetPassword, UserStatistics, Feedback, ProjectPlots],
       synchronize: true,
       timezone: 'Z',
     }),
-    TypeOrmModule.forFeature([User, SearchHistory, Project, DvfMutation, DpeEntity, Notification, ProjectMember, ActivityEvent, VerifiedUser, ResetPassword, UserStatistics, Feedback]),
+    TypeOrmModule.forFeature([User, SearchHistory, Project, DvfMutation, DpeEntity, Notification, ProjectMember, ActivityEvent, VerifiedUser, ResetPassword, UserStatistics, Feedback, ProjectPlots]),
     AuthModule,
     GeoModule,
     UserModule,

@@ -29,6 +29,7 @@ services:
       BREVO_API_URL: brevo_api_url
       BREVO_API_KEY: xkeysib-brevo_api_key
       EMAIL_VERIFICATION_URL: email_verification_url
+      RESET_URL: http://test.fr/reset/password
 
     labels:
       - "traefik.enable=true"

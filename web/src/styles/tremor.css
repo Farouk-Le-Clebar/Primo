@@ -18,14 +18,12 @@
   /* --- COULEURS DE FOND - LIGHT MODE --- */
   --color-tremor-background-muted: #f9fafb;
   --color-tremor-background-subtle: #f3f4f6;
-  /* 👇 C'est ici que tu définis ton #FAFAFA global */
   --color-tremor-background: #fafafa; 
   --color-tremor-background-emphasis: #374151;
 
   /* --- COULEURS DE FOND - DARK MODE --- */
   --color-dark-tremor-background-muted: #0a0a0a;
   --color-dark-tremor-background-subtle: #262626;
-  /* 👇 C'est ici que tu définis ton #171717 global */
   --color-dark-tremor-background: #171717; 
   --color-dark-tremor-background-emphasis: #d1d5db;
 
@@ -34,7 +32,6 @@
   --color-tremor-ring: #e5e7eb;
 
   /* --- BORDURES ET ANNEAUX - DARK MODE --- */
-  /* 👇 J'ajoute ça pour que tes bordures de cartes soient très discrètes en dark mode */
   --color-dark-tremor-border: rgba(255, 255, 255, 0.05); 
   --color-dark-tremor-ring: transparent; 
 
@@ -74,6 +71,62 @@
   
   --text-tremor-metric: 1.875rem;
   --text-tremor-metric--line-height: 2.25rem;
+
+  /* --- ANIMATIONS DU TOOLTIP TREMOR RAW --- */
+  --animate-hide: hide 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-slide-down-and-fade: slideDownAndFade 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-slide-left-and-fade: slideLeftAndFade 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-slide-up-and-fade: slideUpAndFade 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-slide-right-and-fade: slideRightAndFade 150ms cubic-bezier(0.16, 1, 0.3, 1);
+
+  @keyframes hide {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+  @keyframes slideDownAndFade {
+    from {
+      opacity: 0;
+      transform: translateY(-6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  @keyframes slideLeftAndFade {
+    from {
+      opacity: 0;
+      transform: translateX(6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  @keyframes slideUpAndFade {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  @keyframes slideRightAndFade {
+    from {
+      opacity: 0;
+      transform: translateX(-6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
 }
 
 /* --- OVERRIDES RECHARTS ET CUSTOM --- */
