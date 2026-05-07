@@ -1,8 +1,6 @@
-import { useRef } from "react";
 import { MapPin, ExternalLink } from "lucide-react";
 
 // COMPONENTS
-import { useStopPropagation } from "../ParcelDetailedDashboard/hooks/useStopPropagation";
 import { getDvfParcelle } from "../../../../../requests/dvf/information";
 import { getBuildingsByGeometry } from "../../../../../requests/geoserver/bdTopo";
 import { getZonesUrbaByGeometry } from "../../../../../requests/geoserver/urbanAreas";
@@ -15,8 +13,6 @@ type ParcelInfoPanelProps = {
 };
 
 export default function ParcelInfoPanel({ selectedParcelle, onOpenDashboard }: ParcelInfoPanelProps) {
-  const panelRef = useRef<HTMLElement>(null);
-  useStopPropagation(panelRef);
   const feature = selectedParcelle?.feature;
   const properties = feature?.properties;
   const geometry = feature?.geometry;
@@ -46,7 +42,7 @@ export default function ParcelInfoPanel({ selectedParcelle, onOpenDashboard }: P
   if (!selectedParcelle?.feature) return null;
 
   return (
-    <aside ref={panelRef} className="flex flex-col w-full h-full bg-white rounded-xl overflow-hidden">
+    <aside className="flex flex-col w-full h-full bg-white rounded-xl overflow-hidden pointer-events-auto">
       <div className="px-6 py-4 border-b border-[#F0F0F0] shrink-0">
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-2">
