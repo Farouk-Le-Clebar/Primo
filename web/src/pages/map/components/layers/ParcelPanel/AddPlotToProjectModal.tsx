@@ -48,7 +48,7 @@ const AddPlotToProjectModal = ({ onClose, plotData }: AddPlotToProjectModalProps
 
     return createPortal(
         <div className="absolute top-0 left-0 w-screen h-screen bg-black/60 backdrop-blur-sm flex items-center justify-center z-[9999] px-4">
-            <div className="bg-white w-full max-w-md rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            <div className="bg-white w-full max-w-md rounded-2xl shadow-2xl flex flex-col animate-in fade-in zoom-in-95 duration-200">
                 <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
                     <h2 className="text-xl font-semibold text-gray-800">
                         Ajouter la parcelle
@@ -95,7 +95,7 @@ const AddPlotToProjectModal = ({ onClose, plotData }: AddPlotToProjectModalProps
                                                     setSelectedProjectId(project.id);
                                                     setIsDropdownOpen(false);
                                                 }}
-                                                className={`px-4 py-2.5 text-sm cursor-pointer transition-colors flex items-center justify-between mx-1 rounded-lg
+                                                className={`p-4 py-2.5 text-sm cursor-pointer transition-colors flex items-center justify-between mx-1 rounded-lg
                                                     ${selectedProjectId === project.id
                                                         ? 'bg-gray-100 text-gray-900 font-medium'
                                                         : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'}`}
