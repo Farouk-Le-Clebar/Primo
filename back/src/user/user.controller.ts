@@ -61,6 +61,21 @@ export class UserController {
     return this.userService.getUserByEmail(email);
   }
 
+  @Get('search-history/all')
+  @UseGuards(JwtAuthGuard)
+  async getSearchHistory(@Req() req: RequestWithUser) {
+    return this.userService.getSearchHistory(req.user.id);
+  }
+
+  @Post('search-history')
+  @UseGuards(JwtAuthGuard)
+  async addSearchHistory(
+    @Req() req: RequestWithUser, 
+    @Body() dto: { label: string, lat: number, lng: number }
+  ) {
+    return this.userService.addSearchHistory(req.user.id, dto.label, dto.lat, dto.lng);
+  }
+
   @Get(':from/:to')
   @UseGuards(JwtAuthGuard, AdminGuard)
   async getUsers(@Param('from') from: number, @Param('to') to: number) {
@@ -81,8 +96,7 @@ export class UserController {
 
   @Get('is-admin')
   @UseGuards(JwtAuthGuard, AdminGuard)
-  async isAdmin(@Req() req: RequestWithUser) {
-  }
+  async isAdmin(@Req() req: RequestWithUser) {}
 
   @Get('admin')
   @UseGuards(JwtAuthGuard, AdminGuard)
@@ -104,19 +118,13 @@ export class UserController {
 
   @Put('profile')
   @UseGuards(JwtAuthGuard)
-  async updateProfile(
-    @Req() req: RequestWithUser,
-    @Body() dto: UpdateProfileDto,
-  ) {
+  async updateProfile(@Req() req: RequestWithUser, @Body() dto: UpdateProfileDto) {
     return await this.userService.updateProfile(req.user.id, dto);
   }
 
   @Put('map')
   @UseGuards(JwtAuthGuard)
-  async updateMapPreference(
-    @Req() req: RequestWithUser,
-    @Body('mapPreference') mapPreference: string,
-  ) {
+  async updateMapPreference(@Req() req: RequestWithUser, @Body('mapPreference') mapPreference: string) {
     if (mapPreference == null) {
       throw new BadRequestException('mapPreference is required');
     } else if (mapPreference !== 'basic' && mapPreference !== 'satellite') {
@@ -124,4 +132,5 @@ export class UserController {
     }
     return await this.userService.updateMapPreference(req.user.id, mapPreference);
   }
+
 }
