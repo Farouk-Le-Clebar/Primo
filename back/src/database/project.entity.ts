@@ -1,55 +1,28 @@
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  CreateDateColumn,
-  UpdateDateColumn,
-  ManyToOne,
-  OneToMany,
-  JoinColumn,
-} from 'typeorm';
-import { User } from './user.entity';
-import { ProjectMember } from './project-member.entity';
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity('projects')
-export class Project {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+export class Projects {
+    @PrimaryGeneratedColumn('uuid')
+    id: string;
 
-  @Column({ type: 'varchar', length: 64, nullable: false })
-  name: string;
+    @Column({ type: 'varchar', length: 255, nullable: false })
+    userId: string;
 
-  @Column({ type: 'boolean', default: false })
-  isFavorite: boolean;
+    @Column({ type: 'varchar', length: 255, nullable: false })
+    name: string;
 
-  @Column({ type: 'text', nullable: true })
-  notes: string | null;
+    @Column({ type: 'text', nullable: true })
+    description: string | null;
 
-  @Column({ type: 'json', nullable: true })
-  parcels:
-    | {
-        id: string;
-        coordinates: [number, number];
-        properties?: Record<string, any>;
-      }[]
-    | null;
+    @Column({ type: 'text', nullable: true })
+    notes: string | null;
 
-  @Column({ type: 'json', nullable: true })
-  parameters: Record<string, any> | null;
+    @Column({ type: 'boolean', default: false })
+    isFavorite: boolean;
 
-  @ManyToOne(() => User, { nullable: false, onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'userId' })
-  user: User;
+    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+    createdAt: Date;
 
-  @Column({ type: 'uuid' })
-  userId: string;
-
-  @CreateDateColumn({ type: 'timestamp' })
-  createdAt: Date;
-
-  @UpdateDateColumn({ type: 'timestamp' })
-  modifiedAt: Date;
-
-  @OneToMany(() => ProjectMember, (member) => member.project)
-  members: ProjectMember[];
+    @Column({ type: 'int', default: 0 })
+    numberOfPlots: number;
 }

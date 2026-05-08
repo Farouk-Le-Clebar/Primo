@@ -24,8 +24,6 @@ import Privacy from "./pages/settings/Privacy";
 import Security from "./pages/settings/Security";
 import Subscriptions from "./pages/settings/Subscriptions";
 import CustomToaster from "./components/toaster/CustomToaster";
-import ProjectDetail from "./pages/projects/ProjectDetail";
-import ProjectCreate from "./pages/projects/ProjectCreate";
 import AdminPanel from "./pages/admin/AdminPanel";
 import OnboardingRoot from "./pages/onBoarding/OnboardingRoot";
 import EmailVerify from "./pages/mailling/EmailVerify";
@@ -33,6 +31,7 @@ import PostRegisterEmailVerify from "./pages/mailling/PostRegisterEmailVerify";
 import ResetPassword from "./pages/mailling/ResetPassword";
 import SendEmailResetPassword from "./pages/mailling/SendEmailResetPassword";
 import Feedback from "./pages/feedback/Feedback";
+import ProjectNavbar from "./components/projectNavbar/ProjectNavbar";
 
 export default function App() {
   return (
@@ -60,8 +59,9 @@ export default function App() {
             <Route index element={<Navigate to="/dashboard" replace />} />
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="projects" element={<Projects />} />
-            <Route path="projects/new" element={<ProjectCreate />} />
-            <Route path="projects/:id" element={<ProjectDetail />} />
+            <Route path="projects" element={<ProjectNavbar />}>
+              <Route path=":projectId/*" element={<Projects />} />
+            </Route>
             <Route path="feedback" element={<Feedback />} />
 
             {/* Routes Admin */}

@@ -18,8 +18,8 @@ import Admin from "../../assets/icons/admin.svg?react";
 import Feedback from "../../assets/icons/send.svg?react";
 import FolderClose from "../../assets/icons/folderClose.svg?react";
 import { useQuery } from "@tanstack/react-query";
-import { fetchProjects } from "../../requests/projectRequests";
 import LoadingPrimoLogo from "../animations/LoadingPrimoLogo";
+import { getProjects } from "../../requests/projects";
 
 export default function Sidebar() {
   const isAdmin = JSON.parse(localStorage.getItem("user") || "null")?.isAdmin;
@@ -39,7 +39,7 @@ export default function Sidebar() {
 
   const { data: projects, isPending } = useQuery({
     queryKey: ["projects"],
-    queryFn: fetchProjects,
+    queryFn: getProjects,
   });
 
   return (
@@ -58,7 +58,7 @@ export default function Sidebar() {
           </div>
         </div>
 
-        <div className="flex-1 flex flex-col gap-6 overflow-y-auto overflow-x-hidden transition-all duration-300 px-4 ">
+        <div className="flex-1 flex flex-col gap-6 overflow-hidden overflow-x-hidden transition-all duration-300 px-4 ">
           <section className="flex flex-col gap-1 w-full">
 
             <div className="space-y-1">
@@ -144,26 +144,27 @@ export default function Sidebar() {
 
           </section>
 
-          <section className="flex flex-col gap-1 overflow-y-auto flex-1">
-            <div className="h-4 flex mb-2 flex-col space-y-2 h-full">
+          <section className="flex flex-col gap-1 flex-1 min-h-0">
+            <div className="flex mb-2 flex-col space-y-2 flex-1 min-h-0">
               <h3 className="font-inter font-medium text-[12px] tracking-[0.1em] text-[#757575] dark:text-[#999999]">
                 Projets
               </h3>
-              <div className="flex flex-col gap-1 flex-1">
+
+              <div className="flex flex-col gap-1 flex-1 overflow-y-auto scrollbar-custom">
                 {isPending && (
                   <div className="h-full w-full flex items-center justify-center">
                     <LoadingPrimoLogo className="w-6 h-6 text-black dark:invert" />
                   </div>
                 )}
-                {!isPending &&projects?.map((project) => (
+                {!isPending && projects?.map((project: any) => (
                   <CustomNavLink
-                    id={project.id}
+                    key={project.id}
                     to={`/projects/${project.id}`}
                     textColor="text-black dark:text-white dark:hover:text-white"
                     rounded="rounded-lg"
                     label={project.name}
                     icon={renderIcon(FolderClose)}
-                    className="h-8"
+                    className="h-8 shrink-0"
                     BgColor="bg-transparent"
                     hoverBgColor="hover:bg-gray-200/50 dark:hover:bg-[#262626]"
                   />

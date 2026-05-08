@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useNotifications } from "../../../../hooks/useNotifications";
 import NotificationCard from "./cards/NotificationCard";
 
 
@@ -21,14 +20,14 @@ export default function NotificationsDropdown() {
     const dropdownRef = useRef<HTMLDivElement>(null);
 
     const {
-        notifications,
-        unreadCount,
-        isLoading,
-        markAsRead,
-        markAllAsRead,
-        deleteOneNotification,
-        deletingNotificationId,
-    } = useNotifications();
+        notifications = [],
+        unreadCount = 0,
+        isLoading = false,
+        markAsRead = () => { },
+        markAllAsRead = () => { },
+        deleteOneNotification = () => { },
+        deletingNotificationId = null,
+    } = {} as any;
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -81,7 +80,7 @@ export default function NotificationsDropdown() {
                                     Aucune notification
                                 </p>
                             ) : (
-                                notifications.map((notif) => (
+                                notifications.map((notif: any) => (
                                     <NotificationCard
                                         key={notif.id}
                                         notification={notif}
