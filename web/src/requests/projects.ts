@@ -26,3 +26,15 @@ export const addPlotToProject = async (plot: AddPlotToProjectPayload) => {
             throw error;
         });
 }
+
+export const toggleFavorite = async (projectId: string) => {
+    return axios.put(`${apiUrl}/projects/${projectId}/favorite`, {}, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
+        .then((response) => response.data)
+        .catch((error) => {
+            throw error;
+        });
+}
