@@ -16,7 +16,7 @@ export default function DpeList({ dpeList }: { dpeList: any[] }) {
   );
 
   return (
-    <Card className="p-0 border-gray-200 dark:border-[#232323] dark:bg-[#111111] ring-0 shadow-sm overflow-hidden font-inter flex flex-col">
+    <Card className="p-0 border-gray-200 ring-0 shadow-sm overflow-hidden font-inter flex flex-col">
       <div className="bg-gray-50 dark:bg-[#171717] border-b border-gray-100 dark:border-[#232323] px-5 py-2.5 flex items-center gap-4 text-[10px] text-gray-500 dark:text-gray-400 overflow-x-auto whitespace-nowrap scrollbar-custom">
         <div className="flex items-center gap-1.5 font-semibold text-gray-700 dark:text-gray-300">
           <Info size={12} className="text-blue-500" />
