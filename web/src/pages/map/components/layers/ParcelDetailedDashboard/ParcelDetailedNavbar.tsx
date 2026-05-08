@@ -26,10 +26,10 @@ export default function ParcelDetailedNavbar({
 
   return (
     <>
-      <header className="flex items-center justify-between w-full h-[50px] px-6 bg-white border-b border-gray-200 shrink-0 font-inter z-10">
+      <header className="flex items-center justify-between w-full h-[50px] px-6 bg-white dark:bg-[#0A0A0A] border-b border-gray-200 dark:border-[#262626] shrink-0 font-inter z-10">
         <div className="flex items-center gap-2 text-[13px] w-1/4">
           <span className="h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
-          <span className="font-semibold text-gray-900 truncate max-w-[120px]">
+          <span className="font-semibold text-gray-900 dark:text-white truncate max-w-[120px]">
             {parcelId}
           </span>
           <ChevronRight size={14} className="text-gray-300 shrink-0" />
@@ -47,7 +47,7 @@ export default function ParcelDetailedNavbar({
         <div className="flex items-center justify-end w-1/4">
           <button
             onClick={onClose}
-            className="flex items-center gap-2 px-3 py-1.5 border border-gray-200 rounded-lg text-[12px] font-medium text-gray-700 hover:bg-gray-50 transition-colors cursor-pointer"
+            className="flex items-center gap-2 px-3 py-1.5 border border-gray-200 dark:text-white rounded-lg text-[12px] font-medium text-gray-700 hover:bg-gray-50 dark:hover:bg-[#262626] dark:border-[#262626] transition-colors cursor-pointer"
           >
             <MapIcon size={14} />
             <span>Fermer</span>
