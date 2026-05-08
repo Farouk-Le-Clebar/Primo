@@ -58,12 +58,12 @@ export default function BuildingsWidget({ feature }: ParcelWidgetProps) {
       {isPending && (
         <div className="flex items-center gap-2 mb-4">
           <LoadingPrimoLogo className="w-1 h-1 text-black-500" />
-          <span className="text-[11px] font-medium text-[#878D96]">Récupération des données BD Topo...</span>
+          <span className="text-[11px] font-medium text-[#878D96] dark:text-gray-400">Récupération des données BD Topo...</span>
         </div>
       )}
 
       {!isPending && sortedBuildings.length === 0 && (
-        <div className="py-8 text-sm text-[#878D96] text-center bg-gray-50 rounded-xl border border-dashed border-gray-200">
+        <div className="py-8 text-sm text-[#878D96] dark:text-gray-400 text-center bg-gray-50 dark:bg-[#171717] rounded-xl border border-dashed border-gray-200 dark:border-[#232323]">
           Aucun bâtiment détecté sur cette parcelle par l'IGN.
         </div>
       )}
