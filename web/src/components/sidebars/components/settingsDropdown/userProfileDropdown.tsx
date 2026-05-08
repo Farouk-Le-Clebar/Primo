@@ -46,7 +46,7 @@ export default function UserProfileDropdown() {
         <div className="font-inter font-medium text-sm text-gray-800 dark:text-white truncate leading-tight w-full">
           {user.firstName || "Utilisateur"}
         </div>
-        <div className="font-inter font-normal text-xs text-gray-500 dark:text-white truncate leading-none w-full mt-0.5">
+        <div className="font-inter font-normal text-xs text-gray-500 dark:text-gray-400 truncate leading-none w-full mt-0.5">
           {user.email || "email@exemple.com"}
         </div>
       </div>

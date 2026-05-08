@@ -16,7 +16,7 @@ export default function SearchHistoryList({ onSelect }: SearchHistoryListProps) 
 
   return (
     <div className="mb-2">
-      <div className="px-3 py-2 text-[0.70rem] font-bold text-gray-400 uppercase tracking-wider select-none">
+      <div className="px-3 py-2 text-[0.70rem] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider select-none">
         Recherches récentes
       </div>
       
@@ -29,7 +29,7 @@ export default function SearchHistoryList({ onSelect }: SearchHistoryListProps) 
           <button 
             key={item.id} 
             onClick={() => onSelect([item.lat, item.lng], item.label)}
-            className="flex w-full items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-50 text-gray-700 transition-colors cursor-pointer text-left"
+            className="flex w-full items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-50 dark:hover:bg-[#262626] text-gray-700 dark:text-gray-300 transition-colors cursor-pointer text-left"
           >
             <Clock className="text-gray-300 shrink-0" size={16} />
             <span className="text-sm font-medium truncate">{item.label}</span>

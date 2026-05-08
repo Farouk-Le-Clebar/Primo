@@ -55,14 +55,14 @@ export default function Navbar({ parcelleBounds, onParcelleSelect }: NavbarProps
   };
 
   return (
-    <nav className="relative flex left-0 right-0 w-full h-full items-center justify-between bg-white border-b border-gray-100 z-[1010]">
+    <nav className="relative flex left-0 right-0 w-full h-full items-center justify-between bg-white dark:bg-[#0A0A0A] border-b border-gray-100 dark:border-[#262626] z-[1010]">
       
       <div className="flex h-full w-102 items-center ml-4">
         <button
           onClick={() => navigate("/dashboard")}
-          className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-gray-600 transition-all bg-white border border-gray-200 rounded-lg hover:bg-gray-50 hover:text-gray-900 group shadow-sm"
+          className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-white transition-all bg-white dark:bg-[#0A0A0A] border border-gray-200 dark:border-[#262626] rounded-lg hover:bg-gray-50 dark:hover:bg-[#262626] hover:text-gray-900 dark:hover:text-gray-300 group shadow-sm"
         >
-          <ArrowLeft className="w-4 h-4 text-gray-400 transition-transform duration-200 group-hover:-translate-x-0.5 group-hover:text-gray-600" />
+          <ArrowLeft className="w-4 h-4 text-gray-400 dark:invert transition-transform duration-200 group-hover:-translate-x-0.5 group-hover:text-gray-600" />
           <span>Retour au site</span>
         </button>
       </div>

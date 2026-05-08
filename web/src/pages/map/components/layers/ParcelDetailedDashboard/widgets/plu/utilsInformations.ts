@@ -62,14 +62,14 @@ export function getInformationStyle(typeinf: string, libelle?: string) {
 
   switch (code) {
     case '03': case '16': case '10':
-      return { icon: Coins, color: "text-rose-600", bg: "bg-rose-50", border: "border-rose-100", bar: "bg-rose-500" };
+      return { icon: Coins, color: "text-rose-600", bg: "bg-rose-50 dark:bg-[#232323]", border: "border-rose-100 dark:border-[#232323]", bar: "bg-rose-500" };
     case '01': case '02': case '11': case '12':
-      return { icon: Map, color: "text-indigo-600", bg: "bg-indigo-50", border: "border-indigo-100", bar: "bg-indigo-500" };
+      return { icon: Map, color: "text-indigo-600", bg: "bg-indigo-50 dark:bg-[#232323]", border: "border-indigo-100 dark:border-[#232323]", bar: "bg-indigo-500" };
     case '04': case '05':
-      return { icon: PauseCircle, color: "text-[#EF4444]", bg: "bg-[#FEF0F0]", border: "border-red-100", bar: "bg-slate-400" };
+      return { icon: PauseCircle, color: "text-[#EF4444]", bg: "bg-[#FEF0F0] dark:bg-[#232323]", border: "border-red-100 dark:border-[#232323]", bar: "bg-slate-400" };
     case '07':
-      return { icon: Trees, color: "text-[#10B981]", bg: "bg-[#EBF9F5]", border: "border-emerald-100", bar: "bg-emerald-500" };
+      return { icon: Trees, color: "text-[#10B981]", bg: "bg-[#EBF9F5] dark:bg-[#232323]", border: "border-emerald-100 dark:border-[#232323]", bar: "bg-emerald-500" };
     default:
-      return { icon: Info, color: "text-slate-500", bg: "bg-slate-50", border: "border-slate-100", bar: "bg-slate-300" };
+      return { icon: Info, color: "text-slate-500", bg: "bg-slate-50 dark:bg-[#232323]", border: "border-slate-100 dark:border-[#232323]", bar: "bg-slate-300" };
   }
 }

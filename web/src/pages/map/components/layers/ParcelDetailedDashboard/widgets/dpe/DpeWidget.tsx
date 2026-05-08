@@ -24,7 +24,7 @@ export default function DpeWidget({ selectedParcelle }: { selectedParcelle: any 
   const isEmpty        = !dpeList || dpeList.length === 0;
 
   return (
-    <div className="font-inter w-full">
+    <div className="font-inter w-full h-full">
       {isLoading ? (
         <div className="flex items-center gap-2 mb-4 bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
           <LoadingPrimoLogo className="w-6 h-6 text-emerald-500" />
@@ -37,15 +37,13 @@ export default function DpeWidget({ selectedParcelle }: { selectedParcelle: any 
           Aucun DPE enregistré pour cette adresse depuis la réforme de juillet 2021.
         </div>
       ) : (
-        <Grid numItems={1} numItemsMd={3} className="gap-6 w-full relative">
+        <Grid numItems={1} numItemsMd={3} className="gap-6 w-full h-full">
 
-          <Col numColSpan={1}>
-            <div className="sticky top-0 h-182 flex flex-col">
-              <DpeSummaryCard dpeList={dpeList} />
-            </div>
+          <Col numColSpan={1} className="h-auto md:h-full">
+            <DpeSummaryCard dpeList={dpeList} />
           </Col>
 
-          <Col numColSpan={1} numColSpanMd={2} className="pb-10 flex flex-col gap-6">
+          <Col numColSpan={1} numColSpanMd={2} className="md:h-full md:overflow-y-auto pb-4 pr-1 flex flex-col gap-6 scrollbar-custom">
              <DpeDistributionCard dpeList={dpeList} />
              <DpeList dpeList={dpeList} />
           </Col>

@@ -56,7 +56,7 @@ export default function PluCard({ feature }: ParcelWidgetProps) {
   const InfoRow = ({ label, value }: { label: string, value: string | React.ReactNode }) => (
     <div className="flex justify-between items-center py-3 border-b border-gray-100 last:border-0">
       <span className="text-[13px] font-medium text-[#878D96] shrink-0 pr-4">{label}</span>
-      <span className="text-[13px] font-medium text-[#111111] text-right truncate">{value}</span>
+      <span className="text-[13px] font-medium text-[#111111] dark:text-white text-right truncate">{value}</span>
     </div>
   );
 
@@ -83,13 +83,13 @@ export default function PluCard({ feature }: ParcelWidgetProps) {
     <Card className="border-gray-200 ring-0 shadow-sm p-6 h-full flex flex-col font-inter">
       <div className="flex justify-between items-start mb-1">
         <div>
-          <h2 className="text-xl font-bold text-gray-900">Zone {zoneInfo.rawType || "—"}</h2>
-          <p className="text-sm text-gray-500 mt-1">{zoneInfo.label}</p>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white">Zone {zoneInfo.rawType || "—"}</h2>
+          <p className="text-sm text-gray-500 mt-1 ">{zoneInfo.label}</p>
         </div>
       </div>
 
       {hasMultipleZones && (
-        <div className="flex items-start gap-2 p-3 mt-3 mb-2 bg-amber-50 border border-amber-200 rounded-lg">
+        <div className="flex items-start gap-2 p-3 mt-3 mb-2 bg-amber-50 dark:bg-[#232323] border border-amber-200 dark:border-[#232323] rounded-lg">
           <AlertTriangle size={14} className="text-amber-600 mt-0.5 shrink-0" />
           <p className="text-[12px] font-medium text-amber-800 leading-tight">
             Parcelle multi-zonée : {uniqueZones.map((z: any) => z.properties.typezone).join(', ')}
@@ -97,8 +97,8 @@ export default function PluCard({ feature }: ParcelWidgetProps) {
         </div>
       )}
 
-      <div className="mt-6 p-4 bg-gray-50 rounded-xl border border-gray-100">
-        <p className="text-[13px] leading-relaxed text-gray-700">
+      <div className="mt-6 p-4 bg-gray-50 rounded-xl border border-gray-100 dark:bg-[#232323] dark:border-[#232323]">
+        <p className="text-xs leading-relaxed text-gray-700 dark:text-gray-300">
           {zoneInfo.desc}
         </p>
       </div>
@@ -119,10 +119,10 @@ export default function PluCard({ feature }: ParcelWidgetProps) {
             target="_blank"
             rel="noopener noreferrer"
             download={docAction.type === 'zip'}
-            className="flex items-center justify-center gap-2 w-full h-[40px] bg-black hover:bg-gray-800 rounded-lg text-[13px] font-medium text-white transition-colors shadow-sm cursor-pointer"
+            className="flex items-center justify-center gap-2 w-full h-[40px] bg-black hover:bg-gray-800 rounded-lg text-[13px] font-medium text-white transition-colors shadow-sm cursor-pointer dark:bg-white dark:hover:bg-white/80"
           >
-            <docAction.icon className="text-white" size={15} />
-            <span className="font-inter font-medium text-sm text-white">{docAction.label}</span>
+            <docAction.icon className="text-white dark:text-black" size={15} />
+            <span className="font-inter font-medium text-sm text-white dark:text-black">{docAction.label}</span>
           </a>
         </div>
       )}

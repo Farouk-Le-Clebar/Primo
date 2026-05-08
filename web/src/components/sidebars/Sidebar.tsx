@@ -16,7 +16,8 @@ import Search from "../../assets/icons/searchBlack.svg?react";
 import Ia from "../../assets/icons/ia.svg?react";
 import Admin from "../../assets/icons/admin.svg?react";
 import Feedback from "../../assets/icons/send.svg?react";
-import FolderClose from "../../assets/icons/folderClose.svg?react";
+import FolderClose from "../../assets/icons/folderClose.svg?react"; 
+
 import { useQuery } from "@tanstack/react-query";
 import LoadingPrimoLogo from "../animations/LoadingPrimoLogo";
 import { getProjects } from "../../requests/projects";
@@ -58,7 +59,7 @@ export default function Sidebar() {
           </div>
         </div>
 
-        <div className="flex-1 flex flex-col gap-6 overflow-hidden overflow-x-hidden transition-all duration-300 px-4 ">
+        <div className="flex-1 flex flex-col gap-6 overflow-y-auto overflow-x-hidden dark:text-white transition-all duration-300 px-4 ">
           <section className="flex flex-col gap-1 w-full">
 
             <div className="space-y-1">
@@ -80,7 +81,7 @@ export default function Sidebar() {
                   e.stopPropagation();
                   setIsModalOpen(true);
                 }}
-                className="cursor-pointer dark:hover:bg-[#262626] rounded-lg"
+                className="cursor-pointer dark:hover:bg-[#262626] hover:bg-gray-200/50 rounded-lg"
               >
                 <CustomNavLink
                   id="sidebar-search-tour"
@@ -174,7 +175,7 @@ export default function Sidebar() {
           </section>
         </div>
 
-        <div className="mt-auto flex flex-col gap-1 px-4 pb-6 pt-2">
+        <div className="mt-auto flex flex-col gap-1 px-4 pb-6 pt-2 dark:text-white">
           <CustomNavLink
             id="sidebar-support-tour"
             to="/support"

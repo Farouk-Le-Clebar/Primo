@@ -40,7 +40,7 @@ export function BuildingThumbnail({ feature, colorClasses }: { feature: any, col
     return { d: pathCommands };
   }, [feature]);
 
-  if (!geoData) return <div className="w-full h-full bg-gray-50 flex items-center justify-center text-[10px]">N/A</div>;
+  if (!geoData) return <div className="w-full h-full bg-gray-50 flex items-center justify-center text-[10px] text-gray-500 dark:text-gray-400">N/A</div>;
 
   return (
     <div className={`w-full h-full ${colorClasses.bg} relative flex items-center justify-center overflow-hidden rounded-lg`}>

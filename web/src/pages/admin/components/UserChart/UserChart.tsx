@@ -6,7 +6,6 @@ import { Loader2 } from "lucide-react";
 // COMPONENTS
 import { getUsers } from "../../../../requests/admin";
 
-// ATTENNTION LA TEAM, pour l'instant c'est la var "lastConnection" pcq on as pas la var de la date de creation du compte
 export default function UserChart() {
   const { data: users = [], isLoading } = useQuery({
     queryKey: ["usersChart"],

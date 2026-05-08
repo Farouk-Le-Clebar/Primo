@@ -2,7 +2,7 @@ import { useState } from "react";
 
 // TABS
 import { ParcelInfoCard } from "../ParcelPanel/ParcelleInfoCard";
-import GpuUrbanAreasWidget from "./widgets/gpu/GpuWidget";
+import GpuUrbanAreasWidget from "./widgets/plu/GpuWidget";
 import BuildingsWidget from "./widgets/buildings/BuildingsWidget";
 import DpeWidget from "./widgets/dpe/DpeWidget";
 import DvfWidget from "./widgets/dvf/DvfWidget";
@@ -23,7 +23,7 @@ export default function ParcelDetailedDashboard({ selectedParcelle, onClose }: P
   const address = selectedParcelle?.addokData?.features?.[0]?.properties?.label || "Adresse non renseignée";
 
   return (
-    <div className="flex flex-col h-full w-full bg-[#F8F9FB] animate-in fade-in duration-300">
+    <div className="flex flex-col h-full w-full bg-[#F8F9FB] dark:bg-[#0A0A0A] animate-in fade-in duration-300">
       <ParcelDetailedNavbar
         parcelId={parcelId}
         address={address}
