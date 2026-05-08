@@ -16,7 +16,8 @@ import Search from "../../assets/icons/searchBlack.svg?react";
 import Ia from "../../assets/icons/ia.svg?react";
 import Admin from "../../assets/icons/admin.svg?react";
 import Feedback from "../../assets/icons/send.svg?react";
-// L'icône FolderClose n'est plus utile ici si on suit ton design
+import FolderClose from "../../assets/icons/folderClose.svg?react"; 
+
 import { useQuery } from "@tanstack/react-query";
 import LoadingPrimoLogo from "../animations/LoadingPrimoLogo";
 import { getProjects } from "../../requests/projects";
