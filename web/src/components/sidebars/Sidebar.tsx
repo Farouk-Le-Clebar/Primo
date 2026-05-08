@@ -18,8 +18,8 @@ import Admin from "../../assets/icons/admin.svg?react";
 import Feedback from "../../assets/icons/send.svg?react";
 // L'icône FolderClose n'est plus utile ici si on suit ton design
 import { useQuery } from "@tanstack/react-query";
-import { fetchProjects } from "../../requests/projectRequests";
 import LoadingPrimoLogo from "../animations/LoadingPrimoLogo";
+import { getProjects } from "../../requests/projects";
 
 export default function Sidebar() {
   const isAdmin = JSON.parse(localStorage.getItem("user") || "null")?.isAdmin;
@@ -39,7 +39,7 @@ export default function Sidebar() {
 
   const { data: projects, isPending } = useQuery({
     queryKey: ["projects"],
-    queryFn: fetchProjects,
+    queryFn: getProjects,
   });
 
   return (
@@ -144,34 +144,32 @@ export default function Sidebar() {
 
           </section>
 
-          <section className="flex flex-col gap-1 overflow-y-auto flex-1">
-            <div className="flex mb-2 flex-col">
-              <h3 className="font-inter font-medium text-[12px] tracking-[0.1em] text-black dark:text-white mb-2 px-2">
+          <section className="flex flex-col gap-1 flex-1 min-h-0">
+            <div className="flex mb-2 flex-col space-y-2 flex-1 min-h-0">
+              <h3 className="font-inter font-medium text-[12px] tracking-[0.1em] text-[#757575] dark:text-[#999999]">
                 Projets
               </h3>
-              
-              {isPending ? (
-                <div className="w-full flex items-center justify-center py-4">
-                  <LoadingPrimoLogo className="w-6 h-6 text-black dark:invert" />
-                </div>
-              ) : (
-                <div className="flex flex-col gap-1 ml-3 border-l border-gray-200 dark:border-white/10 pl-2 py-1">
-                  {projects?.map((project) => (
-                    <CustomNavLink
-                      key={project.id}
-                      id={project.id}
-                      to={`/projects/${project.id}`}
-                      textColor="text-black dark:text-white"
-                      rounded="rounded-lg"
-                      label={project.name}
-                      icon={undefined} 
-                      className="h-8 text-sm"
-                      BgColor="bg-transparent"
-                      hoverBgColor="hover:bg-gray-200/50 dark:hover:bg-[#262626]"
-                    />
-                  ))}
-                </div>
-              )}
+
+              <div className="flex flex-col gap-1 flex-1 overflow-y-auto scrollbar-custom">
+                {isPending && (
+                  <div className="h-full w-full flex items-center justify-center">
+                    <LoadingPrimoLogo className="w-6 h-6 text-black dark:invert" />
+                  </div>
+                )}
+                {!isPending && projects?.map((project: any) => (
+                  <CustomNavLink
+                    key={project.id}
+                    to={`/projects/${project.id}`}
+                    textColor="text-black dark:text-white dark:hover:text-white"
+                    rounded="rounded-lg"
+                    label={project.name}
+                    icon={renderIcon(FolderClose)}
+                    className="h-8 shrink-0"
+                    BgColor="bg-transparent"
+                    hoverBgColor="hover:bg-gray-200/50 dark:hover:bg-[#262626]"
+                  />
+                ))}
+              </div>
             </div>
           </section>
         </div>
