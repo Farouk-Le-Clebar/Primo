@@ -54,7 +54,7 @@ export default function CustomNavLink({
   const sharedClasses = `
     flex items-center transition-all duration-300
     ${sizeClasses}
-    ${rounded} ${colors} group
+    ${rounded} ${colors} group text-inherit 
   `;
 
   const content = (
@@ -100,7 +100,7 @@ export default function CustomNavLink({
 
   if (to) {
     return (
-      <NavLink to={to} {...finalProps}>
+      <NavLink to={to} {...finalProps} className={`${sharedClasses} no-underline`}>
         {content}
       </NavLink>
     );
