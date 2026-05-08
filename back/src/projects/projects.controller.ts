@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, Req, UseGuards } from '@nestjs/common';
 import { ProjectsService } from './projects.service';
 import { JwtAuthGuard } from 'src/guard/jwt-auth.guard';
 import type { AddPlotToProjectDto, CreateProjectDto } from './project.type';
@@ -28,5 +28,12 @@ export class ProjectsController {
     async addPlotToProject(@Body() addPlotToProjectDto: AddPlotToProjectDto, @Req() req) {
         const userId = req.user.id;
         return this.projectsService.addPlotToProject(addPlotToProjectDto, userId);
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Put(":id/favorite")
+    async toggleFavorite(@Req() req, @Param("id") projectId: string) {
+        const userId = req.user.id;
+        return this.projectsService.toggleFavorite(projectId, userId);
     }
 }
