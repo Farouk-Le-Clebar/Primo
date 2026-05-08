@@ -70,21 +70,21 @@ export default function MapControls({
     return (
         <div className="absolute top-6 right-6 pointer-events-auto flex flex-col gap-2 items-end z-[1002]">
 
-            <div className="flex flex-col rounded-xl shadow-md bg-white border border-gray-100 overflow-hidden text-gray-700">
+            <div className="flex flex-col rounded-xl shadow-md bg-white dark:bg-[#0A0A0A] border border-gray-100 dark:border-[#262626] overflow-hidden text-gray-700 dark:text-white">
                 <button
                     type="button"
                     onClick={onZoomIn}
-                    className="h-10 w-10 text-xl font-medium flex items-center justify-center hover:bg-gray-50 transition-colors"
+                    className="h-10 w-10 text-xl font-medium flex items-center justify-center hover:bg-gray-50 dark:hover:bg-[#1a1a1a] transition-colors"
                 >
-                    <PlusIcon className="w-4.5 h-4.5" />
+                    <PlusIcon className="w-4.5 h-4.5 stroke-current" />
                 </button>
-                <div className="w-full h-px bg-gray-100" />
+                <div className="w-full h-px bg-gray-100 dark:bg-[#262626]" />
                 <button
                     type="button"
                     onClick={onZoomOut}
-                    className="h-10 w-10 text-xl font-medium flex items-center justify-center hover:bg-gray-50 transition-colors"
+                    className="h-10 w-10 text-xl font-medium flex items-center justify-center hover:bg-gray-50 dark:hover:bg-[#1a1a1a] transition-colors"
                 >
-                    <MinusIcon className="w-4.5 h-4.5" />
+                    <MinusIcon className="w-4.5 h-4.5 stroke-current" />
                 </button>
             </div>
 
@@ -97,24 +97,24 @@ export default function MapControls({
                     />
                 </div>
 
-                <div className="flex flex-col rounded-xl shadow-md bg-white border border-gray-100 overflow-hidden text-gray-700">
+                <div className="flex flex-col rounded-xl shadow-md bg-white dark:bg-[#0A0A0A] border border-gray-100 dark:border-[#262626] overflow-hidden text-gray-700 dark:text-white">
                     <button
                         type="button"
                         onClick={() => toggleMenu("preference")}
-                        className={`h-10 w-10 flex items-center justify-center transition-colors ${isPreferenceOpen ? "bg-gray-50 text-green-600" : "hover:bg-gray-50"
+                        className={`h-10 w-10 flex items-center justify-center transition-colors ${isPreferenceOpen ? "bg-gray-50 dark:bg-[#1a1a1a] text-green-600" : "hover:bg-gray-50 dark:hover:bg-[#1a1a1a]"
                             }`}
                     >
-                        <LayersIcon className="w-4.5 h-4.5" />
+                        <LayersIcon className="w-4.5 h-4.5 stroke-current" />
                     </button>
 
-                    <div className="w-full h-px bg-gray-100" />
+                    <div className="w-full h-px bg-gray-100 dark:bg-[#262626]" />
 
                     <button
                         type="button"
                         onClick={onLocateUser}
-                        className="h-10 w-10 flex items-center justify-center hover:bg-gray-50 transition-colors"
+                        className="h-10 w-10 flex items-center justify-center hover:bg-gray-50 dark:hover:bg-[#1a1a1a] transition-colors"
                     >
-                        <LocateIcon className="w-4.5 h-4.5" />
+                        <LocateIcon className="w-4.5 h-4.5 stroke-current" />
                     </button>
                 </div>
             </div>
@@ -129,10 +129,10 @@ export default function MapControls({
                 <button
                     type="button"
                     onClick={() => toggleMenu("ai")}
-                    className={`h-10 w-10 rounded-xl shadow-md border border-gray-100 flex items-center justify-center transition-colors ${isAiOpen ? "bg-gray-50 text-green-600" : "bg-white hover:bg-gray-50"
+                    className={`h-10 w-10 rounded-xl shadow-md border border-gray-100 dark:border-[#262626] flex items-center justify-center transition-colors text-gray-700 dark:text-white ${isAiOpen ? "bg-gray-50 dark:bg-[#1a1a1a] text-green-600" : "bg-white dark:bg-[#0A0A0A] hover:bg-gray-50 dark:hover:bg-[#1a1a1a]"
                         }`}
                 >
-                    <IaIcon className="w-4.5 h-4.5" />
+                    <IaIcon className="w-4.5 h-4.5 stroke-current" />
                 </button>
             </div>
 
@@ -154,10 +154,10 @@ export default function MapControls({
                 <button
                     type="button"
                     onClick={() => toggleMenu("poi")}
-                    className={`h-10 w-10 rounded-xl shadow-md border border-gray-100 flex items-center justify-center transition-colors ${isPoiOpen ? "bg-gray-50 text-green-600" : "bg-white hover:bg-gray-50"
+                    className={`h-10 w-10 rounded-xl shadow-md border border-gray-100 dark:border-[#262626] flex items-center justify-center transition-colors text-gray-700 dark:text-white ${isPoiOpen ? "bg-gray-50 dark:bg-[#1a1a1a] text-green-600" : "bg-white dark:bg-[#0A0A0A] hover:bg-gray-50 dark:hover:bg-[#1a1a1a]"
                         }`}
                 >
-                    <PoiIcon className="w-4.5 h-4.5" />
+                    <PoiIcon className="w-4.5 h-4.5 stroke-current" />
                 </button>
             </div>
 
