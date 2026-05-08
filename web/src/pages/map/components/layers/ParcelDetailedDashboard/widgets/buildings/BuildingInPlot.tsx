@@ -112,7 +112,7 @@ export function BuildingInPlot({ parcelFeature, buildings, onBuildingClick }: Bu
   if (!geoData) return null;
 
   return (
-    <Card className="h-full flex flex-col p-4 shadow-sm border-gray-100 ring-0">
+    <Card className="h-full flex flex-col p-4 shadow-sm border-gray-200 dark:border-[#232323] dark:bg-[#111111] ring-0 font-inter">
       <div className="w-full flex-grow flex items-center justify-center relative min-h-[250px]">
         <svg 
           viewBox="0 0 200 200" 
@@ -121,7 +121,7 @@ export function BuildingInPlot({ parcelFeature, buildings, onBuildingClick }: Bu
         >
           <path 
             d={geoData.parcelPath} 
-            className="fill-gray-50/50 stroke-gray-300"
+            className="fill-gray-50/50 dark:fill-[#232323]/50 stroke-gray-300 dark:stroke-[#333333]"
             strokeWidth="1"
             strokeDasharray="3 2"
             fillRule="evenodd"
@@ -143,19 +143,19 @@ export function BuildingInPlot({ parcelFeature, buildings, onBuildingClick }: Bu
         </svg>
 
         <div className="absolute top-0 right-0">
-           <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest bg-white/80 px-2 py-1 rounded">
+           <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest bg-white/80 dark:bg-[#111111]/80 px-2 py-1 rounded">
              Plan Cadastral
            </span>
         </div>
       </div>
 
-      <Divider className="my-4" />
+      <Divider className="my-4 dark:border-[#232323]" />
 
       <div className="flex flex-col gap-4 pb-2">
         {stats.categories.length > 0 && (
           <div>
             <Flex className="mb-2">
-              <Text className="text-[11px] font-medium text-slate-700">Répartition des types</Text>
+              <Text className="text-[11px] font-medium text-slate-700 dark:text-gray-300">Répartition des types</Text>
             </Flex>
             <CategoryBar
               values={stats.categories.map(c => c.percentage)}
@@ -169,7 +169,7 @@ export function BuildingInPlot({ parcelFeature, buildings, onBuildingClick }: Bu
                 return (
                   <div key={cat.name} className="flex items-center gap-1.5">
                     <div className={`w-2 h-2 rounded-full bg-${colorCode}-500`} />
-                    <span className="text-[10px] font-medium text-slate-600 truncate max-w-[100px]">
+                    <span className="text-[10px] font-medium text-slate-600 dark:text-gray-400 truncate max-w-[100px]">
                       {cat.name} ({cat.percentage}%)
                     </span>
                   </div>
@@ -179,14 +179,14 @@ export function BuildingInPlot({ parcelFeature, buildings, onBuildingClick }: Bu
           </div>
         )}
 
-        <div className="grid grid-cols-2 gap-4 mt-2 bg-slate-50 p-3 rounded-lg border border-slate-100">
+        <div className="grid grid-cols-2 gap-4 mt-2 bg-slate-50 dark:bg-[#232323] p-3 rounded-lg border border-slate-100 dark:border-[#333333]">
           <div>
             <Text className="text-[11px] text-gray-500 uppercase tracking-wider font-semibold">Bâtiments</Text>
-            <Metric className="text-xl text-slate-800">{stats.totalBuildings}</Metric>
+            <Metric className="text-xl text-slate-800 dark:text-white">{stats.totalBuildings}</Metric>
           </div>
           <div>
             <Text className="text-[11px] text-gray-500 uppercase tracking-wider font-semibold">Emprise au Sol</Text>
-            <Metric className="text-xl text-slate-800">{stats.empriseTotale}</Metric>
+            <Metric className="text-xl text-slate-800 dark:text-white">{stats.empriseTotale}</Metric>
           </div>
         </div>
       </div>
