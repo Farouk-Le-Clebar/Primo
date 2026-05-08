@@ -4,7 +4,7 @@ import { Euro, Calendar, Maximize, Home } from "lucide-react";
 export default function DvfTransactionsTab({ transactions }: { transactions: any[] }) {
   if (!transactions || transactions.length === 0) {
     return (
-      <div className="p-8 text-sm text-[#878D96] text-center bg-gray-50 rounded-xl border border-dashed border-gray-200">
+      <div className="p-8 text-sm text-[#878D96] text-center bg-gray-50 dark:bg-[#171717] rounded-xl border border-dashed border-gray-200 dark:border-[#232323]">
         Aucune transaction historique trouvée pour cette parcelle.
       </div>
     );
@@ -15,7 +15,7 @@ export default function DvfTransactionsTab({ transactions }: { transactions: any
   );
 
   return (
-    <Card className="p-0 border-gray-200 ring-0 shadow-sm overflow-hidden font-inter">
+    <Card className="h-fit flex-none p-0 border-gray-200 ring-0 shadow-sm overflow-hidden font-inter">
       <Table className="mt-0">
         <TableBody>
           {sortedTransactions.map((t, index) => {
@@ -31,10 +31,10 @@ export default function DvfTransactionsTab({ transactions }: { transactions: any
             return (
               <TableRow 
                 key={index} 
-                className="hover:bg-blue-50/50 transition-all duration-200 cursor-pointer group border-b border-gray-100 last:border-0 relative"
+                className="hover:bg-blue-50/50 dark:hover:bg-[#1C1C1C] transition-all duration-200 cursor-pointer group border-b border-gray-100 dark:border-[#232323] last:border-0 relative"
               >
                 <TableCell className="w-min py-4 pl-5 pr-2">
-                  <div className="inline-flex items-center px-2 py-0.5 rounded font-inter font-bold text-xs bg-gray-100 text-gray-700 border border-gray-200 shrink-0">
+                  <div className="inline-flex items-center px-2 py-0.5 rounded font-inter font-bold text-xs bg-gray-100 dark:bg-[#232323] text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-[#232323] shrink-0">
                     <Calendar size={12} className="mr-1.5 opacity-60" />
                     {dateStr}
                   </div>
@@ -43,8 +43,8 @@ export default function DvfTransactionsTab({ transactions }: { transactions: any
                 <TableCell className="py-4 px-0">
                   <div className="flex flex-col gap-0.5">
                     <div className="flex items-center gap-2.5">
-                      <Euro size={16} className="text-emerald-600" />
-                      <span className="text-[13px] font-semibold text-gray-900 leading-none">
+                      <Euro size={16} className="text-emerald-600 dark:text-emerald-500" />
+                      <span className="text-[13px] font-semibold text-gray-900 dark:text-white leading-none">
                         {price} €
                       </span>
                       <span className="text-[11px] text-gray-400 font-normal">
@@ -53,14 +53,14 @@ export default function DvfTransactionsTab({ transactions }: { transactions: any
                     </div>
                     
                     <div className="max-h-0 opacity-0 group-hover:max-h-20 group-hover:opacity-100 transition-all duration-300 overflow-hidden">
-                      <div className="flex items-center gap-4 text-[11px] text-gray-500 italic pl-6 pt-1">
+                      <div className="flex items-center gap-4 text-[11px] text-gray-500 dark:text-gray-400 italic pl-6 pt-1">
                         <span className="flex items-center gap-1">
                           <Maximize size={10} /> {surface} m²
                         </span>
                         <span className="flex items-center gap-1">
                           <Home size={10} /> {t.type_local || 'Terrain'}
                         </span>
-                        <span className="font-semibold text-emerald-600/80">
+                        <span className="font-semibold text-emerald-600/80 dark:text-emerald-500">
                           {priceM2} €/m²
                         </span>
                       </div>

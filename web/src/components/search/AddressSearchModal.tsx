@@ -70,7 +70,7 @@ export default function AddressSearchModal({ isOpen, onClose, onAdressSelect }: 
     <div className="fixed inset-0 z-[2000] flex items-start justify-center pt-[15vh] px-4 animate-in fade-in duration-150" onClick={onClose}>
       <div className="absolute inset-0 bg-black/60" />
       
-      <div className="relative w-full max-w-[600px] bg-white rounded-xl shadow-2xl border border-gray-200 overflow-hidden flex flex-col" onClick={e => e.stopPropagation()}>
+      <div className="relative w-full max-w-[600px] bg-white dark:bg-[#171717] rounded-xl shadow-2xl border border-gray-200 dark:border-[#262626] overflow-hidden flex flex-col" onClick={e => e.stopPropagation()}>
         
         <SearchInput address={address} setAddress={setAddress} isPending={isPending} />
 

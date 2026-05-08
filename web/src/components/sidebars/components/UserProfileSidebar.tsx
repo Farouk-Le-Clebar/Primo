@@ -64,7 +64,7 @@ export default function UserProfileSidebar() {
             <div className="font-inter font-medium text-sm text-gray-800 truncate leading-tight w-full dark:text-white">
               {user.firstName || "Utilisateur"}
             </div>
-            <div className="font-inter font-normal text-xs text-gray-500 truncate leading-none w-full mt-0.5 dark:text-white">
+            <div className="font-inter font-normal text-xs text-gray-500 truncate leading-none w-full mt-0.5 dark:text-gray-400">
               {user.email || "email@exemple.com"}
             </div>
           </div>

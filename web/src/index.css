@@ -34,6 +34,7 @@
   }
 }
 
+
 .scrollbar-custom::-webkit-scrollbar {
     width: 8px;
     background: transparent;
@@ -70,4 +71,17 @@ input:-webkit-autofill:active {
     box-shadow: 0 0 0px 1000px #EFEFF4 inset !important;
     -webkit-text-fill-color: #1f2937 !important;
     background-clip: content-box !important;
+}
+
+nav a,
+[role="navigation"] a,
+.nav-link {
+  color: inherit !important;
+  text-decoration: none;
+}
+
+nav a:visited,
+[role="navigation"] a:visited,
+.nav-link:visited {
+  color: inherit !important;
 }

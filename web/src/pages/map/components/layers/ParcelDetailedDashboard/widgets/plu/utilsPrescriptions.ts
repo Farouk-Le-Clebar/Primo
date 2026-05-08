@@ -62,27 +62,27 @@ export function getPrescriptionStyle(typepsc: string, libelle?: string) {
 
   switch (code) {
     case '03': case '19':
-      return { icon: ShieldAlert, color: "text-rose-600", bg: "bg-rose-50", border: "border-rose-100", bar: "bg-rose-500" };
+      return { icon: ShieldAlert, color: "text-rose-600", bg: "bg-rose-50 dark:bg-[#232323]", border: "border-rose-100 dark:border-[#232323]", bar: "bg-rose-500" };
 
     case '01': case '13': case '29':
-      return { icon: Trees, color: "text-[#10B981]", bg: "bg-[#EBF9F5]", bar: "bg-emerald-500" };
+      return { icon: Trees, color: "text-[#10B981]", bg: "bg-[#EBF9F5] dark:bg-[#232323]", bar: "bg-emerald-500" };
 
     case '07': case '04':
-      return { icon: Landmark, color: "text-indigo-600", bg: "bg-indigo-50", border: "border-indigo-100", bar: "bg-indigo-500" };
+      return { icon: Landmark, color: "text-indigo-600", bg: "bg-indigo-50 dark:bg-[#232323]", border: "border-indigo-100 dark:border-[#232323]", bar: "bg-indigo-500" };
 
     case '44': case '12': case '16': 
-      return { icon: Construction, color: "text-[#EF4444]", bg: "bg-[#FEF0F0]", bar: "bg-slate-400" };
+      return { icon: Construction, color: "text-[#EF4444]", bg: "bg-[#FEF0F0] dark:bg-[#232323]", bar: "bg-slate-400" };
 
     case '22': 
-      return { icon: ShoppingBag, color: "text-[#14B8A6]", bg: "bg-[#ECF9F8]", bar: "bg-violet-500" };
+      return { icon: ShoppingBag, color: "text-[#14B8A6]", bg: "bg-[#ECF9F8] dark:bg-[#232323]", bar: "bg-violet-500" };
 
     case '17': 
-       return { icon: Users, color: "text-pink-600", bg: "bg-pink-50", border: "border-pink-100", bar: "bg-pink-500" };
+       return { icon: Users, color: "text-pink-600", bg: "bg-pink-50 dark:bg-[#232323]", border: "border-pink-100 dark:border-[#232323]", bar: "bg-pink-500" };
 
     case '05':
-       return { icon: Car, color: "text-[#FEF7EB]", bg: "bg-[#F59E0B]", bar: "bg-amber-500" };
+       return { icon: Car, color: "text-[#FEF7EB]", bg: "bg-[#F59E0B] dark:bg-[#232323]", bar: "bg-amber-500" };
 
     default:
-      return { icon: FileText, color: "text-slate-500", bg: "bg-slate-50", border: "border-slate-100", bar: "bg-slate-300" };
+      return { icon: FileText, color: "text-slate-500", bg: "bg-slate-50 dark:bg-[#232323]", border: "border-slate-100 dark:border-[#232323]", bar: "bg-slate-300" };
   }
 }
