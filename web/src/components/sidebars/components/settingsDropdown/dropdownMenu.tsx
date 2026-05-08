@@ -58,7 +58,7 @@ export default function DropdownMenu({ onClose }: DropdownMenuProps) {
   const dropdownBtnStyle = "w-full mx-auto h-8 py-2 border border-transparent bg-transparent";
 
   return (
-    <div className="w-56 bg-white dark:bg-[#171717] rounded-xl shadow-lg border border-gray-100 dark:border-[#262626] py-2 px-0.5 flex flex-col gap-1 transition-colors duration-200">
+    <div className="w-56 bg-white dark:bg-[#171717] dark:text-white rounded-xl shadow-lg border border-gray-100 dark:border-[#262626] py-2 px-0.5 flex flex-col gap-1 transition-colors duration-200">
       
       <div className="px-2 py-1">
         <UserProfileDropdown />
