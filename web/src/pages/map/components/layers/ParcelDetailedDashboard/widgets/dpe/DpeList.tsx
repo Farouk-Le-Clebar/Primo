@@ -5,7 +5,7 @@ import { getDpeColors, formatEuro } from "./utils";
 export default function DpeList({ dpeList }: { dpeList: any[] }) {
   if (!dpeList || dpeList.length === 0) {
     return (
-      <div className="p-8 text-sm text-[#878D96] text-center bg-gray-50 rounded-xl border border-dashed border-gray-200">
+      <div className="p-8 text-sm text-[#878D96] dark:text-gray-400 text-center bg-gray-50 dark:bg-[#171717] rounded-xl border border-dashed border-gray-200 dark:border-[#232323]">
         Aucun DPE historique trouvé pour cette parcelle.
       </div>
     );
@@ -16,9 +16,9 @@ export default function DpeList({ dpeList }: { dpeList: any[] }) {
   );
 
   return (
-    <Card className="p-0 border-gray-200 ring-0 shadow-sm overflow-hidden font-inter flex flex-col">
-      <div className="bg-gray-50 border-b border-gray-100 px-5 py-2.5 flex items-center gap-4 text-[10px] text-gray-500 overflow-x-auto whitespace-nowrap scrollbar-custom">
-        <div className="flex items-center gap-1.5 font-semibold text-gray-700">
+    <Card className="p-0 border-gray-200 dark:border-[#232323] dark:bg-[#111111] ring-0 shadow-sm overflow-hidden font-inter flex flex-col">
+      <div className="bg-gray-50 dark:bg-[#171717] border-b border-gray-100 dark:border-[#232323] px-5 py-2.5 flex items-center gap-4 text-[10px] text-gray-500 dark:text-gray-400 overflow-x-auto whitespace-nowrap scrollbar-custom">
+        <div className="flex items-center gap-1.5 font-semibold text-gray-700 dark:text-gray-300">
           <Info size={12} className="text-blue-500" />
           Légende :
         </div>
@@ -46,10 +46,10 @@ export default function DpeList({ dpeList }: { dpeList: any[] }) {
             return (
               <TableRow 
                 key={dpe.numero_dpe || index} 
-                className="hover:bg-blue-50/50 transition-all duration-200 cursor-pointer group border-b border-gray-100 last:border-0 relative"
+                className="hover:bg-blue-50/50 dark:hover:bg-[#1C1C1C] transition-all duration-200 cursor-pointer group border-b border-gray-100 dark:border-[#232323] last:border-0 relative"
               >
                 <TableCell className="w-min py-4 pl-5 pr-2 align-top">
-                  <div className="inline-flex items-center px-2 py-0.5 rounded font-inter font-bold text-xs bg-gray-100 text-gray-700 border border-gray-200 shrink-0 mt-0.5">
+                  <div className="inline-flex items-center px-2 py-0.5 rounded font-inter font-bold text-xs bg-gray-100 dark:bg-[#232323] text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-[#232323] shrink-0 mt-0.5">
                     <Calendar size={12} className="mr-1.5 opacity-60" />
                     {dateStr}
                   </div>
@@ -73,7 +73,7 @@ export default function DpeList({ dpeList }: { dpeList: any[] }) {
                       </div>
 
                       <div className="flex items-center gap-1.5 ml-1">
-                        <span className="text-[13px] font-semibold text-gray-900 leading-none capitalize">
+                        <span className="text-[13px] font-semibold text-gray-900 dark:text-white leading-none capitalize">
                           {dpe.type_batiment || 'Logement'}
                         </span>
                         {dpe.annee_construction && (
@@ -85,10 +85,10 @@ export default function DpeList({ dpeList }: { dpeList: any[] }) {
                     </div>
                     
                     <div className="max-h-0 opacity-0 group-hover:max-h-32 group-hover:opacity-100 transition-all duration-300 overflow-hidden">
-                      <div className="flex flex-wrap items-center justify-between text-[11px] text-gray-500 pl-1 pt-2 w-full pr-4 gap-y-2">
+                      <div className="flex flex-wrap items-center justify-between text-[11px] text-gray-500 dark:text-gray-400 pl-1 pt-2 w-full pr-4 gap-y-2">
                         <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
                           {surface > 0 && (
-                            <span className="flex items-center gap-1 font-semibold text-gray-700">
+                            <span className="flex items-center gap-1 font-semibold text-gray-700 dark:text-gray-300">
                               <Maximize size={10} /> {surface} m²
                             </span>
                           )}
@@ -116,21 +116,19 @@ export default function DpeList({ dpeList }: { dpeList: any[] }) {
                           )}
 
                           {conso > 0 && (
-                            <span className="flex items-center gap-1 text-orange-600/80 font-semibold" title="Consommation Énergie Primaire">
+                            <span className="flex items-center gap-1 text-orange-600/80 dark:text-orange-500 font-semibold" title="Consommation Énergie Primaire">
                               <Flame size={10} /> {Math.round(conso)} kWh/m²
                             </span>
                           )}
 
                           {dpe.cout_total_5_usages && (
-                            <span className="flex items-center gap-1 text-emerald-600/80 font-semibold" title="Coût annuel estimé">
+                            <span className="flex items-center gap-1 text-emerald-600/80 dark:text-emerald-500 font-semibold" title="Coût annuel estimé">
                               <Euro size={10} /> {formatEuro(dpe.cout_total_5_usages)}/an
                             </span>
                           )}
                         </div>
-
                       </div>
                     </div>
-
                   </div>
                 </TableCell>
 
@@ -140,7 +138,7 @@ export default function DpeList({ dpeList }: { dpeList: any[] }) {
                       DPE
                     </span>
                     {dpe.numero_dpe && (
-                      <span className="text-[9px] text-gray-300 font-mono group-hover:text-gray-400 transition-colors">
+                      <span className="text-[9px] text-gray-300 dark:text-gray-600 font-mono group-hover:text-gray-400 dark:group-hover:text-gray-400 transition-colors">
                         {dpe.numero_dpe.substring(0, 8)}
                       </span>
                     )}
