@@ -18,10 +18,19 @@ import Navbar from "./layers/Navbar/Navbar";
 import { mapPreference } from "../../../utils/map";
 import { addOkReverseRequest } from "../../../requests/addok";
 
-const getUserMapPreference = (): "basic" | "satellite" => {
+const getUserMapPreference = (): "basic" | "satellite" | "basic-dark" => {
     try {
         const user = JSON.parse(localStorage.getItem("user") || "{}");
-        return user.mapPreference === "satellite" ? "satellite" : "basic";
+        const isDarkMode = document.documentElement.classList.contains("dark");
+        
+        if (user.mapPreference === "satellite") return "satellite";
+        if (user.mapPreference === "basic" && isDarkMode) {
+            console.log("Le mec est un gros BaKAAAAAA")
+            return "basic-dark";
+        }
+        console.log("ZoubDansLePantalon")
+        
+        return "basic";
     } catch (e) {
         return "basic";
     }
@@ -52,7 +61,7 @@ const Layers = ({ initialPlacement, initialCoordinates }: LayersProps) => {
     const [cityBoundData, setCityBoundData] = useState<FeatureCollection | null>(null);
     const [divisionsBoundData, setDivisionsBoundData] = useState<FeatureCollection | null>(null);
 
-    const [mapType, setMapType] = useState<"basic" | "satellite">(getUserMapPreference());
+    const [mapType, setMapType] = useState<"basic" | "satellite" | "basic-dark">(getUserMapPreference());
     const [poisData, setPoisData] = useState<FeatureCollection | null>(null);
     const [enabledPoiTypes, setEnabledPoiTypes] = useState<string[]>(
         Object.entries(POI_CONFIGS).filter(([_, config]) => config.enabled).map(([key]) => key)
