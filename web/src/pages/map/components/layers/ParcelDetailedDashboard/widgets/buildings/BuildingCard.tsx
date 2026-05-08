@@ -13,7 +13,7 @@ export const BuildingCard = ({ id, p, building, matMur, matToit, constructionYea
   };
 
   return (
-    <Card id={id} className="mx-auto max-w-full scroll-mt-10 mb-6 p-4 border-gray-200 dark:border-[#232323] dark:bg-[#111111]">
+    <Card id={id} className="mx-auto max-w-full scroll-mt-10 mb-6 p-4 border-gray-200">
       <Flex alignItems="start" className="mb-6">
         <div className="flex items-center gap-4">
           <div className="w-16 h-16 shrink-0 rounded-xl overflow-hidden border border-[#F0F0F0] dark:border-[#232323] bg-[#F8F9FB] dark:bg-[#232323] shadow-sm">
