@@ -30,7 +30,7 @@ export default function Layout() {
 
         <div className="flex-1 flex flex-col pt-2 relative z-10">
           <div className="flex-1 flex flex-col bg-white dark:bg-[#0A0A0A] rounded-tl-2xl shadow-sm border border-gray-100 dark:border-white/5 overflow-hidden">            
-            <header className="w-full h-14 flex items-center px-2 z-20 relative">
+            <header className="w-full h-17 flex items-center px-2 z-20 relative">
               <Navbar />
             </header>
             <main className="flex-1 overflow-y-auto relative z-0">
