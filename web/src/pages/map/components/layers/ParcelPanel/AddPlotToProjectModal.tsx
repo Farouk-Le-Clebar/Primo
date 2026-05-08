@@ -1,11 +1,12 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { addPlotToProject, fetchProjects } from "../../../../../requests/projectRequests";
 import { X, ChevronDown, Check } from "lucide-react";
 import { createPortal } from "react-dom";
 import Button from "../../../../../ui/Button";
 import { useState } from "react";
 import type { UsefullPlotData } from "../../../../../types/project/plots";
 import { toast } from "react-hot-toast";
+import { addPlotToProject, getProjects } from "../../../../../requests/projects";
+import type { ProjectResponse } from "../../../../../types/project/projects";
 
 type AddPlotToProjectModalProps = {
     onClose: () => void;
@@ -16,9 +17,10 @@ const AddPlotToProjectModal = ({ onClose, plotData }: AddPlotToProjectModalProps
     const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-    const { data: projects } = useQuery({
+    const { data: projects } = useQuery<ProjectResponse[]>({
         queryKey: ['projects'],
-        queryFn: () => fetchProjects()
+        queryFn: getProjects,
+        refetchOnWindowFocus: false,
     });
 
     const { mutate: addPlotToProjectMutation } = useMutation({
