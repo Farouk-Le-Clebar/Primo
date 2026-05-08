@@ -91,7 +91,6 @@ export default function InformationsCard({ feature }: ParcelWidgetProps) {
                       Code.{code}
                     </div>
                   </TableCell>
-
                   <TableCell className="py-4 px-0">
                     <div className="flex flex-col gap-0.5">
                       <div className="flex items-center gap-2.5">
