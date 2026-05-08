@@ -24,7 +24,7 @@ export default function DvfWidget({ feature }: ParcelWidgetProps) {
   const isEmpty = !transactions || transactions.length === 0;
 
   return (
-    <div className="font-inter w-full">
+    <div className="font-inter w-full h-full flex flex-col min-h-0">
       {isLoading ? (
         <div className="flex items-center gap-2 mb-4 bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
           <LoadingPrimoLogo className="w-6 h-6 text-black" />
@@ -35,22 +35,21 @@ export default function DvfWidget({ feature }: ParcelWidgetProps) {
           Aucune transaction immobilière publique récente trouvée sur cette parcelle.
         </div>
       ) : (
-        <Grid numItems={1} numItemsMd={3} className="gap-6 w-full relative">
-          <Col numColSpan={1}>
-            <div className="sticky top-0 h-182 flex flex-col">
-              <DvfSummaryCard transactions={transactions} />
-            </div>
-          </Col>
+        <div className="flex flex-col md:flex-row gap-6 w-full h-full min-h-0">
+          
+          <div className="w-full md:w-1/3 h-auto md:h-full">
+            <DvfSummaryCard transactions={transactions} />
+          </div>
 
-          <Col numColSpan={1} numColSpanMd={2} className="pb-10">
-            <div className="flex flex-col gap-6">
+          <div className="w-full md:w-2/3 h-auto md:h-full flex flex-col overflow-hidden">
+            <div className="flex-1 overflow-y-auto flex flex-col gap-6 pb-4 pr-1 scrollbar-custom">
               <DvfEvolutionChart transactions={transactions} />
               <DvfDistributionCards transactions={transactions} />
               <DvfTransactionsTab transactions={transactions} />
             </div>
-          </Col>
+          </div>
 
-        </Grid>
+        </div>
       )}
     </div>
   );
