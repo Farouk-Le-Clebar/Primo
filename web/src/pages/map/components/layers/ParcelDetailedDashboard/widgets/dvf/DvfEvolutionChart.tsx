@@ -41,7 +41,7 @@ export default function DvfEvolutionChart({ transactions }: { transactions: any[
 
   return (
     <Card className="border-gray-200 ring-0 shadow-sm p-6 font-inter">
-      <h3 className="font-semibold text-gray-900 mb-6 font-inter">Évolution du prix au m²</h3>
+      <h3 className="font-semibold text-gray-900 dark:text-white mb-6 font-inter">Évolution du prix au m²</h3>
       
       <LineChart
         className="h-72 mt-4"
