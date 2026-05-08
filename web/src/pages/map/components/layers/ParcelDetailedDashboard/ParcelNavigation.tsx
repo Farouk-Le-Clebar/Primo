@@ -17,7 +17,7 @@ export default function ParcelNavigation({ activeTab, setActiveTab, onOpenSearch
   }, []);
 
   return (
-    <nav className="flex items-center gap-1 bg-gray-100 p-0.5 rounded-lg" ref={containerRef}>
+    <nav className="flex items-center gap-1 bg-gray-100 dark:bg-[#262626] p-0.5 rounded-lg" ref={containerRef}>
       {NAVIGATION.map((cat) => {
         const activeItem = cat.type === "dropdown" && cat.items ? cat.items.find(i => i.id === activeTab) : null;
         const isCatActive = activeTab === cat.id || !!activeItem;
@@ -26,8 +26,8 @@ export default function ParcelNavigation({ activeTab, setActiveTab, onOpenSearch
           const Icon = cat.icon;
           return (
             <button key={cat.id} onClick={() => setActiveTab(cat.id)} 
-              className={`flex items-center gap-2 px-3 py-1 rounded-md text-[12px] font-semibold transition-all ${
-                activeTab === cat.id ? "bg-white text-gray-900 shadow-sm border border-gray-200" : "text-gray-500 hover:text-gray-700"
+              className={`flex items-center gap-2 px-3 py-1 cursor-pointer rounded-md text-[12px] font-semibold transition-all ${
+                activeTab === cat.id ? "bg-white dark:bg-[#171717] dark:text-white text-gray-900 shadow-sm border border-gray-200 dark:border-[#262626]" : "text-gray-500 dark:text-white hover:text-gray-700"
               }`}>
               {Icon && <Icon size={13} />} {cat.label}
             </button>
@@ -36,8 +36,8 @@ export default function ParcelNavigation({ activeTab, setActiveTab, onOpenSearch
         return (
           <div key={cat.id} className="relative">
             <button onClick={() => setOpenDropdown(openDropdown === cat.id ? null : cat.id)} 
-              className={`flex items-center gap-1 px-3 py-1 rounded-md text-[12px] font-semibold transition-all ${
-                isCatActive ? "bg-white text-gray-900 shadow-sm border border-gray-200" : "text-gray-500 hover:text-gray-700"
+              className={`flex items-center gap-1 px-3 py-1 cursor-pointer rounded-md text-[12px] font-semibold transition-all ${
+                isCatActive ? "bg-white dark:bg-[#171717] dark:text-white text-gray-900 shadow-sm border border-gray-200 dark:border-[#262626]"  : " text-gray-500 dark:text-white hover:text-gray-700 "
               }`}>
               <div className="flex items-center">
                 <span>{cat.label}</span>
@@ -52,11 +52,11 @@ export default function ParcelNavigation({ activeTab, setActiveTab, onOpenSearch
             </button>
             
             {openDropdown === cat.id && cat.items && (
-              <div className="absolute top-full left-0 mt-2 w-48 bg-white border border-gray-200 rounded-xl shadow-xl z-50 py-1 overflow-hidden">
+              <div className="absolute top-full left-0 mt-2 w-48 bg-white dark:bg-[#171717] border border-gray-200 dark:border-[#262626] rounded-xl shadow-xl z-50 py-1 overflow-hidden">
                 {cat.items.map((item) => (
                   <button key={item.id} onClick={() => { setActiveTab(item.id); setOpenDropdown(null); }} 
                     className={`flex w-full items-center gap-2 px-4 py-2.5 text-[12px] text-left ${
-                      activeTab === item.id ? "bg-blue-50 text-blue-700 font-bold" : "text-gray-600 hover:bg-gray-50"
+                      activeTab === item.id ? "bg-blue-50 text-blue-700 font-bold dark:bg-[#262626]" : "text-gray-600 dark:text-white hover:bg-gray-50 dark:hover:bg-[#262626]"
                     }`}>
                     <span className={`text-[14px] font-mono ${activeTab === item.id ? "text-blue-400" : "text-gray-300"}`}>#</span>
                     {item.label}
@@ -69,7 +69,7 @@ export default function ParcelNavigation({ activeTab, setActiveTab, onOpenSearch
       })}
 
       <div className="h-4 w-[1px] bg-gray-300 mx-0.5" />
-      <button onClick={onOpenSearch} className="p-1.5 text-gray-500 hover:text-gray-900 hover:bg-white rounded-md transition-all border border-transparent hover:border-gray-200">
+      <button onClick={onOpenSearch} className="cursor-pointer dark:text-white p-1.5 text-gray-500 hover:text-gray-900 hover:bg-white rounded-md transition-all border border-transparent hover:border-gray-200">
         <Search size={14} />
       </button>
     </nav>
