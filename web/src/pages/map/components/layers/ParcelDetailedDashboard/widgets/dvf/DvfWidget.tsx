@@ -1,5 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-import { Grid, Col } from "@tremor/react";
 
 // COMPONENTS
 import type { ParcelWidgetProps } from "../../types";
