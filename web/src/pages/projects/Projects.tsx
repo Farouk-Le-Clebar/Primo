@@ -1,6 +1,6 @@
 import { Table, TableBody, TableCell, TableHead, TableHeaderCell, TableRow, TextInput, Button, Card, Title, Text } from '@tremor/react';
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Star, Search, Plus } from "lucide-react";
+import { Star, Search, Plus, Ellipsis, Trash } from "lucide-react";
 import { useState } from 'react';
 import LoadingPrimoLogo from '../../components/animations/LoadingPrimoLogo';
 import type { ProjectResponse } from '../../types/project/projects';
@@ -93,38 +93,55 @@ export default function Projects() {
                 <Table className="mt-2">
                     <TableHead>
                         <TableRow className="border-b border-gray-200 dark:border-white/5">
-                            <TableHeaderCell className="text-gray-500 dark:text-gray-400">Nom du projet</TableHeaderCell>
-                            <TableHeaderCell className="text-center text-gray-500 dark:text-gray-400">Nombre de parcelles</TableHeaderCell>
-                            <TableHeaderCell className="text-gray-500 dark:text-gray-400">Date de création</TableHeaderCell>
-                            <TableHeaderCell className="text-right text-gray-500 dark:text-gray-400">Favori</TableHeaderCell>
+                            <TableHeaderCell className="text-gray-500 dark:text-gray-400 text-left">Nom du projet</TableHeaderCell>
+                            <TableHeaderCell className="text-gray-500 dark:text-gray-400 text-center">Parcelles</TableHeaderCell>
+                            <TableHeaderCell className="text-gray-500 dark:text-gray-400 text-center">Date de création</TableHeaderCell>
+                            <TableHeaderCell className="text-gray-500 dark:text-gray-400 text-right">
+                                <div className="flex justify-end pr-2">
+                                    <Ellipsis className='w-5 h-5' />
+                                </div>
+                            </TableHeaderCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {filteredProjects?.map((project: ProjectResponse) => (
                             <TableRow onClick={() => navigate(`/projects/${project.id}`)} key={project.id} className="hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors cursor-default border-b border-gray-100 dark:border-white/5 last:border-none cursor-pointer">
-                                <TableCell className="font-medium text-gray-900 dark:text-gray-200">
+                                <TableCell className="font-medium text-gray-900 dark:text-gray-200 text-left">
                                     {project.name}
                                 </TableCell>
-                                <TableCell className="text-gray-600 dark:text-gray-400 text-center font-medium">
+                                <TableCell className="text-gray-600 dark:text-gray-400 font-medium text-center">
                                     {project.numberOfPlots}
                                 </TableCell>
-                                <TableCell className="text-gray-600 dark:text-gray-400">
+                                <TableCell className="text-gray-600 dark:text-gray-400 text-center">
                                     {new Date(project.createdAt).toLocaleDateString('fr-FR')}
                                 </TableCell>
                                 <TableCell className="text-right">
-                                    <button className="p-2 outline-none focus:outline-none hover:scale-110 active:scale-95 transition-transform disabled:cursor-not-allowed"
-                                        onClick={(e) => handleToggleFavorite(project.id, e)}
-                                        disabled={isTogglingFavorite}
-                                    >
-                                        {isTogglingFavorite && project.id === actualTogglingFavorite ? (
-                                            <LoadingPrimoLogo className="h-5 w-5 dark:invert" />
-                                        ) : (
-                                            <Star
-                                                className={`w-5 h-5 cursor-pointer ${project.isFavorite ? 'text-yellow-400 drop-shadow-sm' : 'text-gray-300 dark:text-gray-600 hover:text-gray-400 dark:hover:text-gray-500'}`}
-                                                fill={project.isFavorite ? "currentColor" : "none"}
-                                            />
-                                        )}
-                                    </button>
+                                    <div className="flex items-center justify-end gap-2">
+                                        <button className="p-2 outline-none focus:outline-none hover:scale-110 active:scale-95 transition-transform disabled:cursor-not-allowed"
+                                            onClick={(e) => handleToggleFavorite(project.id, e)}
+                                            disabled={isTogglingFavorite}
+                                            title="Ajouter aux favoris"
+                                        >
+                                            {isTogglingFavorite && project.id === actualTogglingFavorite ? (
+                                                <LoadingPrimoLogo className="h-5 w-5 dark:invert" />
+                                            ) : (
+                                                <Star
+                                                    className={`w-5 h-5 cursor-pointer ${project.isFavorite ? 'text-yellow-400 drop-shadow-sm' : 'text-gray-300 dark:text-gray-600 hover:text-gray-400 dark:hover:text-gray-500'}`}
+                                                    fill={project.isFavorite ? "currentColor" : "none"}
+                                                />
+                                            )}
+                                        </button>
+
+                                        <button className="p-2 outline-none focus:outline-none hover:scale-110 active:scale-95 transition-transform"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                console.log("Supprimer", project.id);
+                                            }}
+                                            title="Supprimer le projet"
+                                        >
+                                            <Trash className='w-5 h-5 text-red-500 hover:text-red-600' />
+                                        </button>
+                                    </div>
                                 </TableCell>
                             </TableRow>
                         ))}
