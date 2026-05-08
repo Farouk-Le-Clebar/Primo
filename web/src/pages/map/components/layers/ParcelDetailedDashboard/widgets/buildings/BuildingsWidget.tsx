@@ -54,7 +54,7 @@ export default function BuildingsWidget({ feature }: ParcelWidgetProps) {
   };
 
   return (
-    <div className="font-inter w-full">
+    <div className="font-inter w-full h-full flex flex-col">
       {isPending && (
         <div className="flex items-center gap-2 mb-4">
           <LoadingPrimoLogo className="w-1 h-1 text-black-500" />
@@ -69,19 +69,17 @@ export default function BuildingsWidget({ feature }: ParcelWidgetProps) {
       )}
 
       {!isPending && sortedBuildings.length > 0 && (
-        <Grid numItems={1} numItemsMd={3} className="gap-6 w-full relative">
+        <Grid numItems={1} numItemsMd={3} className="gap-6 w-full h-full">
           
-          <Col numColSpan={1}>
-            <div className="sticky top-0 h-182 flex flex-col">
-              <BuildingInPlot
-                parcelFeature={feature} 
-                buildings={sortedBuildings} 
-                onBuildingClick={handleBuildingClick}
-              />
-            </div>
+          <Col numColSpan={1} className="h-full">
+            <BuildingInPlot
+              parcelFeature={feature} 
+              buildings={sortedBuildings} 
+              onBuildingClick={handleBuildingClick}
+            />
           </Col>
 
-          <Col numColSpan={1} numColSpanMd={2} className="pb-10">
+          <Col numColSpan={1} numColSpanMd={2} className="h-full md:overflow-y-auto pb-4 pr-1 scrollbar-custom">
             <Grid numItems={1} numItemsSm={2} className="gap-4">
               {sortedBuildings.map((building: any, i: number) => {
                 const p = building.properties;
