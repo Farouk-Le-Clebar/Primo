@@ -5,7 +5,7 @@ import { useState } from "react";
 import { getDvfParcelle } from "../../../../../requests/dvf/information";
 import { getBuildingsByGeometry } from "../../../../../requests/geoserver/bdTopo";
 import { getZonesUrbaByGeometry } from "../../../../../requests/geoserver/urbanAreas";
-import { extractDepartement } from "../ParcelDetailedDashboard/widgets/gpu/utils";
+import { extractDepartement } from "../ParcelDetailedDashboard/widgets/plu/utils";
 import { useQuery } from "@tanstack/react-query";
 import AddPlotToProjectModal from "./AddPlotToProjectModal";
 import { Tooltip } from "../../../../../ui/Tooltip";
@@ -46,12 +46,12 @@ export default function ParcelInfoPanel({ selectedParcelle, onOpenDashboard }: P
   if (!selectedParcelle?.feature) return null;
 
   return (
-    <aside className="flex flex-col w-full h-full bg-white rounded-xl overflow-hidden pointer-events-auto">
-      <div className="px-6 py-4 border-b border-[#F0F0F0] shrink-0">
+    <aside className="flex flex-col w-full h-full bg-white dark:bg-[#0A0A0A] rounded-xl overflow-hidden pointer-events-auto">
+      <div className="px-6 py-4  shrink-0">
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <span className="h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
-            <h2 className="font-inter font-semibold text-lg text-[#111111] truncate">
+            <h2 className="font-inter font-semibold text-lg text-[#111111] dark:text-white truncate">
               Parcelle {parcelId.replace('Parcelle ', '')}
             </h2>
           </div>
@@ -59,14 +59,14 @@ export default function ParcelInfoPanel({ selectedParcelle, onOpenDashboard }: P
             <Tooltip content="Ajouter au projet">
               <button
                 onClick={() => setAddPlotModalOpen(true)}
-                className="h-[36px] px-3 bg-[#111111] hover:bg-gray-800 text-white rounded-lg flex items-center justify-center gap-2 transition-colors shadow-sm cursor-pointer"
+                className="h-[36px] px-3 bg-[#111111] dark:bg-white hover:bg-gray-800 dark:hover:bg-[#e8e8e8] text-white dark:text-black rounded-lg flex items-center justify-center gap-2 transition-colors shadow-sm cursor-pointer"
                 >
                 <Plus size={14} />
               </button>
             </Tooltip>
             <button
               onClick={onOpenDashboard}
-              className="h-[36px] px-4 bg-[#111111] hover:bg-gray-800 text-white rounded-lg flex items-center justify-center gap-2 transition-colors shadow-sm cursor-pointer"
+              className="h-[36px] px-4 bg-[#111111] dark:bg-white hover:bg-gray-800 dark:hover:bg-[#e8e8e8] text-white dark:text-black rounded-lg flex items-center justify-center gap-2 transition-colors shadow-sm cursor-pointer"
             >
               <ExternalLink size={14} />
               <span className="font-inter font-medium text-xs">Analyse complète</span>
