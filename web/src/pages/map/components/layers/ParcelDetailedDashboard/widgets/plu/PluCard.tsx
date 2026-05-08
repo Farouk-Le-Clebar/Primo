@@ -56,7 +56,7 @@ export default function PluCard({ feature }: ParcelWidgetProps) {
   const InfoRow = ({ label, value }: { label: string, value: string | React.ReactNode }) => (
     <div className="flex justify-between items-center py-3 border-b border-gray-100 last:border-0">
       <span className="text-[13px] font-medium text-[#878D96] shrink-0 pr-4">{label}</span>
-      <span className="text-[13px] font-medium text-[#111111] text-right truncate">{value}</span>
+      <span className="text-[13px] font-medium text-[#111111] dark:text-white text-right truncate">{value}</span>
     </div>
   );
 
@@ -119,10 +119,10 @@ export default function PluCard({ feature }: ParcelWidgetProps) {
             target="_blank"
             rel="noopener noreferrer"
             download={docAction.type === 'zip'}
-            className="flex items-center justify-center gap-2 w-full h-[40px] bg-black hover:bg-gray-800 rounded-lg text-[13px] font-medium text-white transition-colors shadow-sm cursor-pointer"
+            className="flex items-center justify-center gap-2 w-full h-[40px] bg-black hover:bg-gray-800 rounded-lg text-[13px] font-medium text-white transition-colors shadow-sm cursor-pointer dark:bg-white dark:hover:bg-white/80"
           >
-            <docAction.icon className="text-white" size={15} />
-            <span className="font-inter font-medium text-sm text-white">{docAction.label}</span>
+            <docAction.icon className="text-white dark:text-black" size={15} />
+            <span className="font-inter font-medium text-sm text-white dark:text-black">{docAction.label}</span>
           </a>
         </div>
       )}
