@@ -1,6 +1,5 @@
-import { Card, Divider, Select, SelectItem } from '@tremor/react';
+import { Card } from '@tremor/react';
 
-// Le composant "Faux contenu" avec le motif hachuré
 function ContentPlaceholder() {
   return (
     <div className="relative h-full w-full overflow-hidden rounded-lg bg-gray-50 dark:bg-white/[0.02] border border-dashed border-gray-200 dark:border-white/10">
@@ -39,7 +38,6 @@ export default function Dashboard() {
         <Card className="p-0 border-gray-200 dark:border-white/10 ring-0 shadow-sm overflow-hidden rounded-xl">
           <div className="grid grid-cols-1 md:grid-cols-12 divide-y md:divide-y-0 md:divide-x divide-gray-200 dark:divide-white/10">
             
-            {/* Colonne de gauche : 3 KPI (Chiffres clés) */}
             <div className="p-4 md:col-span-4 flex flex-col gap-4">
               <div className="h-24">
                 <ContentPlaceholder />
@@ -52,7 +50,6 @@ export default function Dashboard() {
               </div>
             </div>
 
-            {/* Colonne de droite : Grand graphique */}
             <div className="p-4 md:col-span-8 min-h-[300px] flex flex-col">
               <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-4">
                 Évolution du prix de l'immobilier (DVF)
@@ -64,7 +61,6 @@ export default function Dashboard() {
           </div>
         </Card>
 
-        {/* SECTION 2 : Grille de petits graphiques (ex: Répartitions, Statistiques...) */}
         <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2">
           
           <Card className="p-0 border-gray-200 dark:border-white/10 ring-0 shadow-sm rounded-xl overflow-hidden">
