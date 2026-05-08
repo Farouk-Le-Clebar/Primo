@@ -4,10 +4,8 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { User } from './database/user.entity';
-import { Project } from './database/project.entity';
+import { Projects } from './database/project.entity';
 import { Notification } from './database/notification.entity';
-import { ProjectMember } from './database/project-member.entity';
-import { ActivityEvent } from './database/history.entity';
 import { DvfMutation } from './database/dvf.entity';
 import { DpeEntity } from './database/dpe.entity';
 import { AddokProxyMiddleware } from './api/addok.middleware';
@@ -16,10 +14,7 @@ import { GeoServerProxyMiddleware } from './api/geoserver.middleware';
 import { OllamaProxyMiddleware } from './api/ollama.middleware';
 import { GeoModule } from './geo/geo.module';
 import { UserModule } from './user/user.module';
-import { ProjectModule } from './project/project.module';
 import { NotificationModule } from './notification/notification.module';
-import { ProjectMembersModule } from './project-members/project-members.module';
-import { ActivityHistoryModule } from './history/history.module';
 import { FeedbackModule } from './feedback/feedback.module';
 import { DvfModule } from './dvf/dvf.module';
 import { DpeModule } from './dpe/dpe.module';
@@ -30,6 +25,7 @@ import { ResetPassword } from './database/reset-password.entity';
 import { SearchHistory } from './database/search-history.entity';
 import { Feedback } from './database/feedback.entity';
 import { ProjectPlots } from './database/project-plots.entity';
+import { ProjectsModule } from './projects/projects.module';
 
 @Module({
   imports: [
@@ -45,22 +41,20 @@ import { ProjectPlots } from './database/project-plots.entity';
       username: process.env.MYSQL_USER,
       password: process.env.MYSQL_PASSWORD,
       database: process.env.MYSQL_DATABASE,
-      entities: [User, SearchHistory, Project, DvfMutation, DpeEntity, Notification, ProjectMember, ActivityEvent, VerifiedUser, ResetPassword, UserStatistics, Feedback, ProjectPlots],
+      entities: [User, SearchHistory, Projects, DvfMutation, DpeEntity, Notification, VerifiedUser, ResetPassword, UserStatistics, Feedback, ProjectPlots],
       synchronize: true,
       timezone: 'Z',
     }),
-    TypeOrmModule.forFeature([User, SearchHistory, Project, DvfMutation, DpeEntity, Notification, ProjectMember, ActivityEvent, VerifiedUser, ResetPassword, UserStatistics, Feedback, ProjectPlots]),
+    TypeOrmModule.forFeature([User, SearchHistory, Projects, DvfMutation, DpeEntity, Notification, VerifiedUser, ResetPassword, UserStatistics, Feedback, ProjectPlots]),
     AuthModule,
     GeoModule,
     UserModule,
     DvfModule,
     DpeModule,
-    ProjectModule,
     NotificationModule,
-    ProjectMembersModule,
-    ActivityHistoryModule,
     FeedbackModule,
     MailModule,
+    ProjectsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
