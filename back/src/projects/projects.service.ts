@@ -63,4 +63,20 @@ export class ProjectsService {
             await this.projectsRepository.save(project);
         }
     }
+
+    async toggleFavorite(projectId: string, userId: string) {
+        const project = await this.projectsRepository.findOneBy({
+            id: projectId,
+            userId: userId,
+        });
+
+        if (!project)
+            throw new NotFoundException('Project not found or does not belong to the user');
+
+        if (project.userId !== userId)
+            throw new UnauthorizedException('Project does not belong to the user');
+
+        project.isFavorite = !project.isFavorite;
+        await this.projectsRepository.save(project);
+    }
 }
