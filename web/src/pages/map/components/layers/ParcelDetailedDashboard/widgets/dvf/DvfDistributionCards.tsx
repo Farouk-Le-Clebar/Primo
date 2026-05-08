@@ -29,19 +29,19 @@ export default function DvfDistributionCards({ transactions }: { transactions: a
     <Grid numItems={1} numItemsSm={2} className="gap-6">
       
       <Col>
-        <Card className="border-gray-200 ring-0 shadow-sm p-6 h-full font-inter">
-          <h3 className="font-semibold text-gray-900 mb-6">Distribution par surface</h3>
-          <div className="flex justify-between text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 border-b border-gray-100 pb-2">
+        <Card className="border-gray-200 dark:border-[#232323] dark:bg-[#111111] ring-0 shadow-sm p-6 h-full font-inter">
+          <h3 className="font-semibold text-gray-900 dark:text-white mb-6">Distribution par surface</h3>
+          <div className="flex justify-between text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 border-b border-gray-100 dark:border-[#232323] pb-2">
             <span>Surface</span>
             <span>Nb. Transactions</span>
           </div>
           <div className="flex flex-col gap-4 mt-4">
             {surfaceStats.map(([label, count]) => (
               <div key={label} className="flex items-center justify-between">
-                <span className="text-[13px] text-gray-700 w-20 shrink-0">{label}</span>
+                <span className="text-[13px] text-gray-700 dark:text-gray-300 w-20 shrink-0">{label}</span>
                 <div className="flex-1 px-4">
-                  <div className="h-5 bg-emerald-100 rounded flex items-center px-2" style={{ width: `${(count / transactions.length) * 100}%`, minWidth: '30px' }}>
-                     <span className="text-[10px] font-bold text-emerald-700">{count}</span>
+                  <div className="h-5 bg-emerald-100 dark:bg-emerald-500/20 rounded flex items-center px-2" style={{ width: `${(count / transactions.length) * 100}%`, minWidth: '30px' }}>
+                     <span className="text-[10px] font-bold text-emerald-700 dark:text-emerald-400">{count}</span>
                   </div>
                 </div>
               </div>
@@ -51,8 +51,8 @@ export default function DvfDistributionCards({ transactions }: { transactions: a
       </Col>
 
       <Col>
-        <Card className="border-gray-200 ring-0 shadow-sm p-6 h-full font-inter">
-          <h3 className="font-semibold text-gray-900 mb-6">Répartition par type de bien</h3>
+        <Card className="border-gray-200 dark:border-[#232323] dark:bg-[#111111] ring-0 shadow-sm p-6 h-full font-inter">
+          <h3 className="font-semibold text-gray-900 dark:text-white mb-6">Répartition par type de bien</h3>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-8 mt-4">
             <DonutChart
               className="w-40 h-40"
