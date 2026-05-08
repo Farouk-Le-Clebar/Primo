@@ -119,7 +119,7 @@ const Layers = ({ initialPlacement, initialCoordinates }: LayersProps) => {
         }
     }, []);
 
-    const handleChangeMapType = useCallback((type: "basic" | "satellite") => {
+    const handleChangeMapType = useCallback((type: "basic" | "satellite" | "basic-dark") => {
         setMapType(type);
         const user = JSON.parse(localStorage.getItem("user") || "{}");
         user.mapPreference = type;
