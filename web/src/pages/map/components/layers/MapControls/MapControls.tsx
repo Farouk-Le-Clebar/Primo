@@ -15,8 +15,8 @@ interface MapControlsProps {
     onZoomOut: () => void;
     onToggleLayers?: () => void;
     onLocateUser?: () => void;
-    currentMapType: "basic" | "satellite";
-    onChangeMapType: (type: "basic" | "satellite") => void;
+    currentMapType: "basic" | "satellite" | "basic-dark";
+    onChangeMapType: (type: "basic" | "satellite" | "basic-dark") => void;
     enabledPoiTypes: string[];
     onTogglePoi: (type: string, enabled: boolean) => void;
     currentZoom: number;
