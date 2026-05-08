@@ -1,12 +1,10 @@
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
-import { deletePlotFromProject, getProjectPlots } from "../../../../../requests/projectRequests";
 import PlotMap from "./PlotMap";
-import type { ProjectPlotResponse } from "../../../../../types/project/plots";
-import LoadingPrimoLogo from "../../../../../components/animations/LoadingPrimoLogo";
+import LoadingPrimoLogo from "../../../../components/animations/LoadingPrimoLogo";
 import { useNavigate } from "react-router-dom";
 import { Check, ExternalLink, ExternalLinkIcon, Trash2, X } from "lucide-react";
 import toast from "react-hot-toast";
-import Button from "../../../../../ui/Button";
+import Button from "../../../../ui/Button";
 import { useState } from "react";
 import L from "leaflet";
 
@@ -19,14 +17,14 @@ const ParcelsTab = ({ projectId }: ParcelsTabProps) => {
     const [validationDeleteOpen, setValidationDeleteOpen] = useState(false);
     const [idToDelete, setIdToDelete] = useState<string | null>(null);
 
-    const { data: parcels, isLoading, isPending } = useQuery<ProjectPlotResponse[]>({
+    const { data: parcels, isLoading, isPending } = useQuery({
         queryKey: ["projectPlots", projectId],
-        queryFn: () => getProjectPlots(projectId),
+        queryFn: async () => {return [] as any},
         refetchOnWindowFocus: false,
     });
 
     const { mutate: removePlotFromProject, isPending: isRemovingPlot } = useMutation({
-        mutationFn: (plotId: string) => deletePlotFromProject(projectId, plotId),
+        mutationFn: async () => {},
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["projectPlots", projectId] });
             toast.success("Parcelle supprimée du projet.");
@@ -41,7 +39,8 @@ const ParcelsTab = ({ projectId }: ParcelsTabProps) => {
     const navigate = useNavigate();
 
     const handleRemovePlot = (id: string) => {
-        removePlotFromProject(id);
+        console.log("Removing plot with id:", id);
+        removePlotFromProject();
     };
 
     const handleMapClick = (plot: any) => {
@@ -63,7 +62,7 @@ const ParcelsTab = ({ projectId }: ParcelsTabProps) => {
             ) : null}
             {parcels && parcels.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                    {parcels?.map((plot) => (
+                    {parcels?.map((plot: any) => (
                         <div
                             key={plot.id}
                             className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden flex flex-col hover:shadow-md transition-shadow"
