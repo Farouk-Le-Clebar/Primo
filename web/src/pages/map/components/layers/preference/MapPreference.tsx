@@ -5,30 +5,29 @@ import { changeMapPreference } from "../../../../../requests/UserRequests";
 
 type MapPreferenceProps = {
     isOpen: boolean;
-    onChangeMapType: (type: "basic" | "satellite") => void;
-    currentMapType: "basic" | "satellite";
+    onChangeMapType: (type: "basic" | "satellite" | "basic-dark") => void;
+    currentMapType: "basic" | "satellite" | "basic-dark";
 };
 
 const MapPreference = ({ isOpen, onChangeMapType, currentMapType }: MapPreferenceProps) => {
-    const [mapType, setMapType] = useState<"basic" | "satellite">(currentMapType);
+    const [mapType, setMapType] = useState<"basic" | "satellite" | "basic-dark">(currentMapType);
 
-    // Maintient la synchro si le type de carte est changé ailleurs
     useEffect(() => {
         setMapType(currentMapType);
     }, [currentMapType]);
 
     const { mutate: mutateChangeMapPreference, isPending } = useMutation({
-        mutationFn: (newMapType: "basic" | "satellite") => changeMapPreference(newMapType),
+        mutationFn: (newMapType: "basic" | "satellite" | "basic-dark") => changeMapPreference(newMapType),
         onSuccess: (_, newMapType) => {
             onChangeMapType(newMapType);
         },
         onError: (error) => {
             console.error("Error updating map preference:", error);
-            setMapType(currentMapType); // Rollback en cas d'erreur
+            setMapType(currentMapType);
         }
     });
 
-    const handleChangeMapType = (type: "basic" | "satellite") => {
+    const handleChangeMapType = (type: "basic" | "satellite" | "basic-dark") => {
         if (type === mapType) return;
         setMapType(type);
         mutateChangeMapPreference(type);
