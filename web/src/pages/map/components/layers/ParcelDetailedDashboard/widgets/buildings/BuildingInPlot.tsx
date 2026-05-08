@@ -112,7 +112,7 @@ export function BuildingInPlot({ parcelFeature, buildings, onBuildingClick }: Bu
   if (!geoData) return null;
 
   return (
-    <Card className="h-full flex flex-col p-4 shadow-sm border-gray-200 dark:border-[#232323] dark:bg-[#111111] ring-0 font-inter">
+    <Card className="h-full flex flex-col p-4 shadow-sm border-gray-200 ring-0 font-inter">
       <div className="w-full flex-grow flex items-center justify-center relative min-h-[250px]">
         <svg 
           viewBox="0 0 200 200" 
