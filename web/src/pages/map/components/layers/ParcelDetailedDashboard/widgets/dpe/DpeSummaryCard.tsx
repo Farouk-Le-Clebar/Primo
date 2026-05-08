@@ -48,7 +48,7 @@ export default function DpeSummaryCard({ dpeList }: { dpeList: any[] }) {
   const gesColors = getDpeColors(stats.dominantGes);
 
   return (
-    <Card className="border-gray-200 bg-white dark:border-[#232323] dark:bg-[#111111] ring-0 shadow-sm p-6 h-full flex flex-col font-inter">
+    <Card className="border-gray-200 bg-white ring-0 shadow-sm p-6 h-full flex flex-col font-inter">
       <div className="mb-6">
         <h3 className="text-[11px] font-bold text-[#878D96] uppercase tracking-wider mb-1">Performance Globale</h3>
         <div className="flex items-baseline gap-2">
