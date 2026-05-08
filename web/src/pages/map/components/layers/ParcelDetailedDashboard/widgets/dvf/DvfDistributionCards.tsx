@@ -29,7 +29,7 @@ export default function DvfDistributionCards({ transactions }: { transactions: a
     <Grid numItems={1} numItemsSm={2} className="gap-6">
       
       <Col>
-        <Card className="border-gray-200 dark:border-[#232323] dark:bg-[#111111] ring-0 shadow-sm p-6 h-full font-inter">
+        <Card className="border-gray-200 ring-0 shadow-sm p-6 h-full font-inter">
           <h3 className="font-semibold text-gray-900 dark:text-white mb-6">Distribution par surface</h3>
           <div className="flex justify-between text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 border-b border-gray-100 dark:border-[#232323] pb-2">
             <span>Surface</span>
@@ -51,7 +51,7 @@ export default function DvfDistributionCards({ transactions }: { transactions: a
       </Col>
 
       <Col>
-        <Card className="border-gray-200 dark:border-[#232323] dark:bg-[#111111] ring-0 shadow-sm p-6 h-full font-inter">
+        <Card className="border-gray-200 ring-0 shadow-sm p-6 h-full font-inter">
           <h3 className="font-semibold text-gray-900 dark:text-white mb-6">Répartition par type de bien</h3>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-8 mt-4">
             <DonutChart
