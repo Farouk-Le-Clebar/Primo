@@ -19,7 +19,7 @@ export default function DpeDistributionCard({ dpeList }: { dpeList: any[] }) {
   }, [dpeList]);
 
   return (
-    <Card className="border-gray-200 dark:border-[#232323] dark:bg-[#111111] ring-0 shadow-sm p-6 font-inter">
+    <Card className="border-gray-200 ring-0 shadow-sm p-6 font-inter">
       <div className="flex justify-between items-center mb-6">
         <h3 className="font-semibold text-gray-900 dark:text-white flex items-center gap-2">
           <Zap size={16} className="text-gray-400 dark:text-gray-500" />
