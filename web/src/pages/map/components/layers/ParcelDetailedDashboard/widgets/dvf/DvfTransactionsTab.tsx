@@ -15,7 +15,7 @@ export default function DvfTransactionsTab({ transactions }: { transactions: any
   );
 
   return (
-    <Card className="p-0 border-gray-200 dark:border-[#232323] dark:bg-[#111111] ring-0 shadow-sm overflow-hidden font-inter">
+    <Card className="h-fit flex-none p-0 border-gray-200 ring-0 shadow-sm overflow-hidden font-inter">
       <Table className="mt-0">
         <TableBody>
           {sortedTransactions.map((t, index) => {
