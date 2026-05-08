@@ -1,15 +1,18 @@
 import { Table, TableBody, TableCell, TableHead, TableHeaderCell, TableRow, TextInput, Button, Card, Title, Text } from '@tremor/react';
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Star, Search, Plus } from "lucide-react";
 import { useState } from 'react';
 import LoadingPrimoLogo from '../../components/animations/LoadingPrimoLogo';
 import type { ProjectResponse } from '../../types/project/projects';
-import { getProjects } from '../../requests/projects';
+import { getProjects, toggleFavorite } from '../../requests/projects';
 import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 export default function Projects() {
     const [searchQuery, setSearchQuery] = useState("");
+    const [actualTogglingFavorite, setActualTogglingFavorite] = useState<string | null>(null);
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
 
     const { data: projects, isPending } = useQuery<ProjectResponse[]>({
         queryKey: ['projects'],
@@ -17,9 +20,28 @@ export default function Projects() {
         refetchOnWindowFocus: false,
     });
 
+    const { mutate: toggleFavoriteMutation, isPending: isTogglingFavorite } = useMutation({
+        mutationFn: (projectId: string) => toggleFavorite(projectId),
+        onSuccess: () => {
+            return queryClient.invalidateQueries({ queryKey: ['projects'] });
+        },
+        onError: () => {
+            toast.error("Une erreur est survenue lors de la mise à jour du favori. Veuillez réessayer.");
+        },
+        onSettled: () => {
+            setActualTogglingFavorite(null);
+        }
+    });
+
     const filteredProjects = projects?.filter(project =>
         project.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
+
+    const handleToggleFavorite = (projectId: string, e: React.MouseEvent<HTMLButtonElement>) => {
+        e.stopPropagation();
+        setActualTogglingFavorite(projectId);
+        toggleFavoriteMutation(projectId);
+    };
 
     if (isPending) {
         return (
@@ -90,11 +112,18 @@ export default function Projects() {
                                     {new Date(project.createdAt).toLocaleDateString('fr-FR')}
                                 </TableCell>
                                 <TableCell className="text-right">
-                                    <button className="p-2 outline-none focus:outline-none hover:scale-110 active:scale-95 transition-transform">
-                                        <Star
-                                            className={`w-5 h-5 cursor-pointer ${project.isFavorite ? 'text-yellow-400 drop-shadow-sm' : 'text-gray-300 dark:text-gray-600 hover:text-gray-400 dark:hover:text-gray-500'}`}
-                                            fill={project.isFavorite ? "currentColor" : "none"}
-                                        />
+                                    <button className="p-2 outline-none focus:outline-none hover:scale-110 active:scale-95 transition-transform disabled:cursor-not-allowed"
+                                        onClick={(e) => handleToggleFavorite(project.id, e)}
+                                        disabled={isTogglingFavorite}
+                                    >
+                                        {isTogglingFavorite && project.id === actualTogglingFavorite ? (
+                                            <LoadingPrimoLogo className="h-5 w-5 dark:invert" />
+                                        ) : (
+                                            <Star
+                                                className={`w-5 h-5 cursor-pointer ${project.isFavorite ? 'text-yellow-400 drop-shadow-sm' : 'text-gray-300 dark:text-gray-600 hover:text-gray-400 dark:hover:text-gray-500'}`}
+                                                fill={project.isFavorite ? "currentColor" : "none"}
+                                            />
+                                        )}
                                     </button>
                                 </TableCell>
                             </TableRow>
