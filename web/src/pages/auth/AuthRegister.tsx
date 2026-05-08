@@ -19,7 +19,7 @@ export default function AuthRegister() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  
+
   useEffect(() => {
     if (!email) {
       navigate("/auth");
@@ -39,19 +39,8 @@ export default function AuthRegister() {
 
   const { mutate, isPending } = useMutation({
     mutationFn: () => register(email, firstName, surName, password),
-    onSuccess: (data) => {
-      if (typeof window !== "undefined" && window.localStorage) {
-        try {
-          localStorage.setItem("token", data.access_token);
-          if (data.user) {
-            localStorage.setItem("user", JSON.stringify(data.user));
-          }
-        navigate("/onboarding");
-
-        } catch (err) {
-          console.error("⚠️ Impossible d'accéder au localStorage :", err);
-        }
-      }
+    onSuccess: () => {
+        navigate("/auth/register/verify", { state: { email } });
     },
     onError: (err: unknown) => {
       if (err instanceof AxiosError) {
@@ -75,7 +64,7 @@ export default function AuthRegister() {
     }
     mutate();
   };
-  
+
   useEffect(() => {
     const handleGlobalKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Enter") {
@@ -98,7 +87,7 @@ export default function AuthRegister() {
           <Input
             type="email"
             value={email}
-            onChange={() => {}}
+            onChange={() => { }}
             className="bg-gray-100 text-gray-500 cursor-not-allowed opacity-70"
             placeholder=""
           />
@@ -145,9 +134,8 @@ export default function AuthRegister() {
 
           <div className="w-full h-1.5 bg-gray-200 rounded-full mt-3 overflow-hidden">
             <div
-              className={`h-full transition-all duration-300 rounded-full ${
-                strength > 0 ? strengthColors[strength - 1] : "bg-transparent"
-              }`}
+              className={`h-full transition-all duration-300 rounded-full ${strength > 0 ? strengthColors[strength - 1] : "bg-transparent"
+                }`}
               style={{ width: `${(strength / 3) * 100}%` }}
             ></div>
           </div>

@@ -1,6 +1,12 @@
 @import "tailwindcss";
 @import "./styles/fonts.css";
 @import "./styles/animations.css";
+@import "./styles/onBoarding.css";
+@import "./styles/tremor.css";
+
+@source "../node_modules/@tremor/react";
+
+@safelist stroke-emerald-500, bg-emerald-500, text-emerald-500;
 
 @custom-variant dark (&:where(.dark, .dark *));
 
@@ -11,6 +17,8 @@
   --animate-fade-in: fade-in 0.2s ease-out;
   --animate-slide-in-left: slideInLeft 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
   --animate-spin-slow: spin-slow 1s linear infinite;
+
+  --color-gray-background: #f7f7fa;
 
   @keyframes fade-in {
     from { opacity: 0; transform: scale(0.97); }
@@ -25,6 +33,7 @@
     to { transform: rotate(360deg); }
   }
 }
+
 
 .scrollbar-custom::-webkit-scrollbar {
     width: 8px;
@@ -62,4 +71,17 @@ input:-webkit-autofill:active {
     box-shadow: 0 0 0px 1000px #EFEFF4 inset !important;
     -webkit-text-fill-color: #1f2937 !important;
     background-clip: content-box !important;
+}
+
+nav a,
+[role="navigation"] a,
+.nav-link {
+  color: inherit !important;
+  text-decoration: none;
+}
+
+nav a:visited,
+[role="navigation"] a:visited,
+.nav-link:visited {
+  color: inherit !important;
 }

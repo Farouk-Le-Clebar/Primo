@@ -10,15 +10,15 @@ export default function ProtectedRoute() {
 
   useEffect(() => {
     const verify = async () => {
-      const isConnected = await checkAuth();
+      const response = await checkAuth();
 
-      if (!isConnected) {
-        toast.error("Veuillez vous connecter pour accéder à cette page", {
+      if (!response.connected) {
+        toast.error(response.message, {
           id: "auth-error",
         });
       }
 
-      setIsAuth(isConnected);
+      setIsAuth(response.connected);
     };
 
     verify();

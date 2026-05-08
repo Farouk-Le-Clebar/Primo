@@ -35,5 +35,7 @@ export const FRANCE_BBOX = "-180,-90,180,90";
 
 export const mapPreference = {
     "basic": "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
-    "satellite": "https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}"
+    "basic-dark": "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+    "satellite": "https://api.maptiler.com/maps/hybrid-v4/{z}/{x}/{y}.jpg?key=UCSo4MgoDF6bXaSkuhU7",
+    "oldSatellite": "https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}"
 };

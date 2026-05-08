@@ -7,7 +7,7 @@ import { JwtAuthGuard } from '../guard/jwt-auth.guard';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService) { }
 
   @Post('register')
   register(@Body() dto: RegisterDto) {
@@ -37,7 +37,9 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @Get('verify')
-  verifyToken(@Request() req) {
-    return req.user;
+  async verifyToken(@Request() req) {
+    await this.authService.updateLastConnection(req.user.id);
+    const { id, ...userWithoutId } = req.user;
+    return userWithoutId;
   }
 }

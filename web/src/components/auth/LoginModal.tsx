@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { login } from "../../requests/AuthRequests";
-import { AxiosError } from "axios";
 import UserInfo from "../user/UserPreview";
 import { Eye, EyeOff, ArrowLeft } from "lucide-react";
 
@@ -40,16 +39,8 @@ export default function LoginModal({
       }
       setErrorMessage("");
     },
-    onError: (err: unknown) => {
-      if (err instanceof AxiosError) {
-        if (err.response?.status === 401 || err.response?.data?.message === "Invalid credentials") {
-          setErrorMessage("Le mot de passe est incorrect. Veuillez réessayer.");
-        } else {
-          setErrorMessage("Une erreur est survenue. Veuillez réessayer plus tard.");
-        }
-      } else {
-        setErrorMessage("Erreur inattendue. Merci de réessayer.");
-      }
+    onError: (err: any) => {
+      setErrorMessage(err.response?.data?.message || "Une erreur est survenue. Veuillez réessayer.");
     },
   });
 

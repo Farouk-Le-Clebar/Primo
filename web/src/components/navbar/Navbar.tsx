@@ -1,9 +1,14 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+
+// COMPONENTS
 import NotificationsDropdown from "./components/notificationDropdown/NotificationsDropdown";
-import SearchingBar from "../../components/search/SearchBar";
+import { startOnboarding } from "../../config/onboarding.service";
 
 // ICONS
 import PageIcons from "../../assets/icons/page.svg?react";
+import ChevronIcons from "../../assets/icons/chevronRight.svg?react";
+
+import HelpIcon from "../../assets/icons/help.svg?react";
 
 const ROUTE_NAMES: Record<string, string> = {
   "/": "Vue d'ensemble",
@@ -12,11 +17,11 @@ const ROUTE_NAMES: Record<string, string> = {
   "/settings": "Paramètres",
   "/dashboard": "Aperçu",
   "/search": "Carte",
+  "/admin/dashboard": "Administration",
 };
 
 export default function Navbar() {
   const location = useLocation();
-  const navigate = useNavigate();
 
   const getPageName = () => {
     const path = location.pathname;
@@ -28,34 +33,35 @@ export default function Navbar() {
 
   const pageName = getPageName();
 
-  const handleAddressSelect = (coords: [number, number]) => {
-    navigate("/search", { 
-      state: { centerOn: coords } 
-    });
-  };
-
   return (
-    <nav className="flex w-full h-full items-center bg-white font-UberMove border-b border-gray-100">
+    <nav className="flex w-full h-full items-center bg-transparent font-UberMove">
       
-      <div className="flex h-full flex-1 items-center gap-2 px-4">
-        <PageIcons className="w-5 h-5 text-gray-800" />
-        <div className="flex items-center gap-1 font-inter font-medium text-xs text-[#999999] min-w-max">
+      <div className="flex h-full flex-1 items-center gap-3 px-4">
+        <PageIcons className="w-4 h-4 dark:invert" />
+        <div className="h-3 w-px bg-gray-300"></div>
+        <div className="flex items-center gap-3 font-inter font-light text-sm text-[#999999] min-w-max">
           <span>Dashboard</span>
           {pageName && (
             <>
-              <span>/</span>
-              <span className="text-gray-800 font-semibold">{pageName}</span>
+              <ChevronIcons className="w-3 h-3 text-gray-400 dark:invert" />
+              <span className="text-gray-800 font-normal text-xs dark:text-white">{pageName}</span>
             </>
           )}
         </div>
       </div>
 
-      <div className="flex h-full items-center justify-end gap-4 pr-6">
-          <div className="w-[200px] hover:w-[350px] focus-within:w-[350px] transition-all duration-300 ease-in-out">
-            <SearchingBar onAdressSelect={handleAddressSelect} />
+      <div className="flex h-full items-center justify-end gap-2 pr-6">
+          <button 
+            onClick={() => startOnboarding(location.pathname)}
+            className="p-2 text-gray-400 hover:text-gray-900 transition-colors rounded-full hover:bg-gray-100 dark:hover:bg-[#171717]"
+            title="Aide et tutoriel"
+          >
+            <HelpIcon className="w-4 h-4 dark:invert" />
+          </button>
+  
+          <div id="notifications-tour">
+            <NotificationsDropdown />
           </div>
-
-          <NotificationsDropdown />
       </div>
     </nav>
   );

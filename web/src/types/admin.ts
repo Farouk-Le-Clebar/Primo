@@ -3,6 +3,7 @@ export type UserType = {
     firstName: string;
     surName: string;
     email: string;
+    lastConnection: Date;
     isAdmin: boolean;
     profilePicture: string;
 }

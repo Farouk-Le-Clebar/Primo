@@ -1,0 +1,211 @@
+@theme {
+  /* --- COULEURS DE MARQUE (VERT) --- */
+  --color-tremor-brand-faint: #f0fdf4;
+  --color-tremor-brand-muted: #bbf7d0;
+  --color-tremor-brand-subtle: #4ade80;
+  --color-tremor-brand: #166534;
+  --color-tremor-brand-emphasis: #14532d;
+  --color-tremor-brand-inverted: #ffffff;
+
+  /* --- COULEURS DE MARQUE POUR LE DARK MODE --- */
+  --color-dark-tremor-brand-faint: #052e16;
+  --color-dark-tremor-brand-muted: #14532d;
+  --color-dark-tremor-brand-subtle: #166534;
+  --color-dark-tremor-brand: #22c55e;
+  --color-dark-tremor-brand-emphasis: #4ade80;
+  --color-dark-tremor-brand-inverted: #000000;
+
+  /* --- COULEURS DE FOND - LIGHT MODE --- */
+  --color-tremor-background-muted: #f9fafb;
+  --color-tremor-background-subtle: #f3f4f6;
+  --color-tremor-background: #fafafa; 
+  --color-tremor-background-emphasis: #374151;
+
+  /* --- COULEURS DE FOND - DARK MODE --- */
+  --color-dark-tremor-background-muted: #0a0a0a;
+  --color-dark-tremor-background-subtle: #262626;
+  --color-dark-tremor-background: #171717; 
+  --color-dark-tremor-background-emphasis: #d1d5db;
+
+  /* --- BORDURES ET ANNEAUX - LIGHT MODE --- */
+  --color-tremor-border: #e5e7eb;
+  --color-tremor-ring: #e5e7eb;
+
+  /* --- BORDURES ET ANNEAUX - DARK MODE --- */
+  --color-dark-tremor-border: rgba(255, 255, 255, 0.05); 
+  --color-dark-tremor-ring: transparent; 
+
+  /* --- TEXTES - LIGHT MODE --- */
+  --color-tremor-content-subtle: #9ca3af;
+  --color-tremor-content: #6b7280;
+  --color-tremor-content-emphasis: #374151;
+  --color-tremor-content-strong: #111827;
+  --color-tremor-content-inverted: #ffffff;
+
+  /* --- TEXTES - DARK MODE --- */
+  --color-dark-tremor-content-subtle: #4b5563;
+  --color-dark-tremor-content: #9ca3af;
+  --color-dark-tremor-content-emphasis: #d1d5db;
+  --color-dark-tremor-content-strong: #ffffff;
+  --color-dark-tremor-content-inverted: #000000;
+
+  /* --- OMBRES --- */
+  --shadow-tremor-input: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-tremor-card: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --shadow-tremor-dropdown: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+
+  /* --- BORDURES (RADIUS) --- */
+  --radius-tremor-small: 0.375rem;
+  --radius-tremor-default: 0.5rem;
+  --radius-tremor-full: 9999px;
+
+  /* --- TYPOGRAPHIE --- */
+  --text-tremor-label: 0.75rem;
+  --text-tremor-label--line-height: 1rem;
+  
+  --text-tremor-default: 0.875rem;
+  --text-tremor-default--line-height: 1.25rem;
+  
+  --text-tremor-title: 1.125rem;
+  --text-tremor-title--line-height: 1.75rem;
+  
+  --text-tremor-metric: 1.875rem;
+  --text-tremor-metric--line-height: 2.25rem;
+
+  /* --- ANIMATIONS DU TOOLTIP TREMOR RAW --- */
+  --animate-hide: hide 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-slide-down-and-fade: slideDownAndFade 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-slide-left-and-fade: slideLeftAndFade 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-slide-up-and-fade: slideUpAndFade 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-slide-right-and-fade: slideRightAndFade 150ms cubic-bezier(0.16, 1, 0.3, 1);
+
+  @keyframes hide {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+  @keyframes slideDownAndFade {
+    from {
+      opacity: 0;
+      transform: translateY(-6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  @keyframes slideLeftAndFade {
+    from {
+      opacity: 0;
+      transform: translateX(6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  @keyframes slideUpAndFade {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  @keyframes slideRightAndFade {
+    from {
+      opacity: 0;
+      transform: translateX(-6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+}
+
+/* --- OVERRIDES RECHARTS ET CUSTOM --- */
+.recharts-line-path {
+  stroke-opacity: 1 !important;
+  stroke-width: 2.5px !important;
+  visibility: visible !important;
+}
+
+.recharts-line-dot, .recharts-dot {
+  opacity: 1 !important;
+  fill-opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.stroke-emerald-500, .stroke-emerald-600 {
+  stroke: #10b981 !important;
+}
+
+.stroke-slate-500, .stroke-slate-400 {
+  stroke: #94a3b8 !important;
+  stroke-dasharray: 5 5;
+}
+
+.fill-slate-500 {
+  fill: #94a3b8 !important;
+}
+
+.fill-emerald-500 {
+  fill: #10b981 !important;
+}
+
+.recharts-pie-sector path {
+  fill-opacity: 1 !important;
+  stroke: #ffffff;
+  stroke-width: 2px;
+}
+
+.fill-indigo-500 { fill: #6366f1 !important; }
+.fill-amber-500 { fill: #f59e0b !important; }
+.fill-cyan-500 { fill: #06b6d4 !important; }
+.fill-rose-500 { fill: #f43f5e !important; }
+
+.recharts-tooltip-wrapper {
+  z-index: 50 !important;
+}
+
+.recharts-legend-wrapper {
+  z-index: 10 !important;
+}
+
+textarea:focus, 
+button[role="combobox"]:focus, 
+select:focus,
+div:has(> input[type="text"]):focus-within,
+div:has(> input[type="email"]):focus-within,
+div:has(> input[type="password"]):focus-within,
+div:has(> input[type="number"]):focus-within,
+div:has(> input[type="search"]):focus-within {
+  --tw-ring-color: transparent !important;
+  --tw-ring-shadow: 0 0 transparent !important;
+  border-color: #d1d5db !important; 
+}
+
+.dark textarea:focus, 
+.dark button[role="combobox"]:focus,
+.dark select:focus,
+.dark div:has(> input[type="text"]):focus-within,
+.dark div:has(> input[type="email"]):focus-within,
+.dark div:has(> input[type="password"]):focus-within,
+.dark div:has(> input[type="number"]):focus-within,
+.dark div:has(> input[type="search"]):focus-within {
+  --tw-ring-color: transparent !important;
+  --tw-ring-shadow: 0 0 transparent !important;
+  border-color: #374151 !important;
+}
+
+/* --- OVERRIDE DES BORDURES DE BADGES TREMOR EN DARK THEME --- */
+.dark span[class*="tremor-Badge"] {
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2) !important;
+}
+

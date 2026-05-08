@@ -41,3 +41,42 @@ export const searchUsers = async (query: string) => {
       throw error;
     });
 }
+
+export const getAdmins = async () => {
+  return axios.get(`${apiUrl}/user/admin`, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+    .then((response) => response.data)
+    .catch((error) => {
+      console.error("Error getting admins:", error);
+      throw error;
+    });
+}
+
+export const removeAdminPermission = async (userId: string) => {
+  return axios.delete(`${apiUrl}/user/admin/${userId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+    .then((response) => response.data)
+    .catch((error) => {
+      console.error("Error removing admin permission:", error);
+      throw error;
+    });
+}
+
+export const addAdminPermission = async (email: string) => {
+  return axios.put(`${apiUrl}/user/admin/${email}`, {}, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+    .then((response) => response.data)
+    .catch((error) => {
+      console.error("Error adding admin permission:", error);
+      throw error;
+    });
+}

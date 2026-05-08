@@ -24,10 +24,14 @@ import Privacy from "./pages/settings/Privacy";
 import Security from "./pages/settings/Security";
 import Subscriptions from "./pages/settings/Subscriptions";
 import CustomToaster from "./components/toaster/CustomToaster";
-import ProjectDetail from "./pages/projects/ProjectDetail";
-import ProjectCreate from "./pages/projects/ProjectCreate";
 import AdminPanel from "./pages/admin/AdminPanel";
 import OnboardingRoot from "./pages/onBoarding/OnboardingRoot";
+import EmailVerify from "./pages/mailling/EmailVerify";
+import PostRegisterEmailVerify from "./pages/mailling/PostRegisterEmailVerify";
+import ResetPassword from "./pages/mailling/ResetPassword";
+import SendEmailResetPassword from "./pages/mailling/SendEmailResetPassword";
+import Feedback from "./pages/feedback/Feedback";
+import ProjectNavbar from "./components/projectNavbar/ProjectNavbar";
 
 export default function App() {
   return (
@@ -35,25 +39,31 @@ export default function App() {
       <CustomToaster />
 
       <Routes>
+        <Route path="/verify" element={<EmailVerify />} />
+        <Route path="/reset/password" element={<ResetPassword />} />
         {/* Routes Auth */}
         <Route path="/auth" element={<AuthLayout />}>
           <Route index element={<AuthRoot />} />
           <Route path="login" element={<AuthLogin />} />
           <Route path="register" element={<AuthRegister />} />
+          <Route path="forgot-password" element={<SendEmailResetPassword />} />
+          <Route path="register/verify" element={<PostRegisterEmailVerify />} />
         </Route>
 
         {/* Routes Protegé */}
         <Route element={<ProtectedRoute />}>
           <Route path="/onboarding" element={<OnboardingRoot />} />
-          
+
           {/* Layout Principal */}
           <Route path="/" element={<Layout />}>
             <Route index element={<Navigate to="/dashboard" replace />} />
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="projects" element={<Projects />} />
-            <Route path="projects/new" element={<ProjectCreate />} />
-            <Route path="projects/:id" element={<ProjectDetail />} />
-            
+            <Route path="projects" element={<ProjectNavbar />}>
+              <Route path=":projectId/*" element={<Projects />} />
+            </Route>
+            <Route path="feedback" element={<Feedback />} />
+
             {/* Routes Admin */}
             <Route path="admin" element={<AdminRoute />}>
               <Route path="dashboard" element={<AdminPanel />} />

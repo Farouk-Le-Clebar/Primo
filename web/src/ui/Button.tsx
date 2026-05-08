@@ -43,7 +43,7 @@ const Button = ({
         disabled={disabled}
         className={`
           flex ${backgroundColor} ${backgroundHoverColor} ${shadowHover}
-          ${textColor} ${textHoverColor} items-center justify-center font-bold w-full h-full ${rounded}
+          ${textColor} ${textHoverColor} cursor-pointer items-center justify-center font-bold w-full h-full ${rounded}
           disabled:bg-gray-400 disabled:cursor-not-allowed transition-all duration-200 group ${growAnimation ? "transition-transform transform hover:scale-105" : ""} ${textSize} ${className}
         `}
       >
