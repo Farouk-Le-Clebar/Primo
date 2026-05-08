@@ -55,10 +55,10 @@ export function Tooltip({ children, content }: TooltipProps) {
               transform: "translate(-50%, calc(-100% - 8px))",
             }}
           >
-            <span className="bg-gray-900 text-gray-50 text-xs font-medium px-2.5 py-1.5 rounded-md shadow-md whitespace-nowrap">
+            <span className="bg-gray-900 dark:bg-white text-gray-50 dark:text-black text-xs font-medium px-2.5 py-1.5 rounded-md shadow-md whitespace-nowrap">
               {content}
             </span>
-            <div className="w-2.5 h-2.5 bg-gray-900 rotate-45 -mt-1.5"></div>
+            <div className="w-2.5 h-2.5 bg-gray-900 dark:bg-white rotate-45 -mt-1.5"></div>
           </div>,
           document.body
         )}
