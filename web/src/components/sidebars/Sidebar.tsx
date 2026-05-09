@@ -160,7 +160,7 @@ export default function Sidebar() {
                 {!isPending && projects?.map((project: any) => (
                   <CustomNavLink
                     key={project.id}
-                    to={`/projects/${project.id}`}
+                    to={`/projects/${project.id}/dashboard`}
                     textColor="text-black dark:text-white dark:hover:text-white"
                     rounded="rounded-lg"
                     label={project.name}
