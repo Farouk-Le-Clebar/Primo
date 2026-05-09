@@ -93,37 +93,38 @@ export default function AuthLogin() {
         <UserInfo email={email} />
 
         <div className="space-y-1">
-          <h3 className="font-inter font-medium text-sm text-gray-800">Adresse e-mail</h3>
+          <h3 className="font-inter font-medium text-sm text-gray-800 dark:text-white">Adresse e-mail</h3>
           <Input
             type="email"
             value={email}
             onChange={() => { }}
-            className="text-gray-500 cursor-not-allowed opacity-70"
+            className="text-gray-500 cursor-not-allowed opacity-70 dark:bg-[#171717] dark:border-[#262626] dark:text-gray-500 transition-colors"
             placeholder=""
           />
         </div>
 
         <div className="space-y-1 relative">
-          <h3 className="font-inter font-medium text-sm text-gray-800">Mot de passe</h3>
+          <h3 className="font-inter font-medium text-sm text-gray-800 dark:text-white">Mot de passe</h3>
           <div className="relative">
             <Input
               type={showPassword ? "text" : "password"}
               placeholder="••••••••"
               onChange={setPassword}
               value={password}
-              className="pr-10"
+              focusColor="focus:outline-none dark:focus:border-white/20"
+              className="pr-10 dark:bg-[#171717] dark:border-[#262626] dark:text-white dark:placeholder-gray-500 transition-colors"
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700"
+              className="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
             >
               {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
             </button>
           </div>
           <div className="flex justify-start mt-2">
             <button
-              className="cursor-pointer text-sm text-black hover:underline"
+              className="cursor-pointer text-sm text-black dark:text-gray-300 hover:text-gray-700 dark:hover:text-white hover:underline transition-colors"
               onClick={() => navigate("/auth/forgot-password")}
             >
               Mot de passe oublié ?
@@ -132,9 +133,9 @@ export default function AuthLogin() {
 
           {errorMessage && (
             errorMessage === "Veuillez vérifier votre adresse e-mail avant de vous connecter." ? (
-              <p className="text-red-600 text-sm mt-2">{errorMessage}<button className="cursor-pointer underline" onClick={handleResendVerification}> Renvoyer un email</button></p>
+              <p className="text-red-600 dark:text-red-400 text-sm mt-2">{errorMessage}<button className="cursor-pointer underline ml-1 hover:text-red-800 dark:hover:text-red-300" onClick={handleResendVerification}> Renvoyer un email</button></p>
             ) : (
-              <p className="text-red-600 text-sm mt-2">{errorMessage}</p>
+              <p className="text-red-600 dark:text-red-400 text-sm mt-2">{errorMessage}</p>
             )
           )}
         </div>
@@ -144,10 +145,10 @@ export default function AuthLogin() {
             onClick={handleConnect}
             disabled={isPending}
             isLoading={isPending}
-            textSize="font-inter font-medium text-base"
-            backgroundColor="bg-black"
-            backgroundHoverColor="hover:bg-gray-800"
-            className="w-full"
+            textSize="font-inter font-medium text-base dark:text-black dark:hover:text-black"
+            backgroundColor="bg-black dark:bg-white"
+            backgroundHoverColor="hover:bg-gray-800 dark:hover:bg-white/80"
+            className="w-full transition-colors"
           >
             Continuer
           </Button>
@@ -156,12 +157,12 @@ export default function AuthLogin() {
             onClick={() => navigate("/auth")}
             height="h-7"
             textSize="font-inter font-medium text-base"
-            backgroundColor="bg-transparent"
-            backgroundHoverColor="hover:bg-transparent"
-            textColor="text-black"
-            textHoverColor="hover:text-black"
-            shadowHover="hover:shadow-none"
-            className="w-full hover:underline hover:underline-offset-4 disabled:bg-transparent"
+            backgroundColor="bg-transparent dark:bg-transparent"
+            backgroundHoverColor="hover:bg-transparent dark:hover:bg-transparent"
+            textColor="text-black dark:text-gray-300"
+            textHoverColor="hover:text-black dark:hover:text-white"
+            shadowHover="hover:shadow-none dark:hover:shadow-none"
+            className="w-full hover:underline hover:underline-offset-4 disabled:bg-transparent transition-colors"
           >
             Retour
           </Button>
