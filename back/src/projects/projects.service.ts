@@ -35,6 +35,38 @@ export class ProjectsService {
         });
     }
 
+    async getProjectById(projectId: string, userId: string) {
+        const project = await this.projectsRepository.findOneBy({
+            id: projectId,
+            userId: userId,
+        });
+
+        if (!project)
+            throw new NotFoundException('Project not found or does not belong to the user');
+
+        if (project.userId !== userId)
+            throw new UnauthorizedException('Project does not belong to the user');
+
+        const { userId: _, ...rest } = project;
+        return rest;
+    }
+
+    async deleteProject(projectId: string, userId: string) {
+        const project = await this.projectsRepository.findOneBy({
+            id: projectId,
+            userId: userId,
+        });
+
+        if (!project)
+            throw new NotFoundException('Project not found or does not belong to the user');
+
+        if (project.userId !== userId)
+            throw new UnauthorizedException('Project does not belong to the user');
+
+        await this.projectPlotsRepository.delete({ projectId: projectId });
+        await this.projectsRepository.delete({ id: projectId });
+    }
+
     async addPlotToProject(addPlotToProjectDto: AddPlotToProjectDto, userId: string) {
         const project = await this.projectsRepository.findOneBy({
             id: addPlotToProjectDto.projectId,
@@ -78,5 +110,24 @@ export class ProjectsService {
 
         project.isFavorite = !project.isFavorite;
         await this.projectsRepository.save(project);
+    }
+
+    async getPlotsOfProject(projectId: string, userId: string) {
+        const project = await this.projectsRepository.findOneBy({
+            id: projectId,
+            userId: userId,
+        });
+
+        if (!project)
+            throw new NotFoundException('Project not found or does not belong to the user');
+
+        if (project.userId !== userId)
+            throw new UnauthorizedException('Project does not belong to the user');
+
+        const plots = await this.projectPlotsRepository.find({
+            where: { projectId: projectId },
+        });
+
+        return plots;
     }
 }
