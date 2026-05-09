@@ -1,16 +1,17 @@
 import { Table, TableBody, TableCell, TableHead, TableHeaderCell, TableRow, TextInput, Button, Card, Title, Text } from '@tremor/react';
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Star, Search, Plus, Ellipsis, Trash } from "lucide-react";
+import { Star, Search, Plus, Ellipsis, Trash, X, Check } from "lucide-react";
 import { useState } from 'react';
 import LoadingPrimoLogo from '../../components/animations/LoadingPrimoLogo';
 import type { ProjectResponse } from '../../types/project/projects';
-import { getProjects, toggleFavorite } from '../../requests/projects';
+import { deleteProject, getProjects, toggleFavorite } from '../../requests/projects';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
 export default function Projects() {
     const [searchQuery, setSearchQuery] = useState("");
     const [actualTogglingFavorite, setActualTogglingFavorite] = useState<string | null>(null);
+    const [idToDelete, setIdToDelete] = useState<string | null>(null);
     const navigate = useNavigate();
     const queryClient = useQueryClient();
 
@@ -30,6 +31,17 @@ export default function Projects() {
         },
         onSettled: () => {
             setActualTogglingFavorite(null);
+        }
+    });
+
+    const { mutate: deleteProjectMutation } = useMutation({
+        mutationFn: (projectId: string) => deleteProject(projectId),
+        onSuccess: () => {
+            toast.success("Projet supprimé avec succès.");
+            return queryClient.invalidateQueries({ queryKey: ['projects'] });
+        },
+        onError: () => {
+            toast.error("Une erreur est survenue lors de la suppression du projet. Veuillez réessayer.");
         }
     });
 
@@ -105,7 +117,7 @@ export default function Projects() {
                     </TableHead>
                     <TableBody>
                         {filteredProjects?.map((project: ProjectResponse) => (
-                            <TableRow onClick={() => navigate(`/projects/${project.id}`)} key={project.id} className="hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors cursor-default border-b border-gray-100 dark:border-white/5 last:border-none cursor-pointer">
+                            <TableRow onClick={() => navigate(`/projects/${project.id}/dashboard`)} key={project.id} className="hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors cursor-default border-b border-gray-100 dark:border-white/5 last:border-none cursor-pointer">
                                 <TableCell className="font-medium text-gray-900 dark:text-gray-200 text-left">
                                     {project.name}
                                 </TableCell>
@@ -116,31 +128,58 @@ export default function Projects() {
                                     {new Date(project.createdAt).toLocaleDateString('fr-FR')}
                                 </TableCell>
                                 <TableCell className="text-right">
-                                    <div className="flex items-center justify-end gap-2">
-                                        <button className="p-2 outline-none focus:outline-none hover:scale-110 active:scale-95 transition-transform disabled:cursor-not-allowed"
-                                            onClick={(e) => handleToggleFavorite(project.id, e)}
-                                            disabled={isTogglingFavorite}
-                                            title="Ajouter aux favoris"
-                                        >
-                                            {isTogglingFavorite && project.id === actualTogglingFavorite ? (
-                                                <LoadingPrimoLogo className="h-5 w-5 dark:invert" />
-                                            ) : (
-                                                <Star
-                                                    className={`w-5 h-5 cursor-pointer ${project.isFavorite ? 'text-yellow-400 drop-shadow-sm' : 'text-gray-300 dark:text-gray-600 hover:text-gray-400 dark:hover:text-gray-500'}`}
-                                                    fill={project.isFavorite ? "currentColor" : "none"}
-                                                />
-                                            )}
-                                        </button>
+                                    <div className="flex items-center justify-end gap-1 min-w-[88px] min-h-[36px]">
+                                        {idToDelete === project.id ? (
+                                            <div className="flex items-center justify-center gap-2">
+                                                <button className="w-6 h-6 flex items-center justify-center rounded-full hover:bg-gray-300 hover:text-white transition-colors hover:border-none cursor-pointer border border-gray-400 text-gray-400"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        setIdToDelete(null);
+                                                    }}
+                                                    title="Annuler"
+                                                >
+                                                    <X className="w-5 h-5" />
+                                                </button>
+                                                <button
+                                                    className="w-6 h-6 flex items-center justify-center rounded-full bg-red-600 hover:bg-red-700 transition-colors cursor-pointer text-white"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        deleteProjectMutation(project.id);
+                                                        setIdToDelete(null);
+                                                    }}
+                                                    title="Confirmer la suppression"
+                                                >
+                                                    <Check className="w-5 h-5" />
+                                                </button>
+                                            </div>
+                                        ) : (
+                                            <>
+                                                <button className="w-9 h-9 flex items-center justify-center p-2 outline-none focus:outline-none hover:scale-110 active:scale-95 transition-transform disabled:cursor-not-allowed"
+                                                    onClick={(e) => handleToggleFavorite(project.id, e)}
+                                                    disabled={isTogglingFavorite}
+                                                    title="Ajouter aux favoris"
+                                                >
+                                                    {isTogglingFavorite && project.id === actualTogglingFavorite ? (
+                                                        <LoadingPrimoLogo className="h-5 w-5 dark:invert" />
+                                                    ) : (
+                                                        <Star
+                                                            className={`w-5 h-5 cursor-pointer ${project.isFavorite ? 'text-yellow-400 drop-shadow-sm' : 'text-gray-300 dark:text-gray-600 hover:text-gray-400 dark:hover:text-gray-500'}`}
+                                                            fill={project.isFavorite ? "currentColor" : "none"}
+                                                        />
+                                                    )}
+                                                </button>
 
-                                        <button className="p-2 outline-none focus:outline-none hover:scale-110 active:scale-95 transition-transform"
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                console.log("Supprimer", project.id);
-                                            }}
-                                            title="Supprimer le projet"
-                                        >
-                                            <Trash className='w-5 h-5 text-red-500 hover:text-red-600' />
-                                        </button>
+                                                <button className="w-9 h-9 flex items-center justify-center p-2 outline-none focus:outline-none hover:scale-110 active:scale-95 transition-transform"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        setIdToDelete(project.id);
+                                                    }}
+                                                    title="Supprimer le projet"
+                                                >
+                                                    <Trash className='w-5 h-5 text-red-500 hover:text-red-600' />
+                                                </button>
+                                            </>
+                                        )}
                                     </div>
                                 </TableCell>
                             </TableRow>
