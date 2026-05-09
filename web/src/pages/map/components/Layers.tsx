@@ -23,7 +23,7 @@ const getUserMapPreference = (): "basic" | "satellite" | "basic-dark" => {
     try {
         const user = JSON.parse(localStorage.getItem("user") || "{}");
         const isDarkMode = document.documentElement.classList.contains("dark");
-        
+
         if (user.mapPreference === "satellite") return "satellite";
         if (user.mapPreference === "basic" && isDarkMode) {
             return "basic-dark";

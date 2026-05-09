@@ -11,3 +11,8 @@ export type AddPlotToProjectDto = {
     coordinates: string;
     geometry: any;
 };
+
+export type InviteUserDto = {
+    projectId: string;
+    email: string;
+};
