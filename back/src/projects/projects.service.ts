@@ -2,8 +2,10 @@ import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/co
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, In } from 'typeorm';
 import { Projects } from 'src/database/project.entity';
-import { AddPlotToProjectDto, CreateProjectDto } from './project.type';
+import { AddPlotToProjectDto, CreateProjectDto, InviteUserDto } from './project.type';
 import { ProjectPlots } from 'src/database/project-plots.entity';
+import { ProjectMembers } from 'src/database/project-members.entity';
+import { User } from 'src/database/user.entity';
 
 @Injectable()
 export class ProjectsService {
@@ -12,6 +14,10 @@ export class ProjectsService {
         private projectsRepository: Repository<Projects>,
         @InjectRepository(ProjectPlots)
         private projectPlotsRepository: Repository<ProjectPlots>,
+        @InjectRepository(ProjectMembers)
+        private projectMembersRepository: Repository<ProjectMembers>,
+        @InjectRepository(User)
+        private usersRepository: Repository<User>,
     ) { }
 
     async createProject(createProjectDto: CreateProjectDto, userId: string) {
@@ -20,13 +26,25 @@ export class ProjectsService {
             userId: userId,
             description: createProjectDto.description,
         });
+
+        const member = this.projectMembersRepository.create({
+            userId: userId,
+            projectId: project.id,
+            isAdmin: true,
+            role: 'admin',
+        });
+
         await this.projectsRepository.save(project);
+        await this.projectMembersRepository.save(member);
     }
 
     async getProjects(userId: string) {
         const projects = await this.projectsRepository.find({
             where: { userId },
-            order: { createdAt: 'DESC' },
+            order: {
+                isFavorite: 'DESC',
+                createdAt: 'DESC'
+            },
         });
 
         return projects.map(project => {
@@ -129,5 +147,66 @@ export class ProjectsService {
         });
 
         return plots;
+    }
+
+    async inviteUserToProject(inviteUserDto: InviteUserDto, userId: string) {
+        const project = await this.projectsRepository.findOneBy({
+            id: inviteUserDto.projectId,
+            userId: userId,
+        });
+
+        if (!project)
+            throw new NotFoundException('Project not found or does not belong to the user');
+
+        const isInviterMember = await this.projectMembersRepository.findOneBy({
+            projectId: inviteUserDto.projectId,
+            userId: userId,
+        });
+
+        if (!isInviterMember)
+            throw new UnauthorizedException('You are not a member of the project');
+
+        const newMember = await this.usersRepository.findOneBy({
+            email: inviteUserDto.email,
+        });
+
+        if (!newMember)
+            throw new NotFoundException('User with the provided email not found');
+
+        const isAlreadyMember = await this.projectMembersRepository.findOneBy({
+            projectId: inviteUserDto.projectId,
+            userId: newMember.id,
+        });
+
+        if (isAlreadyMember)
+            throw new UnauthorizedException('User is already a member of the project');
+
+        const projectMember = this.projectMembersRepository.create({
+            projectId: inviteUserDto.projectId,
+            userId: newMember.id,
+            role: "member",
+            isAdmin: false,
+        });
+
+        await this.projectMembersRepository.save(projectMember);
+    }
+
+    async getProjectMembers(projectId: string, userId: string) {
+        const members = await this.projectMembersRepository.find({
+            where: { projectId: projectId },
+        });
+
+        for (const member of members) {
+            const user = await this.usersRepository.findOneBy({ id: member.userId });
+            if (!user)
+                continue;
+            member['user'] = {
+                firstName: user.firstName,
+                surName: user.surName,
+                email: user.email,
+                profilePicture: user.profilePicture,
+            };
+        }
+        return members;
     }
 }
