@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+import React from "react";
 import CustomNavLink from "../../../../ui/Navlink";
+import { useTheme } from "../../../../context/ThemeProvider";
 
 // COMPONENTS
 import UserProfileDropdown from "./userProfileDropdown";
@@ -17,31 +18,7 @@ interface DropdownMenuProps {
 }
 
 export default function DropdownMenu({ onClose }: DropdownMenuProps) {
-  const [isDarkMode, setIsDarkMode] = useState(() => {
-    if (typeof window !== "undefined") {
-      return (
-        localStorage.getItem("theme") === "dark" ||
-        (!("theme" in localStorage) &&
-          window.matchMedia("(prefers-color-scheme: dark)").matches)
-      );
-    }
-    return false;
-  });
-
-  useEffect(() => {
-    const root = window.document.documentElement;
-    if (isDarkMode) {
-      root.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-    } else {
-      root.classList.remove("dark");
-      localStorage.setItem("theme", "light");
-    }
-  }, [isDarkMode]);
-
-  const toggleTheme = () => {
-    setIsDarkMode(!isDarkMode);
-  };
+  const { theme, setTheme } = useTheme();
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -50,7 +27,7 @@ export default function DropdownMenu({ onClose }: DropdownMenuProps) {
   };
 
   const renderIcon = (IconComponent: React.FC<React.SVGProps<SVGSVGElement>>) => (
-    <div className={`w-4 h-4 flex items-center justify-center flex-shrink-0 transition-transform duration-300 ${IconComponent === ThemeIcon && isDarkMode ? 'rotate-180' : ''}`}>
+    <div className={`w-4 h-4 flex items-center justify-center flex-shrink-0 transition-transform duration-300 ${IconComponent === ThemeIcon && theme === 'dark' ? 'rotate-180' : ''}`}>
       <IconComponent className="w-full h-full" />
     </div>
   );
@@ -80,26 +57,31 @@ export default function DropdownMenu({ onClose }: DropdownMenuProps) {
         onClick={onClose}
       />
 
-      <div 
-        onClickCapture={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          toggleTheme();
-        }} 
-        className="cursor-pointer dark:hover:bg-[#262626] rounded-lg"
-      >
-        <CustomNavLink
-          to=""
-          label={isDarkMode ? "Mode Clair" : "Mode Sombre"}
-          BgColor="bg-transparent"
-          hoverBgColor="hover:bg-gray-200/50 dark:hover:bg-[#262626]"
-          textClass="font-inter font-medium text-xs"
-          showChevronOnHover={false} 
-          textColor="text-black dark:text-white"
-          rounded="rounded-lg"
-          className={`${dropdownBtnStyle} pointer-events-none`}
-          icon={renderIcon(ThemeIcon)}
-        />
+      <div className="px-3 py-2 flex items-center gap-1">
+        <ThemeIcon className="w-4 h-4 text-gray-500 mr-1 dark:invert" />
+        <div className="flex-1 flex bg-gray-100 dark:bg-[#0A0A0A] rounded-lg p-0.5 border border-gray-200 dark:border-[#262626]">
+          <button 
+            type="button"
+            onClick={() => setTheme('light')} 
+            className={`flex-1 text-[10px] font-medium py-1 rounded-md transition-colors ${theme === 'light' ? 'bg-white dark:bg-[#262626] shadow-sm text-black dark:text-white' : 'text-gray-500 hover:text-black dark:hover:text-white'}`}
+          >
+            Clair
+          </button>
+          <button 
+            type="button"
+            onClick={() => setTheme('dark')} 
+            className={`flex-1 text-[10px] font-medium py-1 rounded-md transition-colors ${theme === 'dark' ? 'bg-white dark:bg-[#262626] shadow-sm text-black dark:text-white' : 'text-gray-500 hover:text-black dark:hover:text-white'}`}
+          >
+            Sombre
+          </button>
+          <button 
+            type="button"
+            onClick={() => setTheme('system')} 
+            className={`flex-1 text-[10px] font-medium py-1 rounded-md transition-colors ${theme === 'system' ? 'bg-white dark:bg-[#262626] shadow-sm text-black dark:text-white' : 'text-gray-500 hover:text-black dark:hover:text-white'}`}
+          >
+            Auto
+          </button>
+        </div>
       </div>
 
       <div className=" border-t border-gray-100 dark:border-[#262626]" />
