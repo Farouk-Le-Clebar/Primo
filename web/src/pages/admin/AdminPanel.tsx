@@ -9,7 +9,7 @@ import FeedbacksList from "./components/Feedback/FeedbacksList";
 const AdminPanel = () => {
     return (
         <div className="flex flex-col w-full h-full p-10 overflow-y-auto bg-transparent dark:bg-[#0A0A0A] transition-colors duration-200">
-            <div className="mb-2">
+            <div className="mb-2" id="admin-header-tour">
                 <h1 className="font-inter font-bold text-3xl text-gray-900 dark:text-white transition-colors duration-200">
                     Panel Administration
                 </h1>
@@ -19,11 +19,11 @@ const AdminPanel = () => {
             </div>
 
             <TabGroup className="mt-6 flex-1 flex flex-col">
-                <TabList className="mb-6">
-                    <Tab className="text-gray-700 dark:text-gray-300 dark:hover:text-white aria-selected:!text-black aria-selected:!border-black dark:aria-selected:!text-white dark:aria-selected:!border-white">Aperçu</Tab>
-                    <Tab className="text-gray-700 dark:text-gray-300 dark:hover:text-white aria-selected:!text-black aria-selected:!border-black dark:aria-selected:!text-white dark:aria-selected:!border-white">Utilisateurs</Tab>
-                    <Tab className="text-gray-700 dark:text-gray-300 dark:hover:text-white aria-selected:!text-black aria-selected:!border-black dark:aria-selected:!text-white dark:aria-selected:!border-white">Administrateurs</Tab>
-                    <Tab className="text-gray-700 dark:text-gray-300 dark:hover:text-white aria-selected:!text-black aria-selected:!border-black dark:aria-selected:!text-white dark:aria-selected:!border-white">Retours & Suggestions</Tab>
+                <TabList className="mb-6" id="admin-tabs-tour">
+                    <Tab id="admin-overview-tour" className="text-gray-700 dark:text-gray-300 dark:hover:text-white aria-selected:!text-black aria-selected:!border-black dark:aria-selected:!text-white dark:aria-selected:!border-white">Aperçu</Tab>
+                    <Tab id="admin-users-tour" className="text-gray-700 dark:text-gray-300 dark:hover:text-white aria-selected:!text-black aria-selected:!border-black dark:aria-selected:!text-white dark:aria-selected:!border-white">Utilisateurs</Tab>
+                    <Tab id="admin-admins-tour" className="text-gray-700 dark:text-gray-300 dark:hover:text-white aria-selected:!text-black aria-selected:!border-black dark:aria-selected:!text-white dark:aria-selected:!border-white">Administrateurs</Tab>
+                    <Tab id="admin-feedbacks-tour" className="text-gray-700 dark:text-gray-300 dark:hover:text-white aria-selected:!text-black aria-selected:!border-black dark:aria-selected:!text-white dark:aria-selected:!border-white">Retours & Suggestions</Tab>
                 </TabList>
 
                 <TabPanels className="flex-1">
