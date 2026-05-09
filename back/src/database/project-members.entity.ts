@@ -19,4 +19,7 @@ export class ProjectMembers {
 
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     joinedAt: Date;
+
+    @Column({ type: 'boolean', default: false })
+    isFavorite: boolean;
 }
