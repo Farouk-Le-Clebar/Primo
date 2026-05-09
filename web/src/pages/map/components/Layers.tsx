@@ -22,14 +22,11 @@ const getUserMapPreference = (): "basic" | "satellite" | "basic-dark" => {
     try {
         const user = JSON.parse(localStorage.getItem("user") || "{}");
         const isDarkMode = document.documentElement.classList.contains("dark");
-        
+
         if (user.mapPreference === "satellite") return "satellite";
         if (user.mapPreference === "basic" && isDarkMode) {
-            console.log("Le mec est un gros BaKAAAAAA")
             return "basic-dark";
         }
-        console.log("ZoubDansLePantalon")
-        
         return "basic";
     } catch (e) {
         return "basic";
