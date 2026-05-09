@@ -6,9 +6,6 @@ export class Projects {
     id: string;
 
     @Column({ type: 'varchar', length: 255, nullable: false })
-    userId: string;
-
-    @Column({ type: 'varchar', length: 255, nullable: false })
     name: string;
 
     @Column({ type: 'text', nullable: true })
@@ -17,12 +14,12 @@ export class Projects {
     @Column({ type: 'text', nullable: true })
     notes: string | null;
 
-    @Column({ type: 'boolean', default: false })
-    isFavorite: boolean;
-
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     createdAt: Date;
 
     @Column({ type: 'int', default: 0 })
     numberOfPlots: number;
+
+    @Column({ type: 'int', default: 1 })
+    numberOfMembers: number;
 }
