@@ -74,3 +74,15 @@ export const getProjectById = async (projectId: string) => {
             throw error;
         });
 }
+
+export const getUsersOfProject = async (projectId: string) => {
+    return axios.get(`${apiUrl}/projects/${projectId}/members`, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
+        .then((response) => response.data)
+        .catch((error) => {
+            throw error;
+        });
+}
