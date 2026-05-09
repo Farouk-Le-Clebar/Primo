@@ -108,7 +108,7 @@ export default function Sidebar() {
                 hoverBgColor="hover:bg-gray-200/50 dark:hover:bg-[#262626]"
               />
               <CustomNavLink
-                id="sidebar-projects-tour"
+                id="sidebar-project-tour"
                 to="/projects"
                 textColor="text-black dark:text-white dark:hover:text-white"
                 rounded="rounded-lg"
@@ -145,7 +145,7 @@ export default function Sidebar() {
 
           </section>
 
-          <section className="flex flex-col gap-1 flex-1 min-h-0">
+          <section className="flex flex-col gap-1 flex-1 min-h-0" id="sidebar-projects-tour">
             <div className="flex mb-2 flex-col space-y-2 flex-1 min-h-0">
               <h3 className="font-inter font-medium text-[12px] tracking-[0.1em] text-[#757575] dark:text-[#999999]">
                 Projets
