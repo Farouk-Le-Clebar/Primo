@@ -12,11 +12,11 @@ export default function Step4Plan({ onSelectPlan, onBack }: Props) {
 
     return (
         <div className="flex flex-col items-center w-full max-w-5xl animate-fade-in relative pb-12">
-            <h1 className="font-inter font-medium text-[42px] text-black mb-4">
+            <h1 className="font-inter font-medium text-[42px] text-black dark:text-white mb-4 transition-colors">
                 Choisissez votre plan
             </h1>
           
-            <p className="font-inter font-base text-lg text-[#949496] mb-12">
+            <p className="font-inter font-base text-lg text-[#949496] dark:text-gray-400 mb-12 transition-colors">
                 Modifiez ou annulez à tout moment.
             </p>
 
@@ -71,14 +71,14 @@ export default function Step4Plan({ onSelectPlan, onBack }: Props) {
                 />
             </div>
 
-            <div className="flex flex-col items-center w-full max-w-lg">
+            <div className="flex flex-col items-center w-full max-w-lg pt-4">
                 <Button
                     onClick={() => onSelectPlan(selectedPlan)}
-                    backgroundColor="bg-black"
-                    backgroundHoverColor="hover:bg-gray-800"
-                    textColor="text-white"
-                    textSize="font-inter font-medium text-base"
-                    className="w-full rounded-lg py-3 mb-2"
+                    backgroundColor="bg-black dark:bg-white"
+                    backgroundHoverColor="hover:bg-gray-800 dark:hover:bg-white/80"
+                    textColor="text-white dark:text-black"
+                    textSize="font-inter font-medium text-base dark:hover:text-black"
+                    className="w-full rounded-lg py-3 mb-2 transition-colors"
                 >
                     Choisir ce plan
                 </Button>
@@ -87,12 +87,12 @@ export default function Step4Plan({ onSelectPlan, onBack }: Props) {
                     onClick={onBack}
                     height="h-7"
                     textSize="font-inter font-medium text-base"
-                    backgroundColor="bg-transparent"
-                    backgroundHoverColor="hover:bg-transparent"
-                    textColor="text-black"
-                    textHoverColor="hover:text-black"
-                    shadowHover="hover:shadow-none"
-                    className="w-full hover:underline hover:underline-offset-4 disabled:bg-transparent"
+                    backgroundColor="bg-transparent dark:bg-transparent"
+                    backgroundHoverColor="hover:bg-transparent dark:hover:bg-transparent"
+                    textColor="text-black dark:text-gray-300"
+                    textHoverColor="hover:text-black dark:hover:text-white"
+                    shadowHover="hover:shadow-none dark:hover:shadow-none"
+                    className="w-full hover:underline hover:underline-offset-4 disabled:bg-transparent transition-colors"
                 >
                     Retour
                 </Button>
