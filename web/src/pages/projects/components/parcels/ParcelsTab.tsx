@@ -50,7 +50,7 @@ const ParcelsTab = () => {
     };
 
     return (
-        <div className="flex-1 w-full p-4 h-full overflow-y-auto">
+        <div className="flex-1 w-full p-4 h-full overflow-y-auto scrollbar-custom">
             {isLoading || isPending || isRemovingPlot ? (
                 <div className="absolute inset-0 z-1000 flex items-center justify-center dark:invert">
                     <LoadingPrimoLogo
