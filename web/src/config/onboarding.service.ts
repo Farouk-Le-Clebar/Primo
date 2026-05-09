@@ -3,6 +3,7 @@ import "driver.js/dist/driver.css";
 import "../styles/onBoarding.css";
 
 import { dashboardSteps } from "./onboardingTours/dashboard.steps";
+import { adminSteps } from "./onboardingTours/admin.steps";
 
 const baseConfig = {
   popoverClass: 'driverjs-theme',
@@ -15,18 +16,24 @@ const baseConfig = {
   prevBtnText: 'Précédent', 
   nextBtnText: 'Suivant',
   doneBtnText: 'Terminer',
-  
 };
 
-export const startOnboarding = (path: string) => {
-  let steps: DriveStep[] = [];
-
-  if (path === "/dashboard" || path === "/") {
-    steps = dashboardSteps;
+const onboardingTours = [
+  {
+    paths: ["/dashboard", "/"],
+    steps: dashboardSteps
+  },
+  {
+    paths: ["/admin/dashboard"],
+    steps: adminSteps
   }
+];
 
-  if (steps.length > 0) {
-    const onboardingDriver = driver({ ...baseConfig, steps });
+export const startOnboarding = (path: string) => {
+  const activeTour = onboardingTours.find(tour => tour.paths.includes(path));
+
+  if (activeTour && activeTour.steps.length > 0) {
+    const onboardingDriver = driver({ ...baseConfig, steps: activeTour.steps });
     onboardingDriver.drive();
   } else {
     console.warn("Aucun tutoriel configuré pour cette route :", path);
