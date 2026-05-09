@@ -21,80 +21,93 @@ export class ProjectsService {
     ) { }
 
     async createProject(createProjectDto: CreateProjectDto, userId: string) {
-        const project = this.projectsRepository.create({
+        let project = this.projectsRepository.create({
             name: createProjectDto.name,
-            userId: userId,
             description: createProjectDto.description,
         });
 
-        const member = this.projectMembersRepository.create({
+        project = await this.projectsRepository.save(project);
+
+        const member = await this.projectMembersRepository.create({
             userId: userId,
             projectId: project.id,
             isAdmin: true,
             role: 'admin',
         });
 
-        await this.projectsRepository.save(project);
         await this.projectMembersRepository.save(member);
     }
 
     async getProjects(userId: string) {
-        const projects = await this.projectsRepository.find({
-            where: { userId },
-            order: {
-                isFavorite: 'DESC',
-                createdAt: 'DESC'
-            },
+        const projectMembers = await this.projectMembersRepository.find({
+            where: { userId: userId },
         });
 
-        return projects.map(project => {
-            const { userId, ...rest } = project;
-            return rest;
-        });
+        const projects = await Promise.all(
+            projectMembers.map(async (member) => {
+                return await this.projectsRepository.findOneBy({ id: member.projectId });
+            })
+        );
+
+        return projects;
     }
 
     async getProjectById(projectId: string, userId: string) {
         const project = await this.projectsRepository.findOneBy({
             id: projectId,
-            userId: userId,
         });
 
         if (!project)
             throw new NotFoundException('Project not found or does not belong to the user');
 
-        if (project.userId !== userId)
-            throw new UnauthorizedException('Project does not belong to the user');
+        const isMember = await this.projectMembersRepository.findOneBy({
+            projectId: projectId,
+            userId: userId,
+        });
 
-        const { userId: _, ...rest } = project;
-        return rest;
+        if (!isMember)
+            throw new UnauthorizedException('Project not found or does not belong to the user');
+
+        return project;
     }
 
     async deleteProject(projectId: string, userId: string) {
         const project = await this.projectsRepository.findOneBy({
             id: projectId,
-            userId: userId,
         });
 
         if (!project)
             throw new NotFoundException('Project not found or does not belong to the user');
 
-        if (project.userId !== userId)
-            throw new UnauthorizedException('Project does not belong to the user');
+        const isAdmin = await this.projectMembersRepository.findOneBy({
+            projectId: projectId,
+            userId: userId,
+            isAdmin: true,
+        });
 
-        await this.projectPlotsRepository.delete({ projectId: projectId });
+        if (!isAdmin)
+            throw new UnauthorizedException('Project not found or does not belong to the user');
+
         await this.projectsRepository.delete({ id: projectId });
+        await this.projectMembersRepository.delete({ projectId: projectId });
+        await this.projectPlotsRepository.delete({ projectId: projectId });
     }
+
 
     async addPlotToProject(addPlotToProjectDto: AddPlotToProjectDto, userId: string) {
         const project = await this.projectsRepository.findOneBy({
             id: addPlotToProjectDto.projectId,
-            userId: userId,
         });
 
         if (!project)
             throw new NotFoundException('Project not found or does not belong to the user');
 
-        if (project.userId !== userId)
+        const isMember = await this.projectMembersRepository.findOneBy({
+            projectId: addPlotToProjectDto.projectId,
+            userId: userId,
+        });
+
+        if (!isMember)
             throw new UnauthorizedException('Project does not belong to the user');
 
         const projectPlot = this.projectPlotsRepository.create({
@@ -115,32 +128,41 @@ export class ProjectsService {
     }
 
     async toggleFavorite(projectId: string, userId: string) {
-        const project = await this.projectsRepository.findOneBy({
-            id: projectId,
+        const project = await this.projectMembersRepository.findOneBy({
+            projectId: projectId,
             userId: userId,
         });
 
         if (!project)
             throw new NotFoundException('Project not found or does not belong to the user');
 
-        if (project.userId !== userId)
+        const isMember = await this.projectMembersRepository.findOneBy({
+            projectId: projectId,
+            userId: userId,
+        });
+
+        if (!isMember)
             throw new UnauthorizedException('Project does not belong to the user');
 
         project.isFavorite = !project.isFavorite;
-        await this.projectsRepository.save(project);
+        await this.projectMembersRepository.save(project);
     }
 
     async getPlotsOfProject(projectId: string, userId: string) {
+        const isMember = await this.projectMembersRepository.findOneBy({
+            projectId: projectId,
+            userId: userId,
+        });
+
+        if (!isMember)
+            throw new UnauthorizedException('Project does not belong to the user');
+
         const project = await this.projectsRepository.findOneBy({
             id: projectId,
-            userId: userId,
         });
 
         if (!project)
             throw new NotFoundException('Project not found or does not belong to the user');
-
-        if (project.userId !== userId)
-            throw new UnauthorizedException('Project does not belong to the user');
 
         const plots = await this.projectPlotsRepository.find({
             where: { projectId: projectId },
@@ -152,7 +174,6 @@ export class ProjectsService {
     async inviteUserToProject(inviteUserDto: InviteUserDto, userId: string) {
         const project = await this.projectsRepository.findOneBy({
             id: inviteUserDto.projectId,
-            userId: userId,
         });
 
         if (!project)
@@ -189,11 +210,15 @@ export class ProjectsService {
         });
 
         await this.projectMembersRepository.save(projectMember);
+
+        project.numberOfMembers += 1;
+        await this.projectsRepository.save(project);
     }
 
     async getProjectMembers(projectId: string, userId: string) {
         const members = await this.projectMembersRepository.find({
             where: { projectId: projectId },
+            order: { isAdmin: "DESC", joinedAt: "ASC" },
         });
 
         for (const member of members) {
