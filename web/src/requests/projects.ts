@@ -38,3 +38,39 @@ export const toggleFavorite = async (projectId: string) => {
             throw error;
         });
 }
+
+export const deleteProject = async (projectId: string) => {
+    return axios.delete(`${apiUrl}/projects/${projectId}`, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
+        .then((response) => response.data)
+        .catch((error) => {
+            throw error;
+        });
+}
+
+export const getPlotsOfProject = async (projectId: string) => {
+    return axios.get(`${apiUrl}/projects/${projectId}/plots`, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
+        .then((response) => response.data)
+        .catch((error) => {
+            throw error;
+        });
+}
+
+export const getProjectById = async (projectId: string) => {
+    return axios.get(`${apiUrl}/projects/${projectId}`, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
+        .then((response) => response.data)
+        .catch((error) => {
+            throw error;
+        });
+}
