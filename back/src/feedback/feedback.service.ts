@@ -10,7 +10,7 @@ export class FeedbackService {
   constructor(
     @InjectRepository(Feedback)
     private feedbackRepo: Repository<Feedback>,
-  ) {}
+  ) { }
 
   async create(dto: CreateFeedbackDto, user: User) {
     const feedback = this.feedbackRepo.create({
@@ -43,7 +43,7 @@ export class FeedbackService {
     if (!feedback) {
       throw new NotFoundException('Feedback introuvable');
     }
-    
+
     await this.feedbackRepo.remove(feedback);
     return { message: 'Feedback supprimé avec succès' };
   }
