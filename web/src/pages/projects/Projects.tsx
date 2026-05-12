@@ -171,7 +171,7 @@ export default function Projects() {
                                                     )}
                                                 </button>
 
-                                                <button className="w-9 h-9 flex items-center justify-center p-2 outline-none focus:outline-none hover:scale-110 active:scale-95 transition-transform"
+                                                <button className="w-9 h-9 cursor-pointer flex items-center justify-center p-2 outline-none focus:outline-none hover:scale-110 active:scale-95 transition-transform"
                                                     onClick={(e) => {
                                                         e.stopPropagation();
                                                         setIdToDelete(project.id);
