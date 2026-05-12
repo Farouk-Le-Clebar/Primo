@@ -21,9 +21,9 @@ const InviteMembersModal = ({ onClose, projectId }: InviteMembersModalProps) => 
             onClose();
             toast.success("Utilisateur ajouté avec succès !");
         },
-        onError: () => {
+        onError: (err: any) => {
             onClose();
-            toast.error("Une erreur est survenue lors de l'ajout de l'utilisateur.");
+            toast.error(err.message);
         }
     });
 
