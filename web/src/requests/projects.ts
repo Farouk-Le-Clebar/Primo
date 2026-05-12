@@ -113,3 +113,19 @@ export const createProject = async (name: string, description?: string) => {
             throw error;
         });
 }
+
+export const inviteUserToProject = async (projectId: string, email: string) => {
+    return axios.post(`${apiUrl}/projects/invite`, {
+        projectId,
+        email,
+    }, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
+        .then((response) => response.data)
+        .catch((error) => {
+            throw error;
+        }
+        );
+}
