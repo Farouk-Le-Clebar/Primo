@@ -45,6 +45,13 @@ export class ProjectsController {
     }
 
     @UseGuards(JwtAuthGuard)
+    @Delete("plot/:id")
+    async deletePlotFromProject(@Req() req, @Param("id") plotId: string) {
+        const userId = req.user.id;
+        return this.projectsService.deletePlotFromProject(plotId, userId);
+    }
+
+    @UseGuards(JwtAuthGuard)
     @Get(":id/plots")
     async getPlotsOfProject(@Req() req, @Param("id") projectId: string) {
         const userId = req.user.id;
