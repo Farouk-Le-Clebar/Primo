@@ -7,10 +7,10 @@ import UserProfileDropdown from "./userProfileDropdown";
 
 // ICONS
 import LogoutIcon from "../../../../assets/icons/logout.svg?react";
-import SettingsIcon from "../../../../assets/icons/settings.svg?react";
-import BillingIcon from "../../../../assets/icons/billing.svg?react";
-import AccountIcon from "../../../../assets/icons/account.svg?react";
-import UpgradeIcon from "../../../../assets/icons/upgrade.svg?react";
+// import SettingsIcon from "../../../../assets/icons/settings.svg?react";
+// import BillingIcon from "../../../../assets/icons/billing.svg?react";
+// import AccountIcon from "../../../../assets/icons/account.svg?react";
+// import UpgradeIcon from "../../../../assets/icons/upgrade.svg?react";
 import ThemeIcon from "../../../../assets/icons/theme.svg?react";
 
 interface DropdownMenuProps {
