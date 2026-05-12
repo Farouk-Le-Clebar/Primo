@@ -95,7 +95,7 @@ const Members = () => {
                                 <TableCell className="text-right">
                                     <div className="flex items-center justify-end gap-1 min-w-[88px] min-h-[36px]">
                                         {!member.isAdmin && (
-                                            <button className="w-9 h-9 flex items-center justify-center p-2 outline-none focus:outline-none hover:scale-110 active:scale-95 transition-transform"
+                                            <button className="w-9 h-9 flex cursor-pointer items-center justify-center p-2 outline-none focus:outline-none hover:scale-110 active:scale-95 transition-transform"
                                                 onClick={(e) => {
                                                     e.stopPropagation();
                                                 }}
