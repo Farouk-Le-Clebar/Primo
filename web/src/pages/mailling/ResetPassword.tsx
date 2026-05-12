@@ -60,11 +60,11 @@ const ResetPassword = () => {
     const showForm = isTokenValid && !isSubmitting && !isSubmitSuccess && !isSubmitError;
 
     return (
-        <div className="flex flex-col h-screen w-screen bg-gray-background">
-            <div className="w-full h-20 bg-white flex items-center justify-center border-b border-gray-200">
+        <div className="flex flex-col h-screen w-screen bg-gray-50 dark:bg-[#0A0A0A] transition-colors duration-300">
+            <div className="w-full h-20 bg-white dark:bg-[#0A0A0A] flex items-center justify-center border-b border-gray-200 dark:border-[#262626] transition-colors">
                 <div className="flex flex-row items-center justify-center gap-2">
-                    <LogoPrimo className="h-10 w-10" />
-                    <p className="font-UberMove font-medium text-3xl text-black">Primo</p>
+                    <LogoPrimo className="h-10 w-10 dark:invert transition-colors" />
+                    <p className="font-UberMove font-medium text-3xl text-black dark:text-white transition-colors">Primo</p>
                 </div>
             </div>
             <div className="flex-1 w-full flex items-center justify-center font-UberMove">
@@ -73,7 +73,7 @@ const ResetPassword = () => {
                     {(isCheckingToken || isSubmitting) && (
                         <>
                             <Spinner />
-                            <p className="text-center text-gray-600">
+                            <p className="text-center text-gray-600 dark:text-gray-400 transition-colors">
                                 {isCheckingToken ? "Vérification du lien sécurisé..." : "Mise à jour de votre mot de passe..."}
                             </p>
                         </>
@@ -81,27 +81,27 @@ const ResetPassword = () => {
 
                     {showForm && (
                         <div className="flex flex-col gap-4 w-full">
-                            <p className="text-center font-semibold text-xl mb-2">Réinitialisation du mot de passe</p>
+                            <p className="text-center font-semibold text-xl mb-2 text-black dark:text-white transition-colors">Réinitialisation du mot de passe</p>
                             <input
                                 type="password"
                                 placeholder="Nouveau mot de passe"
                                 value={newPassword}
                                 onChange={(e) => setNewPassword(e.target.value)}
-                                className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
+                                className="w-full px-4 py-3 border border-gray-300 dark:border-[#262626] bg-white dark:bg-[#171717] text-black dark:text-white dark:placeholder-gray-500 rounded-md focus:outline-none focus:border-black dark:focus:border-white/20 transition-colors"
                             />
                             <input
                                 type="password"
                                 placeholder="Répétez le nouveau mot de passe"
                                 value={repeatPassword}
                                 onChange={(e) => setRepeatPassword(e.target.value)}
-                                className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
+                                className="w-full px-4 py-3 border border-gray-300 dark:border-[#262626] bg-white dark:bg-[#171717] text-black dark:text-white dark:placeholder-gray-500 rounded-md focus:outline-none focus:border-black dark:focus:border-white/20 transition-colors"
                             />
                             {localError && (
-                                <p className="text-red-500 text-sm text-center font-medium">{localError}</p>
+                                <p className="text-red-600 dark:text-red-400 text-sm text-center font-medium transition-colors">{localError}</p>
                             )}
                             <button
                                 onClick={handleResetPassword}
-                                className="flex flex-row items-center justify-center cursor-pointer bg-black font-semibold text-white py-3 px-4 rounded-md hover:bg-black/80 transition-colors w-full mt-2"
+                                className="flex flex-row items-center justify-center cursor-pointer bg-black dark:bg-white font-semibold text-white dark:text-black py-3 px-4 rounded-md hover:bg-gray-800 dark:hover:bg-white/80 transition-colors w-full mt-2"
                             >
                                 Réinitialiser le mot de passe
                             </button>
@@ -111,9 +111,9 @@ const ResetPassword = () => {
                     {isSubmitSuccess && (
                         <>
                             <SuccessIcon className="w-20" />
-                            <p className="text-center">Votre mot de passe a été réinitialisé avec succès !</p>
+                            <p className="text-center text-black dark:text-white transition-colors">Votre mot de passe a été réinitialisé avec succès !</p>
                             <button
-                                className="flex flex-row items-center justify-center cursor-pointer bg-black font-semibold text-white py-2 px-4 rounded-md hover:bg-black/80 transition-colors"
+                                className="flex flex-row items-center justify-center cursor-pointer bg-black dark:bg-white font-semibold text-white dark:text-black py-2 px-4 rounded-md hover:bg-gray-800 dark:hover:bg-white/80 transition-colors"
                                 onClick={() => window.location.href = "https://app.primo-data.fr/auth"}
                             >
                                 <ExternalLink className="w-5 h-5 inline-block mr-2" />
@@ -125,14 +125,14 @@ const ResetPassword = () => {
                     {(isTokenInvalid || isSubmitError) && (
                         <>
                             <X className="w-20 h-20 text-red-500" />
-                            <p className="text-center">
+                            <p className="text-center text-black dark:text-white transition-colors">
                                 <span className="font-semibold">
                                     {(submitError as any)?.message || (tokenError as any)?.message || "Une erreur est survenue, le lien est peut-être expiré."}
                                 </span>
                             </p>
                             {isSubmitError && (
                                 <button
-                                    className="flex flex-row items-center justify-center cursor-pointer bg-gray-200 font-semibold text-black py-2 px-4 rounded-md hover:bg-gray-300 transition-colors mt-4"
+                                    className="flex flex-row items-center justify-center cursor-pointer bg-gray-200 dark:bg-[#171717] border border-transparent dark:border-[#262626] font-semibold text-black dark:text-white py-2 px-4 rounded-md hover:bg-gray-300 dark:hover:bg-[#262626] transition-colors mt-4"
                                     onClick={() => resetMutation()}
                                 >
                                     <p>Réessayer</p>
