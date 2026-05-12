@@ -192,7 +192,7 @@ export class ProjectsService {
         });
 
         if (!project)
-            throw new NotFoundException('Project not found or does not belong to the user');
+            throw new NotFoundException('Projet introuvable. Réessayez plus tard.');
 
         const isInviterMember = await this.projectMembersRepository.findOneBy({
             projectId: inviteUserDto.projectId,
@@ -200,14 +200,14 @@ export class ProjectsService {
         });
 
         if (!isInviterMember)
-            throw new UnauthorizedException('You are not a member of the project');
+            throw new UnauthorizedException('Vous n\'avez pas les droits pour inviter des membres à ce projet.');
 
         const newMember = await this.usersRepository.findOneBy({
             email: inviteUserDto.email,
         });
 
         if (!newMember)
-            throw new NotFoundException('User with the provided email not found');
+            throw new NotFoundException('Utilisateur introuvable.');
 
         const isAlreadyMember = await this.projectMembersRepository.findOneBy({
             projectId: inviteUserDto.projectId,
@@ -215,7 +215,7 @@ export class ProjectsService {
         });
 
         if (isAlreadyMember)
-            throw new UnauthorizedException('User is already a member of the project');
+            throw new UnauthorizedException('Cet utilisateur est déjà membre du projet.');
 
         const projectMember = this.projectMembersRepository.create({
             projectId: inviteUserDto.projectId,
