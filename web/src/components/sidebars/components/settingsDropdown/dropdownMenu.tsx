@@ -21,6 +21,7 @@ export default function DropdownMenu({ onClose }: DropdownMenuProps) {
   const { theme, setTheme } = useTheme();
 
   const handleLogout = () => {
+    onClose();
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     window.location.reload();
