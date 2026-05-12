@@ -86,3 +86,30 @@ export const getUsersOfProject = async (projectId: string) => {
             throw error;
         });
 }
+
+export const deletePlotFromProject = async (plotId: string) => {
+    return axios.delete(`${apiUrl}/projects/plot/${plotId}`, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
+        .then((response) => response.data)
+        .catch((error) => {
+            throw error;
+        });
+}
+
+export const createProject = async (name: string, description?: string) => {
+    return axios.post(`${apiUrl}/projects`, {
+        name,
+        description,
+    }, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
+        .then((response) => response.data)
+        .catch((error) => {
+            throw error;
+        });
+}
