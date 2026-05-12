@@ -43,7 +43,7 @@ export default function DropdownMenu({ onClose }: DropdownMenuProps) {
 
       <div className=" border-t border-gray-100 dark:border-[#262626]" />
 
-      <CustomNavLink
+      {/* <CustomNavLink
         to="/profile"
         label="Passer en Pro"
         BgColor="bg-transparent"
@@ -55,7 +55,7 @@ export default function DropdownMenu({ onClose }: DropdownMenuProps) {
         className={dropdownBtnStyle}
         icon={renderIcon(UpgradeIcon)} 
         onClick={onClose}
-      />
+      /> */}
 
       <div className="px-3 py-2 flex items-center gap-1">
         <ThemeIcon className="w-4 h-4 text-gray-500 mr-1 dark:invert" />
@@ -84,7 +84,7 @@ export default function DropdownMenu({ onClose }: DropdownMenuProps) {
         </div>
       </div>
 
-      <div className=" border-t border-gray-100 dark:border-[#262626]" />
+      {/* <div className=" border-t border-gray-100 dark:border-[#262626]" />
 
       <CustomNavLink
         to="/profile"
@@ -126,7 +126,7 @@ export default function DropdownMenu({ onClose }: DropdownMenuProps) {
         className={dropdownBtnStyle}
         icon={renderIcon(BillingIcon)}
         onClick={onClose}
-      />
+      /> */}
 
       <div className=" border-t border-gray-100 dark:border-[#262626]" />
 
