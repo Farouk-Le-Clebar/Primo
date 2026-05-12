@@ -39,11 +39,13 @@ export default function AuthRoot() {
           localStorage.setItem("user", JSON.stringify(data.user));
         }
 
-        if (data.isNewUser) {
-          navigate("/onboarding");
-        } else {
-          navigate("/dashboard", { state: { welcome: true } });
-        }
+        navigate("/dashboard", { state: { welcome: true } });
+        
+        // if (data.isNewUser) {
+        //   navigate("/onboarding");
+        // } else {
+        //   navigate("/dashboard", { state: { welcome: true } });
+        // }
       }
     },
     onError: () => {
