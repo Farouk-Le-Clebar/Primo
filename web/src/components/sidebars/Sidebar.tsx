@@ -96,7 +96,7 @@ export default function Sidebar() {
                 />
               </div>
 
-              <CustomNavLink
+              {/* <CustomNavLink
                 id="sidebar-ai-tour"
                 to="/AI"
                 textColor="text-black dark:text-white dark:hover:text-white"
@@ -106,7 +106,7 @@ export default function Sidebar() {
                 className="h-8"
                 BgColor="bg-transparent"
                 hoverBgColor="hover:bg-gray-200/50 dark:hover:bg-[#262626]"
-              />
+              /> */}
               <CustomNavLink
                 id="sidebar-project-tour"
                 to="/projects"
