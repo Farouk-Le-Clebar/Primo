@@ -135,7 +135,7 @@ export default function AuthRoot() {
         <button
           onClick={() => handleGoogleConnect()}
           disabled={isCheckingEmail || isGoogleLoading}
-          className="flex items-center justify-center bg-black dark:bg-[#171717] text-white dark:text-white border border-transparent dark:border-[#262626] px-6 py-3 rounded-lg hover:bg-gray-800 dark:hover:bg-[#262626] transition-colors w-full disabled:opacity-70 disabled:cursor-not-allowed"
+          className="flex cursor-pointer items-center justify-center bg-black dark:bg-[#171717] text-white dark:text-white border border-transparent dark:border-[#262626] px-6 py-3 rounded-lg hover:bg-gray-800 dark:hover:bg-[#262626] transition-colors w-full disabled:opacity-70 disabled:cursor-not-allowed"
         >
           <img src={LogoGoogle} alt="Google" className="h-5 w-5 mr-3" />
           <span className="font-inter font-medium text-base">
