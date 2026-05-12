@@ -5,10 +5,12 @@ import { useParams } from "react-router-dom";
 import { Search, Plus, Trash, Shield } from "lucide-react";
 import { useState } from 'react';
 import LoadingPrimoLogo from "../../../components/animations/LoadingPrimoLogo";
+import InviteMembersModal from './InviteMembersModal';
 
 const Members = () => {
     const { projectId } = useParams();
     const [searchQuery, setSearchQuery] = useState("");
+    const [inviteModalOpen, setInviteModalOpen] = useState(false);
 
     const { data: members, isPending } = useQuery({
         queryKey: ['project', projectId, 'members'],
@@ -57,8 +59,8 @@ const Members = () => {
                                 className="dark:bg-[#0A0A0A] dark:border-white/10 dark:text-white"
                             />
                         </div>
-                        <Button icon={Plus} size="sm" className='bg-black hover:bg-black/85 dark:hover:bg-white/85 dark:bg-white border-none cursor-pointer'>
-                            Inviter
+                        <Button icon={Plus} size="sm" className='bg-black hover:bg-black/85 dark:hover:bg-white/85 dark:bg-white border-none cursor-pointer' onClick={() => setInviteModalOpen(true)}>
+                            Ajouter un collaborateur
                         </Button>
                     </div>
                 </div>
@@ -117,6 +119,12 @@ const Members = () => {
                     </div>
                 )}
             </Card>
+            {inviteModalOpen &&
+                <InviteMembersModal
+                    onClose={() => setInviteModalOpen(false)}
+                    projectId={projectId!}
+                />
+            }
         </div>
     );
 }
