@@ -77,7 +77,7 @@ const AddPlotToProjectModal = ({ isOpen = true, onClose, plotData }: AddPlotToPr
                             className="dark:bg-[#0A0A0A] dark:border-white/10 dark:text-white"
                         >
                             {projects?.length === 0 ? (
-                                <SelectItem value="" disabled>Aucun projet trouvé</SelectItem>
+                                <SelectItem value="">Aucun projet trouvé</SelectItem>
                             ) : (
                                 projects?.map(project => (
                                     <SelectItem key={project.id} value={project.id}>
