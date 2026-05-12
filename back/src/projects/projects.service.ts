@@ -247,6 +247,18 @@ export class ProjectsService {
                 profilePicture: user.profilePicture,
             };
         }
+
+        for (const member of members) {
+            if (member.userId === userId) {
+                member['isCurrentUser'] = true;
+            } else {
+                member['isCurrentUser'] = false;
+            }
+            delete (member as any).userId;
+            delete (member as any).projectId;
+            delete (member as any).isFavorite;
+        }
+
         return members;
     }
 
@@ -276,5 +288,35 @@ export class ProjectsService {
             project.numberOfPlots -= 1;
             await this.projectsRepository.save(project);
         }
+    }
+
+    async removeMemberFromProject(projectId: string, memberId: string, userId: string) {
+        const project = await this.projectsRepository.findOneBy({
+            id: projectId,
+        });
+
+        if (!project)
+            throw new NotFoundException('Projet introuvable. Réessayez plus tard.');
+
+        const isAdmin = await this.projectMembersRepository.findOneBy({
+            projectId: projectId,
+            userId: userId,
+            isAdmin: true,
+        });
+
+        if (!isAdmin)
+            throw new UnauthorizedException('Vous n\'avez pas les permissions pour supprimer des membres de ce projet.');
+
+        const memberToRemove = await this.projectMembersRepository.findOneBy({
+            projectId: projectId,
+            id: memberId,
+        });
+
+        if (!memberToRemove)
+            throw new NotFoundException('Membre introuvable.');
+
+        await this.projectMembersRepository.delete({ id: memberToRemove.id });
+        project.numberOfMembers -= 1;
+        await this.projectsRepository.save(project);
     }
 }
