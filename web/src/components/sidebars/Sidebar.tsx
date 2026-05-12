@@ -176,17 +176,27 @@ export default function Sidebar() {
         </div>
 
         <div className="mt-auto flex flex-col gap-1 px-4 pb-6 pt-2 dark:text-white">
-          <CustomNavLink
-            id="sidebar-support-tour"
-            to="/support"
-            textColor="text-black dark:text-white"
-            rounded="rounded-lg"
-            label="Support"
-            icon={renderIcon(SupportIcon)}
-            className="h-8"
-            BgColor="bg-transparent"
-            hoverBgColor="hover:bg-gray-200/50 dark:hover:bg-[#262626]"
-          />
+          <div
+            onClickCapture={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              window.open("https://chat.whatsapp.com/FKq0VLrFo4u33nFyFWhaRn", "_blank", "noopener,noreferrer");
+            }}
+            className="cursor-pointer dark:hover:bg-[#262626] hover:bg-gray-200/50 rounded-lg"
+          >
+            <CustomNavLink
+              id="sidebar-support-tour"
+              to=""
+              textColor="text-black dark:text-white"
+              rounded="rounded-lg"
+              label="Support"
+              icon={renderIcon(SupportIcon)}
+              className="h-8 pointer-events-none"
+              BgColor="bg-transparent"
+              hoverBgColor="hover:bg-gray-200/50 dark:hover:bg-[#262626]"
+            />
+          </div>
+
           <CustomNavLink
             id="sidebar-feedback-tour"
             to="/feedback"
