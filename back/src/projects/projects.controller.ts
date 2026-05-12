@@ -78,4 +78,11 @@ export class ProjectsController {
         const userId = req.user.id;
         return this.projectsService.getProjectMembers(projectId, userId);
     }
+
+    @UseGuards(JwtAuthGuard)
+    @Delete(":projectId/members/:memberId")
+    async removeMemberFromProject(@Req() req, @Param("projectId") projectId: string, @Param("memberId") memberId: string) {
+        const userId = req.user.id;
+        return this.projectsService.removeMemberFromProject(projectId, memberId, userId);
+    }
 }
