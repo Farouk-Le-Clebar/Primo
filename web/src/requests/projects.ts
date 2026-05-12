@@ -128,3 +128,15 @@ export const inviteUserToProject = async (projectId: string, email: string) => {
             throw error.response.data;
         });
 }
+
+export const removeMemberFromProject = async (projectId: string, memberId: string) => {
+    return axios.delete(`${apiUrl}/projects/${projectId}/members/${memberId}`, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
+        .then((response) => response.data)
+        .catch((error) => {
+            throw error.response.data;
+        });
+}
