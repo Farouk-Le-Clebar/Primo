@@ -7,11 +7,13 @@ import type { ProjectResponse } from '../../types/project/projects';
 import { deleteProject, getProjects, toggleFavorite } from '../../requests/projects';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import CreateProjectModal from './CreateProjectModal';
 
 export default function Projects() {
     const [searchQuery, setSearchQuery] = useState("");
     const [actualTogglingFavorite, setActualTogglingFavorite] = useState<string | null>(null);
     const [idToDelete, setIdToDelete] = useState<string | null>(null);
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
     const navigate = useNavigate();
     const queryClient = useQueryClient();
 
@@ -96,7 +98,7 @@ export default function Projects() {
                                 className="dark:bg-[#0A0A0A] dark:border-white/10 dark:text-white"
                             />
                         </div>
-                        <Button icon={Plus} size="sm" className='bg-black hover:bg-black/85 dark:hover:bg-white/85 dark:bg-white border-none cursor-pointer'>
+                        <Button icon={Plus} size="sm" className='bg-black hover:bg-black/85 dark:hover:bg-white/85 dark:bg-white border-none cursor-pointer' onClick={() => setIsCreateModalOpen(true)}>
                             Créer un projet
                         </Button>
                     </div>
@@ -193,6 +195,11 @@ export default function Projects() {
                     </div>
                 )}
             </Card>
+            {isCreateModalOpen && (
+                <CreateProjectModal
+                    onClose={() => setIsCreateModalOpen(false)}
+                />
+            )}
         </div>
     );
 }
