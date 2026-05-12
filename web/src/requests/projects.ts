@@ -125,6 +125,6 @@ export const inviteUserToProject = async (projectId: string, email: string) => {
     })
         .then((response) => response.data)
         .catch((error) => {
-            throw error;
+            throw error.response.data;
         });
 }
