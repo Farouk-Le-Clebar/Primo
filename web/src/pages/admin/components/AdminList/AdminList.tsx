@@ -43,7 +43,7 @@ const AdminList = () => {
                 <Button 
                     icon={Plus} 
                     onClick={() => setAddAdminModalOpen(true)}
-                    className="dark:bg-white dark:text-white dark:hover:bg-gray-200 transition-colors !bg-green-700 hover:!bg-green-600 !border-green-800 hover:!border-green-700"
+                    className="!bg-black hover:!bg-gray-800 !text-white !border-transparent dark:!bg-white dark:hover:!bg-gray-200 dark:!text-black transition-colors"
                 >
                     Ajouter un admin
                 </Button>

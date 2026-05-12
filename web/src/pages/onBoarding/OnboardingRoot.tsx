@@ -33,7 +33,7 @@ export default function OnboardingRoot() {
     };
 
   return (
-    <div className="min-h-screen bg-white flex flex-col items-center justify-center relative font-inter">
+    <div className="min-h-screen bg-white dark:bg-[#0A0A0A] transition-colors duration-300 flex flex-col items-center justify-center relative font-inter">
         <div className="w-full max-w-4xl px-4 flex flex-col items-center animate-fade-in-up">
             {currentStep === 1 && <Step1Welcome onNext={handleNext} />}
             {currentStep === 2 && <Step2Theme theme={theme} setTheme={setTheme} onNext={handleNext} onBack={handleBack} />}
@@ -46,7 +46,9 @@ export default function OnboardingRoot() {
           <div
             key={step}
             className={`w-2 h-2 rounded-full transition-colors duration-300 ${
-              step <= currentStep ? "bg-black" : "bg-transparent border border-black"
+              step <= currentStep 
+                ? "bg-black dark:bg-white" 
+                : "bg-transparent border border-black dark:border-white"
             }`}
           />
         ))}
