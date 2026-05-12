@@ -65,13 +65,13 @@ export default function ParcelSearchModal({ isOpen, onClose, navigationData, onN
                   {cat.label}
                 </div>
                 {cat.type === "single" ? (
-                  <button onClick={() => { onNavigate(cat.id); onClose(); }} className="flex w-full items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-[#1C1C1C] text-gray-700 dark:text-gray-300 transition-colors">
+                  <button onClick={() => { onNavigate(cat.id); onClose(); }} className="flex cursor-pointer w-full items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-[#1C1C1C] text-gray-700 dark:text-gray-300 transition-colors">
                     <span className="text-[14px] font-mono text-gray-300 dark:text-gray-600 w-4 text-center">#</span>
                     <span className="text-[13px] font-medium">{cat.label}</span>
                   </button>
                 ) : (
                   cat.items.map((item: any) => (
-                    <button key={item.id} onClick={() => { onNavigate(item.id); onClose(); }} className="flex w-full items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-[#1C1C1C] text-gray-700 dark:text-gray-300 transition-colors">
+                    <button key={item.id} onClick={() => { onNavigate(item.id); onClose(); }} className="flex w-full items-center cursor-pointer gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-[#1C1C1C] text-gray-700 dark:text-gray-300 transition-colors">
                       <span className="text-[14px] font-mono text-gray-300 dark:text-gray-600 w-4 text-center">#</span>
                       <span className="text-[13px] font-medium">{item.label}</span>
                     </button>
