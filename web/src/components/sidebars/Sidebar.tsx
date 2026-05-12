@@ -13,7 +13,7 @@ import MapIcon from "../../assets/icons/map.svg?react";
 import SupportIcon from "../../assets/icons/Support.svg?react";
 import PrimoIcon from "../../assets/logos/logoPrimoWhite.svg?react";
 import Search from "../../assets/icons/searchBlack.svg?react";
-import Ia from "../../assets/icons/ia.svg?react";
+// import Ia from "../../assets/icons/ia.svg?react";
 import Admin from "../../assets/icons/admin.svg?react";
 import Feedback from "../../assets/icons/send.svg?react";
 import FolderClose from "../../assets/icons/folderClose.svg?react"; 
