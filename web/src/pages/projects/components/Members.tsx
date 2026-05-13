@@ -1,19 +1,39 @@
 import { Table, TableBody, TableCell, TableHead, TableHeaderCell, TableRow, TextInput, Button, Card, Title, Text } from '@tremor/react';
-import { useQuery } from "@tanstack/react-query";
-import { getUsersOfProject } from "../../../requests/projects";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { getUsersOfProject, removeMemberFromProject } from "../../../requests/projects";
 import { useParams } from "react-router-dom";
-import { Search, Plus, Trash, Shield } from "lucide-react";
+import { Search, Plus, Trash, Shield, X, Check } from "lucide-react";
 import { useState } from 'react';
 import LoadingPrimoLogo from "../../../components/animations/LoadingPrimoLogo";
+import InviteMembersModal from './InviteMembersModal';
+import { toast } from 'react-hot-toast';
 
 const Members = () => {
     const { projectId } = useParams();
     const [searchQuery, setSearchQuery] = useState("");
+    const [inviteModalOpen, setInviteModalOpen] = useState(false);
+    const [idToDelete, setIdToDelete] = useState<string | null>(null);
+    const queryClient = useQueryClient();
 
     const { data: members, isPending } = useQuery({
         queryKey: ['project', projectId, 'members'],
         queryFn: () => getUsersOfProject(projectId!),
         enabled: !!projectId,
+    });
+
+    const currentUser = members?.find((member: any) => member.isCurrentUser);
+
+    const { mutate: removeMemberMutation } = useMutation({
+        mutationFn: (memberId: string) => removeMemberFromProject(projectId!, memberId),
+        onSuccess: () => {
+            setIdToDelete(null);
+            queryClient.invalidateQueries({ queryKey: ['project', projectId, 'members'] });
+            toast.success("Membre retiré avec succès !");
+        },
+        onError: (err: any) => {
+            setIdToDelete(null);
+            toast.error(err.message);
+        }
     });
 
     const filteredMembers = members?.filter((member: any) => {
@@ -57,8 +77,8 @@ const Members = () => {
                                 className="dark:bg-[#0A0A0A] dark:border-white/10 dark:text-white"
                             />
                         </div>
-                        <Button icon={Plus} size="sm" className='bg-black hover:bg-black/85 dark:hover:bg-white/85 dark:bg-white border-none cursor-pointer'>
-                            Inviter
+                        <Button icon={Plus} size="sm" className='bg-black hover:bg-black/85 dark:hover:bg-white/85 dark:bg-white border-none cursor-pointer' onClick={() => setInviteModalOpen(true)}>
+                            Ajouter un collaborateur
                         </Button>
                     </div>
                 </div>
@@ -69,7 +89,9 @@ const Members = () => {
                             <TableHeaderCell className="text-gray-500 dark:text-gray-400 text-left">Utilisateur</TableHeaderCell>
                             <TableHeaderCell className="text-gray-500 dark:text-gray-400 text-center">Rôle</TableHeaderCell>
                             <TableHeaderCell className="text-gray-500 dark:text-gray-400 text-center">Date d'accès</TableHeaderCell>
-                            <TableHeaderCell className="text-gray-500 dark:text-gray-400 text-right">Actions</TableHeaderCell>
+                            {currentUser?.isAdmin &&
+                                <TableHeaderCell className="text-gray-500 dark:text-gray-400 text-right">Actions</TableHeaderCell>
+                            }
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -92,20 +114,47 @@ const Members = () => {
                                 <TableCell className="text-gray-600 dark:text-gray-400 text-center">
                                     {member.joinedAt ? new Date(member.joinedAt).toLocaleDateString('fr-FR') : "N/A"}
                                 </TableCell>
-                                <TableCell className="text-right">
-                                    <div className="flex items-center justify-end gap-1 min-w-[88px] min-h-[36px]">
-                                        {!member.isAdmin && (
-                                            <button className="w-9 h-9 flex items-center justify-center p-2 outline-none focus:outline-none hover:scale-110 active:scale-95 transition-transform"
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                }}
-                                                title="Retirer le membre"
-                                            >
-                                                <Trash className='w-5 h-5 text-red-500 hover:text-red-600' />
-                                            </button>
-                                        )}
-                                    </div>
-                                </TableCell>
+                                {currentUser?.isAdmin && (
+                                    <TableCell className="text-right">
+                                        <div className="flex items-center justify-end gap-1 min-w-[88px] min-h-[36px]">
+                                            {!member.isAdmin && (
+                                                idToDelete === member.id ? (
+                                                    <div className="flex items-center justify-center gap-2">
+                                                        <button className="w-6 h-6 flex items-center justify-center rounded-full hover:bg-gray-300 hover:text-white transition-colors hover:border-none cursor-pointer border border-gray-400 text-gray-400"
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                setIdToDelete(null);
+                                                            }}
+                                                            title="Annuler"
+                                                        >
+                                                            <X className="w-5 h-5" />
+                                                        </button>
+                                                        <button
+                                                            className="w-6 h-6 flex items-center justify-center rounded-full bg-red-600 hover:bg-red-700 transition-colors cursor-pointer text-white"
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                removeMemberMutation(member.id);
+                                                            }}
+                                                            title="Confirmer la suppression"
+                                                        >
+                                                            <Check className="w-5 h-5" />
+                                                        </button>
+                                                    </div>
+                                                ) : (
+                                                    <button className="w-9 h-9 flex cursor-pointer items-center justify-center p-2 outline-none focus:outline-none hover:scale-110 active:scale-95 transition-transform"
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            setIdToDelete(member.id);
+                                                        }}
+                                                        title="Retirer le membre"
+                                                    >
+                                                        <Trash className='w-5 h-5 text-red-500 hover:text-red-600' />
+                                                    </button>
+                                                )
+                                            )}
+                                        </div>
+                                    </TableCell>
+                                )}
                             </TableRow>
                         ))}
                     </TableBody>
@@ -117,6 +166,12 @@ const Members = () => {
                     </div>
                 )}
             </Card>
+            {inviteModalOpen &&
+                <InviteMembersModal
+                    onClose={() => setInviteModalOpen(false)}
+                    projectId={projectId!}
+                />
+            }
         </div>
     );
 }

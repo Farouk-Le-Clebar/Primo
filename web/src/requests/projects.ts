@@ -86,3 +86,57 @@ export const getUsersOfProject = async (projectId: string) => {
             throw error;
         });
 }
+
+export const deletePlotFromProject = async (plotId: string) => {
+    return axios.delete(`${apiUrl}/projects/plot/${plotId}`, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
+        .then((response) => response.data)
+        .catch((error) => {
+            throw error;
+        });
+}
+
+export const createProject = async (name: string, description?: string) => {
+    return axios.post(`${apiUrl}/projects`, {
+        name,
+        description,
+    }, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
+        .then((response) => response.data)
+        .catch((error) => {
+            throw error;
+        });
+}
+
+export const inviteUserToProject = async (projectId: string, email: string) => {
+    return axios.post(`${apiUrl}/projects/invite`, {
+        projectId,
+        email,
+    }, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
+        .then((response) => response.data)
+        .catch((error) => {
+            throw error.response.data;
+        });
+}
+
+export const removeMemberFromProject = async (projectId: string, memberId: string) => {
+    return axios.delete(`${apiUrl}/projects/${projectId}/members/${memberId}`, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
+        .then((response) => response.data)
+        .catch((error) => {
+            throw error.response.data;
+        });
+}

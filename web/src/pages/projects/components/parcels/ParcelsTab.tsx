@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 import Button from "../../../../ui/Button";
 import { useState } from "react";
 import L from "leaflet";
-import { getPlotsOfProject } from "../../../../requests/projects";
+import { deletePlotFromProject, getPlotsOfProject } from "../../../../requests/projects";
 
 const ParcelsTab = () => {
     const queryClient = useQueryClient();
@@ -22,7 +22,7 @@ const ParcelsTab = () => {
     });
 
     const { mutate: removePlotFromProject, isPending: isRemovingPlot } = useMutation({
-        mutationFn: async () => { },
+        mutationFn: (plotId: string) => deletePlotFromProject(plotId),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["projectPlots", projectId] });
             toast.success("Parcelle supprimée du projet.");
@@ -37,8 +37,7 @@ const ParcelsTab = () => {
     const navigate = useNavigate();
 
     const handleRemovePlot = (id: string) => {
-        console.log("Removing plot with id:", id);
-        removePlotFromProject();
+        removePlotFromProject(id);
     };
 
     const handleMapClick = (plot: any) => {
@@ -63,7 +62,7 @@ const ParcelsTab = () => {
                     {parcels?.map((plot: any) => (
                         <div
                             key={plot.id}
-                            className="bg-white border border-gray-200 dark:border-gray-600/40 dark:bg-gray-600/30 rounded-xl shadow-sm overflow-hidden flex flex-col hover:shadow-md transition-shadow"
+                            className="bg-white border border-gray-200 dark:border-gray-600/40 dark:bg-[#171717] rounded-xl shadow-sm overflow-hidden flex flex-col hover:shadow-md transition-shadow"
                         >
                             <button
                                 className="cursor-pointer h-48 w-full bg-gray-100 flex items-center justify-center overflow-hidden"

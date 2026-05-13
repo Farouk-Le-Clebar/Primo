@@ -41,15 +41,30 @@ export class ProjectsService {
     async getProjects(userId: string) {
         const projectMembers = await this.projectMembersRepository.find({
             where: { userId: userId },
+            order: { isFavorite: "DESC" },
         });
 
-        const projects = await Promise.all(
-            projectMembers.map(async (member) => {
-                return await this.projectsRepository.findOneBy({ id: member.projectId });
-            })
-        );
+        if (projectMembers.length === 0)
+            return [];
 
-        return projects;
+        const projectIds = projectMembers.map(member => member.projectId);
+
+        const projects = await this.projectsRepository.find({
+            where: { id: In(projectIds) },
+        });
+
+        const projectsMap = new Map(projects.map(p => [p.id, p]));
+
+        const sortedProjects: any[] = [];
+        for (const member of projectMembers) {
+            const project = projectsMap.get(member.projectId);
+            if (project) {
+                project['isFavorite'] = member.isFavorite;
+                sortedProjects.push(project);
+            }
+        }
+
+        return sortedProjects;
     }
 
     async getProjectById(projectId: string, userId: string) {
@@ -177,7 +192,7 @@ export class ProjectsService {
         });
 
         if (!project)
-            throw new NotFoundException('Project not found or does not belong to the user');
+            throw new NotFoundException('Projet introuvable. Réessayez plus tard.');
 
         const isInviterMember = await this.projectMembersRepository.findOneBy({
             projectId: inviteUserDto.projectId,
@@ -185,14 +200,14 @@ export class ProjectsService {
         });
 
         if (!isInviterMember)
-            throw new UnauthorizedException('You are not a member of the project');
+            throw new UnauthorizedException('Vous n\'avez pas les droits pour inviter des membres à ce projet.');
 
         const newMember = await this.usersRepository.findOneBy({
             email: inviteUserDto.email,
         });
 
         if (!newMember)
-            throw new NotFoundException('User with the provided email not found');
+            throw new NotFoundException('Utilisateur introuvable.');
 
         const isAlreadyMember = await this.projectMembersRepository.findOneBy({
             projectId: inviteUserDto.projectId,
@@ -200,7 +215,7 @@ export class ProjectsService {
         });
 
         if (isAlreadyMember)
-            throw new UnauthorizedException('User is already a member of the project');
+            throw new UnauthorizedException('Cet utilisateur est déjà membre du projet.');
 
         const projectMember = this.projectMembersRepository.create({
             projectId: inviteUserDto.projectId,
@@ -232,6 +247,76 @@ export class ProjectsService {
                 profilePicture: user.profilePicture,
             };
         }
+
+        for (const member of members) {
+            if (member.userId === userId) {
+                member['isCurrentUser'] = true;
+            } else {
+                member['isCurrentUser'] = false;
+            }
+            delete (member as any).userId;
+            delete (member as any).projectId;
+            delete (member as any).isFavorite;
+        }
+
         return members;
+    }
+
+    async deletePlotFromProject(id: string, userId: string) {
+        const projectPlot = await this.projectPlotsRepository.findOneBy({
+            id: id,
+        });
+
+        if (!projectPlot)
+            throw new NotFoundException('Plot not found or does not belong to the user');
+
+        const isMember = await this.projectMembersRepository.findOneBy({
+            projectId: projectPlot.projectId,
+            userId: userId,
+        });
+
+        if (!isMember)
+            throw new UnauthorizedException('Project does not belong to the user');
+
+        await this.projectPlotsRepository.delete({ id: id });
+
+        const project = await this.projectsRepository.findOneBy({
+            id: projectPlot.projectId,
+        });
+
+        if (project) {
+            project.numberOfPlots -= 1;
+            await this.projectsRepository.save(project);
+        }
+    }
+
+    async removeMemberFromProject(projectId: string, memberId: string, userId: string) {
+        const project = await this.projectsRepository.findOneBy({
+            id: projectId,
+        });
+
+        if (!project)
+            throw new NotFoundException('Projet introuvable. Réessayez plus tard.');
+
+        const isAdmin = await this.projectMembersRepository.findOneBy({
+            projectId: projectId,
+            userId: userId,
+            isAdmin: true,
+        });
+
+        if (!isAdmin)
+            throw new UnauthorizedException('Vous n\'avez pas les permissions pour supprimer des membres de ce projet.');
+
+        const memberToRemove = await this.projectMembersRepository.findOneBy({
+            projectId: projectId,
+            id: memberId,
+        });
+
+        if (!memberToRemove)
+            throw new NotFoundException('Membre introuvable.');
+
+        await this.projectMembersRepository.delete({ id: memberToRemove.id });
+        project.numberOfMembers -= 1;
+        await this.projectsRepository.save(project);
     }
 }

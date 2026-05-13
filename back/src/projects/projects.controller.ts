@@ -45,6 +45,13 @@ export class ProjectsController {
     }
 
     @UseGuards(JwtAuthGuard)
+    @Delete("plot/:id")
+    async deletePlotFromProject(@Req() req, @Param("id") plotId: string) {
+        const userId = req.user.id;
+        return this.projectsService.deletePlotFromProject(plotId, userId);
+    }
+
+    @UseGuards(JwtAuthGuard)
     @Get(":id/plots")
     async getPlotsOfProject(@Req() req, @Param("id") projectId: string) {
         const userId = req.user.id;
@@ -70,5 +77,12 @@ export class ProjectsController {
     async getProjectMembers(@Req() req, @Param("id") projectId: string) {
         const userId = req.user.id;
         return this.projectsService.getProjectMembers(projectId, userId);
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Delete(":projectId/members/:memberId")
+    async removeMemberFromProject(@Req() req, @Param("projectId") projectId: string, @Param("memberId") memberId: string) {
+        const userId = req.user.id;
+        return this.projectsService.removeMemberFromProject(projectId, memberId, userId);
     }
 }
