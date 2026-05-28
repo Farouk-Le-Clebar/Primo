@@ -32,6 +32,9 @@ import ResetPassword from "./pages/mailling/ResetPassword";
 import SendEmailResetPassword from "./pages/mailling/SendEmailResetPassword";
 import Feedback from "./pages/feedback/Feedback";
 import ProjectNavbar from "./components/projectNavbar/ProjectNavbar";
+import DashboardProjects from "./pages/projects/components/Dashboard";
+import ParcelsTab from "./pages/projects/components/parcels/ParcelsTab";
+import Members from "./pages/projects/components/Members";
 
 export default function App() {
   return (
@@ -60,7 +63,9 @@ export default function App() {
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="projects" element={<Projects />} />
             <Route path="projects" element={<ProjectNavbar />}>
-              <Route path=":projectId/*" element={<Projects />} />
+              <Route path=":projectId/dashboard" element={<DashboardProjects />} />
+              <Route path=":projectId/plots" element={<ParcelsTab />} />
+              <Route path=":projectId/members" element={<Members />} />
             </Route>
             <Route path="feedback" element={<Feedback />} />
 

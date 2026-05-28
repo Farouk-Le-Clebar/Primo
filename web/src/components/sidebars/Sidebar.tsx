@@ -13,7 +13,7 @@ import MapIcon from "../../assets/icons/map.svg?react";
 import SupportIcon from "../../assets/icons/Support.svg?react";
 import PrimoIcon from "../../assets/logos/logoPrimoWhite.svg?react";
 import Search from "../../assets/icons/searchBlack.svg?react";
-import Ia from "../../assets/icons/ia.svg?react";
+// import Ia from "../../assets/icons/ia.svg?react";
 import Admin from "../../assets/icons/admin.svg?react";
 import Feedback from "../../assets/icons/send.svg?react";
 import FolderClose from "../../assets/icons/folderClose.svg?react"; 
@@ -96,7 +96,7 @@ export default function Sidebar() {
                 />
               </div>
 
-              <CustomNavLink
+              {/* <CustomNavLink
                 id="sidebar-ai-tour"
                 to="/AI"
                 textColor="text-black dark:text-white dark:hover:text-white"
@@ -106,9 +106,9 @@ export default function Sidebar() {
                 className="h-8"
                 BgColor="bg-transparent"
                 hoverBgColor="hover:bg-gray-200/50 dark:hover:bg-[#262626]"
-              />
+              /> */}
               <CustomNavLink
-                id="sidebar-projects-tour"
+                id="sidebar-project-tour"
                 to="/projects"
                 textColor="text-black dark:text-white dark:hover:text-white"
                 rounded="rounded-lg"
@@ -145,7 +145,7 @@ export default function Sidebar() {
 
           </section>
 
-          <section className="flex flex-col gap-1 flex-1 min-h-0">
+          <section className="flex flex-col gap-1 flex-1 min-h-0" id="sidebar-projects-tour">
             <div className="flex mb-2 flex-col space-y-2 flex-1 min-h-0">
               <h3 className="font-inter font-medium text-[12px] tracking-[0.1em] text-[#757575] dark:text-[#999999]">
                 Projets
@@ -160,7 +160,7 @@ export default function Sidebar() {
                 {!isPending && projects?.map((project: any) => (
                   <CustomNavLink
                     key={project.id}
-                    to={`/projects/${project.id}`}
+                    to={`/projects/${project.id}/dashboard`}
                     textColor="text-black dark:text-white dark:hover:text-white"
                     rounded="rounded-lg"
                     label={project.name}
@@ -176,17 +176,27 @@ export default function Sidebar() {
         </div>
 
         <div className="mt-auto flex flex-col gap-1 px-4 pb-6 pt-2 dark:text-white">
-          <CustomNavLink
-            id="sidebar-support-tour"
-            to="/support"
-            textColor="text-black dark:text-white"
-            rounded="rounded-lg"
-            label="Support"
-            icon={renderIcon(SupportIcon)}
-            className="h-8"
-            BgColor="bg-transparent"
-            hoverBgColor="hover:bg-gray-200/50 dark:hover:bg-[#262626]"
-          />
+          <div
+            onClickCapture={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              window.open("https://chat.whatsapp.com/FKq0VLrFo4u33nFyFWhaRn", "_blank", "noopener,noreferrer");
+            }}
+            className="cursor-pointer dark:hover:bg-[#262626] hover:bg-gray-200/50 rounded-lg"
+          >
+            <CustomNavLink
+              id="sidebar-support-tour"
+              to=""
+              textColor="text-black dark:text-white"
+              rounded="rounded-lg"
+              label="Support"
+              icon={renderIcon(SupportIcon)}
+              className="h-8 pointer-events-none"
+              BgColor="bg-transparent"
+              hoverBgColor="hover:bg-gray-200/50 dark:hover:bg-[#262626]"
+            />
+          </div>
+
           <CustomNavLink
             id="sidebar-feedback-tour"
             to="/feedback"

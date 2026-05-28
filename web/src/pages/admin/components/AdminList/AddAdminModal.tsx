@@ -75,7 +75,7 @@ const AddAdminModal = ({ isOpen, onClose }: AddAdminModalProps) => {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="Ex: collaborateur@primo-data.fr"
-                        className="dark:bg-[#0A0A0A] dark:border-white/10 dark:text-white border-trasnparent focus:border-transparent focus:ring-0"
+                        className="dark:bg-[#0A0A0A] dark:border-white/10 dark:text-white border-transparent focus:border-transparent focus:ring-0"
                     />
                     {error && <p className="text-sm text-red-600 dark:text-red-400 mt-2">{error}</p>}
 
@@ -84,7 +84,7 @@ const AddAdminModal = ({ isOpen, onClose }: AddAdminModalProps) => {
                             type="button"
                             variant="secondary"
                             onClick={onClose}
-                            className="dark:border-white/10 dark:!text-white dark:hover:bg-white/5 text-green-700 hover:bg-green-50 hover:text-green-700 transition-colors border-green-700 hover:border-green-700"
+                            className="!text-black hover:!bg-gray-100 !border-gray-200 dark:!border-white/10 dark:!text-white dark:hover:!bg-white/5 transition-colors"
                         >
                             Annuler
                         </Button>
@@ -92,7 +92,7 @@ const AddAdminModal = ({ isOpen, onClose }: AddAdminModalProps) => {
                             type="submit"
                             disabled={!email || isPending}
                             loading={isPending}
-                            className="dark:bg-white dark:text-black dark:hover:bg-gray-200 border-transparent hover:border-transparent bg-green-700 hover:bg-green-600 hover:border-green-700 transition-colors"
+                            className="!bg-black hover:!bg-gray-800 !text-white !border-transparent dark:!bg-white dark:hover:!bg-gray-200 dark:!text-black transition-colors"
                         >
                             Promouvoir
                         </Button>

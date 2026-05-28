@@ -51,7 +51,7 @@ export default function InformationsCard({ feature }: ParcelWidgetProps) {
   const isEmpty = !data || uniqueInformations.length === 0;
 
   return (
-    <Card className="p-0 border-gray-200 dark:border-[#232323] ring-0 shadow-sm overflow-hidden font-inter">
+    <Card className="p-0 border-gray-200 dark:border-[#232323] ring-0 shadow-sm overflow-y-auto font-inter">
       <div className="flex items-center justify-between p-5 border-b border-gray-100 dark:border-[#232323] bg-white dark:bg-[#171717]">
         <div className="flex items-center gap-2">
           <Info size={18} className="text-gray-400" />

@@ -6,7 +6,7 @@ import { ScrollText } from "lucide-react";
 // COMPONENTS
 import type { ParcelWidgetProps } from "../../types";
 import { extractDepartementForPrescription, getPrescriptionStyle, getPrescriptionDescription } from "./utilsPrescriptions";
-import { getPrescriptionsSurf, getPrescriptionsLin, getPrescriptionsPct } from "../../../../../../../requests/geoserver/prescription"; 
+import { getPrescriptionsSurf, getPrescriptionsLin, getPrescriptionsPct } from "../../../../../../../requests/geoserver/prescription";
 import LoadingPrimoLogo from "../../../../../../../components/animations/LoadingPrimoLogo";
 
 export default function PrescriptionsCard({ feature }: ParcelWidgetProps) {
@@ -51,7 +51,7 @@ export default function PrescriptionsCard({ feature }: ParcelWidgetProps) {
   const isEmpty = !data || uniquePrescriptions.length === 0;
 
   return (
-    <Card className="p-0 border-gray-200 ring-0 shadow-sm overflow-hidden font-inter">
+    <Card className="p-0 border-gray-200 ring-0 shadow-sm font-inter overflow-y-auto">
       <div className="flex items-center justify-between p-5 border-b border-gray-100 dark:border-[#232323] bg-white dark:bg-[#171717]">
         <div className="flex items-center gap-2">
           <ScrollText size={18} className="text-gray-400" />
@@ -71,7 +71,7 @@ export default function PrescriptionsCard({ feature }: ParcelWidgetProps) {
           Aucune servitude ou prescription spécifique détectée.
         </div>
       ) : (
-        <Table className="mt-0">
+        <Table className="mt-0 overflow-y-auto">
           <TableBody>
             {uniquePrescriptions.map((presc: any, index: number) => {
               const props = presc.properties;
@@ -81,8 +81,8 @@ export default function PrescriptionsCard({ feature }: ParcelWidgetProps) {
               const code = props.typepsc?.split('_')[0] || "PSC";
 
               return (
-                <TableRow 
-                  key={index} 
+                <TableRow
+                  key={index}
                   className="hover:bg-blue-50/50 dark:hover:bg-[#1C1C1C] transition-all duration-200 cursor-pointer group border-b border-gray-100 dark:border-[#232323] last:border-0 relative"
                   title={humanDescription}
                 >

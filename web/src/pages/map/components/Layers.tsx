@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { TileLayer, useMap } from "react-leaflet";
 import L from "leaflet";
 import type { FeatureCollection } from "geojson";
@@ -17,19 +17,17 @@ import ParcelDetailedDashboard from "./layers/ParcelDetailedDashboard/ParcelDeta
 import Navbar from "./layers/Navbar/Navbar";
 import { mapPreference } from "../../../utils/map";
 import { addOkReverseRequest } from "../../../requests/addok";
+import { useTheme } from "../../../context/ThemeProvider"; // <-- Ajout de l'import
 
 const getUserMapPreference = (): "basic" | "satellite" | "basic-dark" => {
     try {
         const user = JSON.parse(localStorage.getItem("user") || "{}");
         const isDarkMode = document.documentElement.classList.contains("dark");
-        
+
         if (user.mapPreference === "satellite") return "satellite";
         if (user.mapPreference === "basic" && isDarkMode) {
-            console.log("Le mec est un gros BaKAAAAAA")
             return "basic-dark";
         }
-        console.log("ZoubDansLePantalon")
-        
         return "basic";
     } catch (e) {
         return "basic";
@@ -43,6 +41,7 @@ type LayersProps = {
 
 const Layers = ({ initialPlacement, initialCoordinates }: LayersProps) => {
     const map = useMap();
+    const { theme } = useTheme(); // <-- Récupération du thème global
     const [mapBounds, setMapBounds] = useState<L.LatLngBounds | null>(null);
     const [currentZoom, setCurrentZoom] = useState<number>(6);
 
@@ -66,6 +65,28 @@ const Layers = ({ initialPlacement, initialCoordinates }: LayersProps) => {
     const [enabledPoiTypes, setEnabledPoiTypes] = useState<string[]>(
         Object.entries(POI_CONFIGS).filter(([_, config]) => config.enabled).map(([key]) => key)
     );
+
+    useEffect(() => {
+        const updateMapTheme = () => {
+            setMapType((currentType) => {
+                if (currentType === "satellite") return "satellite";
+                
+                const isDarkMode = theme === "system" 
+                    ? window.matchMedia("(prefers-color-scheme: dark)").matches 
+                    : theme === "dark";
+                    
+                return isDarkMode ? "basic-dark" : "basic";
+            });
+        };
+
+        updateMapTheme();
+
+        if (theme === "system") {
+            const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+            mediaQuery.addEventListener("change", updateMapTheme);
+            return () => mediaQuery.removeEventListener("change", updateMapTheme);
+        }
+    }, [theme]);
 
     const handleMapBoundsChange = useCallback((bounds: L.LatLngBounds) => setMapBounds(bounds), []);
     const handleZoomChange = useCallback((zoom: number) => setCurrentZoom(zoom), []);
@@ -120,9 +141,18 @@ const Layers = ({ initialPlacement, initialCoordinates }: LayersProps) => {
     }, []);
 
     const handleChangeMapType = useCallback((type: "basic" | "satellite" | "basic-dark") => {
-        setMapType(type);
         const user = JSON.parse(localStorage.getItem("user") || "{}");
-        user.mapPreference = type;
+        
+        if (type === "satellite") {
+            setMapType("satellite");
+            user.mapPreference = "satellite";
+        } else {
+            // Si on clique sur Basic depuis le MapControl, il faut vérifier le thème actuel
+            const isDarkMode = document.documentElement.classList.contains("dark");
+            setMapType(isDarkMode ? "basic-dark" : "basic");
+            user.mapPreference = "basic";
+        }
+        
         localStorage.setItem("user", JSON.stringify(user));
     }, []);
 
