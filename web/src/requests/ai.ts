@@ -8,9 +8,7 @@ export async function aiStreamRequest(
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      model: "primo-ia",
       prompt,
-      stream: true,
     }),
   });
 

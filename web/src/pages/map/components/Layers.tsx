@@ -17,7 +17,7 @@ import ParcelDetailedDashboard from "./layers/ParcelDetailedDashboard/ParcelDeta
 import Navbar from "./layers/Navbar/Navbar";
 import { mapPreference } from "../../../utils/map";
 import { addOkReverseRequest } from "../../../requests/addok";
-import { useTheme } from "../../../context/ThemeProvider"; // <-- Ajout de l'import
+import { useTheme } from "../../../context/ThemeProvider";
 
 const getUserMapPreference = (): "basic" | "satellite" | "basic-dark" => {
     try {
@@ -41,7 +41,7 @@ type LayersProps = {
 
 const Layers = ({ initialPlacement, initialCoordinates }: LayersProps) => {
     const map = useMap();
-    const { theme } = useTheme(); // <-- Récupération du thème global
+    const { theme } = useTheme();
     const [mapBounds, setMapBounds] = useState<L.LatLngBounds | null>(null);
     const [currentZoom, setCurrentZoom] = useState<number>(6);
 
@@ -70,11 +70,11 @@ const Layers = ({ initialPlacement, initialCoordinates }: LayersProps) => {
         const updateMapTheme = () => {
             setMapType((currentType) => {
                 if (currentType === "satellite") return "satellite";
-                
-                const isDarkMode = theme === "system" 
-                    ? window.matchMedia("(prefers-color-scheme: dark)").matches 
+
+                const isDarkMode = theme === "system"
+                    ? window.matchMedia("(prefers-color-scheme: dark)").matches
                     : theme === "dark";
-                    
+
                 return isDarkMode ? "basic-dark" : "basic";
             });
         };
@@ -142,17 +142,16 @@ const Layers = ({ initialPlacement, initialCoordinates }: LayersProps) => {
 
     const handleChangeMapType = useCallback((type: "basic" | "satellite" | "basic-dark") => {
         const user = JSON.parse(localStorage.getItem("user") || "{}");
-        
+
         if (type === "satellite") {
             setMapType("satellite");
             user.mapPreference = "satellite";
         } else {
-            // Si on clique sur Basic depuis le MapControl, il faut vérifier le thème actuel
             const isDarkMode = document.documentElement.classList.contains("dark");
             setMapType(isDarkMode ? "basic-dark" : "basic");
             user.mapPreference = "basic";
         }
-        
+
         localStorage.setItem("user", JSON.stringify(user));
     }, []);
 
