@@ -29,22 +29,18 @@ const AiLayer = () => {
     const handleContent = (content: string) => {
         if (!content) return;
 
-        // Étape 1 : On intercepte le début du stream pour reconstruire le JSON
         if (!isJsonFinishedRef.current) {
             streamingCoords.current += content;
 
-            // Si on détecte le séparateur
             if (streamingCoords.current.includes("---")) {
                 const parts = streamingCoords.current.split("---");
                 const jsonPart = parts[0];
-                // On récupère tout ce qui se trouve après le séparateur (au cas où il y aurait du texte dans le même chunk)
                 const textPart = parts.slice(1).join("---").trimStart();
 
                 isJsonFinishedRef.current = true;
                 setCoordinates(jsonPart);
                 setIsFinished(true);
 
-                // Si l'IA a déjà commencé à parler après le séparateur, on l'ajoute à l'historique
                 if (textPart) {
                     setHistory((prev) => {
                         const newHistory = [...prev];
@@ -60,7 +56,6 @@ const AiLayer = () => {
                 }
             }
         } else {
-            // Étape 2 : Le JSON est passé, on stream le texte normalement dans le chat
             setHistory((prev) => {
                 const newHistory = [...prev];
                 const lastIndex = newHistory.length - 1;
@@ -119,7 +114,6 @@ const AiLayer = () => {
         onError: () => {
             setIsDisabled(false);
             sseBufferRef.current = "";
-            // En cas d'erreur, s'assurer qu'on ne reste pas bloqué
             isJsonFinishedRef.current = false;
             streamingCoords.current = "";
         }
@@ -130,7 +124,6 @@ const AiLayer = () => {
 
         const currentInput = inputValue;
 
-        // Reset des états et des refs pour la nouvelle requête
         setIsFinished(false);
         setCoordinates("");
         isJsonFinishedRef.current = false;
@@ -204,7 +197,6 @@ const AiLayer = () => {
                 </div>
             </div>
 
-            {/* Rendu conditionnel et sécurisé de la modale */}
             {isFinished && hasFoundCoordinates() && (
                 <ModalRedirectAiCoordinates coordinates={coordinates} onClose={handleCloseModal} />
             )}
