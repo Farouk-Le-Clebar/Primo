@@ -9,6 +9,7 @@ import LayersIcon from "../../../../../assets/icons/map/LayerIcon.svg?react";
 import LocateIcon from "../../../../../assets/icons/map/ArrowIcon.svg?react";
 import IaIcon from "../../../../../assets/icons/map/IaIcon.svg?react";
 import PoiIcon from "../../../../../assets/icons/map/PoiIcon.svg?react";
+import AiLayer from "../AI/AiLayer";
 
 interface MapControlsProps {
     onZoomIn: () => void;
@@ -129,11 +130,19 @@ export default function MapControls({
                 <button
                     type="button"
                     onClick={() => toggleMenu("ai")}
-                    className={`h-10 w-10 rounded-xl shadow-md border border-gray-100 dark:border-[#262626] flex items-center justify-center transition-colors text-gray-700 dark:text-white ${isAiOpen ? "bg-gray-50 dark:bg-[#1a1a1a] text-green-600" : "bg-white dark:bg-[#0A0A0A] hover:bg-gray-50 dark:hover:bg-[#1a1a1a]"
+                    className={`h-10 w-10 rounded-xl shadow-md border border-gray-100 dark:border-[#262626] flex items-center justify-center transition-colors text-gray-700 dark:text-white ${isAiOpen
+                        ? "bg-gray-50 dark:bg-[#1a1a1a] text-green-600"
+                        : "bg-white dark:bg-[#0A0A0A] hover:bg-gray-50 dark:hover:bg-[#1a1a1a]"
                         }`}
                 >
                     <IaIcon className="w-4.5 h-4.5 stroke-current" />
                 </button>
+
+                {isAiOpen && (
+                    <div className="absolute top-12 right-0 z-50">
+                        <AiLayer />
+                    </div>
+                )}
             </div>
 
             <div ref={poiRef} className="relative flex items-center">
