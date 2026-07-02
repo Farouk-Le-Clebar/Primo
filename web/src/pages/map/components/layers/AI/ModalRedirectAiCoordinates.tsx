@@ -10,7 +10,7 @@ const ModalRedirectAiCoordinates = ({ coordinates, onClose }: ModalRedirectAiCoo
     const map = useMap();
 
     const handleRedirect = () => {
-        map.flyTo([coordsObj.lat, coordsObj.lon], 13, {
+        map.flyTo([coordsObj.lat, coordsObj.lon], 12, {
             duration: 2
         });
         onClose();

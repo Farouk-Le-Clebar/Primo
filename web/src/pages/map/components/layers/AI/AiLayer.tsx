@@ -3,6 +3,7 @@ import { Send, X } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { aiStreamRequest } from "../../../../../requests/ai";
 import ModalRedirectAiCoordinates from "./ModalRedirectAiCoordinates";
+import { toast } from "react-hot-toast";
 
 type HistoryItem = {
     question: string;
@@ -15,7 +16,12 @@ type StreamPayload = {
     error?: string;
 };
 
-const AiLayer = () => {
+type AiLayerProps = {
+    isOpen: boolean;
+    onClose?: () => void;
+};
+
+const AiLayer = ({ isOpen, onClose }: AiLayerProps) => {
     const [inputValue, setInputValue] = useState("");
     const [isDisabled, setIsDisabled] = useState(false);
     const [history, setHistory] = useState<HistoryItem[]>([]);
@@ -88,7 +94,15 @@ const AiLayer = () => {
                 const payload: StreamPayload = JSON.parse(jsonStr);
 
                 if (payload.error) {
-                    console.error("Erreur de stream reçue du back:", payload.error);
+                    toast.error(payload.error);
+                    setHistory((prev) => {
+                        const newHistory = [...prev];
+                        const lastIndex = newHistory.length - 1;
+                        if (lastIndex >= 0 && newHistory[lastIndex].who === "ai") {
+                            newHistory.pop();
+                        }
+                        return newHistory;
+                    });
                     setIsDisabled(false);
                     continue;
                 }
@@ -152,11 +166,13 @@ const AiLayer = () => {
         }
     };
 
+    if (!isOpen) return null;
+
     return (
-        <div className={`absolute z-400 right-13 -bottom-63 bg-white rounded-lg shadow-lg transition-all duration-300 overflow-hidden w-80 h-120`}>
+        <div className={`absolute z-400 right-13 -bottom-90 bg-white rounded-lg shadow-lg transition-all duration-300 overflow-hidden w-80 h-150`}>
             <div className="w-full h-full flex flex-col font-UberMoveMedium text-gray-600">
                 <div className="w-full p-2 flex items-center justify-end">
-                    <button className="cursor-pointer hover:scale-105 duration-200">
+                    <button className="cursor-pointer hover:scale-105 duration-200" onClick={onClose}>
                         <X />
                     </button>
                 </div>

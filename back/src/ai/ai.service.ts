@@ -6,7 +6,7 @@ import { aiConfig } from './ai.config';
 @Injectable()
 export class AiService {
     private ai: GoogleGenAI;
-    private readonly model = 'gemini-2.5-flash-lite';
+    private readonly model = 'gemini-2.5-flash';
 
     constructor() {
         const apiKey = process.env.GEMINI_API_KEY;
@@ -56,12 +56,29 @@ export class AiService {
 
             sendDone();
         } catch (error: any) {
-            console.error('Erreur streaming Gemini:', error);
+            console.error('Streaming error from Gemini:', error);
 
             if (!res.headersSent) {
                 throw new InternalServerErrorException('An error occurred while streaming the response');
             }
-            sendDone('stream_failed');
+
+            let errorMessage = "An error occurred with the AI service.";
+
+            if (error?.message) {
+                try {
+                    const jsonMatch = error.message.match(/\{.*\}/);
+                    if (jsonMatch) {
+                        const parsedError = JSON.parse(jsonMatch[0]);
+                        errorMessage = parsedError?.error?.message || error.message;
+                    } else {
+                        errorMessage = error.message;
+                    }
+                } catch {
+                    errorMessage = error.message;
+                }
+            }
+
+            sendDone(errorMessage);
         }
     }
 }
