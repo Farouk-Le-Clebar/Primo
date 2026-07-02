@@ -30,6 +30,23 @@ export class AiService {
             res.end();
         };
 
+        const parseGeminiErrorMessage = (error: any): string => {
+            let errorMessage = "An error occurred with the AI service.";
+
+            try {
+                const jsonMatch = error.message.match(/\{.*\}/);
+                if (jsonMatch) {
+                    const parsedError = JSON.parse(jsonMatch[0]);
+                    errorMessage = parsedError?.error?.message || error.message;
+                } else {
+                    errorMessage = error.message;
+                }
+            } catch {
+                errorMessage = error.message;
+            }
+            return errorMessage;
+        };
+
         try {
             const stream = await this.ai.models.generateContentStream({
                 model: this.model,
@@ -56,12 +73,18 @@ export class AiService {
 
             sendDone();
         } catch (error: any) {
-            console.error('Erreur streaming Gemini:', error);
+            console.error('Streaming error from Gemini:', error);
 
             if (!res.headersSent) {
                 throw new InternalServerErrorException('An error occurred while streaming the response');
             }
-            sendDone('stream_failed');
+
+            let errorMessage = "An error occurred with the AI service.";
+
+            if (error?.message)
+                errorMessage = parseGeminiErrorMessage(error);
+
+            sendDone(errorMessage);
         }
     }
 }
