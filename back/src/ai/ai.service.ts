@@ -6,7 +6,7 @@ import { aiConfig } from './ai.config';
 @Injectable()
 export class AiService {
     private ai: GoogleGenAI;
-    private readonly model = 'gemini-2.5-flash-lite';
+    private readonly model = 'gemini-2.5-flash';
 
     constructor() {
         const apiKey = process.env.GEMINI_API_KEY;
@@ -28,23 +28,6 @@ export class AiService {
             const payload = JSON.stringify({ text: '', done: true, ...(error ? { error } : {}) });
             res.write(`data: ${payload}\n\n`);
             res.end();
-        };
-
-        const parseGeminiErrorMessage = (error: any): string => {
-            let errorMessage = "An error occurred with the AI service.";
-
-            try {
-                const jsonMatch = error.message.match(/\{.*\}/);
-                if (jsonMatch) {
-                    const parsedError = JSON.parse(jsonMatch[0]);
-                    errorMessage = parsedError?.error?.message || error.message;
-                } else {
-                    errorMessage = error.message;
-                }
-            } catch {
-                errorMessage = error.message;
-            }
-            return errorMessage;
         };
 
         try {
@@ -81,8 +64,19 @@ export class AiService {
 
             let errorMessage = "An error occurred with the AI service.";
 
-            if (error?.message)
-                errorMessage = parseGeminiErrorMessage(error);
+            if (error?.message) {
+                try {
+                    const jsonMatch = error.message.match(/\{.*\}/);
+                    if (jsonMatch) {
+                        const parsedError = JSON.parse(jsonMatch[0]);
+                        errorMessage = parsedError?.error?.message || error.message;
+                    } else {
+                        errorMessage = error.message;
+                    }
+                } catch {
+                    errorMessage = error.message;
+                }
+            }
 
             sendDone(errorMessage);
         }
