@@ -138,11 +138,12 @@ export default function MapControls({
                     <IaIcon className="w-4.5 h-4.5 stroke-current" />
                 </button>
 
-                {isAiOpen && (
-                    <div className="absolute top-12 right-0 z-50">
-                        <AiLayer />
-                    </div>
-                )}
+                <div className="absolute top-12 right-0 z-50">
+                    <AiLayer
+                        isOpen={isAiOpen}
+                        onClose={() => setIsAiOpen(false)}
+                    />
+                </div>
             </div>
 
             <div ref={poiRef} className="relative flex items-center">
