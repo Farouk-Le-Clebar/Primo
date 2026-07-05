@@ -39,8 +39,8 @@ export default function AuthRoot() {
           localStorage.setItem("user", JSON.stringify(data.user));
         }
 
-        navigate("/dashboard", { state: { welcome: true } });
-        
+        // navigate("/dashboard", { state: { welcome: true } }); // A remettre plus tard
+        window.location.href = "/dashboard"; // Solution temporaire pour "recharger la page" le temps d'installer un AuthContext
         // if (data.isNewUser) {
         //   navigate("/onboarding");
         // } else {
