@@ -34,7 +34,7 @@ export default function DropdownMenu({ onClose }: DropdownMenuProps) {
     </div>
   );
 
-  const dropdownBtnStyle = "w-full mx-auto h-8 py-2 border border-transparent bg-transparent";
+  const dropdownBtnStyle = "w-full mx-auto h-8 py-2 border border-transparent bg-transparent cursor-pointer";
 
   return (
     <div className="w-56 bg-white dark:bg-[#171717] dark:text-white rounded-xl shadow-lg border border-gray-100 dark:border-[#262626] py-2 px-0.5 flex flex-col gap-1 transition-colors duration-200">
@@ -54,21 +54,21 @@ export default function DropdownMenu({ onClose }: DropdownMenuProps) {
           <button 
             type="button"
             onClick={() => setTheme('light')} 
-            className={`flex-1 text-[10px] font-medium py-1 rounded-md transition-colors ${theme === 'light' ? 'bg-white dark:bg-[#262626] shadow-sm text-black dark:text-white' : 'text-gray-500 hover:text-black dark:hover:text-white'}`}
+            className={`flex-1 text-[10px] cursor-pointer font-medium py-1 rounded-md transition-colors ${theme === 'light' ? 'bg-white dark:bg-[#262626] shadow-sm text-black dark:text-white' : 'text-gray-500 hover:text-black dark:hover:text-white'}`}
           >
             Clair
           </button>
           <button 
             type="button"
             onClick={() => setTheme('dark')} 
-            className={`flex-1 text-[10px] font-medium py-1 rounded-md transition-colors ${theme === 'dark' ? 'bg-white dark:bg-[#262626] shadow-sm text-black dark:text-white' : 'text-gray-500 hover:text-black dark:hover:text-white'}`}
+            className={`flex-1 text-[10px] cursor-pointer font-medium py-1 rounded-md transition-colors ${theme === 'dark' ? 'bg-white dark:bg-[#262626] shadow-sm text-black dark:text-white' : 'text-gray-500 hover:text-black dark:hover:text-white'}`}
           >
             Sombre
           </button>
           <button 
             type="button"
             onClick={() => setTheme('system')} 
-            className={`flex-1 text-[10px] font-medium py-1 rounded-md transition-colors ${theme === 'system' ? 'bg-white dark:bg-[#262626] shadow-sm text-black dark:text-white' : 'text-gray-500 hover:text-black dark:hover:text-white'}`}
+            className={`flex-1 text-[10px] cursor-pointer font-medium py-1 rounded-md transition-colors ${theme === 'system' ? 'bg-white dark:bg-[#262626] shadow-sm text-black dark:text-white' : 'text-gray-500 hover:text-black dark:hover:text-white'}`}
           >
             Auto
           </button>

@@ -52,7 +52,7 @@ const AddPlotToProjectModal = ({ isOpen = true, onClose, plotData }: AddPlotToPr
                 <div className="absolute right-0 top-0 pr-3 pt-3">
                     <button
                         type="button"
-                        className="rounded-md p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 dark:hover:bg-white/5 dark:hover:text-white transition-colors"
+                        className="rounded-md p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 dark:hover:bg-white/5 dark:hover:text-white transition-colors cursor-pointer"
                         onClick={onClose}
                         aria-label="Fermer"
                     >
@@ -97,7 +97,7 @@ const AddPlotToProjectModal = ({ isOpen = true, onClose, plotData }: AddPlotToPr
                             type="button"
                             variant="secondary"
                             onClick={onClose}
-                            className="dark:border-white/10 dark:!text-white dark:hover:bg-white/5 text-gray-700 hover:bg-gray-50 transition-colors"
+                            className="dark:border-white/10 dark:!text-white dark:hover:bg-white/5 text-gray-700 hover:bg-gray-50 transition-colors cursor-pointer"
                         >
                             Annuler
                         </Button>
@@ -106,7 +106,7 @@ const AddPlotToProjectModal = ({ isOpen = true, onClose, plotData }: AddPlotToPr
                             onClick={() => addPlotToProjectMutation()}
                             disabled={!selectedProjectId || isPending}
                             loading={isPending}
-                            className="dark:bg-white dark:text-black dark:hover:bg-gray-200 border-transparent hover:border-transparent bg-black hover:bg-gray-800 transition-colors"
+                            className="dark:bg-white dark:text-black dark:hover:bg-gray-200 border-transparent hover:border-transparent bg-black hover:bg-gray-800 transition-colors cursor-pointer"
                         >
                             Confirmer l'ajout
                         </Button>

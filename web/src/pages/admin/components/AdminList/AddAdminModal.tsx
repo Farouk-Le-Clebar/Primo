@@ -84,7 +84,7 @@ const AddAdminModal = ({ isOpen, onClose }: AddAdminModalProps) => {
                             type="button"
                             variant="secondary"
                             onClick={onClose}
-                            className="!text-black hover:!bg-gray-100 !border-gray-200 dark:!border-white/10 dark:!text-white dark:hover:!bg-white/5 transition-colors"
+                            className="!text-black hover:!bg-gray-100 !border-gray-200 dark:!border-white/10 dark:!text-white dark:hover:!bg-white/5 transition-colors cursor-pointer"
                         >
                             Annuler
                         </Button>
@@ -92,7 +92,7 @@ const AddAdminModal = ({ isOpen, onClose }: AddAdminModalProps) => {
                             type="submit"
                             disabled={!email || isPending}
                             loading={isPending}
-                            className="!bg-black hover:!bg-gray-800 !text-white !border-transparent dark:!bg-white dark:hover:!bg-gray-200 dark:!text-black transition-colors"
+                            className="!bg-black hover:!bg-gray-800 !text-white !border-transparent dark:!bg-white dark:hover:!bg-gray-200 dark:!text-black transition-colors cursor-pointer"
                         >
                             Promouvoir
                         </Button>
