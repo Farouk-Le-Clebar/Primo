@@ -16,14 +16,14 @@ const PoiWidget = ({ enabledPoiTypes, onTogglePoi, currentZoom, minZoomForPois }
     };
 
     return (
-        <div className="bg-white font-inter rounded-xl shadow-lg border border-gray-100 overflow-hidden w-64">
+        <div className="bg-white dark:bg-[#0A0A0A] font-inter rounded-xl shadow-lg border border-gray-100 dark:border-white/10 overflow-hidden w-64 transition-colors duration-200">
             
-            <div className="px-4 py-3 border-b border-gray-100 bg-gray-50">
-                <span className="font-semibold text-gray-800 text-sm">
+            <div className="px-4 py-3 border-b border-gray-100 dark:border-white/10 bg-gray-50 dark:bg-[#111111] transition-colors duration-200">
+                <span className="font-semibold text-gray-800 dark:text-gray-200 text-sm">
                     Points d'intérêts
                 </span>
                 {currentZoom < minZoomForPois && (
-                    <p className="text-[10px] text-gray-500 mt-1">Zommez pour afficher les résultats</p>
+                    <p className="text-[10px] text-gray-500 dark:text-[#999999] mt-1">Zoomez pour afficher les résultats</p>
                 )}
             </div>
 
@@ -35,17 +35,17 @@ const PoiWidget = ({ enabledPoiTypes, onTogglePoi, currentZoom, minZoomForPois }
                         <button
                             key={key}
                             onClick={() => handleToggle(key)}
-                            className="w-full px-4 py-2.5 flex items-center gap-3 transition-all relative hover:bg-gray-50 group cursor-pointer"
+                            className="w-full px-4 py-2.5 flex items-center gap-3 transition-all relative hover:bg-gray-50 dark:hover:bg-white/5 group cursor-pointer"
                         >
                             {isActive && (
-                                <div className="absolute left-1.5 top-1/2 -translate-y-1/2 w-1 h-6 bg-orange-500 rounded-full" />
+                                <div className="absolute left-1.5 top-1/2 -translate-y-1/2 w-1 h-6 bg-blue-500 dark:bg-blue-400 rounded-full" />
                             )}
                             
                             <div className={`flex-shrink-0 transition-all ${isActive ? "ml-2" : ""}`}>
                                 <IconComponent
                                     size={18}
                                     className={`transition-colors ${
-                                        isActive ? "text-orange-500" : "text-gray-500"
+                                        isActive ? "text-blue-500 dark:text-blue-400" : "text-gray-500 dark:text-gray-400"
                                     }`}
                                     strokeWidth={2}
                                 />
@@ -53,7 +53,7 @@ const PoiWidget = ({ enabledPoiTypes, onTogglePoi, currentZoom, minZoomForPois }
                             
                             <span
                                 className={`text-sm flex-1 text-left transition-all ${
-                                    isActive ? "text-orange-600 font-medium" : "text-gray-700"
+                                    isActive ? "text-blue-600 dark:text-blue-400 font-medium" : "text-gray-700 dark:text-gray-300"
                                 }`}
                             >
                                 {config.label}
@@ -63,10 +63,10 @@ const PoiWidget = ({ enabledPoiTypes, onTogglePoi, currentZoom, minZoomForPois }
                 })}
             </div>
             
-            <div className="border-t border-gray-100 bg-gray-50">
-                <button className="w-full px-4 py-3 flex items-center justify-center gap-2 hover:bg-gray-100 transition-colors cursor-pointer">
-                    <MapPin size={14} className="text-gray-500" strokeWidth={2} />
-                    <span className="text-xs font-medium text-gray-600">
+            <div className="border-t border-gray-100 dark:border-white/10 bg-gray-50 dark:bg-[#111111] transition-colors duration-200">
+                <button className="w-full px-4 py-3 flex items-center justify-center gap-2 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors cursor-pointer">
+                    <MapPin size={14} className="text-gray-500 dark:text-gray-400" strokeWidth={2} />
+                    <span className="text-xs font-medium text-gray-600 dark:text-gray-300">
                         Ajouter une adresse personnalisée
                     </span>
                 </button>
