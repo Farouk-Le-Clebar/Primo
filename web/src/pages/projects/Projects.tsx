@@ -1,6 +1,6 @@
 import { Table, TableBody, TableCell, TableHead, TableHeaderCell, TableRow, TextInput, Button, Card, Title, Text } from '@tremor/react';
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Star, Search, Plus, Ellipsis, Trash, X, Check } from "lucide-react";
+import { Star, Search, Plus, Trash, X, Check, Loader2, Users } from "lucide-react";
 import { useState } from 'react';
 import LoadingPrimoLogo from '../../components/animations/LoadingPrimoLogo';
 import type { ProjectResponse } from '../../types/project/projects';
@@ -14,6 +14,7 @@ export default function Projects() {
     const [actualTogglingFavorite, setActualTogglingFavorite] = useState<string | null>(null);
     const [idToDelete, setIdToDelete] = useState<string | null>(null);
     const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
+    
     const navigate = useNavigate();
     const queryClient = useQueryClient();
 
@@ -29,7 +30,7 @@ export default function Projects() {
             return queryClient.invalidateQueries({ queryKey: ['projects'] });
         },
         onError: () => {
-            toast.error("Une erreur est survenue lors de la mise à jour du favori. Veuillez réessayer.");
+            toast.error("Une erreur est survenue lors de la mise à jour du favori.");
         },
         onSettled: () => {
             setActualTogglingFavorite(null);
@@ -43,12 +44,13 @@ export default function Projects() {
             return queryClient.invalidateQueries({ queryKey: ['projects'] });
         },
         onError: () => {
-            toast.error("Une erreur est survenue lors de la suppression du projet. Veuillez réessayer.");
+            toast.error("Une erreur est survenue lors de la suppression du projet.");
         }
     });
 
     const filteredProjects = projects?.filter(project =>
-        project.name.toLowerCase().includes(searchQuery.toLowerCase())
+        project.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+        (project.description && project.description.toLowerCase().includes(searchQuery.toLowerCase()))
     );
 
     const handleToggleFavorite = (projectId: string, e: React.MouseEvent<HTMLButtonElement>) => {
@@ -76,9 +78,9 @@ export default function Projects() {
                 </p>
             </div>
 
-            <Card className="w-full h-80/100 scrollbar-custom flex-1 flex flex-col rounded-xl border border-gray-100 dark:border-white/5 transition-colors duration-200 ring-0 dark:ring-0">
+            <Card className="w-full h-80/100 scrollbar-custom flex-1 flex flex-col p-0 rounded-xl border border-gray-100 dark:border-white/5 transition-colors duration-200 ring-0 dark:ring-0">
 
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 border-b border-gray-100 dark:border-white/5">
                     <div>
                         <Title className="text-gray-900 dark:text-white flex items-center gap-2">
                             Liste des projets
@@ -104,97 +106,133 @@ export default function Projects() {
                     </div>
                 </div>
 
-                <Table className="mt-2">
-                    <TableHead>
-                        <TableRow className="border-b border-gray-200 dark:border-white/5">
-                            <TableHeaderCell className="text-gray-500 dark:text-gray-400 text-left">Nom du projet</TableHeaderCell>
-                            <TableHeaderCell className="text-gray-500 dark:text-gray-400 text-center">Parcelles</TableHeaderCell>
-                            <TableHeaderCell className="text-gray-500 dark:text-gray-400 text-center">Date de création</TableHeaderCell>
-                            <TableHeaderCell className="text-gray-500 dark:text-gray-400 text-right">
-                                <div className="flex justify-end pr-2">
-                                    <Ellipsis className='w-5 h-5' />
-                                </div>
-                            </TableHeaderCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {filteredProjects?.map((project: ProjectResponse) => (
-                            <TableRow onClick={() => navigate(`/projects/${project.id}/dashboard`)} key={project.id} className="hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors cursor-default border-b border-gray-100 dark:border-white/5 last:border-none cursor-pointer">
-                                <TableCell className="font-medium text-gray-900 dark:text-gray-200 text-left">
-                                    {project.name}
-                                </TableCell>
-                                <TableCell className="text-gray-600 dark:text-gray-400 font-medium text-center">
-                                    {project.numberOfPlots}
-                                </TableCell>
-                                <TableCell className="text-gray-600 dark:text-gray-400 text-center">
-                                    {new Date(project.createdAt).toLocaleDateString('fr-FR')}
-                                </TableCell>
-                                <TableCell className="text-right">
-                                    <div className="flex items-center justify-end gap-1 min-w-[88px] min-h-[36px]">
-                                        {idToDelete === project.id ? (
-                                            <div className="flex items-center justify-center gap-2">
-                                                <button className="w-6 h-6 flex items-center justify-center rounded-full hover:bg-gray-300 hover:text-white transition-colors hover:border-none cursor-pointer border border-gray-400 text-gray-400"
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        setIdToDelete(null);
-                                                    }}
-                                                    title="Annuler"
-                                                >
-                                                    <X className="w-5 h-5" />
-                                                </button>
-                                                <button
-                                                    className="w-6 h-6 flex items-center justify-center rounded-full bg-red-600 hover:bg-red-700 transition-colors cursor-pointer text-white"
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        deleteProjectMutation(project.id);
-                                                        setIdToDelete(null);
-                                                    }}
-                                                    title="Confirmer la suppression"
-                                                >
-                                                    <Check className="w-5 h-5" />
-                                                </button>
-                                            </div>
-                                        ) : (
-                                            <>
-                                                <button className="w-9 h-9 flex items-center justify-center p-2 outline-none focus:outline-none hover:scale-110 active:scale-95 transition-transform disabled:cursor-not-allowed"
-                                                    onClick={(e) => handleToggleFavorite(project.id, e)}
-                                                    disabled={isTogglingFavorite}
-                                                    title="Ajouter aux favoris"
-                                                >
-                                                    {isTogglingFavorite && project.id === actualTogglingFavorite ? (
-                                                        <LoadingPrimoLogo className="h-5 w-5 dark:invert" />
-                                                    ) : (
-                                                        <Star
-                                                            className={`w-5 h-5 cursor-pointer ${project.isFavorite ? 'text-yellow-400 drop-shadow-sm' : 'text-gray-300 dark:text-gray-600 hover:text-gray-400 dark:hover:text-gray-500'}`}
-                                                            fill={project.isFavorite ? "currentColor" : "none"}
-                                                        />
-                                                    )}
-                                                </button>
-
-                                                <button className="w-9 h-9 cursor-pointer flex items-center justify-center p-2 outline-none focus:outline-none hover:scale-110 active:scale-95 transition-transform"
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        setIdToDelete(project.id);
-                                                    }}
-                                                    title="Supprimer le projet"
-                                                >
-                                                    <Trash className='w-5 h-5 text-red-500 hover:text-red-600' />
-                                                </button>
-                                            </>
-                                        )}
-                                    </div>
-                                </TableCell>
+                <div className="flex-1 overflow-auto">
+                    <Table>
+                        <TableHead>
+                            <TableRow className="border-b border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/[0.01]">
+                                <TableHeaderCell className="text-gray-500 dark:text-gray-400 text-left font-medium py-3 px-6">Nom du projet</TableHeaderCell>
+                                <TableHeaderCell className="text-gray-500 dark:text-gray-400 text-center font-medium py-3">Parcelles</TableHeaderCell>
+                                <TableHeaderCell className="text-gray-500 dark:text-gray-400 text-center font-medium py-3">Membres</TableHeaderCell>
+                                <TableHeaderCell className="text-gray-500 dark:text-gray-400 text-right font-medium py-3 px-6">Dernière modif.</TableHeaderCell>
                             </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
+                        </TableHead>
+                        <TableBody>
+                            {filteredProjects?.map((project: ProjectResponse) => (
+                                <TableRow 
+                                    key={project.id} 
+                                    onClick={() => navigate(`/projects/${project.id}/dashboard`)} 
+                                    className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors cursor-pointer border-b border-gray-100 dark:border-white/5 last:border-none relative"
+                                >
+                                    <TableCell className="text-left px-6 py-3">
+                                        <div className="flex flex-col">
+                                            <div className="flex items-center gap-2">
+                                                {project.isFavorite && <Star className="w-4 h-4 text-yellow-400 fill-current shrink-0" />}
+                                                <span className="font-medium text-gray-900 dark:text-gray-200 truncate">{project.name}</span>
+                                            </div>
+                                            {project.description && (
+                                                <span className="text-xs text-gray-500 dark:text-gray-400 truncate mt-0.5 max-w-xs xl:max-w-md">
+                                                    {project.description}
+                                                </span>
+                                            )}
+                                        </div>
+                                    </TableCell>
+                                    
+                                    <TableCell className="text-gray-600 dark:text-gray-400 font-medium text-center">
+                                        <span className="inline-flex items-center justify-center min-w-[2rem] h-6 px-2 rounded-md bg-gray-100 dark:bg-white/[0.01] text-xs">
+                                            {project.numberOfPlots}
+                                        </span>
+                                    </TableCell>
 
-                {filteredProjects?.length === 0 && !isPending && (
-                    <div className="text-center py-10 text-gray-500 dark:text-gray-400 italic">
-                        {searchQuery ? "Aucun projet ne correspond à votre recherche." : "Aucun projet trouvé."}
-                    </div>
-                )}
+                                    <TableCell className="text-gray-600 dark:text-gray-400 font-medium text-center">
+                                        <div className="flex items-center justify-center gap-1.5">
+                                            <Users className="w-3.5 h-3.5 text-gray-400" />
+                                            <span className="text-xs">{project.numberOfMembers}</span>
+                                        </div>
+                                    </TableCell>
+                                    
+                                    <TableCell className="text-right text-gray-600 dark:text-gray-400 px-6">
+                                        {/* Date affichée par défaut */}
+                                        <span className={`transition-opacity ${idToDelete === project.id ? "opacity-0" : "opacity-100"}`}>
+                                            {new Date(project.createdAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })}
+                                        </span>
+
+                                        {/* Menu d'actions au hover (Group de boutons collés) */}
+                                        <div className="absolute right-6 top-1/2 hidden h-full -translate-y-1/2 items-center bg-gray-50 group-hover:flex dark:bg-white/[0.002] pl-6">
+                                            
+                                            {idToDelete === project.id ? (
+                                                <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+                                                    <span className="text-xs text-red-500 mr-1 font-medium">Sûr ?</span>
+                                                    <div className="inline-flex items-center rounded-md shadow-sm">
+                                                        <button 
+                                                            className="relative inline-flex items-center rounded-l-md bg-white px-3 py-1.5 text-gray-600 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 dark:bg-[#1A1A1A] dark:text-gray-300 dark:ring-white/10 hover:dark:bg-white/5"
+                                                            onClick={() => setIdToDelete(null)}
+                                                            title="Annuler"
+                                                        >
+                                                            <X className="w-4 h-4" />
+                                                        </button>
+                                                        <button
+                                                            className="relative -ml-px inline-flex items-center rounded-r-md bg-red-600 px-3 py-1.5 text-white ring-1 ring-inset ring-red-600 hover:bg-red-700 dark:ring-red-500"
+                                                            onClick={() => {
+                                                                deleteProjectMutation(project.id);
+                                                                setIdToDelete(null);
+                                                            }}
+                                                            title="Confirmer"
+                                                        >
+                                                            <Check className="w-4 h-4" />
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            ) : (
+                                                <div className="inline-flex items-center rounded-md shadow-sm">
+                                                    <button 
+                                                        type="button"
+                                                        className="relative inline-flex items-center rounded-l-md bg-white px-3 py-2 text-gray-600 ring-1 ring-inset ring-gray-300 hover:text-gray-900 hover:bg-gray-50 focus:z-10 dark:bg-[#1A1A1A] dark:text-gray-300 dark:ring-white/10 hover:dark:text-white hover:dark:bg-white/5"
+                                                        onClick={(e) => handleToggleFavorite(project.id, e)}
+                                                        disabled={isTogglingFavorite}
+                                                        title={project.isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"}
+                                                    >
+                                                        {isTogglingFavorite && project.id === actualTogglingFavorite ? (
+                                                            <Loader2 className="w-4 h-4 animate-spin" />
+                                                        ) : (
+                                                            <Star 
+                                                                className={`w-4 h-4 ${project.isFavorite ? 'text-yellow-400 fill-current' : 'text-gray-500 dark:text-gray-400'}`} 
+                                                            />
+                                                        )}
+                                                    </button>
+                                                    
+                                                    <button 
+                                                        type="button"
+                                                        className="relative -ml-px inline-flex items-center rounded-r-md bg-white px-3 py-2 text-gray-600 ring-1 ring-inset ring-gray-300 hover:text-red-600 hover:bg-red-50 focus:z-10 dark:bg-[#1A1A1A] dark:text-gray-400 dark:ring-white/10 hover:dark:text-red-400 hover:dark:bg-red-950/30"
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            setIdToDelete(project.id);
+                                                        }}
+                                                        title="Supprimer le projet"
+                                                    >
+                                                        <Trash className="w-4 h-4" />
+                                                    </button>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+
+                    {filteredProjects?.length === 0 && !isPending && (
+                        <div className="flex flex-col items-center justify-center h-48 text-gray-500 dark:text-gray-400">
+                            <p className="italic mb-4">{searchQuery ? "Aucun projet ne correspond à votre recherche." : "Vous n'avez pas encore de projet."}</p>
+                            {!searchQuery && (
+                                <Button icon={Plus} variant="secondary" onClick={() => setIsCreateModalOpen(true)}>
+                                    Créer mon premier projet
+                                </Button>
+                            )}
+                        </div>
+                    )}
+                </div>
             </Card>
+
             {isCreateModalOpen && (
                 <CreateProjectModal
                     onClose={() => setIsCreateModalOpen(false)}
