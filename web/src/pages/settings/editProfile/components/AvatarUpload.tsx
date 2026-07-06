@@ -33,16 +33,16 @@ export default function AvatarUpload({
                 className="relative group cursor-pointer"
                 onClick={() => setIsModalOpen(true)}
             >
-                <div className="w-46 h-46 rounded-full overflow-hidden border-4 border-white shadow-md transition-all duration-300 group-hover:shadow-lg group-hover:brightness-95">
+                <div className="w-46 h-46 rounded-full overflow-hidden border-4 border-white dark:border-[#0A0A0A] shadow-md transition-all duration-300 group-hover:shadow-lg group-hover:brightness-95">
                     <CurrentAvatarComponent className="w-full h-full" />
-                    <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="absolute inset-0 bg-black/20 dark:bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                         <span className="text-white text-[10px] font-bold uppercase tracking-widest text-center px-2">
                             Changer l'avatar
                         </span>
                     </div>
                 </div>
 
-                <div className="absolute bottom-2 right-2 bg-white text-gray-700 p-2.5 rounded-full shadow-lg border border-gray-100 group-hover:scale-110 transition-transform">
+                <div className="absolute bottom-2 right-2 bg-white dark:bg-[#1A1A1A] text-gray-700 dark:text-gray-300 p-2.5 rounded-full shadow-lg border border-gray-100 dark:border-white/10 group-hover:scale-110 transition-transform">
                     <svg
                         className="w-4 h-4"
                         fill="none"
@@ -60,25 +60,25 @@ export default function AvatarUpload({
             </div>
 
             {isModalOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm p-4">
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 dark:bg-black/60 backdrop-blur-sm p-4">
                     <div
-                        className="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200"
+                        className="bg-white dark:bg-[#0A0A0A] w-full max-w-md rounded-3xl shadow-2xl dark:border dark:border-white/10 overflow-hidden animate-in fade-in zoom-in duration-200"
                         onClick={(e) => e.stopPropagation()}
                     >
                         <div className="p-8">
                             <div className="flex justify-between items-start mb-6">
                                 <div className="flex flex-col">
-                                    <h3 className="text-2xl font-UberMove text-gray-800">
+                                    <h3 className="text-2xl font-UberMove text-gray-800 dark:text-white">
                                         Choisir un avatar
                                     </h3>
-                                    <p className="text-gray-500 font-UberMoveMedium text-sm mt-1">
+                                    <p className="text-gray-500 dark:text-gray-400 font-UberMoveMedium text-sm mt-1">
                                         Sélectionnez l'image qui vous ressemble
                                         le plus.
                                     </p>
                                 </div>
 
                                 <button
-                                    className="text-gray-400 hover:text-gray-600 transition-colors"
+                                    className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
                                     onClick={() => setIsModalOpen(false)}
                                 >
                                     <X size={24} />
@@ -93,7 +93,7 @@ export default function AvatarUpload({
                                         <button
                                             key={avatar}
                                             onClick={() => selectPreset(avatar)}
-                                            className="relative aspect-square rounded-full overflow-hidden border-2 border-transparent hover:border-[#388160] hover:scale-110 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#388160] focus:ring-offset-2"
+                                            className="relative aspect-square rounded-full overflow-hidden border-2 border-transparent hover:border-blue-500 dark:hover:border-blue-400 hover:scale-110 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:ring-offset-2 dark:focus:ring-offset-[#0A0A0A]"
                                         >
                                             <AvatarComponent className="w-full h-full" />
                                         </button>
