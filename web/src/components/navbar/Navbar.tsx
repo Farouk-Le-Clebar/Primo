@@ -53,7 +53,7 @@ export default function Navbar() {
       <div className="flex h-full items-center justify-end gap-2 pr-6">
           <button 
             onClick={() => startOnboarding(location.pathname)}
-            className="p-2 text-gray-400 hover:text-gray-900 transition-colors rounded-full hover:bg-gray-100 dark:hover:bg-[#171717]"
+            className="p-2 cursor-pointer text-gray-400 hover:text-gray-900 transition-colors rounded-full hover:bg-gray-100 dark:hover:bg-[#171717]"
             title="Aide et tutoriel"
           >
             <HelpIcon className="w-4 h-4 dark:invert" />

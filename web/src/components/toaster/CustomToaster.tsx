@@ -6,11 +6,9 @@ export default function CustomToaster() {
       position="top-right"
       reverseOrder={false}
       toastOptions={{
+        className: "!bg-white dark:!bg-[#171717] !text-gray-800 dark:!text-white !border !border-gray-200 dark:!border-[#262626] transition-colors",
         style: {
           borderRadius: "12px",
-          background: "#ffffff",
-          color: "#1f2937",
-          border: "1px solid #e5e7eb",
           padding: "16px",
           fontSize: "14px",
           fontWeight: "500",

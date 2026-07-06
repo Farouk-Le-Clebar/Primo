@@ -1,13 +1,10 @@
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { updateUserProfile } from "../../../../requests/UserRequests";
-
-// UI COMPONENTS
-import Input from "../../../../ui/Input";
-import AvatarUpload from "./AvatarUpload.tsx";
-
-// ASSETS
 import { toast } from "react-hot-toast";
+import { Loader2 } from "lucide-react";
+import { Divider, TextInput, Button } from '@tremor/react';
+import AvatarUpload from "./AvatarUpload.tsx";
 
 export default function ProfileInfoForm() {
     const token = localStorage.getItem("token") || "";
@@ -56,7 +53,8 @@ export default function ProfileInfoForm() {
         }));
     };
 
-    const saveProfile = () => {
+    const saveProfile = (e: React.FormEvent) => {
+        e.preventDefault();
         const payload = {
             firstName: formData.firstName,
             surName: formData.lastName,
@@ -67,109 +65,101 @@ export default function ProfileInfoForm() {
     };
 
     return (
-        <div className="flex w-full flex-col">
-            {/* HEADER */}
-            <div className="flex w-full items-end justify-between pb-1">
-                <h1 className="font-UberMove mb-1 text-2xl font-medium text-gray-900 leading-none">
-                    Mes informations
-                </h1>
-                <button
-                    disabled={isPending}
-                    onClick={saveProfile}
-                    className={`mb-1 text-sm text-white px-5 py-2 rounded-lg font-medium transition-all duration-200 shadow-sm
-            ${isPending ? "bg-gray-400 cursor-not-allowed" : "bg-[#388160] hover:bg-[#2d664c] active:scale-95"}
-          `}
-                >
-                    {isPending ? (
-                        <div className="flex items-center gap-2">
-                            <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                            Enregistrement...
-                        </div>
-                    ) : (
-                        "Enregistrer"
-                    )}
-                </button>
-            </div>
+        <div className="w-full">
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white transition-colors duration-200">
+                Informations du compte
+            </h3>
+            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400 transition-colors duration-200">
+                Mettez à jour vos informations personnelles et votre photo de profil.
+            </p>
 
-            <hr className="border-t border-gray-200" />
-
-            {/* FORMULAIRE */}
-            <div className="flex flex-col md:flex-row justify-between items-start gap-12 mt-10">
-                <div className="flex flex-col w-full md:w-2/3 space-y-7">
-                    {/* Prénom */}
-                    <div className="flex flex-col space-y-1.5 w-1/2">
-                        <label className="text-sm font-semibold text-gray-700 ml-1">
-                            Prénom
-                        </label>
-                        <Input
-                            type="text"
-                            height="h-10"
-                            placeholder="Prénom"
-                            onChange={(val: string) =>
-                                handleFieldChange("firstName", val)
-                            }
-                            value={formData.firstName}
-                            className="bg-[#EFEFF4] border-none focus:ring-2 focus:ring-[#388160]"
-                        />
-                    </div>
-
-                    {/* Nom */}
-                    <div className="flex flex-col space-y-1.5 w-[80%]">
-                        <label className="text-sm font-semibold text-gray-700 ml-1">
-                            Nom de famille
-                        </label>
-                        <Input
-                            type="text"
-                            height="h-10"
-                            placeholder="Nom"
-                            onChange={(val: string) =>
-                                handleFieldChange("lastName", val)
-                            }
-                            value={formData.lastName}
-                            className="bg-[#EFEFF4] border-none focus:ring-2 focus:ring-[#388160]"
-                        />
-                    </div>
-
-                    {/* Email */}
-                    <div className="flex flex-col space-y-1.5 w-full">
-                        <label className="text-sm font-semibold text-gray-400 ml-1 italic">
-                            Adresse e-mail (non modifiable)
-                        </label>
-                        <div className="relative">
-                            <Input
-                                type="email"
-                                height="h-10"
-                                value={formData.email}
-                                onChange={() => {}}
-                                className="bg-[#EFEFF4] border-none text-gray-400 cursor-not-allowed opacity-70"
-                            />
-                            <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-300">
-                                <svg
-                                    className="w-4 h-4"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24"
+            <div className="mt-8">
+                <form onSubmit={saveProfile}>
+                    <div className="flex flex-col-reverse md:flex-row justify-between items-start gap-12">
+                        <div className="flex flex-col w-full md:w-2/3 space-y-6">
+                            
+                            <div>
+                                <label
+                                    htmlFor="firstName"
+                                    className="text-sm font-medium text-gray-900 dark:text-gray-200 transition-colors duration-200"
                                 >
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="2"
-                                        d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-                                    />
-                                </svg>
+                                    Prénom
+                                </label>
+                                <TextInput
+                                    type="text"
+                                    id="firstName"
+                                    name="firstName"
+                                    placeholder="Prénom"
+                                    value={formData.firstName}
+                                    onChange={(e) => handleFieldChange("firstName", e.target.value)}
+                                    className="mt-2 w-full rounded-md dark:bg-[#0A0A0A] dark:border-white/10 dark:text-white sm:max-w-lg"
+                                />
+                            </div>
+
+                            <div>
+                                <label
+                                    htmlFor="lastName"
+                                    className="text-sm font-medium text-gray-900 dark:text-gray-200 transition-colors duration-200"
+                                >
+                                    Nom de famille
+                                </label>
+                                <TextInput
+                                    type="text"
+                                    id="lastName"
+                                    name="lastName"
+                                    placeholder="Nom"
+                                    value={formData.lastName}
+                                    onChange={(e) => handleFieldChange("lastName", e.target.value)}
+                                    className="mt-2 w-full rounded-md dark:bg-[#0A0A0A] dark:border-white/10 dark:text-white sm:max-w-lg"
+                                />
+                            </div>
+
+                            <div>
+                                <label
+                                    htmlFor="email"
+                                    className="text-sm font-medium text-gray-500 dark:text-gray-400 italic transition-colors duration-200"
+                                >
+                                    Adresse e-mail (non modifiable)
+                                </label>
+                                <TextInput
+                                    type="email"
+                                    id="email"
+                                    name="email"
+                                    value={formData.email}
+                                    disabled
+                                    className="mt-2 w-full rounded-md bg-gray-50 dark:bg-white/5 dark:border-white/10 text-gray-400 cursor-not-allowed sm:max-w-lg"
+                                />
+                            </div>
+                            
+                            <div className="pt-2">
+                                <Button
+                                    type="submit"
+                                    disabled={isPending}
+                                    className="w-full sm:w-auto bg-black hover:bg-black/85 text-white dark:bg-white dark:text-black dark:hover:bg-white/85 border-none transition-colors"
+                                >
+                                    {isPending ? (
+                                        <span className="flex items-center gap-2">
+                                            <Loader2 className="w-4 h-4 animate-spin" />
+                                            Enregistrement...
+                                        </span>
+                                    ) : (
+                                        "Enregistrer les modifications"
+                                    )}
+                                </Button>
                             </div>
                         </div>
-                    </div>
-                </div>
 
-                {/* AVATAR */}
-                <div className="flex w-full md:w-1/3 justify-center pt-4 ">
-                    <AvatarUpload
-                        currentImage={formData.profilePicture}
-                        onImageChange={handleImageUpdate}
-                    />
-                </div>
+                        <div className="flex w-full md:w-1/3 justify-center md:justify-end">
+                            <AvatarUpload
+                                currentImage={formData.profilePicture}
+                                onImageChange={handleImageUpdate}
+                            />
+                        </div>
+                    </div>
+                </form>
             </div>
+            
+            <Divider className="my-10 dark:bg-white/10" />
         </div>
     );
 }

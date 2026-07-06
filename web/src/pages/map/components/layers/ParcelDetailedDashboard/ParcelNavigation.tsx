@@ -55,7 +55,7 @@ export default function ParcelNavigation({ activeTab, setActiveTab, onOpenSearch
               <div className="absolute top-full left-0 mt-2 w-48 bg-white dark:bg-[#171717] border border-gray-200 dark:border-[#262626] rounded-xl shadow-xl z-50 py-1 overflow-hidden">
                 {cat.items.map((item) => (
                   <button key={item.id} onClick={() => { setActiveTab(item.id); setOpenDropdown(null); }} 
-                    className={`flex w-full items-center gap-2 px-4 py-2.5 text-[12px] text-left ${
+                    className={`flex w-full items-center cursor-pointer gap-2 px-4 py-2.5 text-[12px] text-left ${
                       activeTab === item.id ? "bg-blue-50 text-blue-700 font-bold dark:bg-[#262626]" : "text-gray-600 dark:text-white hover:bg-gray-50 dark:hover:bg-[#262626]"
                     }`}>
                     <span className={`text-[14px] font-mono ${activeTab === item.id ? "text-blue-400" : "text-gray-300"}`}>#</span>

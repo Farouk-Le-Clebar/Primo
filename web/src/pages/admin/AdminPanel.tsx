@@ -20,10 +20,10 @@ const AdminPanel = () => {
 
             <TabGroup className="mt-6 flex-1 flex flex-col">
                 <TabList className="mb-6" id="admin-tabs-tour">
-                    <Tab id="admin-overview-tour" className="text-gray-700 dark:text-gray-300 dark:hover:text-white aria-selected:!text-black aria-selected:!border-black dark:aria-selected:!text-white dark:aria-selected:!border-white">Aperçu</Tab>
-                    <Tab id="admin-users-tour" className="text-gray-700 dark:text-gray-300 dark:hover:text-white aria-selected:!text-black aria-selected:!border-black dark:aria-selected:!text-white dark:aria-selected:!border-white">Utilisateurs</Tab>
-                    <Tab id="admin-admins-tour" className="text-gray-700 dark:text-gray-300 dark:hover:text-white aria-selected:!text-black aria-selected:!border-black dark:aria-selected:!text-white dark:aria-selected:!border-white">Administrateurs</Tab>
-                    <Tab id="admin-feedbacks-tour" className="text-gray-700 dark:text-gray-300 dark:hover:text-white aria-selected:!text-black aria-selected:!border-black dark:aria-selected:!text-white dark:aria-selected:!border-white">Retours & Suggestions</Tab>
+                    <Tab id="admin-overview-tour" className="text-gray-700 dark:text-gray-300 dark:hover:text-white aria-selected:!text-black aria-selected:!border-black dark:aria-selected:!text-white dark:aria-selected:!border-white cursor-pointer">Aperçu</Tab>
+                    <Tab id="admin-users-tour" className="text-gray-700 dark:text-gray-300 dark:hover:text-white aria-selected:!text-black aria-selected:!border-black dark:aria-selected:!text-white dark:aria-selected:!border-white cursor-pointer">Utilisateurs</Tab>
+                    <Tab id="admin-admins-tour" className="text-gray-700 dark:text-gray-300 dark:hover:text-white aria-selected:!text-black aria-selected:!border-black dark:aria-selected:!text-white dark:aria-selected:!border-white cursor-pointer">Administrateurs</Tab>
+                    <Tab id="admin-feedbacks-tour" className="text-gray-700 dark:text-gray-300 dark:hover:text-white aria-selected:!text-black aria-selected:!border-black dark:aria-selected:!text-white dark:aria-selected:!border-white cursor-pointer">Retours & Suggestions</Tab>
                 </TabList>
 
                 <TabPanels className="flex-1">
