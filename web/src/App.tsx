@@ -32,7 +32,7 @@ import ResetPassword from "./pages/mailling/ResetPassword";
 import SendEmailResetPassword from "./pages/mailling/SendEmailResetPassword";
 import Feedback from "./pages/feedback/Feedback";
 import ProjectNavbar from "./components/projectNavbar/ProjectNavbar";
-import DashboardProjects from "./pages/projects/components/Dashboard";
+import DashboardProjects from "./pages/projects/components/dashboard/Dashboard";
 import ParcelsTab from "./pages/projects/components/parcels/ParcelsTab";
 import Members from "./pages/projects/components/Members";
 
@@ -62,6 +62,7 @@ export default function App() {
             <Route index element={<Navigate to="/dashboard" replace />} />
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="projects" element={<Projects />} />
+            <Route path="profile" element={<EditProfile />} />
             <Route path="projects" element={<ProjectNavbar />}>
               <Route path=":projectId/dashboard" element={<DashboardProjects />} />
               <Route path=":projectId/plots" element={<ParcelsTab />} />
@@ -82,7 +83,6 @@ export default function App() {
           <Route path="/" element={<LayoutSettings />}>
             <Route path="profile" element={<Profile />} />
             <Route path="settings" element={<Navigate to="/settings/edit-profile" replace />} />
-            <Route path="settings/edit-profile" element={<EditProfile />} />
             <Route path="settings/notifications" element={<Notifications />} />
             <Route path="settings/billing" element={<Billing />} />
             <Route path="settings/privacy" element={<Privacy />} />
