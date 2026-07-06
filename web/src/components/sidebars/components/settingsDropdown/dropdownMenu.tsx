@@ -1,16 +1,11 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import CustomNavLink from "../../../../ui/Navlink";
 import { useTheme } from "../../../../context/ThemeProvider";
 
-// COMPONENTS
 import UserProfileDropdown from "./userProfileDropdown";
 
-// ICONS
 import LogoutIcon from "../../../../assets/icons/logout.svg?react";
-// import SettingsIcon from "../../../../assets/icons/settings.svg?react";
-// import BillingIcon from "../../../../assets/icons/billing.svg?react";
-// import AccountIcon from "../../../../assets/icons/account.svg?react";
-// import UpgradeIcon from "../../../../assets/icons/upgrade.svg?react";
 import ThemeIcon from "../../../../assets/icons/theme.svg?react";
 
 interface DropdownMenuProps {
@@ -19,12 +14,18 @@ interface DropdownMenuProps {
 
 export default function DropdownMenu({ onClose }: DropdownMenuProps) {
   const { theme, setTheme } = useTheme();
+  const navigate = useNavigate();
 
   const handleLogout = () => {
     onClose();
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     window.location.reload();
+  };
+
+  const handleProfileRedirect = () => {
+    navigate("/profile");
+    onClose();
   };
 
   const renderIcon = (IconComponent: React.FC<React.SVGProps<SVGSVGElement>>) => (
@@ -38,25 +39,14 @@ export default function DropdownMenu({ onClose }: DropdownMenuProps) {
   return (
     <div className="w-56 bg-white dark:bg-[#171717] dark:text-white rounded-xl shadow-lg border border-gray-100 dark:border-[#262626] py-2 px-0.5 flex flex-col gap-1 transition-colors duration-200">
       
-      <div className="px-2 py-1">
+      <div 
+        onClick={handleProfileRedirect}
+        className="mx-1 px-2 py-1 rounded-lg cursor-pointer transition-colors duration-200 hover:bg-gray-100 dark:hover:bg-[#262626]"
+      >
         <UserProfileDropdown />
       </div>
 
-      <div className=" border-t border-gray-100 dark:border-[#262626]" />
-
-      {/* <CustomNavLink
-        to="/profile"
-        label="Passer en Pro"
-        BgColor="bg-transparent"
-        hoverBgColor="hover:bg-gray-200/50 dark:hover:bg-[#262626]"
-        textClass="font-inter font-medium text-xs"
-        showChevronOnHover={true}
-        textColor="text-black dark:text-white"
-        rounded="rounded-lg"
-        className={dropdownBtnStyle}
-        icon={renderIcon(UpgradeIcon)} 
-        onClick={onClose}
-      /> */}
+      <div className="border-t border-gray-100 dark:border-[#262626]" />
 
       <div className="px-3 py-2 flex items-center gap-1">
         <ThemeIcon className="w-4 h-4 text-gray-500 mr-1 dark:invert" />
@@ -85,51 +75,7 @@ export default function DropdownMenu({ onClose }: DropdownMenuProps) {
         </div>
       </div>
 
-      {/* <div className=" border-t border-gray-100 dark:border-[#262626]" />
-
-      <CustomNavLink
-        to="/profile"
-        label="Profil"
-        BgColor="bg-transparent"
-        hoverBgColor="hover:bg-gray-200/50 dark:hover:bg-[#262626]"
-        textClass="font-inter font-medium text-xs"
-        showChevronOnHover={true}
-        textColor="text-black dark:text-white"
-        rounded="rounded-lg"
-        className={dropdownBtnStyle}
-        icon={renderIcon(AccountIcon)} 
-        onClick={onClose}
-      />
-
-      <CustomNavLink
-        to="/settings/edit-profile"
-        label="Paramètres"
-        BgColor="bg-transparent"
-        hoverBgColor="hover:bg-gray-200/50 dark:hover:bg-[#262626]"
-        textClass="font-inter font-medium text-xs"
-        showChevronOnHover={true}
-        textColor="text-black dark:text-white"
-        rounded="rounded-lg"
-        className={dropdownBtnStyle}
-        icon={renderIcon(SettingsIcon)} 
-        onClick={onClose}
-      />
-  
-      <CustomNavLink
-        to="/settings/edit-profile"
-        label="Factures"
-        BgColor="bg-transparent"
-        hoverBgColor="hover:bg-gray-200/50 dark:hover:bg-[#262626]"
-        textClass="font-inter font-medium text-xs"
-        showChevronOnHover={true}
-        textColor="text-black dark:text-white"
-        rounded="rounded-lg"
-        className={dropdownBtnStyle}
-        icon={renderIcon(BillingIcon)}
-        onClick={onClose}
-      /> */}
-
-      <div className=" border-t border-gray-100 dark:border-[#262626]" />
+      <div className="border-t border-gray-100 dark:border-[#262626]" />
 
       <CustomNavLink
         label="Déconnexion"
@@ -145,4 +91,5 @@ export default function DropdownMenu({ onClose }: DropdownMenuProps) {
       />
     </div>
   );
+  
 }
