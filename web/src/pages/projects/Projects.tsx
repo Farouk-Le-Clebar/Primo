@@ -48,7 +48,7 @@ export default function Projects() {
         }
     });
 
-    const filteredProjects = projects?.filter(project =>
+    const filteredProjects = projects?.filter((project: ProjectResponse & { description?: string }) =>
         project.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
         (project.description && project.description.toLowerCase().includes(searchQuery.toLowerCase()))
     );
@@ -117,7 +117,7 @@ export default function Projects() {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {filteredProjects?.map((project: ProjectResponse) => (
+                            {filteredProjects?.map((project: ProjectResponse & { numberOfMembers?: number; description?: string }) => (
                                 <TableRow 
                                     key={project.id} 
                                     onClick={() => navigate(`/projects/${project.id}/dashboard`)} 
@@ -146,17 +146,15 @@ export default function Projects() {
                                     <TableCell className="text-gray-600 dark:text-gray-400 font-medium text-center">
                                         <div className="flex items-center justify-center gap-1.5">
                                             <Users className="w-3.5 h-3.5 text-gray-400" />
-                                            <span className="text-xs">{project.numberOfMembers}</span>
+                                            <span className="text-xs">{project.numberOfMembers || 1}</span>
                                         </div>
                                     </TableCell>
                                     
                                     <TableCell className="text-right text-gray-600 dark:text-gray-400 px-6">
-                                        {/* Date affichée par défaut */}
                                         <span className={`transition-opacity ${idToDelete === project.id ? "opacity-0" : "opacity-100"}`}>
                                             {new Date(project.createdAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })}
                                         </span>
 
-                                        {/* Menu d'actions au hover (Group de boutons collés) */}
                                         <div className="absolute right-6 top-1/2 hidden h-full -translate-y-1/2 items-center bg-gray-50 group-hover:flex dark:bg-white/[0.002] pl-6">
                                             
                                             {idToDelete === project.id ? (
