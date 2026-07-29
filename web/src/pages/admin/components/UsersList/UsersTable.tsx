@@ -1,4 +1,5 @@
 import { Trash2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import {
     Table,
     TableHead,
@@ -7,8 +8,6 @@ import {
     TableBody,
     TableCell,
 } from "@tremor/react";
-
-// COMPONENTS
 import type { UserType } from "../../../../types/admin";
 
 type UsersTableProps = {
@@ -19,6 +18,8 @@ type UsersTableProps = {
 };
 
 const UsersTable = ({ users, isWorking, isDeletePending, onDelete }: UsersTableProps) => {
+    const navigate = useNavigate();
+
     return (
         <div className="overflow-x-auto">
             <Table className="mt-4">
@@ -33,9 +34,22 @@ const UsersTable = ({ users, isWorking, isDeletePending, onDelete }: UsersTableP
                 
                 <TableBody>
                     {users.map((user) => (
-                        <TableRow key={user.id} className="hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors">
+                        <TableRow 
+                            key={user.id} 
+                            className="hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors cursor-pointer"
+                            onClick={() => navigate(`/admin/user/${user.id}`)}
+                        >
                             <TableCell className="font-medium text-gray-900 dark:text-gray-200">
-                                {user.firstName} {user.surName}
+                                <div className="flex items-center gap-3">
+                                    <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-xs overflow-hidden">
+                                        {user.profilePicture ? (
+                                            <img src={user.profilePicture} alt="Profile" className="w-full h-full object-cover" />
+                                        ) : (
+                                            `${user.firstName.charAt(0)}${user.surName.charAt(0)}`
+                                        )}
+                                    </div>
+                                    {user.firstName} {user.surName}
+                                </div>
                             </TableCell>
                             <TableCell className="text-gray-600 dark:text-gray-400">
                                 {user.email}
@@ -50,7 +64,8 @@ const UsersTable = ({ users, isWorking, isDeletePending, onDelete }: UsersTableP
                             
                             <TableCell className="text-right">
                                 <button
-                                    onClick={() => {
+                                    onClick={(e) => {
+                                        e.stopPropagation();
                                         if(window.confirm("Êtes-vous sûr de vouloir supprimer cet utilisateur ?")) {
                                             onDelete(user.id);
                                         }
