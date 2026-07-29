@@ -80,3 +80,16 @@ export const addAdminPermission = async (email: string) => {
       throw error;
     });
 }
+
+export const getUserById = async (userId: string) => {
+  return axios.get(`${apiUrl}/user/admin/details/${userId}`, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`
+    }
+  })
+    .then((response) => response.data)
+    .catch((error) => {
+      console.error("Error getting user details:", error);
+      throw error;
+    });
+}
