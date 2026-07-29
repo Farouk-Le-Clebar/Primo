@@ -1,6 +1,5 @@
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft } from "lucide-react";
 
 // COMPONENTS
 import LoadingPrimoLogo from "../../../../../components/animations/LoadingPrimoLogo";
