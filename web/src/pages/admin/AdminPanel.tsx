@@ -1,7 +1,7 @@
 import { TabGroup, TabList, Tab, TabPanels, TabPanel } from "@tremor/react";
 
 // COMPONENTS
-import UserChart from "./components/UserChart/UserChart";
+import AdminOverview from "./components/AdminOverview/AdminOverview";
 import UsersList from "./components/UsersList/UsersList";
 import AdminList from "./components/AdminList/AdminList";
 import FeedbacksList from "./components/Feedback/FeedbacksList";
@@ -29,7 +29,7 @@ const AdminPanel = () => {
                 <TabPanels className="flex-1">
                     <TabPanel>
                         <div className="animate-fade-in">
-                            <UserChart />
+                            <AdminOverview />
                         </div>
                     </TabPanel>
 

@@ -18,6 +18,7 @@ const ROUTE_NAMES: Record<string, string> = {
   "/dashboard": "Aperçu",
   "/search": "Carte",
   "/admin/dashboard": "Administration",
+  "/projects": "Projets",
 };
 
 export default function Navbar() {

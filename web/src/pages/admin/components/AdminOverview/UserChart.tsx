@@ -1,9 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
-import { AreaChart, Card, Title, Text } from "@tremor/react";
+import { AreaChart, Title, Text } from "@tremor/react";
 import { useMemo } from "react";
 import { Loader2 } from "lucide-react";
-
-// COMPONENTS
 import { getUsers } from "../../../../requests/admin";
 
 export default function UserChart() {
@@ -43,14 +41,14 @@ export default function UserChart() {
 
   if (isLoading) {
     return (
-      <Card className="flex items-center justify-center h-[348px] ring-0 dark:ring-0">
+      <div className="flex items-center justify-center h-full min-h-[300px]">
         <Loader2 className="w-8 h-8 text-black animate-spin" />
-      </Card>
+      </div>
     );
   }
 
   return (
-    <Card className=" border border-gray-100 dark:border-white/5 ring-0 dark:ring-0 rounded-xl">
+    <div className="flex flex-col justify-center h-full p-4">
       <Title className="text-gray-900 dark:text-white font-semibold">Croissance des utilisateurs</Title>
       <Text className="text-gray-500 dark:text-[#999999] text-sm">Évolution basée sur la première interaction</Text>
       
@@ -65,6 +63,6 @@ export default function UserChart() {
         showAnimation={true}
         curveType="monotone"
       />
-    </Card>
+    </div>
   );
 }
