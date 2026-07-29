@@ -25,6 +25,7 @@ import Security from "./pages/settings/Security";
 import Subscriptions from "./pages/settings/Subscriptions";
 import CustomToaster from "./components/toaster/CustomToaster";
 import AdminPanel from "./pages/admin/AdminPanel";
+import UserProfile from "./pages/admin/components/UsersList/UserProfile/UserProfile";
 import OnboardingRoot from "./pages/onBoarding/OnboardingRoot";
 import EmailVerify from "./pages/mailling/EmailVerify";
 import PostRegisterEmailVerify from "./pages/mailling/PostRegisterEmailVerify";
@@ -73,6 +74,7 @@ export default function App() {
             {/* Routes Admin */}
             <Route path="admin" element={<AdminRoute />}>
               <Route path="dashboard" element={<AdminPanel />} />
+              <Route path="user/:id" element={<UserProfile />} />
             </Route>
           </Route>
 
