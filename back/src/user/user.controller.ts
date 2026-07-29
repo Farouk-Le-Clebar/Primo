@@ -61,6 +61,12 @@ export class UserController {
     return this.userService.getUserByEmail(email);
   }
 
+  @Get('admin/details/:id')
+  @UseGuards(JwtAuthGuard, AdminGuard)
+  async getUserByIdForAdmin(@Param('id') id: string) {
+    return await this.userService.getUserByIdForAdmin(id);
+  }
+
   @Get('search-history/all')
   @UseGuards(JwtAuthGuard)
   async getSearchHistory(@Req() req: RequestWithUser) {
