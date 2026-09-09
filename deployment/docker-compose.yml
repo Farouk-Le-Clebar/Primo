@@ -29,6 +29,7 @@ services:
     image: garoverr/primo-frontend:dev
     environment:
       VITE_API_URL: "https://api.primo-data.fr"
+      CARTODB_TOKEN: "carto_token"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.frontend.rule=Host(`app.primo-data.fr`)"
