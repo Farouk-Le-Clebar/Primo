@@ -29,10 +29,13 @@
     "@nestjs/passport": "^11.0.5",
     "@nestjs/platform-express": "^11.0.1",
     "@nestjs/typeorm": "^11.0.0",
+    "@types/geoip-lite": "^1.4.4",
+    "@types/ua-parser-js": "^0.7.39",
     "axios": "^1.13.2",
     "bcrypt": "^6.0.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",
+    "geoip-lite": "1",
     "google-auth-library": "^10.6.2",
     "http-proxy-middleware": "^3.0.5",
     "morgan": "^1.10.1",
@@ -44,6 +47,7 @@
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
     "typeorm": "^0.3.26",
+    "ua-parser-js": "^2.0.10",
     "undici": "^7.24.5"
   },
   "devDependencies": {
