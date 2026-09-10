@@ -52,10 +52,6 @@ interface AvatarProps {
   className?: string;
 }
 
-/**
- * Composant Avatar réutilisable.
- * Example : <Avatar profilePicture={member.profilePicture} size="w-8 h-8" />
- */
 export default function Avatar({
   profilePicture,
   size = "w-10 h-10",
