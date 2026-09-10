@@ -165,10 +165,16 @@
   stroke-width: 2px;
 }
 
+.dark .recharts-pie-sector path {
+  stroke: var(--color-dark-tremor-background-muted);
+}
+
 .fill-indigo-500 { fill: #6366f1 !important; }
 .fill-amber-500 { fill: #f59e0b !important; }
 .fill-cyan-500 { fill: #06b6d4 !important; }
 .fill-rose-500 { fill: #f43f5e !important; }
+.fill-violet-500 { fill: #8b5cf6 !important; }
+.fill-blue-500 { fill: #3b82f6 !important; } 
 
 .recharts-tooltip-wrapper {
   z-index: 50 !important;
