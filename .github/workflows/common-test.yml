@@ -22,7 +22,7 @@ jobs:
 
         strategy:
             matrix:
-                node-version: [22]
+                node-version: [24]
 
         steps:
             - name: Checkout repository
@@ -37,7 +37,7 @@ jobs:
 
             - name: Install dependencies
               working-directory: ${{ inputs.working-directory }}
-              run: yarn install
+              run: yarn install --frozen-lockfile
 
             - name: Run custom command
               working-directory: ${{ inputs.working-directory }}
