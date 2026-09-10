@@ -4,6 +4,9 @@
   "description": "",
   "author": "",
   "private": true,
+  "engines": {
+    "node": ">=24.0.0"
+  },
   "license": "UNLICENSED",
   "scripts": {
     "build": "nest build",
@@ -47,7 +50,6 @@
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
     "typeorm": "^0.3.26",
-    "ua-parser-js": "^2.0.10",
     "ua-parser-js": "^2.0.10",
     "undici": "^7.24.5"
   },

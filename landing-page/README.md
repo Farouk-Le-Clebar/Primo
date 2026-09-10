@@ -5,11 +5,11 @@ Landing page française en Astro 5 et Tailwind CSS 4, réalisée à partir du pr
 ## Démarrer
 
 ```sh
-npm ci
-npm run dev
+yarn install --frozen-lockfile
+yarn dev
 ```
 
-Pour produire les fichiers statiques : `npm run build`. Pour les consulter : `npm run preview`.
+Pour produire les fichiers statiques : `yarn build`. Pour les consulter : `yarn preview`.
 
 ## Fichiers principaux
 
@@ -24,7 +24,7 @@ Les CTA « Commencer un projet » et « Se connecter » ouvrent l’URL de l’a
 
 Thème initial : préférence enregistrée, puis préférence du système. Boutons principaux : noir pur / texte blanc en clair, blanc pur / texte noir en sombre. Animations : IntersectionObserver et CSS, désactivées avec prefers-reduced-motion. Le contenu reste visible sans JavaScript.
 
-Le ZIP initial contenait deux lockfiles. Le projet livré utilise `package-lock.json` et npm pour une installation cohérente. Les dépendances et les fichiers générés ne sont pas inclus dans l’archive.
+La landing page utilise Yarn Classic (1.22), comme le backend et le frontend. Le fichier `yarn.lock` est versionné et les installations utilisent `yarn install --frozen-lockfile`. Pour modifier les dépendances, utiliser Yarn et inclure les modifications de `package.json` et `yarn.lock` dans le même commit.
 
 ## SEO et animation d’arrivée
 
