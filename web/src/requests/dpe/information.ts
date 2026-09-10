@@ -10,7 +10,7 @@ export const getDpeBan = async (identifiantBan: string) => {
     if (error.response && error.response.status === 404) {
       return null; 
     }
-    console.error(`❌ [DPE] Erreur serveur pour le BAN ${identifiantBan}`, error);
+    console.error(` [DPE] Erreur serveur pour le BAN ${identifiantBan}`, error);
     throw error;
   }
 };
