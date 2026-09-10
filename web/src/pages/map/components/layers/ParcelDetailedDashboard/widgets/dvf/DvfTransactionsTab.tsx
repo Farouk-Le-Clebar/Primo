@@ -1,83 +1,92 @@
 import { Card, Table, TableBody, TableRow, TableCell } from "@tremor/react";
-import { Euro, Calendar, Maximize, Home } from "lucide-react";
+import { Calendar } from "lucide-react";
+import type { DvfRecord } from "./data";
+import { formatCurrency, formatDate } from "./utils";
 
-export default function DvfTransactionsTab({ transactions }: { transactions: any[] }) {
-  if (!transactions || transactions.length === 0) {
-    return (
-      <div className="p-8 text-sm text-[#878D96] text-center bg-gray-50 dark:bg-[#171717] rounded-xl border border-dashed border-gray-200 dark:border-[#232323]">
-        Aucune transaction historique trouvée pour cette parcelle.
-      </div>
-    );
-  }
-
-  const sortedTransactions = [...transactions].sort((a, b) => 
-    new Date(b.date_mutation).getTime() - new Date(a.date_mutation).getTime()
-  );
-
+export default function DvfTransactionsTab({
+  transactions,
+}: {
+  transactions: DvfRecord[];
+}) {
   return (
-    <Card className="h-fit flex-none p-0 border-gray-200 ring-0 shadow-sm overflow-hidden font-inter">
-      <Table className="mt-0">
-        <TableBody>
-          {sortedTransactions.map((t, index) => {
-            const dateStr = new Date(t.date_mutation).toLocaleDateString('fr-FR', {
-              day: '2-digit',
-              month: '2-digit',
-              year: 'numeric'
-            });
-            const price = Intl.NumberFormat("fr-FR").format(t.valeur_fonciere);
-            const surface = t.surface_reelle_bati || t.surface_terrain || 0;
-            const priceM2 = Math.round(Number(t.valeur_fonciere) / Number(surface));
-
-            return (
-              <TableRow 
-                key={index} 
-                className="hover:bg-blue-50/50 dark:hover:bg-[#1C1C1C] transition-all duration-200 cursor-pointer group border-b border-gray-100 dark:border-[#232323] last:border-0 relative"
+    <Card className="h-fit flex-none rounded-xl p-0 border-gray-200 dark:border-white/10 ring-0 shadow-sm overflow-hidden font-inter">
+      <div className="p-5 border-b border-gray-100 dark:border-white/5">
+        <h3 className="font-semibold text-gray-900 dark:text-white">
+          Historique DVF
+        </h3>
+        <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+          Du plus récent au plus ancien · surfaces bâties et terrains distingués
+        </p>
+      </div>
+      {!transactions.length ? (
+        <p className="p-6 text-sm text-gray-500">
+          Aucun enregistrement pour ce filtre.
+        </p>
+      ) : (
+        <Table>
+          <TableBody>
+            {transactions.map((t) => (
+              <TableRow
+                key={t.key}
+                className="border-b border-gray-100 dark:border-white/5 last:border-0"
               >
-                <TableCell className="w-min py-4 pl-5 pr-2">
-                  <div className="inline-flex items-center px-2 py-0.5 rounded font-inter font-bold text-xs bg-gray-100 dark:bg-[#232323] text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-[#232323] shrink-0">
-                    <Calendar size={12} className="mr-1.5 opacity-60" />
-                    {dateStr}
-                  </div>
+                <TableCell className="py-5 pl-5 align-top">
+                  <span className="inline-flex items-center gap-2 text-xs font-medium text-gray-500 dark:text-gray-400">
+                    <Calendar size={14} />
+                    {formatDate(t.date_mutation)}
+                  </span>
                 </TableCell>
-
-                <TableCell className="py-4 px-0">
-                  <div className="flex flex-col gap-0.5">
-                    <div className="flex items-center gap-2.5">
-                      <Euro size={16} className="text-emerald-600 dark:text-emerald-500" />
-                      <span className="text-[13px] font-semibold text-gray-900 dark:text-white leading-none">
-                        {price} €
-                      </span>
-                      <span className="text-[11px] text-gray-400 font-normal">
-                        • {t.nature_mutation}
-                      </span>
-                    </div>
-                    
-                    <div className="max-h-0 opacity-0 group-hover:max-h-20 group-hover:opacity-100 transition-all duration-300 overflow-hidden">
-                      <div className="flex items-center gap-4 text-[11px] text-gray-500 dark:text-gray-400 italic pl-6 pt-1">
-                        <span className="flex items-center gap-1">
-                          <Maximize size={10} /> {surface} m²
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <Home size={10} /> {t.type_local || 'Terrain'}
-                        </span>
-                        <span className="font-semibold text-emerald-600/80 dark:text-emerald-500">
-                          {priceM2} €/m²
-                        </span>
-                      </div>
-                    </div>
+                <TableCell className="py-5 whitespace-normal min-w-56">
+                  <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                    <span className="text-sm font-semibold text-gray-900 dark:text-white">
+                      {formatCurrency(t.valeur_fonciere)}
+                    </span>
+                    <span className="text-xs text-gray-500">
+                      {t.nature_mutation}
+                    </span>
                   </div>
+                  <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs text-gray-500 dark:text-gray-400">
+                    <span>{t.type_local || "Type non renseigné"}</span>
+                    <span>
+                      {t.surface_reelle_bati !== null
+                        ? `${t.surface_reelle_bati.toLocaleString("fr-FR")} m² bâtis`
+                        : "Surface bâtie non renseignée"}
+                    </span>
+                    {t.surface_terrain !== null && (
+                      <span>
+                        {t.surface_terrain.toLocaleString("fr-FR")} m² de
+                        terrain
+                      </span>
+                    )}
+                  </div>
+                  {t.occurrences > 1 && (
+                    <p className="mt-2 text-xs text-gray-500">
+                      {t.occurrences} lignes aux caractéristiques identiques
+                      regroupées
+                    </p>
+                  )}
+                  {t.ambiguous && (
+                    <p className="mt-1 text-xs text-gray-500">
+                      Plusieurs lignes pour cette date et ce montant · ratio
+                      écarté
+                    </p>
+                  )}
                 </TableCell>
-
-                <TableCell className="py-4 text-right pr-5">
-                   <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 group-hover:text-blue-500 transition-colors">
-                     DVF
-                   </span>
+                <TableCell className="py-5 pr-5 text-right align-top">
+                  <span className="text-xs font-medium text-emerald-700 dark:text-emerald-400">
+                    {t.priceM2 !== null
+                      ? `${formatCurrency(t.priceM2)}/m²`
+                      : "—"}
+                  </span>
+                  {t.priceM2 !== null && (
+                    <p className="mt-1 text-[10px] text-gray-500">Indicatif</p>
+                  )}
                 </TableCell>
               </TableRow>
-            );
-          })}
-        </TableBody>
-      </Table>
+            ))}
+          </TableBody>
+        </Table>
+      )}
     </Card>
   );
 }

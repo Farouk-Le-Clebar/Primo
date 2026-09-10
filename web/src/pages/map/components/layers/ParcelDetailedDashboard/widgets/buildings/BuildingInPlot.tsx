@@ -40,9 +40,12 @@ export function BuildingInPlot({ parcelFeature, buildings, onBuildingClick }: Bu
   const geoData = useMemo(() => {
     if (!parcelFeature?.geometry) return null;
     const parcelGeom = parcelFeature.geometry;
-    const parcelCoords = parcelGeom.type === "MultiPolygon" 
-      ? parcelGeom.coordinates.flat(2) 
-      : parcelGeom.coordinates.flat(1);
+    // Include entire intersecting buildings, even when they extend beyond the parcel.
+    const allGeometries = [parcelGeom, ...buildings.map(building => building.geometry)];
+    const parcelCoords = allGeometries.flatMap(geometry =>
+      geometry?.type === "MultiPolygon" ? geometry.coordinates.flat(2)
+        : geometry?.type === "Polygon" ? geometry.coordinates.flat(1) : []
+    );
 
     let minLng = Infinity, minLat = Infinity, maxLng = -Infinity, maxLat = -Infinity;
 
@@ -53,20 +56,26 @@ export function BuildingInPlot({ parcelFeature, buildings, onBuildingClick }: Bu
       if (lat > maxLat) maxLat = lat;
     });
 
-    const diffLng = maxLng - minLng;
+    if (![minLng, minLat, maxLng, maxLat].every(Number.isFinite)) return null;
+    const longitudeScale = Math.cos(((minLat + maxLat) / 2) * Math.PI / 180);
+    const diffLng = (maxLng - minLng) * longitudeScale;
     const diffLat = maxLat - minLat;
-    const maxDiff = Math.max(diffLng, diffLat);
-    if (maxDiff === 0) return null;
-    const size = 200; 
-    const padding = 15;
-    const innerSize = size - padding * 2;
+    if (Math.max(diffLng, diffLat) === 0) return null;
+    const width = 320;
+    const height = 200;
+    const padding = 32;
+    const scale = Math.min(
+      diffLng ? (width - padding * 2) / diffLng : Infinity,
+      diffLat ? (height - padding * 2) / diffLat : Infinity,
+    );
     const project = (lng: number, lat: number) => {
-      const x = padding + ((lng - minLng) / maxDiff) * innerSize + (innerSize - (diffLng / maxDiff) * innerSize) / 2;
-      const y = (size - padding) - ((lat - minLat) / maxDiff) * innerSize - (innerSize - (diffLat / maxDiff) * innerSize) / 2;
+      const x = (width - diffLng * scale) / 2 + (lng - minLng) * longitudeScale * scale;
+      const y = (height + diffLat * scale) / 2 - (lat - minLat) * scale;
       return `${x.toFixed(2)},${y.toFixed(2)}`;
     };
 
     const generatePath = (geom: any) => {
+      if (!geom || !["Polygon", "MultiPolygon"].includes(geom.type)) return "";
       const polygons = geom.type === "MultiPolygon" ? geom.coordinates : [geom.coordinates];
       return polygons.map((polygon: any) => {
         return polygon.map((ring: any[]) => {
@@ -112,11 +121,11 @@ export function BuildingInPlot({ parcelFeature, buildings, onBuildingClick }: Bu
   if (!geoData) return null;
 
   return (
-    <Card className="h-full flex flex-col p-4 shadow-sm border-gray-200 ring-0 font-inter">
-      <div className="w-full flex-grow flex items-center justify-center relative min-h-[250px]">
+    <Card className="flex flex-col p-4 shadow-sm border-gray-200 ring-0 font-inter">
+      <div className="w-full h-48 flex items-center justify-center relative overflow-hidden">
         <svg 
-          viewBox="0 0 200 200" 
-          className="h-full w-auto drop-shadow-sm max-h-full"
+          viewBox="0 0 320 200" 
+          className="h-full w-full drop-shadow-sm"
           preserveAspectRatio="xMidYMid meet"
         >
           <path 
