@@ -1,58 +1,69 @@
-import PPGreen from "../../../../../assets/profilePictures/green.svg?react";
-import PPCyan from "../../../../../assets/profilePictures/cyan.svg?react";
-import PPBlue from "../../../../../assets/profilePictures/blue.svg?react";
-import PPOrange from "../../../../../assets/profilePictures/orange.svg?react";
-import PPpink from "../../../../../assets/profilePictures/pink.svg?react";
-import PPRed from "../../../../../assets/profilePictures/red.svg?react";
-import PPWhite from "../../../../../assets/profilePictures/white.svg?react";
-import PPWhitePink from "../../../../../assets/profilePictures/whitepink.svg?react";
-import PPYellow from "../../../../../assets/profilePictures/yellow.svg?react";
+import { Link } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
+import { Badge, Card } from "@tremor/react";
+import Avatar from "../../../../../components/avatar/Avatar";
 import type { UserType } from "../../../../../types/admin";
-
-const AVATAR_COMPONENTS: Record<string, React.FC<React.SVGProps<SVGSVGElement>>> = {
-  "green.png": PPGreen,
-  "cyan.png": PPCyan,
-  "blue.png": PPBlue,
-  "orange.png": PPOrange,
-  "pink.png": PPpink,
-  "red.png": PPRed,
-  "white.png": PPWhite,
-  "whitepink.png": PPWhitePink,
-  "yellow.png": PPYellow,
-};
+import { adminCardClass, formatDate } from "../../shared/statistics";
 
 export default function UserProfileHeader({ user }: { user: UserType }) {
-  const profilePictureValue = user?.profilePicture || "green.png";
-  const isExternalUrl = profilePictureValue.startsWith("http");
-  const AvatarComponent = AVATAR_COMPONENTS[profilePictureValue] || PPGreen;
-
+  const details = [
+    ["Inscription", formatDate(user.createdAt)],
+    ["Dernière connexion", formatDate(user.lastConnection)],
+    ["Authentification", user.provider || "Non renseignée"],
+    [
+      "Adresse email",
+      user.verified === undefined
+        ? "Statut non renseigné"
+        : user.verified
+          ? "Vérifiée"
+          : "Non vérifiée",
+    ],
+  ];
   return (
-    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-      <div className="flex items-center space-x-4">
-        <div className="w-20 h-20 rounded-xl overflow-hidden border border-gray-100 dark:border-white/10 shadow-sm flex-shrink-0 bg-white">
-          {isExternalUrl ? (
-            <img 
-              src={profilePictureValue} 
-              alt={`Profil de ${user.firstName}`} 
-              className="w-full h-full object-cover"
-              referrerPolicy="no-referrer"
-            />
-          ) : (
-            <AvatarComponent className="w-full h-full" />
-          )}
+    <header>
+      <Link
+        to="/admin/dashboard"
+        className="mb-5 inline-flex items-center gap-2 text-sm text-gray-500 transition-colors hover:text-gray-900 dark:hover:text-white"
+      >
+        <ArrowLeft size={16} /> Administration
+      </Link>
+      <Card className={`${adminCardClass} p-5 sm:p-6`}>
+        <div className="flex flex-wrap items-center gap-4">
+          <Avatar profilePicture={user.profilePicture} size="h-16 w-16" />
+          <div className="min-w-0 flex-1">
+            <p className="text-xs font-medium text-gray-500 dark:text-gray-400">
+              Fiche utilisateur
+            </p>
+            <h1 className="mt-1 break-words text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">
+              {`${user.firstName} ${user.surName}`.trim() || "Utilisateur"}
+            </h1>
+            <p className="mt-1 break-all text-sm text-gray-500 dark:text-gray-400">
+              {user.email}
+            </p>
+          </div>
+          <Badge
+            className="!bg-gray-100 !text-gray-700 dark:!bg-white/10 dark:!text-gray-200"
+            color={user.isAdmin ? "emerald" : "gray"}
+          >
+            {user.isAdmin ? "Administrateur" : "Utilisateur"}
+          </Badge>
         </div>
-        
-        <div>
-          <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">
-            {user.firstName} {user.surName}
-          </h1>
-          <p className="text-sm font-normal text-gray-500 dark:text-[#999999] mt-1">
-            {user.email}
-          </p>
-        </div>
-      </div>
-
-      
-    </div>
+        <dl className="mt-6 grid grid-cols-1 gap-5 border-t border-gray-100 pt-5 dark:border-white/5 sm:grid-cols-2 xl:grid-cols-4">
+          {details.map(([label, value]) => (
+            <div key={label}>
+              <dt className="text-xs text-gray-500 dark:text-gray-400">
+                {label}
+              </dt>
+              <dd className="mt-1 text-sm font-medium text-gray-900 dark:text-white">
+                {value}
+              </dd>
+            </div>
+          ))}
+        </dl>
+        <p className="mt-5 break-all text-xs text-gray-400">
+          Identifiant : <span className="font-mono">{user.id}</span>
+        </p>
+      </Card>
+    </header>
   );
 }
