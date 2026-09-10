@@ -8,7 +8,7 @@ import SearchingBar from "../../../../../components/search/SearchBar";
 import UserProfile from "./UserProfile";
 
 // ICONS
-import ArrowLeft from "../../../../../assets/icons/arrowLeft.svg?react";
+import { LayoutDashboard } from "lucide-react";
 
 type NavbarProps = {
   parcelleBounds?: any;
@@ -62,8 +62,8 @@ export default function Navbar({ parcelleBounds, onParcelleSelect }: NavbarProps
           onClick={() => navigate("/dashboard")}
           className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-white transition-all bg-white dark:bg-[#0A0A0A] border border-gray-200 dark:border-[#262626] rounded-lg hover:bg-gray-50 dark:hover:bg-[#262626] hover:text-gray-900 dark:hover:text-gray-300 group shadow-sm cursor-pointer"
         >
-          <ArrowLeft className="w-4 h-4 text-gray-400 dark:invert transition-transform duration-200 group-hover:-translate-x-0.5 group-hover:text-gray-600" />
-          <span>Retour au site</span>
+          <LayoutDashboard className="w-4 h-4" />
+          <span>Tableau de bord</span>
         </button>
       </div>
 

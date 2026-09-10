@@ -20,10 +20,10 @@ export function BuildingThumbnail({ feature, colorClasses }: { feature: any, col
     const diffLat = maxLat - minLat;
     const maxDiff = Math.max(diffLng, diffLat);
 
-    if (maxDiff === 0) return null;
+    if (!Number.isFinite(maxDiff) || maxDiff === 0) return null;
 
     const size = 100;
-    const padding = 15;
+    const padding = 22;
     const innerSize = size - padding * 2;
 
     const pathCommands = polygons.map((polygon: any) => {
@@ -44,7 +44,7 @@ export function BuildingThumbnail({ feature, colorClasses }: { feature: any, col
 
   return (
     <div className={`w-full h-full ${colorClasses.bg} relative flex items-center justify-center overflow-hidden rounded-lg`}>
-      <svg viewBox="0 0 100 100" className="w-[80%] h-[80%] drop-shadow-sm">
+      <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-sm" preserveAspectRatio="xMidYMid meet">
         <path 
           d={geoData.d} 
           className={`${colorClasses.fill} ${colorClasses.stroke}`}

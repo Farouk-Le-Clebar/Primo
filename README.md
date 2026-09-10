@@ -50,7 +50,7 @@ The monorepo contains four workspaces:
 
 ### Prerequisites
 
-- Node.js 20+, Yarn
+- Node.js 24+, Yarn 1.22
 - Docker & Docker Compose
 - A running MySQL 8 instance (or use the compose stack)
 

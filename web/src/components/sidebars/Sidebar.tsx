@@ -16,11 +16,12 @@ import Search from "../../assets/icons/searchBlack.svg?react";
 // import Ia from "../../assets/icons/ia.svg?react";
 import Admin from "../../assets/icons/admin.svg?react";
 import Feedback from "../../assets/icons/send.svg?react";
-import FolderClose from "../../assets/icons/folderClose.svg?react"; 
+import SidebarProjects from "./components/SidebarProjects"; 
 
-import { useQuery } from "@tanstack/react-query";
-import LoadingPrimoLogo from "../animations/LoadingPrimoLogo";
-import { getProjects } from "../../requests/projects";
+
+
+
+
 
 export default function Sidebar() {
   const isAdmin = JSON.parse(localStorage.getItem("user") || "null")?.isAdmin;
@@ -37,11 +38,6 @@ export default function Sidebar() {
     setIsModalOpen(false);
     navigate("/search", { state: { centerOn: coords } });
   };
-
-  const { data: projects, isPending } = useQuery({
-    queryKey: ["projects"],
-    queryFn: getProjects,
-  });
 
   return (
     <>
@@ -145,34 +141,7 @@ export default function Sidebar() {
 
           </section>
 
-          <section className="flex flex-col gap-1 flex-1 min-h-0" id="sidebar-projects-tour">
-            <div className="flex mb-2 flex-col space-y-2 flex-1 min-h-0">
-              <h3 className="font-inter font-medium text-[12px] tracking-[0.1em] text-[#757575] dark:text-[#999999]">
-                Projets
-              </h3>
-
-              <div className="flex flex-col gap-1 flex-1 overflow-y-auto scrollbar-custom">
-                {isPending && (
-                  <div className="h-full w-full flex items-center justify-center">
-                    <LoadingPrimoLogo className="w-6 h-6 text-black dark:invert" />
-                  </div>
-                )}
-                {!isPending && projects?.map((project: any) => (
-                  <CustomNavLink
-                    key={project.id}
-                    to={`/projects/${project.id}/dashboard`}
-                    textColor="text-black dark:text-white dark:hover:text-white"
-                    rounded="rounded-lg"
-                    label={project.name}
-                    icon={renderIcon(FolderClose)}
-                    className="h-8 shrink-0"
-                    BgColor="bg-transparent"
-                    hoverBgColor="hover:bg-gray-200/50 dark:hover:bg-[#262626]"
-                  />
-                ))}
-              </div>
-            </div>
-          </section>
+          <SidebarProjects />
         </div>
 
         <div className="mt-auto flex flex-col gap-1 px-4 pb-6 pt-2 dark:text-white">

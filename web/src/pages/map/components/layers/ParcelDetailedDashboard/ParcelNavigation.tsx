@@ -12,12 +12,19 @@ export default function ParcelNavigation({ activeTab, setActiveTab, onOpenSearch
     const handleClickOutside = (e: MouseEvent) => {
       if (containerRef.current && !containerRef.current.contains(e.target as Node)) setOpenDropdown(null);
     };
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpenDropdown(null);
+    };
+    document.addEventListener("keydown", handleEscape);
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleEscape);
+    };
   }, []);
 
   return (
-    <nav className="flex items-center gap-1 bg-gray-100 dark:bg-[#262626] p-0.5 rounded-lg" ref={containerRef}>
+    <nav aria-label="Analyse de la parcelle" className="order-last flex w-full flex-wrap items-center gap-1 lg:order-none lg:w-auto bg-gray-100 dark:bg-[#262626] p-0.5 rounded-lg" ref={containerRef}>
       {NAVIGATION.map((cat) => {
         const activeItem = cat.type === "dropdown" && cat.items ? cat.items.find(i => i.id === activeTab) : null;
         const isCatActive = activeTab === cat.id || !!activeItem;
@@ -25,7 +32,7 @@ export default function ParcelNavigation({ activeTab, setActiveTab, onOpenSearch
         if (cat.type === "single") {
           const Icon = cat.icon;
           return (
-            <button key={cat.id} onClick={() => setActiveTab(cat.id)} 
+            <button key={cat.id} onClick={() => { setActiveTab(cat.id); setOpenDropdown(null); }} 
               className={`flex items-center gap-2 px-3 py-1 cursor-pointer rounded-md text-[12px] font-semibold transition-all ${
                 activeTab === cat.id ? "bg-white dark:bg-[#171717] dark:text-white text-gray-900 shadow-sm border border-gray-200 dark:border-[#262626]" : "text-gray-500 dark:text-white hover:text-gray-700"
               }`}>
@@ -35,7 +42,7 @@ export default function ParcelNavigation({ activeTab, setActiveTab, onOpenSearch
         }
         return (
           <div key={cat.id} className="relative">
-            <button onClick={() => setOpenDropdown(openDropdown === cat.id ? null : cat.id)} 
+            <button aria-expanded={openDropdown === cat.id} onClick={() => setOpenDropdown(openDropdown === cat.id ? null : cat.id)} 
               className={`flex items-center gap-1 px-3 py-1 cursor-pointer rounded-md text-[12px] font-semibold transition-all ${
                 isCatActive ? "bg-white dark:bg-[#171717] dark:text-white text-gray-900 shadow-sm border border-gray-200 dark:border-[#262626]"  : " text-gray-500 dark:text-white hover:text-gray-700 "
               }`}>
@@ -69,7 +76,7 @@ export default function ParcelNavigation({ activeTab, setActiveTab, onOpenSearch
       })}
 
       <div className="h-4 w-[1px] bg-gray-300 mx-0.5" />
-      <button onClick={onOpenSearch} className="cursor-pointer dark:text-white p-1.5 text-gray-500 hover:text-gray-900 hover:bg-white rounded-md transition-all border border-transparent hover:border-gray-200">
+      <button aria-label="Rechercher dans l’analyse" onClick={onOpenSearch} className="cursor-pointer dark:text-white p-1.5 text-gray-500 hover:text-gray-900 hover:bg-white rounded-md transition-all border border-transparent hover:border-gray-200">
         <Search size={14} />
       </button>
     </nav>

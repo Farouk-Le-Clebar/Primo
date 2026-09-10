@@ -1,15 +1,92 @@
 ---
-import Layout from "@layouts/Layout.astro";
-import Navbar from "@components/navbar/Navbar";
-import Home from "@pages/home/Home.astro";
-import Footer from "@components/footer/Footer.astro";
+import '../styles/global.css';
+import Seo from '../components/seo/Seo.astro';
+import heroFont from '../assets/fonts/UberMoveBold.otf?url';
+import '../styles/landing.css';
+import Logo from '../assets/logos/logoPrimoBlack.svg?url';
+import { ArrowUpRight, ArrowRight, Sun, Moon, Menu, X, SlidersHorizontal, Users, Layers, Check, MapPin, Search, Bookmark, Linkedin, Instagram } from 'lucide-react';
+import { EXTERNAL_LINKS as links } from '../config/constants';
+const steps = [
+ {number:'01',icon:Search,title:'Cherchez selon vos envies.',text:'Choisissez un territoire et affinez vos critères : climat, surfaces, environnement et risques.'},
+ {number:'02',icon:Layers,title:'Voyez au-delà du terrain.',text:'Ouvrez une parcelle pour explorer ses données foncières, ses bâtiments et ses règles d’urbanisme.'},
+ {number:'03',icon:Bookmark,title:'Faites avancer votre projet.',text:'Enregistrez votre sélection dans un projet et retrouvez votre équipe pour décider ensemble.'}
+];
 ---
-
-<Layout
-  title="Primo | Plateforme de données cadastrales et foncières en France"
-  description="Primo centralise les données cadastrales, PLU, risques naturels et qualité de vie de n'importe quelle parcelle en France. Analysez une parcelle en un clic avec notre assistant IA."
->
-  <Navbar client:load />
-  <Home />
-  <Footer />
-</Layout>
+<!doctype html>
+<html lang="fr">
+<head>
+ <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+ <Seo title="Primo — Recherche de parcelles cadastrales et données foncières" description="Trouvez une parcelle cadastrale en France selon vos critères : surfaces, climat et risques. Analysez les données DPE, DVF et PLU, puis collaborez en équipe." />
+ <link rel="icon" href="/favicon.ico" /><link rel="preload" href={heroFont} as="font" type="font/otf" crossorigin />
+ <script is:inline>try{const t=localStorage.getItem('primo-theme');document.documentElement.dataset.theme=t||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light')}catch{}</script>
+</head>
+<body class="primo-landing">
+<a class="skip-link" href="#contenu">Aller au contenu</a>
+<header class="site-header"><div class="shell header-inner">
+ <a href="/" aria-label="Primo, accueil" class="brand"><img src={Logo} alt="" width="30" height="30" />Primo</a>
+ <nav class="desktop-nav" aria-label="Navigation principale"><a href="#fonctionnalites">Fonctionnalités</a><a href="#equipe">Équipe</a><a href="#tarifs">Tarifs</a></nav>
+ <div class="flex items-center gap-3"><button class="icon-button" id="theme-toggle" aria-label="Activer le thème sombre" aria-pressed="false"><Sun className="sun" size={19}/><Moon className="moon" size={19}/></button><a class="primary login" href={links.APP_URL}>Se connecter <ArrowUpRight size={16}/></a><button class="icon-button menu-button" id="menu-toggle" aria-controls="mobile-nav" aria-expanded="false" aria-label="Ouvrir le menu"><Menu size={23}/></button></div>
+ </div><nav id="mobile-nav" hidden aria-label="Navigation mobile"><a href="#fonctionnalites">Fonctionnalités</a><a href="#equipe">Équipe</a><a href="#tarifs">Tarifs</a><a href={links.APP_URL}>Se connecter</a></nav>
+</header>
+<main id="contenu">
+<section class="hero shell">
+ <div class="eyebrow"><span class="tiny-mark">✳</span> RECHERCHE DE PARCELLES CADASTRALES EN FRANCE</div>
+ <h1>Le bon terrain.<br/>Le début de <span>tout.</span></h1>
+ <p class="hero-copy">Trouvez une parcelle cadastrale selon vos critères de surface, de climat et de risques.<br class="desktop-break"/> Analysez les données foncières et construisez votre projet en équipe.</p>
+ <div class="hero-actions"><a class="primary primary-large" href={links.APP_URL}>Commencer un projet <ArrowUpRight size={20}/></a><a class="text-link" href="#comment-ca-marche">Découvrir Primo <ArrowRight size={17}/></a></div>
+ <p class="hero-note">Recherche foncière, données et collaboration. Au même endroit.</p>
+ <div class="product-window arrival-map">
+  <div class="window-bar"><span class="window-dots" aria-hidden="true">● ● ●</span><span>Primo / explorer</span><span class="preview-label">APERÇU DE L’APPLICATION</span></div>
+  <div class="map-preview video-preview">
+   <video id="primo-video" controls muted playsinline preload="metadata" poster="/images/primo-video-poster.jpg" width="854" height="480" aria-label="Présentation animée de la carte cadastrale Primo">
+    <source src="/videos/primo-presentation.mp4" type="video/mp4" />
+    Votre navigateur ne peut pas lire cette vidéo. <a href="/videos/primo-presentation.mp4">Télécharger la présentation de Primo</a>.
+   </video>
+  </div>
+ </div>
+ <div class="data-strip"><span>UN TERRAIN, TOUTES SES DIMENSIONS</span><b>Cadastre</b><b>DPE</b><b>DVF</b><b>PLU</b><b>Géorisques</b></div>
+</section>
+<section id="fonctionnalites" class="section shell">
+ <div class="section-heading reveal"><div><p class="eyebrow">MOINS DE RECHERCHES. PLUS DE POSSIBLES.</p><h2>La recherche foncière<br/>devient plus claire.</h2></div><p>De la première idée à la sélection finale,<br/>tout ce qu’il faut pour avancer sereinement.</p></div>
+ <div class="feature-grid">
+  <article class="feature-card reveal"><span class="feature-icon"><SlidersHorizontal size={23}/></span><h3>Vos critères.<br/>Votre terrain.</h3><p>Climat, surface de la parcelle, taille du bâti, zones inondables… Affinez votre recherche selon ce qui compte vraiment.</p><div class="criteria-chips"><span><Sun size={14}/> Climat</span><span>Surface du terrain</span><span>Risques naturels</span><span>Surface bâtie</span></div><div class="card-bottom">Une recherche ultra-ciblée <ArrowUpRight size={18}/></div></article>
+  <article class="feature-card reveal"><span class="feature-icon"><Users size={23}/></span><h3>Un projet commun.<br/>Une vision partagée.</h3><p>Invitez vos équipes, posez votre budget et définissez vos critères d’avancement. Vos parcelles favorites restent à portée de main.</p><div class="project-mini"><div class="flex justify-between items-center"><strong>Notre prochain lieu</strong><span class="avatars"><i>CL</i><i>AM</i><i>+1</i></span></div><div class="project-line"><span>Parcelles sélectionnées</span><b>4</b></div><div class="project-progress"><span></span></div><small>Exemple de projet partagé</small></div><div class="card-bottom">Un espace pour avancer ensemble <ArrowUpRight size={18}/></div></article>
+  <article class="feature-card reveal"><span class="feature-icon"><Layers size={23}/></span><h3>Un clic.<br/>Une vue d’ensemble.</h3><p>DPE, transactions DVF, règles du PLU et caractéristiques du bâti : rassemblez les informations pour mieux évaluer chaque parcelle.</p><div class="data-mini"><div><span>DPE</span><b>Performance énergétique</b></div><div><span>DVF</span><b>Historique des transactions</b></div><div><span>PLU</span><b>Règles d’urbanisme</b></div></div><div class="card-bottom">Des données pour décider <ArrowUpRight size={18}/></div></article>
+ </div>
+</section>
+<section id="comment-ca-marche" class="how-section"><div class="shell section"><div class="section-heading reveal"><div><p class="eyebrow">DE L’IDÉE AU PROJET</p><h2>Trois étapes.<br/>Un nouveau point de départ.</h2></div><a class="text-link" href={links.APP_URL}>À vous de jouer <ArrowUpRight size={19}/></a></div><div class="steps-grid">{steps.map(step=><article class="step reveal"><div class="step-top"><span>{step.number}</span><step.icon size={24}/></div><h3>{step.title}</h3><p>{step.text}</p></article>)}</div></div></section>
+<section id="equipe" class="section shell"><div class="section-heading reveal"><div><p class="eyebrow">LES VISAGES DERRIÈRE PRIMO</p><h2>Quatre personnes.<br/>Une ambition commune.</h2></div><p>Rendre la recherche foncière plus claire,<br/>et les projets immobiliers plus simples.</p></div>
+<div class="people-grid">
+{[
+ {name:'Jacques Sapin',initials:'JS',url:'https://www.linkedin.com/in/jacques-sapin-863630267/'},
+ {name:'Felix Schrynemaekers',initials:'FS',url:'https://www.linkedin.com/in/felix-schrynemakers-2469b53a5/?skipRedirect=true'},
+ {name:'Louis Huguet',initials:'LH',url:'https://www.linkedin.com/in/louis-huguet-594b063b5/'},
+ {name:'Antonin Campi',initials:'AC',url:'https://www.linkedin.com/in/antonin-campi/'}
+].map(person=><a class="person-card reveal" href={person.url} target="_blank" rel="noopener noreferrer" aria-label={`${person.name} sur LinkedIn (nouvel onglet)`}><div class="person-avatar" aria-hidden="true">{person.initials}</div><h3>{person.name}</h3><span class="person-link"><Linkedin size={17}/> Voir le profil LinkedIn <ArrowUpRight size={16}/></span></a>)}
+</div></section>
+<section class="section shell faq-section" id="questions"><div class="section-heading reveal"><div><p class="eyebrow">POUR BIEN COMMENCER</p><h2>Votre recherche de terrain,<br/>en quelques réponses.</h2></div><a class="text-link" href="/blog/">Consulter les guides fonciers <ArrowUpRight size={18}/></a></div><div class="faq-list">
+<details><summary>Comment rechercher une parcelle cadastrale avec Primo ?</summary><p>Commencez par un territoire, puis précisez vos critères : surface du terrain, surface bâtie, climat ou exposition aux inondations. Explorez les parcelles sur la carte et ouvrez leur fiche pour approfondir votre sélection.</p></details>
+<details><summary>Quelles données consulter sur une parcelle ?</summary><p>La fiche réunit les informations disponibles sur la parcelle et les bâtiments : diagnostic de performance énergétique (DPE), demandes de valeurs foncières (DVF), plan local d’urbanisme (PLU) et risques naturels. La couverture et la date de mise à jour dépendent des sources disponibles.</p></details>
+<details><summary>Comment partager une sélection de terrains avec mon équipe ?</summary><p>Créez un projet, invitez vos collaborateurs et définissez votre budget ainsi que vos critères d’avancement. Enregistrez ensuite les parcelles intéressantes dans cet espace pour comparer vos options ensemble.</p></details>
+<details><summary>Une parcelle cadastrale est-elle forcément constructible ?</summary><p>Non. Le cadastre permet d’identifier une parcelle ; il ne suffit pas à établir sa constructibilité. Les règles d’urbanisme, les servitudes et les contraintes locales doivent être vérifiées auprès des services compétents avant de vous engager. <a class="text-link" href="https://www.service-public.gouv.fr/particuliers/vosdroits/F1633">Comprendre le certificat d’urbanisme sur Service Public</a>.</p></details>
+</div></section>
+<section id="tarifs" class="shell pricing-wrap"><div class="pricing-panel reveal"><div><p class="eyebrow">VOTRE PROCHAINE ÉTAPE</p><h2>Et si tout commençait<br/>par une parcelle ?</h2><p>Découvrez Primo et trouvez le point de départ de votre projet.</p><p class="pricing-note">Les offres et tarifs seront communiqués à l’ouverture.<br/>Une question sur votre usage ? <a href={links.EMAIL}>Échangeons ensemble.</a></p></div><div class="pricing-action"><a class="primary primary-large" href={links.APP_URL}>Commencer un projet <ArrowUpRight size={20}/></a><a href={links.BETA_FORM} class="text-link">Rejoindre la bêta <ArrowRight size={16}/></a></div></div></section>
+</main>
+<footer class="shell"><div class="footer-main"><div><a href="/" class="brand"><img src={Logo} alt="" width="29" height="29"/>Primo</a><p>Chaque grand projet commence quelque part.</p></div><div class="footer-social"><a href={links.EMAIL}>Nous contacter <ArrowUpRight size={16}/></a><a href={links.LINKEDIN} aria-label="Primo sur LinkedIn"><Linkedin size={20}/></a><a href={links.INSTAGRAM} aria-label="Primo sur Instagram"><Instagram size={20}/></a></div></div><div class="footer-bottom"><span>© {new Date().getFullYear()} Primo. Tous droits réservés.</span><div><a href="/mentions-legales">Mentions légales</a><a href="/confidentialite">Confidentialité</a><a href="/cgu">CGU</a></div><span>Imaginé en France.</span></div></footer>
+<script>
+ const video=document.querySelector<HTMLVideoElement>('#primo-video');
+ const motionPreference=matchMedia('(prefers-reduced-motion: reduce)');
+ if(video){
+  if(!motionPreference.matches){video.muted=true;void video.play().catch(()=>{});}
+  motionPreference.addEventListener('change',event=>{if(event.matches)video.pause()});
+  document.addEventListener('visibilitychange',()=>{if(document.hidden)video.pause()});
+ }
+ const root=document.documentElement;const toggle=document.querySelector<HTMLButtonElement>('#theme-toggle');
+ function syncTheme(){const dark=root.dataset.theme==='dark';toggle?.setAttribute('aria-pressed',String(dark));toggle?.setAttribute('aria-label',dark?'Activer le thème clair':'Activer le thème sombre');}
+ syncTheme();toggle?.addEventListener('click',()=>{root.dataset.theme=root.dataset.theme==='dark'?'light':'dark';try{localStorage.setItem('primo-theme',root.dataset.theme)}catch{}syncTheme()});
+ const menu=document.querySelector<HTMLButtonElement>('#menu-toggle');const nav=document.querySelector<HTMLElement>('#mobile-nav');
+ function closeMenu(){if(nav)nav.hidden=true;menu?.setAttribute('aria-expanded','false');menu?.setAttribute('aria-label','Ouvrir le menu')}
+ menu?.addEventListener('click',()=>{if(!nav)return;nav.hidden=!nav.hidden;menu.setAttribute('aria-expanded',String(!nav.hidden));menu.setAttribute('aria-label',nav.hidden?'Ouvrir le menu':'Fermer le menu')});nav?.querySelectorAll('a').forEach(a=>a.addEventListener('click',closeMenu));document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMenu()});
+ if(!matchMedia('(prefers-reduced-motion: reduce)').matches&&'IntersectionObserver' in window){const observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');observer.unobserve(e.target)}}),{threshold:0.08});document.querySelectorAll('.reveal').forEach(el=>{el.classList.add('will-reveal');observer.observe(el)})}
+</script>
+</body></html>

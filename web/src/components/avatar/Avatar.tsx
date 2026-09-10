@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 // ASSETS
 import PPGreen from "../../assets/profilePictures/green.svg?react";
@@ -12,63 +12,75 @@ import PPWhitePink from "../../assets/profilePictures/whitepink.svg?react";
 import PPYellow from "../../assets/profilePictures/yellow.svg?react";
 
 export const AVATAR_COMPONENTS: Record<
-    string,
-    React.FC<React.SVGProps<SVGSVGElement>>
+  string,
+  React.FC<React.SVGProps<SVGSVGElement>>
 > = {
-    "green.png": PPGreen,
-    "cyan.png": PPCyan,
-    "blue.png": PPBlue,
-    "orange.png": PPOrange,
-    "pink.png": PPPink,
-    "red.png": PPRed,
-    "white.png": PPWhite,
-    "whitepink.png": PPWhitePink,
-    "yellow.png": PPYellow,
+  "green.png": PPGreen,
+  "cyan.png": PPCyan,
+  "blue.png": PPBlue,
+  "orange.png": PPOrange,
+  "pink.png": PPPink,
+  "red.png": PPRed,
+  "white.png": PPWhite,
+  "whitepink.png": PPWhitePink,
+  "yellow.png": PPYellow,
 };
 
 export const DEFAULT_AVATAR = "green.png";
 
 export const PRESET_AVATARS = [
-    "blue.png",
-    "cyan.png",
-    "green.png",
-    "orange.png",
-    "pink.png",
-    "white.png",
-    "whitepink.png",
-    "yellow.png",
+  "blue.png",
+  "cyan.png",
+  "green.png",
+  "orange.png",
+  "pink.png",
+  "white.png",
+  "whitepink.png",
+  "yellow.png",
 ];
 
 export function getAvatarComponent(
-    profilePicture: string | null | undefined,
+  profilePicture: string | null | undefined,
 ): React.FC<React.SVGProps<SVGSVGElement>> {
-    return AVATAR_COMPONENTS[profilePicture ?? DEFAULT_AVATAR] ?? PPGreen;
+  return AVATAR_COMPONENTS[profilePicture ?? DEFAULT_AVATAR] ?? PPGreen;
 }
 
 interface AvatarProps {
-    profilePicture: string | null | undefined;
-    /* (défaut: "w-10 h-10") */
-    size?: string;
-    className?: string;
+  profilePicture: string | null | undefined;
+  /* (défaut: "w-10 h-10") */
+  size?: string;
+  className?: string;
 }
 
-/**
- * Composant Avatar réutilisable.
- * Example : <Avatar profilePicture={member.profilePicture} size="w-8 h-8" />
- */
 export default function Avatar({
-    profilePicture,
-    size = "w-10 h-10",
-    className = "",
+  profilePicture,
+  size = "w-10 h-10",
+  className = "",
 }: AvatarProps) {
-    const AvatarComponent = getAvatarComponent(profilePicture);
+  const AvatarComponent = getAvatarComponent(profilePicture);
+  const [failedUrl, setFailedUrl] = useState<string | null>(null);
+  const externalUrl =
+    profilePicture && /^https?:\/\//i.test(profilePicture)
+      ? profilePicture
+      : null;
 
-    return (
-        <div
-            className={`${size} rounded-full overflow-hidden border border-white shadow-sm flex-shrink-0 ${className}`}
-        >
-            <AvatarComponent className="w-full h-full" />
-        </div>
-    );
+  return (
+    <div
+      className={`${size} rounded-full overflow-hidden border border-white shadow-sm flex-shrink-0 ${className}`}
+    >
+      {externalUrl && failedUrl !== externalUrl ? (
+        <img
+          key={externalUrl}
+          src={externalUrl}
+          alt=""
+          referrerPolicy="no-referrer"
+          loading="lazy"
+          className="block w-full h-full object-cover"
+          onError={() => setFailedUrl(externalUrl)}
+        />
+      ) : (
+        <AvatarComponent className="w-full h-full" />
+      )}
+    </div>
+  );
 }
-

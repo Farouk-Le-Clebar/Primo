@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Outlet, useLocation } from "react-router-dom";
+import { rememberProjectPage } from "../../utils/recentWork";
 import Sidebar from "../sidebars/Sidebar";
 import Navbar from "../navbar/Navbar"; 
 import AnimatedPrimoLogo from "../animations/AnimatedPrimoLogo";
@@ -11,7 +12,9 @@ export default function Layout() {
   useEffect(() => {
     if (showWelcome) {
       const timer = setTimeout(() => setShowWelcome(false), 2000);
-      return () => clearTimeout(timer);
+      useEffect(() => { rememberProjectPage(location.pathname); }, [location.pathname]);
+
+  return () => clearTimeout(timer);
     }
   }, [showWelcome]);
 
@@ -28,12 +31,12 @@ export default function Layout() {
           <Sidebar/>
         </aside>
 
-        <div className="flex-1 flex flex-col pt-2 relative z-10">
+        <div className="min-w-0 flex-1 flex flex-col pt-2 relative z-10">
           <div className="flex-1 flex flex-col bg-white dark:bg-[#0A0A0A] rounded-tl-2xl shadow-sm border border-gray-100 dark:border-white/5 overflow-hidden">            
             <header className="w-full h-17 flex items-center px-2 z-20 relative">
               <Navbar />
             </header>
-            <main className="flex-1 overflow-y-auto relative z-0">
+            <main key={location.pathname} className="primo-page-enter flex-1 min-h-0 overflow-y-auto relative z-0">
               <Outlet />
             </main>
           </div>

@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { X } from "lucide-react";
 import { Dialog, DialogPanel, Select, SelectItem, Button } from "@tremor/react";
 import { useState } from "react";
@@ -14,6 +14,7 @@ type AddPlotToProjectModalProps = {
 };
 
 const AddPlotToProjectModal = ({ isOpen = true, onClose, plotData }: AddPlotToProjectModalProps) => {
+    const queryClient = useQueryClient();
     const [selectedProjectId, setSelectedProjectId] = useState<string>("");
 
     const { data: projects } = useQuery<ProjectResponse[]>({
@@ -32,6 +33,9 @@ const AddPlotToProjectModal = ({ isOpen = true, onClose, plotData }: AddPlotToPr
             geometry: JSON.stringify(plotData.geometry)
         }),
         onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["projects"] });
+            queryClient.invalidateQueries({ queryKey: ["projectPlots", selectedProjectId] });
+            queryClient.invalidateQueries({ queryKey: ["project", selectedProjectId] });
             toast.success("Parcelle ajoutée au projet avec succès !", {
                 id: "add-success",
             });

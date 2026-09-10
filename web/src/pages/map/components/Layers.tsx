@@ -194,19 +194,19 @@ const Layers = ({ initialPlacement, initialCoordinates }: LayersProps) => {
             />
 
             <div className="fixed inset-0 z-[1001] flex flex-col pointer-events-none">
-                <header className="flex w-full h-15 items-center shrink-0 pointer-events-auto">
+                {!(selectedParcelle && isDashboardOpen) && <header className="flex w-full h-15 items-center shrink-0 pointer-events-auto">
                     <NoScrollZone>
                         <Navbar
                             parcelleBounds={pacellesBoundData}
                             onParcelleSelect={handleParcelleSelect}
                         />
                     </NoScrollZone>
-                </header>
+                </header>}
 
                 {selectedParcelle && (
                     <>
                         {isDashboardOpen ? (
-                            <div className="fixed top-15 left-0 right-0 bottom-0 z-[1005] bg-white animate-in fade-in duration-300 pointer-events-auto">
+                            <div className="fixed inset-0 z-[1005] bg-white animate-in fade-in duration-300 pointer-events-auto">
                                 <NoScrollZone>
                                     <ParcelDetailedDashboard
                                         selectedParcelle={selectedParcelle}
