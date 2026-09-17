@@ -47,7 +47,7 @@ export default function NotificationsDropdown() {
         <div className="relative" ref={dropdownRef}>
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="relative p-2.5 text-gray-400 hover:text-gray-600 dark:hover:bg-[#171717] hover:bg-gray-50 rounded-full transition-all group"
+                className="relative cursor-pointer p-2.5 text-gray-400 hover:text-gray-600 dark:hover:bg-[#171717] hover:bg-gray-50 rounded-full transition-all group"
             >
                 <NotificationIcon
                     className={`w-4 h-4  dark:invert transition-transform ${isOpen ? "scale-110" : "group-hover:rotate-12"}`}

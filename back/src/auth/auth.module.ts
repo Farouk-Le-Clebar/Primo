@@ -10,6 +10,7 @@ import { JwtStrategy } from '../guard/jwt.strategy';
 import { JwtAuthGuard } from '../guard/jwt-auth.guard';
 import { NotificationModule } from '../notification/notification.module';
 import { MailModule } from '../mail/mail.module';
+import { StatisticsModule } from '../statistics/statistics.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { MailModule } from '../mail/mail.module';
     PassportModule,
     NotificationModule,
     MailModule,
+    StatisticsModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({

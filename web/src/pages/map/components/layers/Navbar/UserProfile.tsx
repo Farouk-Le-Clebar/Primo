@@ -43,7 +43,7 @@ export default function UserProfileS() {
     >
       <button 
         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-        className="flex h-12 w-full items-center px-2 gap-1 transition-all duration-300 rounded-xl hover:bg-gray-200/50 dark:hover:bg-[#262626] active:scale-95 group"
+        className="flex h-12 w-full items-center px-2 gap-1 transition-all duration-300 rounded-xl hover:bg-gray-200/50 dark:hover:bg-[#262626] active:scale-95 group cursor-pointer"
       >
         <div className="w-8 h-8 rounded-lg overflow-hidden border border-gray-100 dark:border-[#0A0A0A] shadow-sm flex-shrink-0 transition-transform duration-300 group-hover:border-gray-300 bg-white">
           {isExternalUrl ? (

@@ -16,7 +16,7 @@ export const NAV_ITEMS = [
 
 export const SITE_META = {
   NAME: "Primo",
-  TAGLINE: "Primo.",
+  TAGLINE: "Primo",
   DOMAIN: "https://primo-data.fr",
   DESCRIPTION:
     "Primo centralise toutes les informations cadastrales, urbanisme, risques et qualité de vie d'une parcelle en un clic.",

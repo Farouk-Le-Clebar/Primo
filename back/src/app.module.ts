@@ -11,7 +11,6 @@ import { DpeEntity } from './database/dpe.entity';
 import { AddokProxyMiddleware } from './api/addok.middleware';
 import { AuthModule } from './auth/auth.module';
 import { GeoServerProxyMiddleware } from './api/geoserver.middleware';
-import { OllamaProxyMiddleware } from './api/ollama.middleware';
 import { GeoModule } from './geo/geo.module';
 import { UserModule } from './user/user.module';
 import { NotificationModule } from './notification/notification.module';
@@ -27,6 +26,7 @@ import { Feedback } from './database/feedback.entity';
 import { ProjectPlots } from './database/project-plots.entity';
 import { ProjectsModule } from './projects/projects.module';
 import { ProjectMembers } from './database/project-members.entity';
+import { AiModule } from './ai/ai.module';
 
 @Module({
   imports: [
@@ -56,6 +56,7 @@ import { ProjectMembers } from './database/project-members.entity';
     FeedbackModule,
     MailModule,
     ProjectsModule,
+    AiModule,
   ],
   controllers: [AppController],
   providers: [AppService],
@@ -64,6 +65,5 @@ export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(AddokProxyMiddleware).forRoutes('/addok');
     consumer.apply(GeoServerProxyMiddleware).forRoutes('/geoserver');
-    consumer.apply(OllamaProxyMiddleware).forRoutes('/ai/ask');
   }
 }

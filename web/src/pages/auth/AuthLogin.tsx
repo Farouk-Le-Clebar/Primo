@@ -44,8 +44,8 @@ export default function AuthLogin() {
           if (data.user) {
             localStorage.setItem("user", JSON.stringify(data.user));
           }
-          navigate("/dashboard", { state: { welcome: true } });
-
+          // navigate("/dashboard", { state: { welcome: true } }); // A remettre plus tard
+          window.location.href = "/dashboard"; // Solution temporaire pour "recharger la page" le temps d'installer un AuthContext
         } catch (err) {
           console.error("⚠️ Impossible d'accéder au localStorage :", err);
         }

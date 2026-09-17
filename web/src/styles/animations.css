@@ -101,44 +101,79 @@
 
 /* --- Loading Primo Logo Animation --- */
 
-.primo-loader-path {
-  fill: transparent;
-  stroke: currentColor;
-  stroke-width: 1.5;
-  animation: sequentialFill 1.6s ease-in-out infinite;
+/* Follow the four sides: bottom-right, bottom-left, top-left, top-right (clockwise).
+   Every side stays filled until the whole logo fades out together. */
+.primo-loader-fill {
+  fill: currentColor;
+  stroke: none;
+  animation: primo-loader-fade 2s ease-in-out infinite;
 }
 
-.loader-delay-1 {
-  animation-delay: 0s;
+.primo-loader-fill path {
+  --primo-empty: inset(100% 0 0 0) fill-box;
+  animation-duration: 2s;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  animation-iteration-count: infinite;
 }
 
-.loader-delay-2 {
-  animation-delay: 0.2s;
+.primo-loader-fill path:nth-child(1) { animation-name: primo-side-one; }
+.primo-loader-fill path:nth-child(2) { animation-name: primo-side-two; }
+.primo-loader-fill path:nth-child(3) { animation-name: primo-side-three; }
+.primo-loader-fill path:nth-child(4) { animation-name: primo-side-four; }
+
+/* Right-hand sides fill downward; left-hand sides fill upward. */
+.primo-loader-fill path:nth-child(1),
+.primo-loader-fill path:nth-child(4) {
+  --primo-empty: inset(0 0 100% 0) fill-box;
 }
 
-.loader-delay-3 {
-  animation-delay: 0.4s;
+@keyframes primo-side-one {
+  0% { clip-path: var(--primo-empty); }
+  18%, 100% { clip-path: inset(0 0 0 0) fill-box; }
 }
 
-.loader-delay-4 {
-  animation-delay: 0.6s;
+@keyframes primo-side-two {
+  0%, 18% { clip-path: var(--primo-empty); }
+  36%, 100% { clip-path: inset(0 0 0 0) fill-box; }
 }
 
-@keyframes sequentialFill {
-  0% {
-    fill: transparent;
-    stroke-width: 1.5;
+@keyframes primo-side-three {
+  0%, 36% { clip-path: var(--primo-empty); }
+  54%, 100% { clip-path: inset(0 0 0 0) fill-box; }
+}
+
+@keyframes primo-side-four {
+  0%, 54% { clip-path: var(--primo-empty); }
+  72%, 100% { clip-path: inset(0 0 0 0) fill-box; }
+}
+
+@keyframes primo-loader-fade {
+  0%, 82% { opacity: 1; }
+  97%, 100% { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .primo-loader-fill,
+  .primo-loader-fill path {
+    animation: none;
+    clip-path: none;
+    opacity: 1;
   }
+}
 
-  30%,
-  50% {
-    fill: currentColor;
-    stroke-width: 0;
-  }
-
-  80%,
-  100% {
-    fill: transparent;
-    stroke-width: 1.5;
-  }
+/* Small entrance transitions; navigation and focus remain immediate. */
+@keyframes primo-page-enter {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.primo-page-enter {
+  animation: primo-page-enter 240ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.primo-dashboard-reveal > * {
+  animation: primo-page-enter 300ms cubic-bezier(0.2, 0.8, 0.2, 1) 70ms backwards;
+}
+.primo-dashboard-reveal > :nth-child(2) { animation-delay: 120ms; }
+@media (prefers-reduced-motion: reduce) {
+  .primo-page-enter,
+  .primo-dashboard-reveal > * { animation: none; }
 }

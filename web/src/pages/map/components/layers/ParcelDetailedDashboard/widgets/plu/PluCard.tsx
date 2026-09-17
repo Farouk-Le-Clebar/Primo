@@ -54,7 +54,7 @@ export default function PluCard({ feature }: ParcelWidgetProps) {
   const isEmpty = !data || uniqueZones.length === 0;
 
   const InfoRow = ({ label, value }: { label: string, value: string | React.ReactNode }) => (
-    <div className="flex justify-between items-center py-3 border-b border-gray-100 last:border-0">
+    <div className="flex justify-between items-center py-2.5 border-b border-gray-100 last:border-0 last:pb-0">
       <span className="text-[13px] font-medium text-[#878D96] shrink-0 pr-4">{label}</span>
       <span className="text-[13px] font-medium text-[#111111] dark:text-white text-right truncate">{value}</span>
     </div>
@@ -62,7 +62,7 @@ export default function PluCard({ feature }: ParcelWidgetProps) {
 
   if (isPending) {
     return (
-      <Card className="flex flex-col items-center justify-center h-full min-h-[300px] border-gray-200 ring-0 shadow-sm">
+      <Card className="flex flex-col items-center justify-center min-h-48 border-gray-200 ring-0 shadow-sm">
         <LoadingPrimoLogo className="w-8 h-8 text-blue-500 mb-4" />
         <span className="text-[13px] font-medium text-[#878D96]">Analyse du zonage...</span>
       </Card>
@@ -73,14 +73,14 @@ export default function PluCard({ feature }: ParcelWidgetProps) {
     return (
       <Card className="border-gray-200 ring-0 shadow-sm">
         <div className="py-8 text-sm text-[#878D96] text-center bg-gray-50 rounded-lg border border-dashed border-gray-200">
-          {isError ? "Service PLU indisponible" : "Aucun zonage numérique trouvé (RNU probable)"}
+          {isError ? "Service PLU indisponible" : "Aucun zonage numérique trouvé. Le régime applicable reste à vérifier."}
         </div>
       </Card>
     );
   }
 
   return (
-    <Card className="border-gray-200 ring-0 shadow-sm p-6 h-full flex flex-col font-inter">
+    <Card className="border-gray-200 ring-0 shadow-sm p-4 flex flex-col font-inter">
       <div className="flex justify-between items-start mb-1">
         <div>
           <h2 className="text-xl font-bold text-gray-900 dark:text-white">Zone {zoneInfo.rawType || "—"}</h2>
@@ -103,7 +103,7 @@ export default function PluCard({ feature }: ParcelWidgetProps) {
         </p>
       </div>
 
-      <div className="mt-8">
+      <div className="mt-5">
         <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Caractéristiques</h3>
         <div className="flex flex-col">
           <InfoRow label="Libellé complet" value={props.libelong || props.libelle || "Non renseigné"} />
@@ -113,7 +113,7 @@ export default function PluCard({ feature }: ParcelWidgetProps) {
       </div>
 
       {docAction && (
-        <div className="mt-auto pt-6">
+        <div className="mt-3">
           <a
             href={docAction.url}
             target="_blank"

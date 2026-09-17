@@ -1,3 +1,6 @@
+import ParcelAnalysisLayout from "../../ParcelAnalysisLayout";
+import { useMemo, useState } from "react";
+import { prepareDvf } from "./data";
 import { useQuery } from "@tanstack/react-query";
 
 // COMPONENTS
@@ -12,43 +15,77 @@ import DvfTransactionsTab from "./DvfTransactionsTab.tsx";
 export default function DvfWidget({ feature }: ParcelWidgetProps) {
   const idParcelle = feature?.properties?.id;
 
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ['dvf-parcelle', idParcelle],
+  const { data, isLoading, isError, refetch } = useQuery({
+    queryKey: ["dvf-parcelle", idParcelle],
     queryFn: () => getDvfParcelle(String(idParcelle)),
     enabled: !!idParcelle && String(idParcelle).length === 14,
+    staleTime: 300000,
     retry: false,
   });
 
-  const transactions = data?.historique || data || [];
-  const isEmpty = !transactions || transactions.length === 0;
+  const [type, setType] = useState("all");
+  const prepared = useMemo(() => prepareDvf(data), [data]);
+  const types = [
+    ...new Set(prepared.records.map((t) => t.type_local || "Non renseigné")),
+  ];
+  const selectedType = types.includes(type) ? type : "all";
+  const transactions = prepared.records.filter(
+    (t) =>
+      selectedType === "all" ||
+      (t.type_local || "Non renseigné") === selectedType,
+  );
+  const isEmpty = prepared.records.length === 0;
 
   return (
-    <div className="font-inter w-full h-full flex flex-col min-h-0">
+    <div className="font-inter w-full">
       {isLoading ? (
-        <div className="flex items-center gap-2 mb-4 bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
+        <div className="flex items-center gap-2 mb-4 bg-white dark:bg-[#171717] p-6 rounded-xl border border-gray-100 shadow-sm">
           <LoadingPrimoLogo className="w-6 h-6 text-black" />
-          <span className="text-[13px] font-medium text-[#878D96]">Analyse de l'historique DVF...</span>
+          <span className="text-[13px] font-medium text-[#878D96]">
+            Analyse de l'historique DVF...
+          </span>
         </div>
       ) : isError || isEmpty ? (
-        <div className="py-8 text-sm text-[#878D96] text-center bg-gray-50 rounded-xl border border-dashed border-gray-200">
-          Aucune transaction immobilière publique récente trouvée sur cette parcelle.
+        <div className="py-8 text-sm text-[#878D96] text-center bg-gray-50 dark:bg-[#171717] rounded-xl border border-dashed border-gray-200 dark:border-white/10">
+          {isError
+            ? "Le service est momentanément indisponible."
+            : prepared.rejected
+              ? "Les données reçues ne contiennent aucun montant positif associé à une date valide."
+              : "Aucune transaction disponible pour cette parcelle."}
+          {isError && (
+            <button
+              onClick={() => void refetch()}
+              className="mt-3 block w-full font-medium text-emerald-700 underline dark:text-emerald-400"
+            >
+              Réessayer
+            </button>
+          )}
         </div>
       ) : (
-        <div className="flex flex-col md:flex-row gap-6 w-full h-full min-h-0">
-          
-          <div className="w-full md:w-1/3 h-auto md:h-full">
-            <DvfSummaryCard transactions={transactions} />
+        <>
+          <div className="mb-4 flex items-center justify-end">
+            <select
+              aria-label="Type de bien DVF"
+              value={selectedType}
+              onChange={(e) => setType(e.target.value)}
+              className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm dark:border-white/10 dark:bg-[#171717] dark:text-white"
+            >
+              <option value="all">Tous les types de biens</option>
+              {types.map((value) => (
+                <option key={value} value={value}>
+                  {value}
+                </option>
+              ))}
+            </select>
           </div>
-
-          <div className="w-full md:w-2/3 h-auto md:h-full flex flex-col overflow-hidden">
-            <div className="flex-1 overflow-y-auto flex flex-col gap-6 pb-4 pr-1 scrollbar-custom">
-              <DvfEvolutionChart transactions={transactions} />
-              <DvfDistributionCards transactions={transactions} />
-              <DvfTransactionsTab transactions={transactions} />
-            </div>
-          </div>
-
-        </div>
+          <ParcelAnalysisLayout
+            summary={<DvfSummaryCard transactions={transactions} />}
+          >
+            <DvfEvolutionChart transactions={transactions} />
+            <DvfDistributionCards transactions={transactions} />
+            <DvfTransactionsTab transactions={transactions} />
+          </ParcelAnalysisLayout>
+        </>
       )}
     </div>
   );

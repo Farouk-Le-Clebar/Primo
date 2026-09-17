@@ -48,11 +48,11 @@ export default function DpeSummaryCard({ dpeList }: { dpeList: any[] }) {
   const gesColors = getDpeColors(stats.dominantGes);
 
   return (
-    <Card className="border-gray-200 bg-white ring-0 shadow-sm p-6 h-full flex flex-col font-inter">
+    <Card className="border-gray-200 bg-white dark:bg-[#171717] dark:border-white/10 ring-0 shadow-sm p-6 h-full flex flex-col font-inter">
       <div className="mb-6">
-        <h3 className="text-[11px] font-bold text-[#878D96] uppercase tracking-wider mb-1">Performance Globale</h3>
+        <h3 className="text-[11px] font-bold text-[#878D96] uppercase tracking-wider mb-1">Classe la plus fréquente</h3>
         <div className="flex items-baseline gap-2">
-          <span className={`text-4xl font-black ${domColors.text}`}>{stats.dominantDpe}</span>
+          <span className={`inline-flex rounded-lg px-3 py-1 text-4xl font-black ${domColors.bg} ${domColors.text}`}>{stats.dominantDpe}</span>
           <span className="text-sm font-bold text-[#878D96]">
             ({DPE_LABELS_FR[stats.dominantDpe] || "Inconnu"})
           </span>
@@ -95,7 +95,7 @@ export default function DpeSummaryCard({ dpeList }: { dpeList: any[] }) {
       <div className="mt-auto border-t border-gray-200 dark:border-[#232323] pt-6">
         <h3 className="text-[11px] font-bold text-[#878D96] uppercase tracking-wider mb-1">Émissions GES dominantes</h3>
         <div className="flex items-center gap-2">
-           <span className={`w-8 h-8 flex items-center justify-center rounded text-lg font-black ${gesColors.bg} text-white`}>
+           <span className={`w-8 h-8 flex items-center justify-center rounded text-lg font-black ${gesColors.bg} ${gesColors.text}`}>
              {stats.dominantGes}
            </span>
            <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Gaz à effet de serre</span>

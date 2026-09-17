@@ -25,6 +25,7 @@ import Security from "./pages/settings/Security";
 import Subscriptions from "./pages/settings/Subscriptions";
 import CustomToaster from "./components/toaster/CustomToaster";
 import AdminPanel from "./pages/admin/AdminPanel";
+import UserProfile from "./pages/admin/components/UsersList/UserProfile/UserProfile";
 import OnboardingRoot from "./pages/onBoarding/OnboardingRoot";
 import EmailVerify from "./pages/mailling/EmailVerify";
 import PostRegisterEmailVerify from "./pages/mailling/PostRegisterEmailVerify";
@@ -32,7 +33,7 @@ import ResetPassword from "./pages/mailling/ResetPassword";
 import SendEmailResetPassword from "./pages/mailling/SendEmailResetPassword";
 import Feedback from "./pages/feedback/Feedback";
 import ProjectNavbar from "./components/projectNavbar/ProjectNavbar";
-import DashboardProjects from "./pages/projects/components/Dashboard";
+import DashboardProjects from "./pages/projects/components/dashboard/Dashboard";
 import ParcelsTab from "./pages/projects/components/parcels/ParcelsTab";
 import Members from "./pages/projects/components/Members";
 
@@ -62,6 +63,7 @@ export default function App() {
             <Route index element={<Navigate to="/dashboard" replace />} />
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="projects" element={<Projects />} />
+            <Route path="profile" element={<EditProfile />} />
             <Route path="projects" element={<ProjectNavbar />}>
               <Route path=":projectId/dashboard" element={<DashboardProjects />} />
               <Route path=":projectId/plots" element={<ParcelsTab />} />
@@ -72,6 +74,7 @@ export default function App() {
             {/* Routes Admin */}
             <Route path="admin" element={<AdminRoute />}>
               <Route path="dashboard" element={<AdminPanel />} />
+              <Route path="user/:id" element={<UserProfile />} />
             </Route>
           </Route>
 
@@ -82,7 +85,6 @@ export default function App() {
           <Route path="/" element={<LayoutSettings />}>
             <Route path="profile" element={<Profile />} />
             <Route path="settings" element={<Navigate to="/settings/edit-profile" replace />} />
-            <Route path="settings/edit-profile" element={<EditProfile />} />
             <Route path="settings/notifications" element={<Notifications />} />
             <Route path="settings/billing" element={<Billing />} />
             <Route path="settings/privacy" element={<Privacy />} />

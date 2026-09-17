@@ -6,8 +6,15 @@ server {
   index index.html index.htm;
 
 
+  error_page 404 /404.html;
+  location = /404.html { internal; }
+
+  # Legacy component URL: redirect to the canonical landing page.
+  location = /home/Home { return 301 /; }
+  location = /home/Home/ { return 301 /; }
+
   location / {
-    try_files $uri $uri/ /index.html;
+    try_files $uri $uri/ =404;
   }
 
   location = /env-config.js {

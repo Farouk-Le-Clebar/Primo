@@ -62,7 +62,7 @@ const FeedbacksTable = ({ feedbacks, isWorking, isDeletePending, onDelete }: Fee
                                         }
                                     }}
                                     disabled={isDeletePending}
-                                    className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors"
+                                    className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors cursor-pointer"
                                     title="Supprimer le feedback"
                                 >
                                     <Trash2 className="w-4 h-4" />

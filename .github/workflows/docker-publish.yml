@@ -1,4 +1,4 @@
-name: Build & Push Docker Images
+name: Build & Deploy Docker Images
 
 on:
   push:
@@ -44,3 +44,41 @@ jobs:
           push: true
           tags: |
             garoverr/primo-backend:${{ github.ref == 'refs/heads/main' && 'latest' || 'dev' }}
+  deploy-frontend:
+    needs: docker
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Pull image on VPS (Front-End)
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'EOF'
+            cd /home/ubuntu
+            docker compose up -d --pull always
+          EOF
+  deploy-backend:
+    needs: docker
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Pull image on Dedicated Server (Back-End)
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.DEDICATED_SERVER_USER }}@${{ secrets.DEDICATED_SERVER_HOST }} << 'EOF'
+            cd /home/ubuntu
+            docker compose up -d --pull always
+          EOF

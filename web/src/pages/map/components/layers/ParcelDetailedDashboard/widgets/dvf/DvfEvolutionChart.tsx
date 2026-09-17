@@ -1,65 +1,47 @@
-import { useMemo } from "react";
-import { Card, LineChart } from "@tremor/react";
+import { Card, BarChart } from "@tremor/react";
+import { median, type DvfRecord } from "./data";
+import { formatCurrency } from "./utils";
 
-export default function DvfEvolutionChart({ transactions }: { transactions: any[] }) {
-  const chartData = useMemo(() => {
-    const validTransactions = transactions.filter(
-      t => t.date_mutation && t.valeur_fonciere && t.surface_reelle_bati
-    );
-
-    if (validTransactions.length === 0) return [];
-
-    validTransactions.sort((a, b) => 
-      new Date(a.date_mutation).getTime() - new Date(b.date_mutation).getTime()
-    );
-
-    const totalM2 = validTransactions.reduce((acc, t) => 
-      acc + (Number(t.valeur_fonciere) / Number(t.surface_reelle_bati)), 0
-    );
-    const averageM2 = Math.round(totalM2 / validTransactions.length);
-
-    const dataToMap = validTransactions.length === 1 
-      ? [validTransactions[0], validTransactions[0]] 
-      : validTransactions;
-
-    return dataToMap.map((t) => {
-      const dateObj = new Date(t.date_mutation);
-      const formattedDate = dateObj.toLocaleDateString('fr-FR', {
-        day: '2-digit', 
-        month: '2-digit', 
-        year: 'numeric'
-      });
-      const priceM2 = Math.round(Number(t.valeur_fonciere) / Number(t.surface_reelle_bati));
-
-      return {
-        label: formattedDate,
-        "Prix au m²": priceM2,
-        "Moyenne": averageM2,
-      };
-    });
-  }, [transactions]);
-
+export default function DvfEvolutionChart({
+  transactions,
+}: {
+  transactions: DvfRecord[];
+}) {
+  const years = new Map<string, number[]>();
+  for (const t of transactions) {
+    if (t.priceM2 === null) continue;
+    const year = t.date_mutation.slice(0, 4);
+    years.set(year, [...(years.get(year) || []), t.priceM2]);
+  }
+  const data = [...years.entries()]
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([year, prices]) => ({ year, "Médiane indicative": median(prices) }));
   return (
-    <Card className="border-gray-200 ring-0 shadow-sm p-6 font-inter">
-      <h3 className="font-semibold text-gray-900 dark:text-white mb-6 font-inter">Évolution du prix au m²</h3>
-      
-      <LineChart
-        className="h-72 mt-4"
-        data={chartData}
-        index="label"
-        categories={["Prix au m²", "Moyenne"]}
-        colors={["emerald", "slate"]}
-        valueFormatter={(number: number) => `${Intl.NumberFormat("fr-FR").format(number)} €`}
-        yAxisWidth={65}
-        showAnimation={false}
-        autoMinValue={true}
-        showXAxis={true}
-        showYAxis={true}
-        showGridLines={true}
-        curveType="linear"
-        connectNulls={true}
-        showLegend={true}
-      />
+    <Card className="flex-none rounded-xl border-gray-200 dark:border-white/10 ring-0 shadow-sm p-6 font-inter">
+      <h3 className="font-semibold text-gray-900 dark:text-white">
+        Prix au m² par année
+      </h3>
+      <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+        Médiane des ratios exploitables · les biens observés varient d’une année
+        à l’autre
+      </p>
+      {data.length ? (
+        <BarChart
+          className="h-60 mt-5"
+          data={data}
+          index="year"
+          categories={["Médiane indicative"]}
+          colors={["emerald"]}
+          valueFormatter={formatCurrency}
+          yAxisWidth={80}
+          showLegend={false}
+          showAnimation={false}
+        />
+      ) : (
+        <p className="py-12 text-center text-sm text-gray-500">
+          Aucune donnée suffisante pour calculer un prix au m².
+        </p>
+      )}
     </Card>
   );
 }

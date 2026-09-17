@@ -30,6 +30,7 @@ services:
       BREVO_API_KEY: xkeysib-brevo_api_key
       EMAIL_VERIFICATION_URL: email_verification_url
       RESET_URL: http://test.fr/reset/password
+      GEMINI_API_KEY: api_key
 
     labels:
       - "traefik.enable=true"
@@ -155,6 +156,23 @@ services:
       - "traefik.http.routers.database.entrypoints=websecure"
       - "traefik.http.routers.database.tls.certresolver=myresolver"
       - "traefik.http.services.database.loadbalancer.server.port=80"
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin_primo
+    restart: always
+    environment:
+      PGADMIN_LISTEN_PORT: 6673
+    depends_on:
+      - postgis
+    networks:
+      - web
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.pgadmin.rule=Host(`pgadmin.primo-data.fr`)"
+      - "traefik.http.routers.pgadmin.entrypoints=websecure"
+      - "traefik.http.routers.pgadmin.tls.certresolver=myresolver"
+      - "traefik.http.services.pgadmin.loadbalancer.server.port=80"
 
   ollama:
     image: ollama/ollama:latest

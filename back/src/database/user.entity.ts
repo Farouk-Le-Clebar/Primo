@@ -1,6 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany, CreateDateColumn } from 'typeorm';
 import { SearchHistory } from './search-history.entity';
 import { Feedback } from './feedback.entity';
+import { UserStatistics } from './user-statistics.entity';
 
 @Entity()
 export class User {
@@ -45,4 +46,7 @@ export class User {
 
   @OneToMany(() => Feedback, (feedback) => feedback.user)
   feedbacks: Feedback[];
+
+  @OneToMany(() => UserStatistics, (statistics) => statistics.user)
+  statistics: UserStatistics[];
 }

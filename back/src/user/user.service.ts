@@ -85,6 +85,19 @@ export class UserService {
     return safeUser;
   }
 
+  async getUserByIdForAdmin(userId: string) {
+    const user = await this.userRepo.findOne({
+      where: { id: userId },
+      select: ['id', 'email', 'firstName', 'surName', 'profilePicture', 'mapPreference', 'isAdmin', 'provider', 'verified', 'createdAt', 'lastConnection']
+    });
+
+    if (!user) {
+      throw new NotFoundException('Utilisateur introuvable');
+    }
+
+    return user;
+  }
+
   async updateProfile(ReqId: string, updateData: UpdateProfileDto) {
     const user = await this.userRepo.findOne({ where: { id: ReqId } });
     if (!user) throw new NotFoundException('User not found');

@@ -9,7 +9,8 @@ import tailwindcss from "@tailwindcss/vite";
 // https://astro.build/config
 export default defineConfig({
   site: "https://primo-data.fr",
-  integrations: [react(), mdx(), sitemap()],
+  trailingSlash: "always",
+  integrations: [react(), mdx(), sitemap({ filter: (page) => !page.includes("/404/") })],
 
   vite: {
     plugins: [tailwindcss()],
