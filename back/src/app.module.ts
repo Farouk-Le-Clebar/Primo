@@ -9,7 +9,6 @@ import { DpeEntity } from './database/dpe.entity';
 import { AddokProxyMiddleware } from './api/addok.middleware';
 import { AuthModule } from './auth/auth.module';
 import { GeoServerProxyMiddleware } from './api/geoserver.middleware';
-import { GeoModule } from './geo/geo.module';
 import { UserModule } from './user/user.module';
 import { NotificationModule } from './notification/notification.module';
 import { FeedbackModule } from './feedback/feedback.module';
@@ -45,7 +44,6 @@ import { AiModule } from './ai/ai.module';
     }),
     TypeOrmModule.forFeature([User, SearchHistory, Projects, DvfMutation, DpeEntity, Notification, VerifiedUser, ResetPassword, UserStatistics, Feedback, ProjectPlots, ProjectMembers]),
     AuthModule,
-    GeoModule,
     UserModule,
     DvfModule,
     DpeModule,
