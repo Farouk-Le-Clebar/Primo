@@ -125,24 +125,6 @@ services:
       - "traefik.http.routers.geoserver.tls.certresolver=myresolver"
       - "traefik.http.services.geoserver.loadbalancer.server.port=8080"
 
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin
-    container_name: phpmyadmin_primo
-    restart: always
-    environment:
-      PMA_HOST: mysql_db
-      PMA_PORT: 667
-    depends_on:
-      - mysql_db
-    networks:
-      - web
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.database.rule=Host(`database.primo-data.fr`)"
-      - "traefik.http.routers.database.entrypoints=websecure"
-      - "traefik.http.routers.database.tls.certresolver=myresolver"
-      - "traefik.http.services.database.loadbalancer.server.port=80"
-
   pgadmin:
     image: dpage/pgadmin4
     container_name: pgadmin_primo
