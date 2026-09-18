@@ -80,7 +80,7 @@ async function fetchPrescriptionLayer(
         }));
       }
     } catch (err) {
-      console.error(`❌ [Prescription] Erreur National ${config.nationalLayer}`, err);
+      console.error(`[Prescription] Erreur National ${config.nationalLayer}`, err);
     }
   }
 
@@ -103,7 +103,7 @@ async function fetchPrescriptionLayer(
     features.forEach((f: any) => f.properties._source = "LOCAL_GEOSERVER");
     return features;
   } catch (err) {
-    console.error(`❌ [Prescription] Erreur Local ${localTypeName}`, err);
+    console.error(`[Prescription] Erreur Local ${localTypeName}`, err);
     return [];
   }
 }
