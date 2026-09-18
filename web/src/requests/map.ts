@@ -1,5 +1,7 @@
 import axios from "axios";
+
 const apiUrl = window?._env_?.API_URL;
+const token = localStorage.getItem("token");
 
 export const getCityByBbox = async (bbox: string) => {
     const params = new URLSearchParams({
@@ -12,7 +14,11 @@ export const getCityByBbox = async (bbox: string) => {
         bbox: `${bbox},EPSG:4326`
     });
     return axios
-        .get(`${apiUrl}/geoserver/primo/wfs?${params}`)
+        .get(`${apiUrl}/geoserver/primo/wfs?${params}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
         .then((response) => response.data)
         .catch((error) => {
             console.error("Error fetching city data:", error);
@@ -31,7 +37,11 @@ export const getDepartementByBbox = async (bbox: string) => {
         bbox: `${bbox},EPSG:4326`
     });
     return axios
-        .get(`${apiUrl}/geoserver/primo/wfs?${params}`)
+        .get(`${apiUrl}/geoserver/primo/wfs?${params}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
         .then((response) => response.data)
         .catch((error) => {
             console.error("Error fetching departement data:", error);
@@ -53,7 +63,11 @@ export const getParcellesByBboxAndDepartments = async (bbox: string, departments
         });
 
         return axios
-            .get(`${apiUrl}/geoserver/primo/wfs?${params}`)
+            .get(`${apiUrl}/geoserver/primo/wfs?${params}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
             .then((response) => response.data)
             .catch((error) => {
                 console.warn(`No parcelles found for department ${dept}:`, error);
@@ -87,7 +101,11 @@ export const getDivisionsByBboxAndDepartments = async (bbox: string, departments
         });
 
         return axios
-            .get(`${apiUrl}/geoserver/primo/wfs?${params}`)
+            .get(`${apiUrl}/geoserver/primo/wfs?${params}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
             .then((response) => response.data)
             .catch((error) => {
                 console.warn(`No divisions found for department ${dept}:`, error);
@@ -116,7 +134,7 @@ export const getPoisByBbox = async (
         service: "WFS",
         version: "2.0.0",
         request: "GetFeature",
-        typeName: "primo:pois_france", // workspace used for the api calls, must be "primo"
+        typeName: "primo:pois_france",
         outputFormat: "application/json",
         srsName: "EPSG:4326",
         maxFeatures: maxFeatures.toString(),
@@ -134,7 +152,11 @@ export const getPoisByBbox = async (
     params.append("cql_filter", cqlFilter);
 
     return axios
-        .get(`${apiUrl}/geoserver/primo/wfs?${params}`) // workspace used for the api calls, must be "primo"
+        .get(`${apiUrl}/geoserver/primo/wfs?${params}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
         .then((response) => response.data)
         .catch((error) => {
             console.error("Error fetching POI data:", error);

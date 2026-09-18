@@ -9,6 +9,7 @@ export class AiController {
     constructor(private readonly aiService: AiService) { }
 
     @Post('ask')
+    @UseGuards(JwtAuthGuard)
     async generate(
         @Body() { prompt }: AskDTO,
         @Res() res: Response

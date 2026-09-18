@@ -17,11 +17,11 @@ services:
   backend:
     image: garoverr/primo-backend:dev
     environment:
-      MYSQL_HOST: mysql_host
-      MYSQL_PORT: 667
-      MYSQL_USER: mysql_user
-      MYSQL_PASSWORD: mysql_password
-      MYSQL_DATABASE: mysql_database
+      POSTGRES_HOST: postgres_host
+      POSTGRES_PORT: 667
+      POSTGRES_USER: postgres_user
+      POSTGRES_PASSWORD: postgres_password
+      POSTGRES_DATABASE: postgres_database
       JWT_SECRET: jwt_secret_key
       ADDOK_URL: addok_url
       FRONT_URL: front_url
@@ -31,7 +31,6 @@ services:
       EMAIL_VERIFICATION_URL: email_verification_url
       RESET_URL: http://test.fr/reset/password
       GEMINI_API_KEY: api_key
-
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.backend.rule=Host(`api.primo-data.fr`)"
@@ -39,7 +38,7 @@ services:
       - "traefik.http.routers.backend.tls.certresolver=myresolver"
       - "traefik.http.services.backend.loadbalancer.server.port=3000"
     depends_on:
-      - mysql_db
+      - postgis
     networks:
       - web
 
@@ -79,7 +78,6 @@ services:
       POSTGRES_DB: postgis_db
       POSTGRES_USER: postgres_user
       POSTGRES_PASSWORD: postgres_password
-      POSTGRES_HOST_AUTH_METHOD: trust
     ports:
       - '667:667'
     volumes:
@@ -104,6 +102,8 @@ services:
       MAXIMUM_MEMORY: 32G
       STABLE_EXTENSIONS: wps,csw
       COMMUNITY_EXTENSIONS: ""
+      GEOSERVER_CSRF_WHITELIST: geoserver.primo-data.fr
+      PROXY_BASE_URL: https://geoserver.primo-data.fr/geoserver
     ports:
       - '667:667'
     volumes:
@@ -130,34 +130,25 @@ services:
     container_name: pgadmin_primo
     restart: always
     environment:
+      PGADMIN_DEFAULT_EMAIL: pgadmin_default_email
+      PGADMIN_DEFAULT_PASSWORD: pgadmin_default_password
       PGADMIN_LISTEN_PORT: 6673
+    ports:
+      - '6673:6673'
     depends_on:
       - postgis
     networks:
       - web
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.pgadmin.rule=Host(`pgadmin.primo-data.fr`)"
+      - "traefik.http.routers.pgadmin.rule=Host(`database.primo-data.fr`)"
       - "traefik.http.routers.pgadmin.entrypoints=websecure"
       - "traefik.http.routers.pgadmin.tls.certresolver=myresolver"
       - "traefik.http.services.pgadmin.loadbalancer.server.port=80"
 
-  ollama:
-    image: ollama/ollama:latest
-    environment:
-      - OLLAMA_NUM_PARALLEL=4
-    container_name: ollama
-    ports:
-      - "667:667"
-    volumes:
-      - ollama_data:/root/.ollama
-    restart: always
-
 volumes:
-  mysql_data:
   postgis_data:
   geoserver_data:
-  ollama_data:
 
 networks:
   web:
