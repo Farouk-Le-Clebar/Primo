@@ -145,7 +145,7 @@ const PoiLayer = ({
                                 min-width: ${POI_ICON_SIZE}px;
                                 border-radius: 50%;
                                 background-color: ${config.color};
-                                border: 2.5px solid white;
+                                border: 1.5px solid white;
                                 display: flex;
                                 align-items: center;
                                 justify-content: center;
