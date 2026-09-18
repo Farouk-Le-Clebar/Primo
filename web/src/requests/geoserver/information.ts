@@ -107,7 +107,7 @@ async function fetchInformationLayer(
     features.forEach((f: any) => f.properties._source = "LOCAL_GEOSERVER");
     return features;
   } catch (err) {
-    console.error(`❌ [Information] Erreur Local ${localTypeName}`, err);
+    console.error(`[Information] Erreur Local ${localTypeName}`, err);
     return [];
   }
 }
