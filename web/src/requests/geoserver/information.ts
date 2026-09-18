@@ -2,7 +2,7 @@ import axios from "axios";
 
 const apiUrl = window?._env_?.API_URL;
 const NATIONAL_WFS_URL = "https://data.geopf.fr/wfs/ows";
-
+const token = localStorage.getItem("token");
 
 function convertGeoJSONToWKT(geometry: any): string {
   let wkt = '';
@@ -33,7 +33,7 @@ function getCentroidFromGeometry(geometry: any): { lat: number, lon: number } | 
   try {
     let coords: number[] = [];
     if (geometry.type === 'Point') coords = geometry.coordinates;
-    else if (geometry.type === 'Polygon') coords = geometry.coordinates[0][0]; 
+    else if (geometry.type === 'Polygon') coords = geometry.coordinates[0][0];
     else if (geometry.type === 'MultiPolygon') coords = geometry.coordinates[0][0][0];
 
     if (coords && coords.length >= 2) return { lon: coords[0], lat: coords[1] };
@@ -47,18 +47,18 @@ function formatDepartementCode(dept: string): string {
 
 
 interface FetchConfig {
-  nationalLayer: string; 
-  localSuffix: string;   
+  nationalLayer: string;
+  localSuffix: string;
 }
 
 async function fetchInformationLayer(
-  geometry: any, 
+  geometry: any,
   departement: string,
   config: FetchConfig
 ) {
   const center = getCentroidFromGeometry(geometry);
   const deptCode = formatDepartementCode(departement);
-  
+
   if (center) {
     const wfsParams = new URLSearchParams({
       service: 'WFS',
@@ -71,16 +71,22 @@ async function fetchInformationLayer(
     });
 
     try {
-      const res = await axios.get(`${NATIONAL_WFS_URL}?${wfsParams.toString()}`, { timeout: 6000 });
-      
+      const res = await axios.get(`${NATIONAL_WFS_URL}?${wfsParams.toString()}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        timeout: 6000
+      }
+      );
+
       if (res.data && res.data.features && res.data.features.length > 0) {
         return res.data.features.map((f: any) => ({
-            type: "Feature",
-            geometry: null,
-            properties: { 
-              ...f.properties, 
-              _source: "NATIONAL_API" 
-            }
+          type: "Feature",
+          geometry: null,
+          properties: {
+            ...f.properties,
+            _source: "NATIONAL_API"
+          }
         }));
       }
     } catch (err) {
@@ -90,7 +96,7 @@ async function fetchInformationLayer(
 
   const localTypeName = `primo:gpu_${deptCode}_${config.localSuffix}`;
   const wkt = convertGeoJSONToWKT(geometry);
-  
+
   const localParams = new URLSearchParams({
     service: 'WFS',
     version: '2.0.0',
@@ -102,7 +108,11 @@ async function fetchInformationLayer(
   });
 
   try {
-    const response = await axios.get(`${apiUrl}/geoserver/primo/wfs?${localParams}`);
+    const response = await axios.get(`${apiUrl}/geoserver/primo/wfs?${localParams}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
+    });
     const features = response.data?.features || [];
     features.forEach((f: any) => f.properties._source = "LOCAL_GEOSERVER");
     return features;
