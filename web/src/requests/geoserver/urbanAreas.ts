@@ -3,6 +3,7 @@ import axios from "axios";
 const apiUrl = window?._env_?.API_URL;
 
 const NATIONAL_WFS_URL = "https://data.geopf.fr/wfs/ows";
+const token = localStorage.getItem("token");
 
 function convertGeoJSONToWKT(geometry: any): string {
   let wkt = '';
@@ -35,7 +36,7 @@ function getCentroidFromGeometry(geometry: any): { lat: number, lon: number } | 
     if (geometry.type === 'Point') {
       coords = geometry.coordinates;
     } else if (geometry.type === 'Polygon') {
-      coords = geometry.coordinates[0][0]; 
+      coords = geometry.coordinates[0][0];
     } else if (geometry.type === 'MultiPolygon') {
       coords = geometry.coordinates[0][0][0];
     }
@@ -69,25 +70,30 @@ async function getNationalData(geometry: any) {
   });
 
   try {
-    const res = await axios.get(`${NATIONAL_WFS_URL}?${wfsParams.toString()}`, { timeout: 8000 });
-    
+    const res = await axios.get(`${NATIONAL_WFS_URL}?${wfsParams.toString()}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      },
+      timeout: 8000
+    });
+
     if (res.data && res.data.features && res.data.features.length > 0) {
-       return {
-         type: "FeatureCollection",
-         features: res.data.features.map((f: any) => ({
-           type: "Feature",
-           geometry: null,
-           properties: {
-             _source: "NATIONAL_API",
-             gpu_doc_id: f.properties.gpu_doc_id,
-             partition: f.properties.partition,
-             libelle: f.properties.libelle,
-             typezone: f.properties.typezone,
-             idurba: f.properties.idurba,
-             destdomi: "Non défini"
-           }
-         }))
-       };
+      return {
+        type: "FeatureCollection",
+        features: res.data.features.map((f: any) => ({
+          type: "Feature",
+          geometry: null,
+          properties: {
+            _source: "NATIONAL_API",
+            gpu_doc_id: f.properties.gpu_doc_id,
+            partition: f.properties.partition,
+            libelle: f.properties.libelle,
+            typezone: f.properties.typezone,
+            idurba: f.properties.idurba,
+            destdomi: "Non défini"
+          }
+        }))
+      };
     }
     return null;
   } catch (err) {
@@ -100,7 +106,7 @@ async function getLocalData(geometry: any, departement: string) {
   const deptCode = formatDepartementCode(departement);
   const typeName = `primo:gpu_${deptCode}_zone_urba`;
   const wkt = convertGeoJSONToWKT(geometry);
-  
+
   const params = new URLSearchParams({
     service: 'WFS',
     version: '2.0.0',
@@ -110,17 +116,21 @@ async function getLocalData(geometry: any, departement: string) {
     srsName: 'EPSG:4326',
     CQL_FILTER: `INTERSECTS(geom, ${wkt})`
   });
-  
+
   try {
-    const response = await axios.get(`${apiUrl}/geoserver/primo/wfs?${params}`);
-    
+    const response = await axios.get(`${apiUrl}/geoserver/primo/wfs?${params}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
     const features = response.data?.features;
-    
+
     if (features && features.length > 0) {
       features[0].properties._source = "LOCAL_GEOSERVER";
       return response.data;
     }
-    
+
     return { features: [] };
   } catch (err) {
     console.error("❌ [GPU] Le GeoServer Local a aussi échoué.", err);
@@ -130,7 +140,7 @@ async function getLocalData(geometry: any, departement: string) {
 
 export const getZonesUrbaByGeometry = async (geometry: any, departement: string) => {
   const nationalData = await getNationalData(geometry);
-  
+
   if (nationalData) {
     return nationalData;
   }
@@ -139,72 +149,72 @@ export const getZonesUrbaByGeometry = async (geometry: any, departement: string)
 };
 
 export const getPrescriptionsSurfByGeometry = async (geometry: any, departement: string) => {
-    const deptCode = formatDepartementCode(departement);
-    const typeName = `primo:gpu_${deptCode}_prescription_surf`;
-    const wkt = convertGeoJSONToWKT(geometry);
-    const params = new URLSearchParams({
-      service: 'WFS',
-      version: '2.0.0',
-      request: 'GetFeature',
-      typeName: typeName,
-      outputFormat: 'application/json',
-      srsName: 'EPSG:4326',
-      CQL_FILTER: `INTERSECTS(geom, ${wkt})`
-    });
-    return axios.get(`${apiUrl}/geoserver/primo/wfs?${params}`).then(res => res.data);
+  const deptCode = formatDepartementCode(departement);
+  const typeName = `primo:gpu_${deptCode}_prescription_surf`;
+  const wkt = convertGeoJSONToWKT(geometry);
+  const params = new URLSearchParams({
+    service: 'WFS',
+    version: '2.0.0',
+    request: 'GetFeature',
+    typeName: typeName,
+    outputFormat: 'application/json',
+    srsName: 'EPSG:4326',
+    CQL_FILTER: `INTERSECTS(geom, ${wkt})`
+  });
+  return axios.get(`${apiUrl}/geoserver/primo/wfs?${params}`, { headers: { 'Authorization': `Bearer ${token}` } }).then(res => res.data);
 };
 
 export const getPrescriptionsLinByGeometry = async (geometry: any, departement: string) => {
-    const deptCode = formatDepartementCode(departement);
-    const typeName = `primo:gpu_${deptCode}_prescription_lin`;
-    const wkt = convertGeoJSONToWKT(geometry);
-    const params = new URLSearchParams({
-      service: 'WFS',
-      version: '2.0.0',
-      request: 'GetFeature',
-      typeName: typeName,
-      outputFormat: 'application/json',
-      srsName: 'EPSG:4326',
-      CQL_FILTER: `INTERSECTS(geom, ${wkt})`
-    });
-    return axios.get(`${apiUrl}/geoserver/primo/wfs?${params}`).then(res => res.data);
+  const deptCode = formatDepartementCode(departement);
+  const typeName = `primo:gpu_${deptCode}_prescription_lin`;
+  const wkt = convertGeoJSONToWKT(geometry);
+  const params = new URLSearchParams({
+    service: 'WFS',
+    version: '2.0.0',
+    request: 'GetFeature',
+    typeName: typeName,
+    outputFormat: 'application/json',
+    srsName: 'EPSG:4326',
+    CQL_FILTER: `INTERSECTS(geom, ${wkt})`
+  });
+  return axios.get(`${apiUrl}/geoserver/primo/wfs?${params}`, { headers: { 'Authorization': `Bearer ${token}` } }).then(res => res.data);
 };
 
 export const getPrescriptionsPctByGeometry = async (geometry: any, departement: string) => {
-    const deptCode = formatDepartementCode(departement);
-    const typeName = `primo:gpu_${deptCode}_prescription_pct`;
-    const wkt = convertGeoJSONToWKT(geometry);
-    const params = new URLSearchParams({
-      service: 'WFS',
-      version: '2.0.0',
-      request: 'GetFeature',
-      typeName: typeName,
-      outputFormat: 'application/json',
-      srsName: 'EPSG:4326',
-      CQL_FILTER: `INTERSECTS(geom, ${wkt})`
-    });
-    return axios.get(`${apiUrl}/geoserver/primo/wfs?${params}`).then(res => res.data);
+  const deptCode = formatDepartementCode(departement);
+  const typeName = `primo:gpu_${deptCode}_prescription_pct`;
+  const wkt = convertGeoJSONToWKT(geometry);
+  const params = new URLSearchParams({
+    service: 'WFS',
+    version: '2.0.0',
+    request: 'GetFeature',
+    typeName: typeName,
+    outputFormat: 'application/json',
+    srsName: 'EPSG:4326',
+    CQL_FILTER: `INTERSECTS(geom, ${wkt})`
+  });
+  return axios.get(`${apiUrl}/geoserver/primo/wfs?${params}`, { headers: { 'Authorization': `Bearer ${token}` } }).then(res => res.data);
 };
 
 export const getInfosSurfByGeometry = async (geometry: any, departement: string) => {
-    const deptCode = formatDepartementCode(departement);
-    const typeName = `primo:gpu_${deptCode}_info_surf`;
-    const wkt = convertGeoJSONToWKT(geometry);
-    const params = new URLSearchParams({
-      service: 'WFS',
-      version: '2.0.0',
-      request: 'GetFeature',
-      typeName: typeName,
-      outputFormat: 'application/json',
-      srsName: 'EPSG:4326',
-      CQL_FILTER: `INTERSECTS(geom, ${wkt})`
-    });
-    return axios.get(`${apiUrl}/geoserver/primo/wfs?${params}`).then(res => res.data);
+  const deptCode = formatDepartementCode(departement);
+  const typeName = `primo:gpu_${deptCode}_info_surf`;
+  const wkt = convertGeoJSONToWKT(geometry);
+  const params = new URLSearchParams({
+    service: 'WFS',
+    version: '2.0.0',
+    request: 'GetFeature',
+    typeName: typeName,
+    outputFormat: 'application/json',
+    srsName: 'EPSG:4326',
+    CQL_FILTER: `INTERSECTS(geom, ${wkt})`
+  });
+  return axios.get(`${apiUrl}/geoserver/primo/wfs?${params}`, { headers: { 'Authorization': `Bearer ${token}` } }).then(res => res.data);
 };
 
 export const getAllGpuDataByGeometry = async (geometry: any, departement: string) => {
   const deptCode = formatDepartementCode(departement);
-  
+
   try {
     const [zones, prescSurf, prescLin, prescPct, infoSurf] = await Promise.allSettled([
       getZonesUrbaByGeometry(geometry, deptCode),
