@@ -1,9 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, Index } from 'typeorm';
 
-@Entity('dpe', { synchronize: false })
-@Index(['identifiant_ban'])
-export class DpeEntity { 
-
+@Entity('dpe')
+export class DpeEntity {
   @PrimaryGeneratedColumn({ name: 'OGR_FID' })
   ogrFid: number;
 
