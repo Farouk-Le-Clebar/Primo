@@ -7,6 +7,7 @@ import GpuUrbanAreasWidget from "./widgets/plu/GpuWidget";
 import BuildingsWidget from "./widgets/buildings/BuildingsWidget";
 import DpeWidget from "./widgets/dpe/DpeWidget";
 import DvfWidget from "./widgets/dvf/DvfWidget";
+import GeorisquesWidget from "./widgets/georisques/GeorisquesWidget";
 
 // COMPONENTS
 import ParcelDetailedNavbar from "./ParcelDetailedNavbar";
@@ -86,6 +87,9 @@ export default function ParcelDetailedDashboard({
           )}
           {activeTab === "dpe" && (
             <DpeWidget selectedParcelle={selectedParcelle} />
+          )}
+          {activeTab === "georisques" && (
+            <GeorisquesWidget selectedParcelle={selectedParcelle} />
           )}
         </div>
       </div>
