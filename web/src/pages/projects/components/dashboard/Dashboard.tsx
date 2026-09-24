@@ -38,10 +38,10 @@ export default function DashboardProjects() {
         <Card className="p-0 border-gray-200 dark:border-white/10 ring-0 shadow-sm overflow-hidden rounded-xl">
           <div className="grid grid-cols-1 md:grid-cols-12 divide-y md:divide-y-0 md:divide-x divide-gray-100 dark:divide-white/5">
             <div className="p-5 md:col-span-4 flex flex-col justify-between gap-6 dark:bg-[#111111]/20">
-              <ProjectKPIs 
-                plotsCount={project?.numberOfPlots || 0} 
-                membersCount={project?.numberOfMembers || 1} 
-                createdAt={project?.createdAt} 
+              <ProjectKPIs
+                plotsCount={project?.numberOfPlots || 0}
+                membersCount={project?.numberOfMembers || 1}
+                createdAt={project?.createdAt}
               />
             </div>
             <div className="p-5 md:col-span-8 min-h-[320px] flex flex-col justify-between dark:bg-[#111111]/40">
