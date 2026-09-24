@@ -36,6 +36,7 @@ import ProjectNavbar from "./components/projectNavbar/ProjectNavbar";
 import DashboardProjects from "./pages/projects/components/dashboard/Dashboard";
 import ParcelsTab from "./pages/projects/components/parcels/ParcelsTab";
 import Members from "./pages/projects/components/Members";
+import DocumentsTab from "./pages/projects/components/documents/DocumentsTab";
 
 export default function App() {
   return (
@@ -68,6 +69,7 @@ export default function App() {
               <Route path=":projectId/dashboard" element={<DashboardProjects />} />
               <Route path=":projectId/plots" element={<ParcelsTab />} />
               <Route path=":projectId/members" element={<Members />} />
+              <Route path=":projectId/documents" element={<DocumentsTab />} />
             </Route>
             <Route path="feedback" element={<Feedback />} />
 
