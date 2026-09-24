@@ -5,6 +5,7 @@ import L from "leaflet";
 import { getPoisByBbox } from "../../../../../requests/map";
 import {
     getMaxFeaturesForZoom,
+    getPoiLabelDensity,
     MIN_ZOOM_FOR_POIS,
     POI_CONFIGS,
     POI_ICON_SIZE,
@@ -16,8 +17,8 @@ import {
     filterOverlappingPois,
     buildAddress,
     formatOpeningHours,
+    selectPoiLabels,
 } from "../../../../../utils/pois";
-
 
 type PoiLayerProps = {
     onPoisChange: (data: FeatureCollection | null) => void;
@@ -27,8 +28,6 @@ type PoiLayerProps = {
     dataPois: PoiType;
 };
 
-
-/** Parse OSM tags from a feature's properties */
 const parseTags = (props: Record<string, any>): Record<string, any> => {
     if (typeof props.tags === "string") {
         try {
@@ -86,15 +85,20 @@ const PoiLayer = ({
     }, [mapBounds, currentZoom, enabledPoiTypes]);
 
     const visibleFeatures = useMemo(() => {
-        if (!dataPois.pois || currentZoom < MIN_ZOOM_FOR_POIS) return [];
+        if (!dataPois.pois || currentZoom < MIN_ZOOM_FOR_POIS) {
+            return [];
+        }
 
-        const capped = dataPois.pois.features.slice(
-            0,
-            getMaxFeaturesForZoom(currentZoom),
-        );
-        return filterOverlappingPois(capped, map);
+        const maxFeatures = getMaxFeaturesForZoom(currentZoom);
+
+        const features = dataPois.pois.features.slice(0, maxFeatures);
+
+        const labelDensity = getPoiLabelDensity(currentZoom);
+
+        const labelFeatures = selectPoiLabels(features, map, labelDensity);
+
+        return filterOverlappingPois(features, map, labelFeatures);
     }, [dataPois.pois, currentZoom, map, mapBounds]);
-
     if (visibleFeatures.length === 0) return null;
 
     return (
@@ -102,6 +106,7 @@ const PoiLayer = ({
             {visibleFeatures.map((feature: any, index: number) => {
                 const coords = feature.geometry.coordinates;
                 const props = feature.properties;
+                // props.type = le "code" du type d'infrastructure (ex: 'pharmacie',
                 const config = POI_CONFIGS[props.type];
                 if (!config) return null;
 
@@ -110,27 +115,30 @@ const PoiLayer = ({
                 const displayName =
                     name.length > 22 ? name.slice(0, 20) + "…" : name;
 
-                const labelHtml = displayName
-                    ? `<span style="
-                        margin-left: 6px;
-                        font-size: 12px;
-                        font-weight: 600;
-                        font-family: 'Inter', 'Fira Sans', sans-serif;
-                        color: ${config.color};
-                        white-space: nowrap;
-                        text-shadow:
-                            -1px -1px 0 #fff,
-                             1px -1px 0 #fff,
-                            -1px  1px 0 #fff,
-                             1px  1px 0 #fff,
-                             0   -1px 0 #fff,
-                             0    1px 0 #fff,
-                            -1px  0   0 #fff,
-                             1px  0   0 #fff;
-                        line-height: ${POI_ICON_SIZE}px;
-                        vertical-align: middle;
-                    ">${displayName}</span>`
-                    : "";
+                const showLabel = feature._showLabel === true;
+
+                const labelHtml =
+                    showLabel && displayName
+                        ? `<span style="
+                            margin-left: 6px;
+                            font-size: 12px;
+                            font-weight: 600;
+                            font-family: 'Inter', 'Fira Sans', sans-serif;
+                            color: ${config.color};
+                            white-space: nowrap;
+                            text-shadow:
+                                -1px -1px 0 #fff,
+                                 1px -1px 0 #fff,
+                                -1px  1px 0 #fff,
+                                 1px  1px 0 #fff,
+                                 0   -1px 0 #fff,
+                                 0    1px 0 #fff,
+                                -1px  0   0 #fff,
+                                 1px  0   0 #fff;
+                            line-height: ${POI_ICON_SIZE}px;
+                            vertical-align: middle;
+                        ">${displayName}</span>`
+                        : "";
 
                 const customIcon = L.divIcon({
                     html: `
@@ -145,7 +153,7 @@ const PoiLayer = ({
                                 min-width: ${POI_ICON_SIZE}px;
                                 border-radius: 50%;
                                 background-color: ${config.color};
-                                border: 2.5px solid white;
+                                border: 1.5px solid white;
                                 display: flex;
                                 align-items: center;
                                 justify-content: center;
@@ -165,18 +173,20 @@ const PoiLayer = ({
                     popupAnchor: [0, -(POI_ICON_SIZE / 2 + 4)],
                 });
 
-                const address = buildAddress(tags);
-                const phone = tags.phone || tags["contact:phone"];
-                const website = tags.website || tags["contact:website"];
+                const address = props.address || buildAddress(tags);
+                const phone =
+                    props.phone || tags.phone || tags["contact:phone"];
+                const website =
+                    props.website || tags.website || tags["contact:website"];
                 const email = tags.email || tags["contact:email"];
-                const openingHours = tags.opening_hours;
+                const openingHours = props.opening_hours || tags.opening_hours;
                 const hours = openingHours
                     ? formatOpeningHours(openingHours)
                     : null;
 
                 return (
                     <Marker
-                        key={`poi-${props.osm_id || index}`}
+                        key={`poi-${props.id ?? props.osm_id ?? index}`}
                         position={[coords[1], coords[0]]}
                         icon={customIcon}
                     >
@@ -184,22 +194,11 @@ const PoiLayer = ({
                             <div className="font-sans min-w-[220px] max-w-[280px]">
                                 {/* Header */}
                                 <div className="flex items-center gap-3 mb-4 pb-3 border-b border-gray-100">
-                                    {/* <div
-                                        className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
-                                        style={{
-                                            backgroundColor: config.color,
-                                            boxShadow:
-                                                "inset 0 3px 4px rgba(255,255,255,0.35), inset 0 -3px 4px rgba(0,0,0,0.2)",
-                                        }}
-                                        dangerouslySetInnerHTML={{
-                                            __html: config.svgIcon,
-                                        }}
-                                    /> */}
                                     <div className="flex-1">
                                         <h3 className="text-[15px] font-semibold text-gray-900 leading-tight m-0">
                                             {props.name ||
                                                 tags.name ||
-                                                "Sans nom"}
+                                                "Aucun nom disponible"}
                                         </h3>
                                         <p className="text-[11px] font-medium text-gray-500 m-0">
                                             {config.label}
