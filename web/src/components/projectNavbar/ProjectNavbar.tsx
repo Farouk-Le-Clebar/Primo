@@ -4,6 +4,7 @@ import { LayoutDashboard, Map, Users } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { getProjectById } from "../../requests/projects";
 import LoadingPrimoLogo from "../animations/LoadingPrimoLogo";
+import FileText from "../../assets/icons/fileText.svg?react";
 
 const ProjectNavbar = () => {
     const { projectId } = useParams();
@@ -60,6 +61,16 @@ const ProjectNavbar = () => {
                         rounded="rounded-md"
                         label="Membres"
                         icon={<Users className="w-4 h-4 mr-2" />}
+                        className="h-9"
+                        BgColor="bg-transparent"
+                        hoverBgColor="hover:bg-gray-100 dark:hover:bg-white/5"
+                    />
+                    <CustomNavLink
+                        to={`/projects/${projectId}/documents`}
+                        textColor="text-gray-600 dark:text-gray-400 font-medium text-sm transition-colors hover:text-gray-900 dark:hover:text-white"
+                        rounded="rounded-md"
+                        label="Documents"
+                        icon={<FileText className="w-4 h-4 mr-2" />}
                         className="h-9"
                         BgColor="bg-transparent"
                         hoverBgColor="hover:bg-gray-100 dark:hover:bg-white/5"
