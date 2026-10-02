@@ -1,7 +1,7 @@
 const DocumentsTab = () => {
     return (
         <div>
-            
+
         </div>
     );
 }
