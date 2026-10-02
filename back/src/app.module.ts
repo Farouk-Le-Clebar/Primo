@@ -1,6 +1,6 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { User } from './database/user.entity';
 import { Projects } from './database/project.entity';
 import { Notification } from './database/notification.entity';
@@ -24,6 +24,9 @@ import { ProjectPlots } from './database/project-plots.entity';
 import { ProjectsModule } from './projects/projects.module';
 import { ProjectMembers } from './database/project-members.entity';
 import { AiModule } from './ai/ai.module';
+import { ProjectDocuments } from './database/project-documents.entity';
+import { JwtModule } from '@nestjs/jwt/dist/jwt.module';
+import { ProjectInvite } from './database/project-invite.entity';
 
 @Module({
   imports: [
@@ -39,10 +42,19 @@ import { AiModule } from './ai/ai.module';
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DATABASE,
-      entities: [User, SearchHistory, Projects, DvfMutation, DpeEntity, Notification, VerifiedUser, ResetPassword, UserStatistics, Feedback, ProjectPlots, ProjectMembers],
+      entities: [User, SearchHistory, Projects, DvfMutation, DpeEntity, Notification, VerifiedUser, ResetPassword, UserStatistics, Feedback, ProjectPlots, ProjectMembers, ProjectDocuments, ProjectInvite],
       synchronize: true,
     }),
-    TypeOrmModule.forFeature([User, SearchHistory, Projects, DvfMutation, DpeEntity, Notification, VerifiedUser, ResetPassword, UserStatistics, Feedback, ProjectPlots, ProjectMembers]),
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      global: true,
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        secret: configService.getOrThrow<string>('JWT_SECRET'),
+        signOptions: { expiresIn: '1h' },
+      }),
+    }),
+    TypeOrmModule.forFeature([User, SearchHistory, Projects, DvfMutation, DpeEntity, Notification, VerifiedUser, ResetPassword, UserStatistics, Feedback, ProjectPlots, ProjectMembers, ProjectDocuments, ProjectInvite]),
     AuthModule,
     UserModule,
     DvfModule,
