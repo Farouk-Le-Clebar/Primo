@@ -121,6 +121,45 @@ export class MailService {
         }
     }
 
+    async sendProjectInvitationEmail(email: string, projectName: string, inviterName: string, verificationToken: string) {
+        try {
+            const user = await this.userRepo.findOne({ where: { email } });
+            if (!user)
+                throw new NotFoundException('User not found');
+
+            await axios.post(
+                process.env.BREVO_API_URL || '',
+                {
+                    to: [
+                        {
+                            email: user.email,
+                        },
+                    ],
+                    templateId: 6,
+                    params: {
+                        ACCEPT_URL: `${process.env.EMAIL_VERIFICATION_URL}?token=${verificationToken}`,
+                        DECLINE_URL: `${process.env.EMAIL_VERIFICATION_URL}?token=${verificationToken}&decline=true`,
+                        INVITER_NAME: inviterName,
+                        PROJECT_NAME: projectName,
+                    },
+                },
+                {
+                    headers: {
+                        'api-key': process.env.BREVO_API_KEY || '',
+                    },
+                }
+            );
+
+            await this.verifiedUserRepo.update(
+                { userId: user.id },
+                { emailSent: true, lastEmailDate: new Date() }
+            );
+        } catch (error) {
+            console.error('Error sending verification email:', error);
+            throw new InternalServerErrorException('Failed to send verification email');
+        }
+    }
+
     async checkIfVerifiedByEmail(email: string): Promise<boolean> {
         const user = await this.userRepo.findOne({ where: { email } });
         if (!user)
