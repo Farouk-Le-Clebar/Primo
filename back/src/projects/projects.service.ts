@@ -2,10 +2,13 @@ import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/co
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, In } from 'typeorm';
 import { Projects } from 'src/database/project.entity';
-import { AddPlotToProjectDto, CreateProjectDto, InviteUserDto } from './project.type';
+import { AddDocumentToProjectDto, AddPlotToProjectDto, CreateProjectDto, InviteUserDto } from './project.type';
 import { ProjectPlots } from 'src/database/project-plots.entity';
 import { ProjectMembers } from 'src/database/project-members.entity';
 import { User } from 'src/database/user.entity';
+import { randomBytes } from 'crypto';
+import { ProjectInvite } from 'src/database/project-invite.entity';
+import { MailService } from 'src/mail/mail.service';
 
 @Injectable()
 export class ProjectsService {
@@ -18,7 +21,20 @@ export class ProjectsService {
         private projectMembersRepository: Repository<ProjectMembers>,
         @InjectRepository(User)
         private usersRepository: Repository<User>,
+        @InjectRepository(ProjectInvite)
+        private projectInviteRepository: Repository<ProjectInvite>,
+
+        private mailService: MailService,
     ) { }
+
+    async userIsMemberOfProject(userId: string, projectId: string): Promise<boolean> {
+        const member = await this.projectMembersRepository.findOneBy({
+            userId: userId,
+            projectId: projectId,
+        });
+
+        return !!member;
+    }
 
     async createProject(createProjectDto: CreateProjectDto, userId: string) {
         let project = this.projectsRepository.create({
@@ -194,6 +210,13 @@ export class ProjectsService {
         if (!project)
             throw new NotFoundException('Projet introuvable. Réessayez plus tard.');
 
+        const inviter = await this.usersRepository.findOneBy({
+            id: userId,
+        });
+
+        if (!inviter)
+            throw new NotFoundException('Utilisateur introuvable.');
+
         const isInviterMember = await this.projectMembersRepository.findOneBy({
             projectId: inviteUserDto.projectId,
             userId: userId,
@@ -217,17 +240,27 @@ export class ProjectsService {
         if (isAlreadyMember)
             throw new UnauthorizedException('Cet utilisateur est déjà membre du projet.');
 
-        const projectMember = this.projectMembersRepository.create({
-            projectId: inviteUserDto.projectId,
+        const verificationToken = randomBytes(32).toString('hex');
+
+        const projectInvite = this.projectInviteRepository.create({
             userId: newMember.id,
-            role: "member",
+            projectName: project.name,
+            verificationToken: verificationToken,
+        });
+
+        await this.projectInviteRepository.save(projectInvite);
+
+        const projectMember = this.projectMembersRepository.create({
+            userId: newMember.id,
+            projectId: inviteUserDto.projectId,
             isAdmin: false,
+            role: 'member',
+            isPending: true,
         });
 
         await this.projectMembersRepository.save(projectMember);
 
-        project.numberOfMembers += 1;
-        await this.projectsRepository.save(project);
+        await this.mailService.sendProjectInvitationEmail(newMember.email, project.name, `${inviter.firstName} ${inviter.surName}`, verificationToken);
     }
 
     async getProjectMembers(projectId: string, userId: string) {
@@ -318,5 +351,9 @@ export class ProjectsService {
         await this.projectMembersRepository.delete({ id: memberToRemove.id });
         project.numberOfMembers -= 1;
         await this.projectsRepository.save(project);
+    }
+
+    async addDocumentToProject(addDocumentToProjectDto: AddDocumentToProjectDto, file: Express.Multer.File) {
+
     }
 }
