@@ -19,7 +19,7 @@ const InviteMembersModal = ({ onClose, projectId }: InviteMembersModalProps) => 
         mutationFn: () => inviteUserToProject(projectId, email),
         onSuccess: () => {
             onClose();
-            toast.success("Utilisateur ajouté avec succès !");
+            toast.success("Un email a été envoyé à l'utilisateur !");
         },
         onError: (err: any) => {
             onClose();
