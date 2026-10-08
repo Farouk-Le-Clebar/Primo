@@ -63,7 +63,7 @@ function buildCategoriesFromConfig(): PoiCategory[] {
     return categories;
 }
 
-// Hauteur fixe de la card
+// Hauteur fix de la card
 const LIST_HEIGHT = "h-[240px]";
 
 // Rayon du rectangle "Ajoutez vos adresses"
