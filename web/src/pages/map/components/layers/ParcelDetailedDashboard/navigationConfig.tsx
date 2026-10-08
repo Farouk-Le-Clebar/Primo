@@ -16,4 +16,11 @@ export const NAVIGATION = [
       { id: "dvf", label: "DVF", icon: Scale }
     ] 
   },
+  {
+    id: "environnement", label: "Environnement", type: "dropdown",
+    items: [
+      { id: "risques", label: "Risques", icon: Zap },
+      { id: "pois", label: "Points d'interêt", icon: Home },
+    ]
+  }
  ];
