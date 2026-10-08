@@ -13,8 +13,6 @@ export class AutorisationsService {
     const sections = [...new Set([section, section.replace(/^0/, '')])];
     const numeros = [...new Set(Array.from({ length: 4 }, (_, i) => numero.padStart(i + 1, '0')))];
 
-    // La table importée reste hors synchronisation TypeORM. Les trois références
-    // déclarées sont recherchées ; le préfixe cadastral est absent de la source.
     return this.dataSource.query(
       `SELECT id, categorie_source, type_autorisation, numero_autorisation,
               etat_autorisation, date_reelle_autorisation,
