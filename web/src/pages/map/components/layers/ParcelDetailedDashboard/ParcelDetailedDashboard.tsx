@@ -8,6 +8,7 @@ import BuildingsWidget from "./widgets/buildings/BuildingsWidget";
 import DpeWidget from "./widgets/dpe/DpeWidget";
 import DvfWidget from "./widgets/dvf/DvfWidget";
 import GeorisquesWidget from "./widgets/georisques/GeorisquesWidget";
+import AutorisationsWidget from "./widgets/autorisations/AutorisationsWidget";
 
 // COMPONENTS
 import ParcelDetailedNavbar from "./ParcelDetailedNavbar";
@@ -58,6 +59,8 @@ export default function ParcelDetailedDashboard({
                       synthese: "Vue d’ensemble",
                       batiments: "Bâtiments",
                       dpe: "Performance énergétique",
+                      georisques: "Risques & environnement",
+                      autorisations: "Autorisations d’urbanisme",
                       plu: "Urbanisme & réglementation",
                       dvf: "Transactions immobilières",
                     }[activeTab]
@@ -90,6 +93,9 @@ export default function ParcelDetailedDashboard({
           )}
           {activeTab === "georisques" && (
             <GeorisquesWidget selectedParcelle={selectedParcelle} />
+          )}
+          {activeTab === "autorisations" && (
+            <AutorisationsWidget feature={selectedParcelle?.feature} />
           )}
         </div>
       </div>
