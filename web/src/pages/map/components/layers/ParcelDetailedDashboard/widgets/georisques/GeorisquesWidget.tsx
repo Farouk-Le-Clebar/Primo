@@ -1,44 +1,62 @@
-import { useQuery } from "@tanstack/react-query";
 import ParcelAnalysisLayout from "../../ParcelAnalysisLayout";
+import GeorisquesSummary from "./GeorisquesSummary";
+import GeorisquesRisks from "./GeorisquesRisks";
+import GeorisquesCatnat from "./GeorisquesCatnat";
+import { prepareGeorisques } from "./data";
+import { useQuery } from "@tanstack/react-query";
 
-// COMPOENENTS
-import { getDpeBan } from "../../../../../../../requests/dpe/information";
+// COMPONENTS
 import LoadingPrimoLogo from "../../../../../../../components/animations/LoadingPrimoLogo";
+import { getGeorisquesByInsee } from "../../../../../../../requests/georisques/information";
 
 export default function GeorisquesWidget({
   selectedParcelle,
 }: {
-  selectedParcelle: any;
+  selectedParcelle: {
+    id?: string;
+    feature?: { properties?: { commune?: string } | null };
+  };
 }) {
-  const addokFeatures = selectedParcelle?.addokData?.features;
-  const identifiantBan =
-    addokFeatures?.length > 0 ? addokFeatures[0].properties.id : null;
+  const insee = String(selectedParcelle?.feature?.properties?.commune || "");
+  const validInsee = /^[0-9AB]{5}$/.test(insee);
+  const departement = insee
+    ? insee.slice(0, insee.startsWith("97") ? 3 : 2)
+    : String(selectedParcelle?.id).split("_")[1]?.split(".")[0] || "";
 
-  const { data, isLoading, isError, refetch } = useQuery({
-    queryKey: ["dpe-ban", identifiantBan],
-    queryFn: () => getDpeBan(String(identifiantBan)),
-    enabled: !!identifiantBan,
+  const {
+    data,
+    isLoading: isPending,
+    isError,
+    refetch,
+  } = useQuery({
+    queryKey: ["georisques-summary", insee, departement],
+    queryFn: () => getGeorisquesByInsee(insee, departement),
+    enabled: validInsee && !!departement,
     staleTime: 300000,
     retry: false,
   });
 
-  const dpeList: any[] = Array.isArray(data) ? data : (data?.historique ?? []);
-  const isEmpty = !dpeList || dpeList.length === 0;
+  const properties = data?.features?.[0]?.properties;
+  const prepared = properties ? prepareGeorisques(properties) : null;
 
   return (
     <div className="font-inter w-full">
-      {isLoading ? (
-        <div className="flex items-center gap-2 mb-4 bg-white dark:bg-[#171717] p-6 rounded-xl border border-gray-100 shadow-sm">
-          <LoadingPrimoLogo className="w-6 h-6 text-emerald-500" />
-          <span className="text-[13px] font-medium text-[#878D96]">
-            Analyse énergétique en cours…
+      {isPending && (
+        <div className="flex items-center gap-2 mb-4">
+          <LoadingPrimoLogo className="w-6 h-6 text-black-500" />
+          <span className="text-[11px] font-medium text-[#878D96] dark:text-gray-400">
+            Récupération des données Géorisques...
           </span>
         </div>
-      ) : isError || isEmpty ? (
-        <div className="py-8 text-sm text-[#878D96] text-center bg-gray-50 dark:bg-[#171717] rounded-xl border border-dashed border-gray-200 dark:border-white/10">
-          {isError
-            ? "Le service est momentanément indisponible."
-            : "Aucun diagnostic disponible pour cette adresse."}
+      )}
+
+      {!isPending && (!prepared || isError || !validInsee) && (
+        <div className="py-8 text-sm text-[#878D96] dark:text-gray-400 text-center bg-gray-50 dark:bg-[#171717] rounded-xl border border-dashed border-gray-200 dark:border-[#232323]">
+          {!validInsee
+            ? "Le code commune de cette parcelle est indisponible."
+            : isError
+              ? "Les données Géorisques sont momentanément indisponibles."
+              : "Aucune donnée Géorisques disponible pour cette commune."}
           {isError && (
             <button
               onClick={() => void refetch()}
@@ -48,14 +66,13 @@ export default function GeorisquesWidget({
             </button>
           )}
         </div>
-      ) : (
-        // <ParcelAnalysisLayout summary={<DpeSummaryCard dpeList={dpeList} />}>
-        //   <DpeDistributionCard dpeList={dpeList} />
-        //   <DpeList dpeList={dpeList} />
-        // </ParcelAnalysisLayout>
-        <span className="text-sm text-[#878D96] text-center bg-gray-50 dark:bg-[#171717] rounded-xl border border-dashed border-gray-200 dark:border-white/10 py-8 block w-full">
-          Analyse énergétique en cours…
-        </span>
+      )}
+
+      {!isPending && !isError && validInsee && prepared && (
+        <ParcelAnalysisLayout summary={<GeorisquesSummary data={prepared} />}>
+          <GeorisquesRisks data={prepared} />
+          <GeorisquesCatnat key={insee} events={prepared.catnat} />
+        </ParcelAnalysisLayout>
       )}
     </div>
   );
