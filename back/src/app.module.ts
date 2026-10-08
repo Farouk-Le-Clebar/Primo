@@ -25,6 +25,7 @@ import { ProjectsModule } from './projects/projects.module';
 import { ProjectMembers } from './database/project-members.entity';
 import { AiModule } from './ai/ai.module';
 import { ProximiteModule } from './proximite/proximite.module';
+import { AutorisationsModule } from './autorisations/autorisations.module';
 
 @Module({
   imports: [
@@ -67,6 +68,7 @@ import { ProximiteModule } from './proximite/proximite.module';
     UserModule,
     DvfModule,
     DpeModule,
+    AutorisationsModule,
     NotificationModule,
     FeedbackModule,
     MailModule,

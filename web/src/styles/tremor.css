@@ -211,7 +211,55 @@ div:has(> input[type="search"]):focus-within {
 }
 
 /* --- OVERRIDE DES BORDURES DE BADGES TREMOR EN DARK THEME --- */
-.dark span[class*="tremor-Badge"] {
+/* Cibler uniquement le contenant, pas les spans internes du texte. */
+.dark .tremor-Badge-root,
+.dark .tremor-BadgeDelta-root {
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2) !important;
 }
 
+/* Statuts Géorisques : fonds opaques et texte contrasté. */
+.tremor-Badge-root.georisques-status {
+  color: #ffffff;
+  font-weight: 300;
+  border: 0;
+  box-shadow: none !important;
+}
+
+.georisques-status > .tremor-Badge-text {
+  font-family: var(--font-inter);
+  font-weight: 300;
+}
+
+.tremor-Badge-root.georisques-status-unknown {
+  background-color: #0a0a0a;
+}
+
+.tremor-Badge-root.georisques-status-identified {
+  background-color: #b45309;
+}
+
+.tremor-Badge-root.georisques-status-low {
+  background-color: #15803d;
+}
+
+/* Même lisibilité pour tous les statuts et types de travaux. */
+.tremor-Badge-root.autorisations-badge {
+  background-color: #0a0a0a;
+  color: #ffffff;
+  font-weight: 300;
+  border: 0;
+  box-shadow: none !important;
+}
+
+.autorisations-badge > .tremor-Badge-text {
+  font-family: var(--font-inter);
+  font-weight: 300;
+}
+
+.tremor-Badge-root.autorisations-badge-cancelled {
+  background-color: #be123c;
+}
+
+.tremor-Badge-root.autorisations-badge-works {
+  background-color: #4338ca;
+}

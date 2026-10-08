@@ -1,4 +1,4 @@
-import { LayoutDashboard, Home, Zap, FileText, Scale } from "lucide-react";
+import { LayoutDashboard, Home, Zap, FileText, Scale, ShieldAlert } from "lucide-react";
 
 export const NAVIGATION = [
   { id: "synthese", label: "Synthèse", type: "single", icon: LayoutDashboard },
@@ -7,6 +7,7 @@ export const NAVIGATION = [
     items: [
       { id: "batiments", label: "Bâtiments", icon: Home },
       { id: "dpe", label: "DPE", icon: Zap },
+      { id: "autorisations", label: "Autorisations d’urbanisme", icon: FileText },
     ] 
   },
   { 
@@ -21,6 +22,7 @@ export const NAVIGATION = [
     items: [
       { id: "risques", label: "Risques", icon: Zap },
       { id: "pois", label: "Points d'interêt", icon: Home },
+      { id: "georisques", label: "Géorisques", icon: ShieldAlert }
     ]
   }
- ];
+];
