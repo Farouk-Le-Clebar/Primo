@@ -4,11 +4,23 @@ import { AppModule } from './app.module';
 import * as dotenv from 'dotenv';
 import morgan from 'morgan';
 import * as express from 'express';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 async function bootstrap() {
   dotenv.config();
 
   const app = await NestFactory.create(AppModule);
+
+  const config = new DocumentBuilder()
+    .setTitle('Primo\'s API')
+    .setDescription("Primo's API documentation")
+    .setVersion('1.0')
+    .addServer('https://api.primo-data.fr')
+    .build();
+
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('swagger', app, document);
+
   app.use(morgan('dev'));
   app.use(express.json());
   app.enableCors({

@@ -1,6 +1,7 @@
 import axios from "axios";
 
 const apiUrl = window?._env_?.API_URL;
+const token = localStorage.getItem("token");
 
 const VALID_DATA_FILTER = "temp_moy_annuelle > -1000 AND temp_moy_annuelle < 1000";
 
@@ -22,7 +23,7 @@ export const getMeteoByGeometry = async (
   });
 
   return axios
-    .get(`${apiUrl}/geoserver/primo/wfs?${params}`)
+    .get(`${apiUrl}/geoserver/primo/wfs?${params}`, { headers: { 'Authorization': `Bearer ${token}` } })
     .then((response) => response.data)
     .catch((error) => {
       console.error("Error fetching buildings data:", error);
@@ -35,9 +36,9 @@ export const getMeteoByBboxFromGeometry = async (
   departement: string
 ) => {
   const typeName = `primo:meteo_dept_${departement}`;
-  
+
   const bbox = getBboxFromGeometry(geometry, 0.45);
-  
+
   const params = new URLSearchParams({
     service: 'WFS',
     version: '2.0.0',
@@ -50,7 +51,7 @@ export const getMeteoByBboxFromGeometry = async (
 
   const url = `${apiUrl}/geoserver/primo/wfs?${params}`;
   return axios
-    .get(url)
+    .get(url, { headers: { 'Authorization': `Bearer ${token}` } })
     .then((response) => {
       return response.data;
     })
@@ -95,7 +96,7 @@ export const getAverageMeteoForParcel = async (
   departement: string
 ): Promise<MeteoData | null> => {
   const data = await getMeteoByBboxFromGeometry(geometry, departement);
-  
+
   if (!data?.features || data.features.length === 0) {
     return null;
   }
@@ -134,17 +135,17 @@ export interface MeteoData {
   temp_moy_annuelle: number;
   temp_max_annuelle: number;
   temp_min_annuelle: number;
-  
+
   temp_moy_ete: number;
   temp_max_ete: number;
   temp_min_ete: number;
   temp_max_abs_ete: number;
-  
+
   temp_moy_hiver: number;
   temp_max_hiver: number;
   temp_min_hiver: number;
   temp_min_abs_hiver: number;
-  
+
   prec_annuelles: number;
   prec_max_mensuel: number;
   prec_min_mensuel: number;
@@ -205,19 +206,19 @@ function convertGeoJSONToWKT(geometry: any): string {
       }).join(', ');
       return `(${rings})`;
     }).join(', ');
-    
+
     return `MULTIPOLYGON(${polygons})`;
   } else if (geometry.type === 'Polygon') {
     const rings = geometry.coordinates.map((ring: number[][]) => {
       const coords = ring.map(([lng, lat]) => `${lng} ${lat}`).join(', ');
       return `(${coords})`;
     }).join(', ');
-    
+
     return `POLYGON(${rings})`;
   } else if (geometry.type === 'Point') {
     const [lng, lat] = geometry.coordinates;
     return `POINT(${lng} ${lat})`;
   }
-  
+
   throw new Error(`Type de géométrie non supporté: ${geometry.type}`);
 }

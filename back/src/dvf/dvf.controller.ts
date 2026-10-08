@@ -1,10 +1,12 @@
-import { Controller, Get, Param, BadRequestException } from '@nestjs/common';
+import { Controller, Get, Param, BadRequestException, UseGuards } from '@nestjs/common';
 import { DvfService } from './dvf.service';
+import { JwtAuthGuard } from 'src/guard/jwt-auth.guard';
 
 @Controller('dvf')
 export class DvfController {
   constructor(private readonly dvfService: DvfService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Get('parcelle/:id')
   async getVentes(@Param('id') idParcelle: string) {
     if (!idParcelle || idParcelle.trim().length !== 14) {

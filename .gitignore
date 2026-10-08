@@ -126,3 +126,5 @@ node_modules
 back/data
 
 env-config.js
+
+coverage

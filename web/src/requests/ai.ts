@@ -1,4 +1,5 @@
 const apiUrl = window?._env_?.API_URL;
+const token = localStorage.getItem("token");
 
 export async function aiStreamRequest(
   prompt: string,
@@ -6,7 +7,10 @@ export async function aiStreamRequest(
 ) {
   const response = await fetch(`${apiUrl}/ai/ask`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`
+    },
     body: JSON.stringify({
       prompt,
     }),
