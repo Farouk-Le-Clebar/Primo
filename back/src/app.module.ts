@@ -24,6 +24,7 @@ import { ProjectPlots } from './database/project-plots.entity';
 import { ProjectsModule } from './projects/projects.module';
 import { ProjectMembers } from './database/project-members.entity';
 import { AiModule } from './ai/ai.module';
+import { AutorisationsModule } from './autorisations/autorisations.module';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import { AiModule } from './ai/ai.module';
     UserModule,
     DvfModule,
     DpeModule,
+    AutorisationsModule,
     NotificationModule,
     FeedbackModule,
     MailModule,
