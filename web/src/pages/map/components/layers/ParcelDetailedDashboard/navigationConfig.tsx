@@ -20,6 +20,8 @@ export const NAVIGATION = [
   {
     id: "environnement", label: "Environnement", type: "dropdown",
     items: [
+      { id: "risques", label: "Risques", icon: Zap },
+      { id: "pois", label: "Points d'interêt", icon: Home },
       { id: "georisques", label: "Géorisques", icon: ShieldAlert }
     ]
   }
