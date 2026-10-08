@@ -7,6 +7,7 @@ export const NAVIGATION = [
     items: [
       { id: "batiments", label: "Bâtiments", icon: Home },
       { id: "dpe", label: "DPE", icon: Zap },
+      { id: "autorisations", label: "Autorisations d’urbanisme", icon: FileText },
     ] 
   },
   { 
