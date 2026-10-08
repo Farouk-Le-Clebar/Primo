@@ -5,19 +5,19 @@ const token = localStorage.getItem("token");
 
 export const getCityByBbox = async (bbox: string) => {
     const params = new URLSearchParams({
-        service: 'WFS',
-        version: '2.0.0',
-        request: 'GetFeature',
-        typeName: 'primo:all_communes',
-        outputFormat: 'application/json',
-        srsName: 'EPSG:4326',
-        bbox: `${bbox},EPSG:4326`
+        service: "WFS",
+        version: "2.0.0",
+        request: "GetFeature",
+        typeName: "primo:all_communes",
+        outputFormat: "application/json",
+        srsName: "EPSG:4326",
+        bbox: `${bbox},EPSG:4326`,
     });
     return axios
         .get(`${apiUrl}/geoserver/primo/wfs?${params}`, {
             headers: {
-                'Authorization': `Bearer ${token}`
-            }
+                Authorization: `Bearer ${token}`,
+            },
         })
         .then((response) => response.data)
         .catch((error) => {
@@ -28,19 +28,19 @@ export const getCityByBbox = async (bbox: string) => {
 
 export const getDepartementByBbox = async (bbox: string) => {
     const params = new URLSearchParams({
-        service: 'WFS',
-        version: '2.0.0',
-        request: 'GetFeature',
-        typeName: 'primo:all_departements',
-        outputFormat: 'application/json',
-        srsName: 'EPSG:4326',
-        bbox: `${bbox},EPSG:4326`
+        service: "WFS",
+        version: "2.0.0",
+        request: "GetFeature",
+        typeName: "primo:all_departements",
+        outputFormat: "application/json",
+        srsName: "EPSG:4326",
+        bbox: `${bbox},EPSG:4326`,
     });
     return axios
         .get(`${apiUrl}/geoserver/primo/wfs?${params}`, {
             headers: {
-                'Authorization': `Bearer ${token}`
-            }
+                Authorization: `Bearer ${token}`,
+            },
         })
         .then((response) => response.data)
         .catch((error) => {
@@ -49,28 +49,34 @@ export const getDepartementByBbox = async (bbox: string) => {
         });
 };
 
-export const getParcellesByBboxAndDepartments = async (bbox: string, departments: string[]) => {
-    const promises = departments.map(dept => {
+export const getParcellesByBboxAndDepartments = async (
+    bbox: string,
+    departments: string[],
+) => {
+    const promises = departments.map((dept) => {
         const layerName = `primo:parcelles_${dept}`;
         const params = new URLSearchParams({
-            service: 'WFS',
-            version: '2.0.0',
-            request: 'GetFeature',
+            service: "WFS",
+            version: "2.0.0",
+            request: "GetFeature",
             typeName: layerName,
-            outputFormat: 'application/json',
-            srsName: 'EPSG:4326',
-            bbox: `${bbox},EPSG:4326`
+            outputFormat: "application/json",
+            srsName: "EPSG:4326",
+            bbox: `${bbox},EPSG:4326`,
         });
 
         return axios
             .get(`${apiUrl}/geoserver/primo/wfs?${params}`, {
                 headers: {
-                    'Authorization': `Bearer ${token}`
-                }
+                    Authorization: `Bearer ${token}`,
+                },
             })
             .then((response) => response.data)
             .catch((error) => {
-                console.warn(`No parcelles found for department ${dept}:`, error);
+                console.warn(
+                    `No parcelles found for department ${dept}:`,
+                    error,
+                );
                 return null;
             });
     });
@@ -78,37 +84,43 @@ export const getParcellesByBboxAndDepartments = async (bbox: string, departments
     const results = await Promise.all(promises);
 
     const allFeatures = results
-        .filter(result => result?.features)
-        .flatMap(result => result.features);
+        .filter((result) => result?.features)
+        .flatMap((result) => result.features);
 
     return {
-        type: 'FeatureCollection',
-        features: allFeatures
+        type: "FeatureCollection",
+        features: allFeatures,
     };
 };
 
-export const getDivisionsByBboxAndDepartments = async (bbox: string, departments: string[]) => {
-    const promises = departments.map(dept => {
+export const getDivisionsByBboxAndDepartments = async (
+    bbox: string,
+    departments: string[],
+) => {
+    const promises = departments.map((dept) => {
         const layerName = `primo:sections_${dept}`;
         const params = new URLSearchParams({
-            service: 'WFS',
-            version: '2.0.0',
-            request: 'GetFeature',
+            service: "WFS",
+            version: "2.0.0",
+            request: "GetFeature",
             typeName: layerName,
-            outputFormat: 'application/json',
-            srsName: 'EPSG:4326',
-            bbox: `${bbox},EPSG:4326`
+            outputFormat: "application/json",
+            srsName: "EPSG:4326",
+            bbox: `${bbox},EPSG:4326`,
         });
 
         return axios
             .get(`${apiUrl}/geoserver/primo/wfs?${params}`, {
                 headers: {
-                    'Authorization': `Bearer ${token}`
-                }
+                    Authorization: `Bearer ${token}`,
+                },
             })
             .then((response) => response.data)
             .catch((error) => {
-                console.warn(`No divisions found for department ${dept}:`, error);
+                console.warn(
+                    `No divisions found for department ${dept}:`,
+                    error,
+                );
                 return null;
             });
     });
@@ -116,12 +128,12 @@ export const getDivisionsByBboxAndDepartments = async (bbox: string, departments
     const results = await Promise.all(promises);
 
     const allFeatures = results
-        .filter(result => result?.features)
-        .flatMap(result => result.features);
+        .filter((result) => result?.features)
+        .flatMap((result) => result.features);
 
     return {
-        type: 'FeatureCollection',
-        features: allFeatures
+        type: "FeatureCollection",
+        features: allFeatures,
     };
 };
 
@@ -134,7 +146,7 @@ export const getPoisByBbox = async (
         service: "WFS",
         version: "2.0.0",
         request: "GetFeature",
-        typeName: "primo:pois_france",
+        typeName: "primo:infrastructures_view",
         outputFormat: "application/json",
         srsName: "EPSG:4326",
         maxFeatures: maxFeatures.toString(),
@@ -152,15 +164,14 @@ export const getPoisByBbox = async (
     params.append("cql_filter", cqlFilter);
 
     return axios
-        .get(`${apiUrl}/geoserver/primo/wfs?${params}`, {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        })
-        .then((response) => response.data)
-        .catch((error) => {
-            console.error("Error fetching POI data:", error);
-            throw error;
-        });
+    .get(`${apiUrl}/geoserver/primo/wfs?${params}`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    })
+    .then((response) => response.data)
+    .catch((error) => {
+        console.error("Error fetching POI data:", error);
+        throw error;
+    });
 };
-
