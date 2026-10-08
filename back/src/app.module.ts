@@ -24,6 +24,7 @@ import { ProjectPlots } from './database/project-plots.entity';
 import { ProjectsModule } from './projects/projects.module';
 import { ProjectMembers } from './database/project-members.entity';
 import { AiModule } from './ai/ai.module';
+import { ProximiteModule } from './proximite/proximite.module';
 
 @Module({
   imports: [
@@ -42,6 +43,25 @@ import { AiModule } from './ai/ai.module';
       entities: [User, SearchHistory, Projects, DvfMutation, DpeEntity, Notification, VerifiedUser, ResetPassword, UserStatistics, Feedback, ProjectPlots, ProjectMembers],
       synchronize: true,
     }),
+    TypeOrmModule.forRoot({
+      name: 'bdtopo',
+      type: 'postgres',
+        
+      host: process.env.POSTGRES_HOST,
+        
+      port: process.env.POSTGRES_PORT
+        ? parseInt(process.env.POSTGRES_PORT, 10)
+        : 5432,
+        
+      username: process.env.POSTGRES_USER,
+      password: process.env.POSTGRES_PASSWORD,
+        
+      database: process.env.BDTOPO_DATABASE ?? 'bdtopo',
+        
+      entities: [],
+      synchronize: false,
+
+    }),
     TypeOrmModule.forFeature([User, SearchHistory, Projects, DvfMutation, DpeEntity, Notification, VerifiedUser, ResetPassword, UserStatistics, Feedback, ProjectPlots, ProjectMembers]),
     AuthModule,
     UserModule,
@@ -52,6 +72,7 @@ import { AiModule } from './ai/ai.module';
     MailModule,
     ProjectsModule,
     AiModule,
+    ProximiteModule,
   ],
 })
 export class AppModule implements NestModule {
