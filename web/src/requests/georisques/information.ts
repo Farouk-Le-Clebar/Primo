@@ -1,16 +1,28 @@
 import axios from "axios";
 
-const apiUrl = window?._env_?.API_URL || "http://localhost:3000";
+const apiUrl = window?._env_?.API_URL;
 
-export const getGeorisques = async (identifiantBan: string) => {
-  try {
-    const response = await axios.get(`${apiUrl}/dpe/ban/${identifiantBan}`);
-    return response.data;
-  } catch (error: any) {
-    if (error.response && error.response.status === 404) {
-      return null; 
-    }
-    console.error(` [DPE] Erreur serveur pour le BAN ${identifiantBan}`, error);
-    throw error;
-  }
+// On passe l'INSEE au lieu de la géométrie complète
+export const getGeorisquesByInsee = async (
+  insee: string,
+  departement: string
+) => {
+  const typeNames = `primo:georisques_${departement}`;
+
+  const params = new URLSearchParams({
+    service: 'WFS',
+    version: '2.0.0',
+    request: 'GetFeature',
+    typeName: typeNames,
+    outputFormat: 'application/json',
+    CQL_FILTER: `code_insee='${insee}'` 
+  });
+
+  return axios
+    .get(`${apiUrl}/geoserver/primo/wfs?${params}`)
+    .then((response) => response.data)
+    .catch((error) => {
+      console.error("Erreur WFS Géorisques:", error);
+      throw error;
+    });
 };
