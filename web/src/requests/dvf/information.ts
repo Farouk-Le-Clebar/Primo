@@ -1,7 +1,6 @@
 import axios from "axios";
 
 const apiUrl = window?._env_?.API_URL || "http://localhost:3000";
-const token = localStorage.getItem("token");
 
 export const getDvfParcelle = async (idParcelle: string) => {
   try {
