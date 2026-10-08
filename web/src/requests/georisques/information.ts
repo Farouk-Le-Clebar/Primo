@@ -2,7 +2,6 @@ import axios from "axios";
 
 const apiUrl = window?._env_?.API_URL;
 
-// On passe l'INSEE au lieu de la géométrie complète
 export const getGeorisquesByInsee = async (
   insee: string,
   departement: string
