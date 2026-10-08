@@ -10,6 +10,7 @@ import DvfWidget from "./widgets/dvf/DvfWidget";
 
 // COMPONENTS
 import ParcelDetailedNavbar from "./ParcelDetailedNavbar";
+import PoisCard from "./widgets/pois/PoisCard";
 
 type ParcelDetailedDashboardProps = {
   selectedParcelle: any;
@@ -86,6 +87,9 @@ export default function ParcelDetailedDashboard({
           )}
           {activeTab === "dpe" && (
             <DpeWidget selectedParcelle={selectedParcelle} />
+          )}
+          {activeTab === "pois" && (
+            <PoisCard feature={selectedParcelle?.feature} />
           )}
         </div>
       </div>
