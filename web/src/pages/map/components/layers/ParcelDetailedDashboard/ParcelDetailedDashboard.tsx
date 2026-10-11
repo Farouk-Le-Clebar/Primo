@@ -67,6 +67,7 @@ export default function ParcelDetailedDashboard({
                                                     "Autorisations d’urbanisme",
                                                 plu: "Urbanisme & réglementation",
                                                 dvf: "Transactions immobilières",
+                                                pois: "Environnement & Points d’intérêts",
                                             } as Record<string, string>
                                         )[activeTab]
                                     }
