@@ -117,7 +117,7 @@ function InfraSelector({
 
     return (
         <aside className="w-full shrink-0 self-start rounded-xl bg-white p-5 md:sticky md:top-0 md:max-h-[calc(100vh-2rem)] md:w-80 md:overflow-y-auto lg:w-96">
-            <div className="mb-8 flex items-center justify-between text-xs">
+            <div className="mb-5 flex items-center justify-between text-xs">
                 
                 <button
                     type="button"
