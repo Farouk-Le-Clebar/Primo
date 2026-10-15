@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, In } from 'typeorm';
 import { Projects } from 'src/database/project.entity';
@@ -242,13 +242,23 @@ export class ProjectsService {
 
         const verificationToken = randomBytes(32).toString('hex');
 
-        const projectInvite = this.projectInviteRepository.create({
+        const isExistingInvite = await this.projectInviteRepository.findOneBy({
             userId: newMember.id,
             projectName: project.name,
-            verificationToken: verificationToken,
         });
 
-        await this.projectInviteRepository.save(projectInvite);
+        if (isExistingInvite) {
+            isExistingInvite.verificationToken = verificationToken;
+            await this.projectInviteRepository.save(isExistingInvite);
+        } else {
+            const projectInvite = this.projectInviteRepository.create({
+                userId: newMember.id,
+                projectName: project.name,
+                verificationToken: verificationToken,
+            });
+            await this.projectInviteRepository.save(projectInvite);
+        }
+
 
         const projectMember = this.projectMembersRepository.create({
             userId: newMember.id,
