@@ -19,6 +19,9 @@ export default function ParcelInfoPanel({ selectedParcelle, onOpenDashboard }: P
   const [addPlotModalOpen, setAddPlotModalOpen] = useState(false);
   const feature = selectedParcelle?.feature;
   const properties = feature?.properties;
+  console.log("Selected Parcelle:", selectedParcelle);
+  console.log("Selected Feature:", feature);
+  console.log("Selected Properties:", properties);
   const geometry = feature?.geometry;
   const parcelId = properties?.id || "Parcelle inconnue";
   const address = selectedParcelle?.addokData?.features?.[0]?.properties?.label || "Adresse non renseignée";

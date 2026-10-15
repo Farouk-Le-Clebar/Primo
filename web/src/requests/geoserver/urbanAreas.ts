@@ -133,7 +133,7 @@ async function getLocalData(geometry: any, departement: string) {
 
     return { features: [] };
   } catch (err) {
-    console.error("❌ [GPU] Le GeoServer Local a aussi échoué.", err);
+    console.error("[GPU] Le GeoServer Local a aussi échoué.", err);
     return { features: [] };
   }
 }

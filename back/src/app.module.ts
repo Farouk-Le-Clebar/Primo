@@ -27,6 +27,7 @@ import { AiModule } from './ai/ai.module';
 import { ProjectDocuments } from './database/project-documents.entity';
 import { JwtModule } from '@nestjs/jwt/dist/jwt.module';
 import { ProjectInvite } from './database/project-invite.entity';
+import { AutorisationsModule } from './autorisations/autorisations.module';
 
 @Module({
   imports: [
@@ -59,6 +60,7 @@ import { ProjectInvite } from './database/project-invite.entity';
     UserModule,
     DvfModule,
     DpeModule,
+    AutorisationsModule,
     NotificationModule,
     FeedbackModule,
     MailModule,
