@@ -1,0 +1,86 @@
+---
+// Sticky landing header: brand, section links, theme toggle and mobile menu.
+import { ArrowUpRight, Menu, Moon, Sun } from 'lucide-react';
+import Logo from '../../assets/logos/logoPrimoBlack.svg?url';
+import { EXTERNAL_LINKS, NAV_ITEMS } from '../../config/constants';
+---
+
+<header class="site-header">
+  <div class="shell header-inner">
+    <a href="/" aria-label="Primo, accueil" class="brand">
+      <img src={Logo} alt="" width="30" height="30" />
+      Primo
+    </a>
+    <nav class="desktop-nav" aria-label="Navigation principale">
+      {NAV_ITEMS.map((item) => (
+        <a href={`/#${item.id}`}>{item.label}</a>
+      ))}
+    </nav>
+    <div class="flex items-center gap-3">
+      <button
+        type="button"
+        class="icon-button"
+        id="theme-toggle"
+        aria-label="Activer le thème sombre"
+        aria-pressed="false"
+      >
+        <Sun className="sun" size={19} />
+        <Moon className="moon" size={19} />
+      </button>
+      <a class="primary login" href={EXTERNAL_LINKS.APP_URL}>
+        Se connecter <ArrowUpRight size={16} />
+      </a>
+      <button
+        type="button"
+        class="icon-button menu-button"
+        id="menu-toggle"
+        aria-controls="mobile-nav"
+        aria-expanded="false"
+        aria-label="Ouvrir le menu"
+      >
+        <Menu size={23} />
+      </button>
+    </div>
+  </div>
+  <nav id="mobile-nav" hidden aria-label="Navigation mobile">
+    {NAV_ITEMS.map((item) => (
+      <a href={`/#${item.id}`}>{item.label}</a>
+    ))}
+    <a href={EXTERNAL_LINKS.APP_URL}>Se connecter</a>
+  </nav>
+</header>
+
+<script>
+  const root = document.documentElement;
+  const toggle = document.querySelector<HTMLButtonElement>('#theme-toggle');
+  const syncTheme = () => {
+    const dark = root.dataset.theme === 'dark';
+    toggle?.setAttribute('aria-pressed', String(dark));
+    toggle?.setAttribute('aria-label', dark ? 'Activer le thème clair' : 'Activer le thème sombre');
+  };
+  syncTheme();
+  toggle?.addEventListener('click', () => {
+    root.dataset.theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
+    try {
+      localStorage.setItem('primo-theme', root.dataset.theme);
+    } catch {}
+    syncTheme();
+  });
+
+  const menu = document.querySelector<HTMLButtonElement>('#menu-toggle');
+  const nav = document.querySelector<HTMLElement>('#mobile-nav');
+  const setMenu = (open: boolean) => {
+    if (!menu || !nav) return;
+    nav.hidden = !open;
+    menu.setAttribute('aria-expanded', String(open));
+    menu.setAttribute('aria-label', open ? 'Fermer le menu' : 'Ouvrir le menu');
+  };
+  menu?.addEventListener('click', () => setMenu(!!nav?.hidden));
+  nav?.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setMenu(false)));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && nav && !nav.hidden) {
+      setMenu(false);
+      menu?.focus();
+    }
+  });
+</script>

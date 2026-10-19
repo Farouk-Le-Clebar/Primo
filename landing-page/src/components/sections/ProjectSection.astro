@@ -1,0 +1,186 @@
+---
+// Collaboration: a live-looking project dashboard (parcel added, collaborator invited).
+import { Share2, Users, CircleCheck, MapPin, Mail, CalendarDays, Layers, ArrowUpRight } from 'lucide-react';
+import { EXTERNAL_LINKS } from '../../config/constants';
+const points = [
+  {
+    icon: Share2,
+    title: 'Partagez un bien',
+    text: 'Ajoutez une parcelle à un projet et toute l’équipe voit la même fiche.',
+  },
+  {
+    icon: Users,
+    title: 'Échangez avec votre équipe',
+    text: 'Invitez vos collaborateurs ou vos clients par e-mail pour travailler sur la même sélection.',
+  },
+  {
+    icon: CircleCheck,
+    title: 'Suivez chaque étape',
+    text: 'Le tableau de bord du projet indique le nombre de parcelles, les membres actifs et les derniers ajouts.',
+  },
+];
+const parcels = [
+  { id: 'AB 0098', addr: '3 Allée des Tilleuls', zone: 'UB1', area: '820 m²', by: 'Antoine' },
+  { id: 'AC 0311', addr: '27 Rue du Port', zone: 'UA2', area: '410 m²', by: 'Léa' },
+  { id: 'AB 0021', addr: '8 Impasse Colbert', zone: 'UB2', area: '1 240 m²', by: 'Tony' },
+];
+const team = [
+  { initials: 'TF', name: 'Tony Fournales', role: 'Administrateur' },
+  { initials: 'AD', name: 'Antoine Durand', role: 'Membre' },
+  { initials: 'LP', name: 'Léa Petit', role: 'Membre' },
+];
+---
+
+<section id="projets" class="section shell proj-sec">
+  <div class="proj-grid">
+    <div class="proj-copy reveal">
+      <p class="eyebrow">PROJETS & COLLABORATION</p>
+      <h2>
+        De la recherche
+        <br />à la décision.
+      </h2>
+      <p class="section-copy">Primo transforme une recherche individuelle en travail d’équipe.</p>
+      <ul class="proj-points">
+        {points.map((p) => (
+          <li>
+            <span class="feature-icon">
+              <p.icon size={19} />
+            </span>
+            <div>
+              <h3>{p.title}</h3>
+              <p>{p.text}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+      <a class="primary primary-large proj-cta" href={EXTERNAL_LINKS.APP_URL}>
+        Découvrir la bêta <ArrowUpRight size={20} />
+      </a>
+    </div>
+    <div class="proj-mock reveal" data-proj aria-hidden="true">
+      <div class="proj-top">
+        <div>
+          <small>Projet</small>
+          <b>Prospection · Toulouse Est</b>
+        </div>
+        <span class="proj-avatars">
+          <i>TF</i>
+          <i>AD</i>
+          <i>LP</i>
+          <i class="proj-new-av">SR</i>
+        </span>
+      </div>
+      <div class="proj-tabs">
+        <span class="on">Dashboard</span>
+        <span>Parcelles</span>
+        <span>Membres</span>
+        <span>Documents</span>
+      </div>
+      <div class="proj-kpis">
+        <div>
+          <Layers size={14} />
+          <small>Parcelles sourcées</small>
+          <b class="proj-swap">
+            <span>3</span>
+            <span>4</span>
+          </b>
+        </div>
+        <div>
+          <Users size={14} />
+          <small>Collaborateurs actifs</small>
+          <b class="proj-swap proj-swap-team">
+            <span>3</span>
+            <span>4</span>
+          </b>
+        </div>
+        <div>
+          <CalendarDays size={14} />
+          <small>Création</small>
+          <b>12 sept.</b>
+        </div>
+      </div>
+      <div class="proj-cols">
+        <div class="proj-box">
+          <small class="proj-box-title">Dernières parcelles</small>
+          <div class="proj-list">
+            <div class="proj-row proj-new">
+              <span class="proj-pin">
+                <MapPin size={12} />
+              </span>
+              <span>
+                <b>AB 0142</b>
+                <small>14 Rue des Lilas</small>
+              </span>
+              <em class="v">UB2</em>
+              <em>640 m²</em>
+              <small class="proj-by">Tony · à l’instant</small>
+            </div>
+            {parcels.map((p) => (
+              <div class="proj-row">
+                <span class="proj-pin">
+                  <MapPin size={12} />
+                </span>
+                <span>
+                  <b>{p.id}</b>
+                  <small>{p.addr}</small>
+                </span>
+                <em class="v">{p.zone}</em>
+                <em>{p.area}</em>
+                <small class="proj-by">{p.by}</small>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div class="proj-box">
+          <small class="proj-box-title">Équipe</small>
+          <div class="proj-list">
+            <div class="proj-member proj-invite">
+              <i>
+                <Mail size={11} />
+              </i>
+              <span>s.roux@agence.fr</span>
+              <em class="proj-status">
+                <span>En attente</span>
+                <span>Membre</span>
+              </em>
+            </div>
+            {team.map((m) => (
+              <div class="proj-member">
+                <i>{m.initials}</i>
+                <span>{m.name}</span>
+                <em class:list={[{ admin: m.role === 'Administrateur' }]}>{m.role}</em>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+      <div class="proj-toast">Un email a été envoyé à l’utilisateur !</div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { prefersReducedMotion } from '../../lib/motion';
+
+  const mock = document.querySelector<HTMLElement>('[data-proj]');
+  if (mock && !prefersReducedMotion()) {
+    let timers: number[] = [];
+    const at = (ms: number, fn: () => void) => timers.push(window.setTimeout(fn, ms));
+    const steps = ['s-parcel', 's-invite', 's-joined'];
+    const loop = () => {
+      mock.classList.remove(...steps);
+      at(1200, () => mock.classList.add('s-parcel'));
+      at(3400, () => mock.classList.add('s-invite'));
+      at(6000, () => mock.classList.add('s-joined'));
+      at(10000, loop);
+    };
+    new IntersectionObserver(
+      ([e]) => {
+        timers.forEach(clearTimeout);
+        timers = [];
+        if (e.isIntersecting) loop();
+      },
+      { threshold: 0.35 },
+    ).observe(mock);
+  } else mock?.classList.add('s-parcel', 's-invite', 's-joined');
+</script>

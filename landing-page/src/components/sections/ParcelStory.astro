@@ -1,0 +1,436 @@
+---
+// Scroll-driven story: a 2D parcel → the house rises in 3D → data sources emerge from it
+// one by one → everything settles into a parcel dashboard. Pure CSS 3D, driven by scroll progress.
+import { Check } from 'lucide-react';
+import { DATASETS, DATASET_ICONS, DPE_CLASSES, DPE_COLORS, PARCEL, type DatasetKey } from '../../data/parcel';
+
+// scroll position (0–1) at which each source leaves the parcel
+const appear: Record<DatasetKey, number> = {
+  cadastre: 0.07,
+  bati: 0.24,
+  dpe: 0.29,
+  plu: 0.36,
+  dvf: 0.43,
+  risques: 0.5,
+  climat: 0.57,
+  quartier: 0.64,
+};
+const captions = [
+  { title: 'La parcelle', text: 'Ses limites, sa surface et sa référence cadastrale.' },
+  { title: 'Le bâtiment', text: 'L’année de construction, la surface et le diagnostic énergétique.' },
+  {
+    title: 'Le quartier',
+    text: 'Les règles d’urbanisme, les prix de vente, les risques, le climat et les commerces proches.',
+  },
+  { title: 'La fiche complète', text: 'Les huit sources réunies dans un tableau de bord.' },
+];
+const spark = 'M0 34 L18 30 L36 32 L54 24 L72 26 L90 18 L108 20 L126 12 L144 14 L162 6 L180 4';
+// 3D tree crown = stacked discs following a sphere profile (round from above, volumetric when tilted)
+const crown = Array.from({ length: 9 }, (_, k) => {
+  const t = -1 + (2 * k) / 8;
+  return `--z:${(1 + t).toFixed(3)};--r:${Math.sqrt(1 - 0.82 * t * t).toFixed(3)};--l:${32 + k * 3.2}%`;
+});
+// neighbouring parcels drawn faintly around the main one (plot plane is 360 × 260)
+const neighbours = [
+  'M-150 -6 L20 18 L8 240 L-160 236Z',
+  'M340 6 L520 0 L530 250 L352 248Z',
+  'M20 18 L-10 -150 L330 -160 L340 6Z',
+  'M8 240 L352 248 L360 420 L0 410Z',
+  'M-160 236 L8 240 L0 410 L-170 400Z',
+  'M352 248 L530 250 L540 420 L360 420Z',
+];
+---
+
+<section id="fonctionnalites" class="story" data-story aria-label="Une parcelle, toutes ses données">
+  <div class="story-sticky" data-story-sticky>
+    <div class="story-copy shell">
+      <div class="story-captions">
+        {captions.map((c, i) => (
+          <div class:list={['story-caption', { on: i === 0 }]} data-cap={i}>
+            <h2>{c.title}</h2>
+            <p>{c.text}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <div class="story-dash" data-story-dash aria-hidden="true">
+      <span>
+        <i></i>
+        <i></i>
+        <i></i>
+      </span>
+      <b>Analyse parcellaire</b>
+      <small>{PARCEL.address}</small>
+    </div>
+    <svg class="story-lines" data-story-lines aria-hidden="true">
+      {DATASETS.map(() => (
+        <g>
+          <line />
+          <circle r="3.5" />
+        </g>
+      ))}
+    </svg>
+
+    <div class="story-scene" data-story-scene aria-hidden="true">
+      <div class="st-cam">
+        <div class="st-world" data-st-world>
+          <svg class="st-plot" viewBox="0 0 360 260" width="360" height="260" overflow="visible">
+            {neighbours.map((d) => (
+              <path class="st-nb" d={d} />
+            ))}
+            <path class="st-parcel" d="M20 18 L340 6 L352 248 L8 240Z" />
+            <path class="st-path" d="M188 240 L188 178" />
+            <rect class="st-pool" x="274" y="160" width="58" height="38" rx="6" />
+            <circle class="st-bush" cx="250" cy="222" r="11" />
+            <path class="st-outline" pathLength="1" d="M20 18 L340 6 L352 248 L8 240Z" />
+          </svg>
+          <div class="st-scan" aria-hidden="true">
+            <i></i>
+            <i></i>
+          </div>
+          <div class="st-house">
+            <i class="st-shadow"></i>
+            <i class="st-foot"></i>
+            <div class="w-back"></div>
+            <div class="w-left">
+              <i class="st-gwin"></i>
+              <i class="st-oeil"></i>
+            </div>
+            <div class="w-right"></div>
+            <div class="w-front">
+              <i class="st-door">
+                <i></i>
+              </i>
+              <i class="st-win a">
+                <i></i>
+              </i>
+              <i class="st-win b">
+                <i></i>
+              </i>
+              <i class="st-step"></i>
+            </div>
+            <div class="r-back"></div>
+            <div class="r-front"></div>
+            <div class="st-chimney">
+              <i></i>
+              <i></i>
+              <i></i>
+            </div>
+          </div>
+          <div class="st-tree3d" style="--tx:44px;--ty:196px;--th:1">
+            <i class="trunk"></i>
+            <i class="trunk b"></i>
+            {crown.map((c) => (
+              <i class="crown" style={c}></i>
+            ))}
+          </div>
+          <div class="st-tree3d" style="--tx:300px;--ty:56px;--th:1.25">
+            <i class="trunk"></i>
+            <i class="trunk b"></i>
+            {crown.map((c) => (
+              <i class="crown" style={c}></i>
+            ))}
+          </div>
+          <div class="st-tree3d" style="--tx:74px;--ty:58px;--th:.75">
+            <i class="trunk"></i>
+            <i class="trunk b"></i>
+            {crown.map((c) => (
+              <i class="crown" style={c}></i>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="story-cards">
+      {DATASETS.map((d) => {
+        const Icon = DATASET_ICONS[d.key];
+        return (
+          <article class="sc" data-key={d.key} data-at={appear[d.key]}>
+            <header>
+              <span class="sc-icon">
+                <Icon size={16} />
+              </span>
+              <small>{d.source}</small>
+              <span class="sc-state">
+                <i class="sc-spin"></i>
+                <Check size={13} className="sc-ok" />
+              </span>
+            </header>
+            <b class="sc-value">{d.value}</b>
+            <span class="sc-detail">{d.detail}</span>
+            <i class="sc-skel" aria-hidden="true">
+              <i></i>
+              <i></i>
+            </i>
+            <div class="sc-extra">
+              {d.key === 'dvf' && (
+                <svg viewBox="0 -2 180 40" preserveAspectRatio="none" class="sc-spark">
+                  <path d={`${spark} L180 40 L0 40Z`} class="area" />
+                  <path d={spark} class="line" />
+                </svg>
+              )}
+              {d.key === 'dpe' && (
+                <div class="sc-dpe">
+                  {DPE_CLASSES.map((l, i) => (
+                    <span class:list={[{ on: l === 'D' }]} style={`background:${DPE_COLORS[i]}`}>
+                      {l}
+                    </span>
+                  ))}
+                </div>
+              )}
+              <ul>
+                {d.extra?.map((x) => (
+                  <li>{x}</li>
+                ))}
+              </ul>
+            </div>
+          </article>
+        );
+      })}
+    </div>
+  </div>
+</section>
+
+<script>
+  import { clamp, easeInOutCubic, lerp, prefersReducedMotion } from '../../lib/motion';
+
+  type Point = { x: number; y: number };
+  type Geometry = {
+    W: number;
+    H: number;
+    mobile: boolean;
+    C: Point;
+    cardW: number;
+    cardH: number;
+    sceneScale: number;
+    orbit: Point[];
+    slots: (Point & { w: number; h: number })[];
+    center: Point & { s: number };
+    frame: { x: number; y: number; w: number; h: number };
+  };
+  const MOBILE = 900; // px
+
+  const story = document.querySelector<HTMLElement>('[data-story]');
+  if (story) {
+    const sticky = story.querySelector<HTMLElement>('[data-story-sticky]')!;
+    const world = story.querySelector<HTMLElement>('[data-st-world]')!;
+    const scene = story.querySelector<HTMLElement>('[data-story-scene]')!;
+    const dashFrame = story.querySelector<HTMLElement>('[data-story-dash]')!;
+    const copy = story.querySelector<HTMLElement>('.story-copy')!;
+    const caps = [...story.querySelectorAll<HTMLElement>('.story-caption')];
+    const cards = [...story.querySelectorAll<HTMLElement>('.sc')];
+    const lines = [...story.querySelectorAll<SVGGElement>('[data-story-lines] g')];
+    const svg = story.querySelector<SVGSVGElement>('[data-story-lines]')!;
+    const reduce = prefersReducedMotion();
+    // eased progress of p within [a, b]
+    const seg = (p: number, a: number, b: number) => easeInOutCubic(clamp((p - a) / (b - a)));
+    // slot order in the final dashboard: 4 × 3 grid, parcel in the middle 2 × 2
+    const slotOrder = [
+      [0, 0],
+      [3, 0],
+      [0, 1],
+      [3, 1],
+      [0, 2],
+      [1, 2],
+      [2, 2],
+      [3, 2],
+    ];
+    let G: Geometry | null = null,
+      locked = false;
+
+    const measure = () => {
+      const W = sticky.clientWidth,
+        H = sticky.clientHeight;
+      const top = copy.offsetTop + copy.offsetHeight + 8;
+      const mobile = W < MOBILE;
+      const shellW = Math.min(W - (mobile ? 32 : 80), 1160),
+        left = (W - shellW) / 2;
+      const areaH = H - top - (mobile ? 14 : 24);
+      const cardW = mobile ? (shellW - 8) / 2 : 236,
+        cardH = mobile ? 74 : 100;
+      const sceneScale = mobile ? Math.min(0.62, (areaH * 0.42) / 300) : Math.min(1, areaH / 520, W / 1100);
+      const C = { x: W / 2, y: mobile ? top + areaH * 0.22 : top + areaH / 2 };
+      const orbit = cards.map((_, i) => {
+        if (mobile) {
+          const col = i % 2,
+            row = Math.floor(i / 2),
+            y0 = top + areaH * 0.46;
+          return { x: left + col * (cardW + 8) + cardW / 2, y: y0 + row * (cardH + 8) + cardH / 2 };
+        }
+        // leave on the side where the card will sit in the final dashboard, so paths never cross
+        const side = slotOrder[i][0] < 2 ? -1 : 1,
+          row = slotOrder.slice(0, i).filter(([c]) => (c < 2 ? -1 : 1) === side).length;
+        const gap = 250 * sceneScale + 24 + cardW / 2,
+          rowH = Math.min(116, areaH / 4);
+        return { x: C.x + side * gap, y: C.y + (row - 1.5) * rowH };
+      });
+      // dashboard grid
+      const gx = left,
+        gy = top + (mobile ? 0 : 56),
+        gw = shellW,
+        gh = areaH - (mobile ? 0 : 56),
+        gap = 12;
+      const cw = (gw - gap * 3) / 4,
+        ch = (gh - gap * 2) / 3;
+      const slots = mobile
+        ? orbit.map((o) => ({ ...o, w: cardW, h: cardH }))
+        : slotOrder.map(([c, r]) => ({
+            x: gx + c * (cw + gap) + cw / 2,
+            y: gy + r * (ch + gap) + ch / 2,
+            w: cw,
+            h: ch,
+          }));
+      const center = mobile
+        ? { x: C.x, y: C.y, s: sceneScale }
+        : { x: gx + gw / 2, y: gy + ch + gap / 2, s: Math.min((cw * 2 + gap) / 520, (ch * 2 + gap) / 380) };
+      G = {
+        W,
+        H,
+        mobile,
+        C,
+        orbit,
+        slots,
+        center,
+        cardW,
+        cardH,
+        sceneScale,
+        frame: { x: gx - 14, y: gy - 46, w: gw + 28, h: gh + 60 },
+      };
+      svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+      Object.assign(dashFrame.style, {
+        left: `${G.frame.x}px`,
+        top: `${G.frame.y}px`,
+        width: `${G.frame.w}px`,
+        height: `${G.frame.h}px`,
+      });
+    };
+
+    const render = () => {
+      if (!G) return;
+      const g = G;
+      const rect = story.getBoundingClientRect();
+      const p = reduce || locked ? 1 : clamp(-rect.top / (rect.height - sticky.clientHeight));
+      if (!locked && p >= 0.98) {
+        lock();
+        return;
+      }
+      // captions
+      const cap = p < 0.14 ? 0 : p < 0.32 ? 1 : p < 0.74 ? 2 : 3;
+      caps.forEach((c, i) => c.classList.toggle('on', i === cap));
+      // 2D → 3D
+      const draw = seg(p, 0, 0.1),
+        tilt = seg(p, 0.12, 0.28),
+        rise = seg(p, 0.18, 0.28),
+        roof = seg(p, 0.25, 0.32),
+        dash = seg(p, 0.74, 0.88);
+      const wall = 78 * rise,
+        rh = 46 * roof,
+        rl = Math.hypot(50, rh),
+        ra = (Math.atan2(rh, 50) * 180) / Math.PI;
+      world.style.setProperty('--draw', String(1 - draw));
+      world.style.setProperty('--wall', `${wall}px`);
+      world.style.setProperty('--roof', `${rh}px`);
+      world.style.setProperty('--rl', `${rl}px`);
+      world.style.setProperty('--ra', `${ra}deg`);
+      world.style.setProperty('--grow', String(rise));
+      world.style.transform = `rotateX(${56 * tilt}deg) rotateZ(${-38 * tilt}deg) scale(${1 - 0.06 * tilt})`;
+      story.classList.toggle('is-3d', tilt > 0.02);
+      // scene position: centre → dashboard centre slot
+      const s = lerp(g.sceneScale, g.center.s, dash),
+        sx = lerp(g.C.x, g.center.x, dash),
+        sy = lerp(g.C.y, g.center.y, dash);
+      scene.style.transform = `translate(${sx}px, ${sy}px) scale(${s})`;
+      // data cards
+      let loaded = 0;
+      cards.forEach((c, i) => {
+        const at = Number(c.dataset.at),
+          fly = seg(p, at, at + 0.05),
+          done = p > at + 0.04;
+        if (done) loaded++;
+        const o = g.orbit[i],
+          sl = g.slots[i];
+        const x0 = lerp(sx, o.x, fly),
+          y0 = lerp(sy, o.y, fly);
+        const x = lerp(x0, sl.x, dash),
+          y = lerp(y0, sl.y, dash);
+        const w = lerp(g.cardW, sl.w, dash),
+          h = lerp(g.cardH, sl.h, dash),
+          sc = lerp(0.4, 1, fly);
+        c.style.width = `${w}px`;
+        c.style.height = `${h}px`;
+        c.style.transform = `translate(${x - w / 2}px, ${y - h / 2}px) scale(${sc})`;
+        c.style.opacity = String(clamp(fly * 1.6));
+        c.classList.toggle('done', done);
+        // connector from the house to the card
+        const l = lines[i],
+          ln = l.querySelector('line')!,
+          dot = l.querySelector('circle')!;
+        ln.setAttribute('x1', String(sx));
+        ln.setAttribute('y1', String(sy));
+        ln.setAttribute('x2', String(x));
+        ln.setAttribute('y2', String(y));
+        dot.setAttribute('cx', String(x));
+        dot.setAttribute('cy', String(y));
+        l.style.opacity = String(fly * (1 - dash) * (g.mobile ? 0 : 1));
+      });
+      story.classList.toggle('is-loading', p > 0.2 && loaded < cards.length);
+      story.classList.toggle('is-dash', dash > 0.55);
+      dashFrame.style.opacity = String(g.mobile ? 0 : seg(p, 0.8, 0.9));
+    };
+
+    // Once the story has played, keep the finished dashboard: collapse the section to one screen
+    // and compensate the scroll so nothing moves on screen. It never replays after that.
+    const lock = () => {
+      if (locked) return;
+      const hh = parseFloat(getComputedStyle(story).getPropertyValue('--hh')) || 0;
+      const start = story.offsetTop - hh,
+        extra = story.offsetHeight - sticky.clientHeight;
+      // only remove the part of the story that is already above the viewport
+      const shift = Math.min(Math.max(scrollY - start, 0), extra);
+      locked = true;
+      story.classList.add('is-done');
+      if (shift) window.scrollBy({ top: -shift, behavior: 'instant' as ScrollBehavior });
+      measure();
+      render();
+    };
+    // Jumping to a section below the story (menu links…): finish it first, so the browser
+    // scrolls to the right place on the collapsed page.
+    document.addEventListener(
+      'click',
+      (e) => {
+        const a = (e.target as Element).closest?.<HTMLAnchorElement>('a[href*="#"]');
+        if (!a || locked) return;
+        if (a.pathname !== location.pathname || !a.hash) return;
+        const target = document.getElementById(decodeURIComponent(a.hash.slice(1)));
+        if (
+          target &&
+          target !== story &&
+          !story.contains(target) &&
+          story.compareDocumentPosition(target) & Node.DOCUMENT_POSITION_FOLLOWING
+        )
+          lock();
+      },
+      true,
+    );
+    let ticking = false;
+    const onScroll = () => {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(() => {
+          ticking = false;
+          render();
+        });
+      }
+    };
+    if (reduce) story.classList.add('is-static');
+    new ResizeObserver(() => {
+      measure();
+      render();
+    }).observe(sticky);
+    addEventListener('scroll', onScroll, { passive: true });
+    measure();
+    render();
+  }
+</script>

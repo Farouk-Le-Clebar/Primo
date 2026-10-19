@@ -1,0 +1,60 @@
+---
+// Simple contact form. No form backend yet: submitting opens the visitor's mail app with a
+// pre-filled message. Swap the submit handler for an API call later.
+import { ArrowUpRight, Mail } from 'lucide-react';
+import { CONTACT_EMAIL as EMAIL } from '../../config/constants';
+---
+
+<section id="contact" class="section shell contact-sec">
+  <div class="contact-grid">
+    <div class="contact-copy reveal">
+      <h2>Nous contacter</h2>
+      <p>Une question sur Primo ou envie d’une démonstration pour votre équipe ? Écrivez-nous.</p>
+      <a class="text-link" href={`mailto:${EMAIL}`}>
+        <Mail size={16} /> {EMAIL}
+      </a>
+    </div>
+    <form class="contact-form reveal" data-contact={EMAIL} novalidate>
+      <div class="contact-row">
+        <label>
+          <span>Nom</span>
+          <input name="name" type="text" autocomplete="name" required placeholder="Votre nom" />
+        </label>
+        <label>
+          <span>E-mail</span>
+          <input name="email" type="email" autocomplete="email" required placeholder="vous@exemple.fr" />
+        </label>
+      </div>
+      <label>
+        <span>Message</span>
+        <textarea name="message" rows="5" required placeholder="Votre message"></textarea>
+      </label>
+      <div class="contact-foot">
+        <p class="contact-status" data-contact-status role="status"></p>
+        <button type="submit" class="primary primary-large">
+          Envoyer <ArrowUpRight size={20} />
+        </button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-contact]');
+  if (form) {
+    const status = form.querySelector<HTMLElement>('[data-contact-status]')!;
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!form.checkValidity()) {
+        form.classList.add('was-checked');
+        status.textContent = 'Merci de remplir tous les champs.';
+        return;
+      }
+      const d = new FormData(form);
+      const subject = `Contact depuis primo-data.fr — ${d.get('name')}`;
+      const body = `${d.get('message')}\n\n${d.get('name')}\n${d.get('email')}`;
+      window.location.href = `mailto:${form.dataset.contact}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      status.textContent = 'Votre messagerie s’ouvre avec le message prêt à envoyer.';
+    });
+  }
+</script>

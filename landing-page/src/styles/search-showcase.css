@@ -1,0 +1,327 @@
+/* Search showcase: criteria filters vs. AI query (component not mounted on the landing yet). */
+
+.srch-tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+.srch-tab {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 14px 11px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--page);
+  color: var(--muted);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  overflow: hidden;
+  cursor: pointer;
+}
+.srch-tab:hover {
+  color: var(--ink);
+}
+.srch-tab.on {
+  color: var(--ink);
+  border-color: var(--ink);
+}
+.srch-tab i {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+}
+.srch-tab b {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: var(--accent);
+}
+.srch-tab.on b {
+  animation: srch-prog 7.5s linear forwards;
+}
+.srch:not(.is-visible) .srch-tab.on b,
+.srch-grid:hover ~ * .srch-tab.on b,
+.srch:has(.srch-grid:hover) .srch-tab.on b {
+  animation-play-state: paused;
+}
+.srch-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  gap: 14px;
+  align-items: stretch;
+}
+.srch-equal {
+  align-self: center;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--mint);
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 19px;
+}
+.srch-card {
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--page);
+}
+.srch-ai {
+  background: var(--surface);
+}
+.srch-head {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.srch-head .feature-icon {
+  margin: 0;
+  flex-shrink: 0;
+}
+.srch-head h3 {
+  font-size: 21px;
+  margin: 0;
+}
+.srch-head p {
+  margin: 3px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+.srch-panes {
+  display: grid;
+  flex: 1;
+}
+.srch-pane {
+  grid-area: 1/1;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s;
+}
+.srch-pane.on {
+  opacity: 1;
+  visibility: visible;
+}
+.srch-where {
+  display: inline-flex;
+  align-self: flex-start;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 7px;
+  background: var(--surface);
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+.srch-criteria {
+  list-style: none;
+  margin: 0 0 16px;
+  padding: 0;
+  display: grid;
+  gap: 7px;
+}
+.srch-criteria li {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 11px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  font-size: 14px;
+}
+.srch-ic {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: var(--mint);
+  color: var(--accent);
+}
+.srch-label small {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 700;
+}
+.srch-criteria b {
+  font-size: 13px;
+  font-weight: 600;
+  padding: 5px 9px;
+  border-radius: 7px;
+  background: var(--surface);
+  white-space: nowrap;
+}
+.srch-result {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+  font-size: 14px;
+  color: var(--muted);
+}
+.srch-result b {
+  color: var(--ink);
+  font-size: 19px;
+  letter-spacing: -0.4px;
+}
+.srch-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--ink);
+  font-weight: 600;
+  font-size: 13px;
+  white-space: nowrap;
+}
+.srch-q {
+  position: relative;
+  margin: 0 0 16px;
+  padding: 16px 48px 16px 16px;
+  border-radius: 12px;
+  background: var(--page);
+  border: 1px solid var(--line);
+  font-size: 16px;
+  line-height: 1.65;
+}
+.srch-q mark {
+  background: var(--mint);
+  color: inherit;
+  border-radius: 4px;
+  padding: 1px 2px;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+.srch-send {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: var(--button);
+  color: var(--button-text);
+}
+.srch-ans > small {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.srch-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+.srch-chips span {
+  padding: 6px 9px;
+  border-radius: 7px;
+  background: var(--page);
+  border: 1px solid var(--line);
+  font-size: 12.5px;
+}
+.srch-chips span:first-child {
+  background: var(--ink);
+  color: var(--page);
+  border-color: var(--ink);
+}
+.srch-note {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 16px 0 0;
+  text-align: center;
+}
+.srch-pane.on .srch-criteria li {
+  animation: srch-in 0.45s both calc(var(--k) * 70ms);
+}
+.srch-pane.on .srch-w {
+  animation: srch-word 0.4s both calc(var(--i) * 55ms);
+}
+.srch-pane.on .srch-q mark {
+  animation: srch-mark 0.5s both calc(var(--i) * 55ms);
+}
+.srch-pane.on .srch-ans > small {
+  animation: srch-in 0.4s both var(--after);
+}
+.srch-pane.on .srch-chips span {
+  animation: srch-in 0.35s both calc(var(--after) + var(--k, 0) * 60ms);
+}
+.srch-pane.on .srch-result {
+  animation: srch-in 0.4s both var(--after, 0ms);
+}
+@media (max-width: 900px) {
+  .srch-grid {
+    grid-template-columns: 1fr;
+  }
+  .srch-equal {
+    justify-self: center;
+    transform: rotate(90deg);
+  }
+}
+@media (max-width: 680px) {
+  .srch-card {
+    padding: 20px 16px;
+  }
+  .srch-q {
+    font-size: 15px;
+  }
+  .srch-criteria li {
+    font-size: 13px;
+    gap: 9px;
+  }
+  .srch-result {
+    flex-wrap: wrap;
+  }
+}
+@keyframes srch-prog {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+@keyframes srch-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+@keyframes srch-word {
+  from {
+    opacity: 0;
+    filter: blur(4px);
+  }
+}
+@keyframes srch-mark {
+  from {
+    background: transparent;
+  }
+}

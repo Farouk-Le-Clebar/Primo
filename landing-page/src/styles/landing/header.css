@@ -1,0 +1,137 @@
+/* Sticky site header, desktop / mobile navigation, theme toggle. */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background: var(--page);
+  border-bottom: 1px solid var(--line);
+}
+.header-inner {
+  height: 86px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 25px;
+}
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 31px;
+  font-weight: 700;
+  letter-spacing: -1.2px;
+}
+.desktop-nav {
+  display: flex;
+  gap: 34px;
+  font-size: 15px;
+}
+.desktop-nav a:hover {
+  color: var(--accent);
+}
+.icon-button {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: transparent;
+}
+.sun {
+  display: none;
+}
+[data-theme='dark'] .sun {
+  display: block;
+}
+[data-theme='dark'] .moon {
+  display: none;
+}
+[data-theme='dark'] .brand img {
+  filter: invert(1);
+}
+.menu-button {
+  display: none;
+}
+#mobile-nav {
+  padding: 12px 24px 24px;
+  border-top: 1px solid var(--line);
+}
+#mobile-nav a {
+  display: block;
+  padding: 10px;
+}
+.skip-link {
+  position: fixed;
+  left: 20px;
+  top: -100px;
+  z-index: 100;
+  padding: 12px;
+  background: var(--button);
+  color: var(--button-text);
+}
+.skip-link:focus {
+  top: 10px;
+}
+@media (max-width: 900px) {
+  .desktop-nav {
+    gap: 18px;
+  }
+}
+@media (max-width: 680px) {
+  .header-inner {
+    height: 72px;
+    gap: 10px;
+  }
+  .brand {
+    font-size: 27px;
+  }
+  .brand img {
+    width: 26px;
+    height: 26px;
+  }
+  .desktop-nav,
+  .login {
+    display: none;
+  }
+  .menu-button {
+    display: grid;
+  }
+  .desktop-break {
+    display: none;
+  }
+}
+/* header pinned to the top in every browser */
+.site-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+.header-inner {
+  height: 68px;
+}
+.brand {
+  font-size: 25px;
+  letter-spacing: -1px;
+}
+.brand img {
+  width: 24px;
+  height: 24px;
+}
+.desktop-nav {
+  font-size: 14px;
+  gap: 30px;
+}
+.icon-button {
+  width: 36px;
+  height: 36px;
+}
+@media (max-width: 680px) {
+  .header-inner {
+    height: 60px;
+  }
+  .brand {
+    font-size: 23px;
+  }
+}
