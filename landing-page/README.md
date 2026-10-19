@@ -46,6 +46,7 @@ La landing page utilise Yarn Classic (1.22), comme le backend et le frontend. Le
 Ces changements améliorent les fondations techniques et sémantiques ; ils ne garantissent ni indexation ni classement.
 
 Références :
+
 - https://developers.google.com/search/docs/fundamentals/seo-starter-guide
 - https://developers.google.com/search/docs/appearance/structured-data
 - https://www.service-public.gouv.fr/particuliers/vosdroits/F1633

@@ -1,5 +1,5 @@
-import React from "react";
-import { EXTERNAL_LINKS, CTA_TEXTS } from "@config/constants";
+import React from 'react';
+import { EXTERNAL_LINKS, CTA_TEXTS } from '@config/constants';
 
 interface CallToActionProps {
   title?: string;
@@ -17,9 +17,7 @@ export const CallToAction: React.FC<CallToActionProps> = ({
   return (
     <div className="not-prose my-12 p-8 bg-linear-to-br from-green-600 via-green-700 to-emerald-600 rounded-2xl shadow-xl text-white">
       <h3 className="text-3xl font-bold mb-4">{title}</h3>
-      <p className="mb-6 text-green-50 text-lg leading-relaxed">
-        {description}
-      </p>
+      <p className="mb-6 text-green-50 text-lg leading-relaxed">{description}</p>
       <a
         href={buttonLink}
         target="_blank"
