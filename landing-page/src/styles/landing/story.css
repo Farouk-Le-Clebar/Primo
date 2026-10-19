@@ -1,0 +1,816 @@
+html .story {
+  --hh: 68px;
+}
+html .story-caption h2 {
+  font-size: clamp(26px, 2.9vw, 38px);
+}
+html .story-caption p {
+  font-size: 15px;
+}
+@media (max-width: 680px) {
+  html .story {
+    --hh: 60px;
+  }
+}
+/* Scroll story: parcel → 3D house → data sources → dashboard. Values driven from JS via CSS vars. */
+.story {
+  position: relative;
+  height: 520vh;
+  --hh: 86px;
+}
+.story-sticky {
+  position: sticky;
+  top: var(--hh);
+  height: calc(100svh - var(--hh));
+  overflow: hidden;
+}
+.story.is-static,
+.story.is-done {
+  height: auto;
+}
+.story.is-static .story-sticky {
+  position: relative;
+  top: 0;
+  height: max(100svh, 760px);
+}
+.story.is-done .story-sticky {
+  position: relative;
+  top: 0;
+}
+.story-copy {
+  position: relative;
+  z-index: 4;
+  padding-top: 26px;
+  text-align: center;
+}
+.story-copy .eyebrow {
+  justify-content: center;
+}
+.story-captions {
+  display: grid;
+  margin-top: 10px;
+}
+.story-caption {
+  grid-area: 1/1;
+  opacity: 0;
+  transform: translateY(12px);
+  transition:
+    opacity 0.45s,
+    transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.story-caption.on {
+  opacity: 1;
+  transform: none;
+}
+.story-caption h2 {
+  margin: 0;
+  font-size: clamp(28px, 3.4vw, 46px);
+}
+.story-caption p {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 16px;
+}
+
+/* scene + 3D house */
+.story-scene {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  z-index: 2;
+  will-change: transform;
+}
+.st-cam {
+  position: absolute;
+  left: -180px;
+  top: -130px;
+  width: 360px;
+  height: 260px;
+  perspective: 1300px;
+}
+.st-world {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transform-origin: 50% 50%;
+  --wall: 0px;
+  --roof: 0px;
+  --rl: 50px;
+  --ra: 0deg;
+  --grow: 0;
+  --draw: 1;
+  --plot: #e4f1e6;
+  --plot-line: #1fb57f;
+  --wall-f: #fbf8f3;
+  --wall-s: #eae3d7;
+  --wall-b: #ded5c6;
+  --roof-f: #c8644a;
+  --roof-b: #a9503a;
+}
+html[data-theme='dark'] .st-world {
+  --plot: #18301f;
+  --plot-line: #3fd69c;
+}
+.st-plot {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+}
+.st-nb {
+  fill: none;
+  stroke: var(--line);
+  stroke-width: 1.2;
+}
+.st-parcel {
+  fill: var(--plot);
+}
+.st-path {
+  stroke: #d8d2c4;
+  stroke-width: 16;
+  stroke-linecap: round;
+}
+.st-pool {
+  fill: #7cc7e8;
+  stroke: #fff;
+  stroke-width: 3;
+}
+.st-bush {
+  fill: #b7dcbf;
+}
+.st-outline {
+  fill: none;
+  stroke: var(--plot-line);
+  stroke-width: 2.4;
+  stroke-dasharray: 1;
+  stroke-dashoffset: var(--draw);
+  stroke-linejoin: round;
+}
+.st-house {
+  position: absolute;
+  left: 120px;
+  top: 82px;
+  width: 140px;
+  height: 100px;
+  transform-style: preserve-3d;
+}
+.st-house > * {
+  position: absolute;
+  display: block;
+}
+.st-shadow {
+  inset: -6px -18px -14px -6px;
+  background: #0c2a1c;
+  filter: blur(10px);
+  opacity: calc(0.22 * var(--grow));
+  border-radius: 8px;
+  transform: translate(10px, 8px);
+}
+.st-foot {
+  inset: 0;
+  background: #cfd6d2;
+}
+.w-front,
+.w-back {
+  left: 0;
+  width: 140px;
+  height: var(--wall);
+  transform-origin: 50% 100%;
+  transform: rotateX(-90deg);
+}
+.w-front {
+  top: calc(100px - var(--wall));
+  background: var(--wall-f);
+  overflow: hidden;
+}
+.w-back {
+  top: calc(-1 * var(--wall));
+  background: var(--wall-b);
+}
+.w-left,
+.w-right {
+  top: 0;
+  height: 100px;
+  width: calc(var(--wall) + var(--roof));
+  background: var(--wall-s);
+}
+.w-left {
+  left: calc(-1 * (var(--wall) + var(--roof)));
+  transform-origin: 100% 50%;
+  transform: rotateY(90deg);
+  clip-path: polygon(100% 0, 100% 100%, var(--roof) 100%, 0 50%, var(--roof) 0);
+}
+.w-right {
+  left: 140px;
+  transform-origin: 0 50%;
+  transform: rotateY(-90deg);
+  clip-path: polygon(0 0, 0 100%, var(--wall) 100%, 100% 50%, var(--wall) 0);
+  filter: brightness(0.93);
+}
+.r-front,
+.r-back {
+  left: -7px;
+  width: 154px;
+  height: var(--rl);
+}
+.r-front {
+  top: calc(100px - var(--rl));
+  transform-origin: 50% 100%;
+  transform: translateZ(var(--wall)) rotateX(calc(-1 * var(--ra)));
+  background: repeating-linear-gradient(
+    0deg,
+    var(--roof-f) 0 9px,
+    color-mix(in srgb, var(--roof-f) 82%, #000) 9px 10px
+  );
+}
+.r-back {
+  top: 0;
+  transform-origin: 50% 0;
+  transform: translateZ(var(--wall)) rotateX(var(--ra));
+  background: var(--roof-b);
+}
+.st-door {
+  left: 58px;
+  bottom: 0;
+  width: 22px;
+  height: 46%;
+  background: #5b6f66;
+  border-radius: 3px 3px 0 0;
+}
+.st-win {
+  bottom: 44%;
+  width: 22px;
+  height: 28%;
+  background: #9fd3e6;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 1px #c9c2b4;
+}
+.st-win.a {
+  left: 16px;
+}
+.st-win.b {
+  left: 100px;
+}
+.st-win.c {
+  left: 58px;
+  bottom: auto;
+  top: -100%;
+  display: none;
+}
+.st-scan {
+  position: absolute;
+  left: 190px;
+  top: 132px;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+.st-scan i {
+  position: absolute;
+  left: -120px;
+  top: -120px;
+  width: 240px;
+  height: 240px;
+  border-radius: 50%;
+  border: 2px solid var(--plot-line);
+  opacity: 0;
+}
+.is-loading .st-scan i {
+  animation: st-scan 1.8s ease-out infinite;
+}
+.is-loading .st-scan i:last-child {
+  animation-delay: 0.9s;
+}
+@keyframes st-scan {
+  0% {
+    transform: scale(0.3);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1.4);
+    opacity: 0;
+  }
+}
+
+/* connectors */
+.story-lines {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+  overflow: visible;
+}
+.story-lines line {
+  stroke: var(--accent);
+  stroke-width: 1.4;
+  stroke-dasharray: 4 6;
+  animation: st-flow 1s linear infinite;
+  opacity: 0.6;
+}
+.story-lines circle {
+  fill: var(--accent);
+}
+@keyframes st-flow {
+  to {
+    stroke-dashoffset: -20;
+  }
+}
+
+/* data cards */
+.story-cards {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+.sc {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: var(--page);
+  border: 1px solid var(--line);
+  box-shadow: 0 14px 34px #12332214;
+  overflow: hidden;
+  opacity: 0;
+  transform-origin: 50% 50%;
+  will-change: transform;
+  container-type: size;
+}
+.sc header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+.sc-icon {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: var(--mint);
+  color: var(--accent);
+}
+.sc header small {
+  flex: 1;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.sc-state {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+}
+.sc-spin {
+  position: absolute;
+  inset: 1px;
+  border-radius: 50%;
+  border: 2px solid var(--line);
+  border-top-color: var(--accent);
+  animation: ic-spin 0.7s linear infinite;
+  transition: opacity 0.2s;
+}
+.sc-ok {
+  color: var(--accent);
+  opacity: 0;
+  transform: scale(0.4);
+  transition:
+    opacity 0.25s,
+    transform 0.3s cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+.sc.done .sc-spin {
+  opacity: 0;
+}
+.sc.done .sc-ok {
+  opacity: 1;
+  transform: none;
+}
+@keyframes ic-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.sc-value {
+  font-size: 19px;
+  letter-spacing: -0.4px;
+  line-height: 1.2;
+}
+.sc-detail {
+  color: var(--muted);
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sc-value,
+.sc-detail {
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.sc.done .sc-value,
+.sc.done .sc-detail {
+  opacity: 1;
+}
+.sc-skel {
+  position: absolute;
+  left: 14px;
+  right: 40px;
+  top: 50px;
+  display: grid;
+  gap: 6px;
+  transition: opacity 0.25s;
+}
+.sc-skel i {
+  display: block;
+  height: 9px;
+  border-radius: 5px;
+  background: linear-gradient(90deg, var(--line), var(--surface), var(--line));
+  background-size: 200% 100%;
+  animation: sc-shimmer 1s linear infinite;
+}
+.sc-skel i:last-child {
+  width: 65%;
+}
+.sc.done .sc-skel {
+  opacity: 0;
+}
+@keyframes sc-shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+.sc-extra {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+.is-dash .sc-extra {
+  opacity: 1;
+}
+.sc-extra ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 4px;
+}
+.sc-extra li {
+  font-size: 12.5px;
+  color: var(--muted);
+  padding-left: 12px;
+  position: relative;
+}
+.sc-extra li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 7px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.sc-spark {
+  width: 100%;
+  height: 36px;
+}
+.sc-spark .line {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+.sc-spark .area {
+  fill: var(--accent);
+  opacity: 0.12;
+}
+.sc-dpe {
+  display: flex;
+  gap: 3px;
+}
+.sc-dpe span {
+  flex: 1;
+  display: grid;
+  place-items: center;
+  height: 18px;
+  border-radius: 3px;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  opacity: 0.35;
+}
+.sc-dpe span.on {
+  opacity: 1;
+  transform: scaleY(1.25);
+}
+
+/* dashboard frame */
+.story-dash {
+  position: absolute;
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 18px;
+  height: auto;
+  border-radius: 22px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  opacity: 0;
+  align-items: flex-start;
+  padding-top: 14px;
+}
+.story-dash > span {
+  display: flex;
+  gap: 6px;
+  padding-top: 4px;
+}
+.story-dash > span i {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #ff5f57;
+}
+.story-dash > span i:nth-child(2) {
+  background: #febc2e;
+}
+.story-dash > span i:nth-child(3) {
+  background: #28c840;
+}
+.story-dash b {
+  font-size: 14px;
+}
+.story-dash small {
+  color: var(--muted);
+  font-size: 12px;
+  padding-top: 1px;
+}
+@media (max-width: 899px) {
+  .story {
+    --hh: 72px;
+    height: 460vh;
+  }
+  .story-caption h2 {
+    font-size: 26px;
+  }
+  .story-caption p {
+    font-size: 14px;
+  }
+  .sc {
+    padding: 9px 10px;
+    border-radius: 12px;
+  }
+  .sc header {
+    margin-bottom: 2px;
+  }
+  .sc-icon {
+    width: 24px;
+    height: 24px;
+  }
+  .sc header small {
+    font-size: 9.5px;
+  }
+  .sc-value {
+    font-size: 15px;
+  }
+  .sc-detail {
+    font-size: 10.5px;
+  }
+  .sc-skel {
+    top: 40px;
+    left: 10px;
+  }
+  .sc-extra {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .story-lines line,
+  .st-scan i {
+    animation: none;
+  }
+}
+.sc > * {
+  flex-shrink: 0;
+}
+/* cards adapt to the size they're given instead of being clipped (sizes = content box) */
+@container (min-height:90px) {
+  .sc-detail {
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+}
+@container (max-height:62px) {
+  .sc-detail {
+    display: none;
+  }
+}
+@container (max-height:136px) {
+  .sc-extra {
+    display: none;
+  }
+}
+@container (max-height:182px) {
+  .sc-spark,
+  .sc-dpe {
+    display: none;
+  }
+}
+@media (max-height: 720px) {
+  .story-caption p {
+    display: none;
+  }
+  .story-copy {
+    padding-top: 16px;
+  }
+}
+/* ---- house details: door at the end of the path, shuttered windows, gable windows, chimney ---- */
+.w-front > i,
+.w-left > i {
+  position: absolute;
+  display: block;
+}
+.st-door {
+  left: 57px;
+  bottom: 0;
+  width: 26px;
+  height: 56%;
+  background: linear-gradient(#6b4f3a, #57402f);
+  border-radius: 4px 4px 0 0;
+  box-shadow: inset 0 0 0 2px #4a3527;
+}
+.st-door i {
+  position: absolute;
+  right: 5px;
+  top: 52%;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: #e6c27a;
+}
+.st-step {
+  left: 53px;
+  bottom: 0;
+  width: 34px;
+  height: 5%;
+  background: #cfc7b8;
+}
+.st-win {
+  bottom: 38%;
+  width: 24px;
+  height: 30%;
+  background: linear-gradient(160deg, #cfeaf5, #8fc6dc);
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 1px #d5cdbf;
+}
+.st-win.a {
+  left: 14px;
+}
+.st-win.b {
+  right: 14px;
+}
+.st-win i {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  margin-left: -1px;
+  background: #fff;
+}
+.st-win::before,
+.st-win::after {
+  content: '';
+  position: absolute;
+  top: -2px;
+  bottom: -2px;
+  width: 7px;
+  background: #5d8a73;
+  border-radius: 1px;
+}
+.st-win::before {
+  left: -10px;
+}
+.st-win::after {
+  right: -10px;
+  box-shadow: none;
+}
+.st-gwin {
+  right: 16%;
+  top: 36px;
+  width: 30%;
+  height: 26px;
+  background: linear-gradient(110deg, #cfeaf5, #8fc6dc);
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 1px #d5cdbf;
+}
+.st-oeil {
+  left: calc(var(--roof) * 0.45);
+  top: 44px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #8fc6dc;
+  border: 2px solid #fff;
+  opacity: var(--grow);
+}
+.st-chimney {
+  position: absolute;
+  left: 96px;
+  top: 22px;
+  width: 14px;
+  height: 14px;
+  transform-style: preserve-3d;
+  transform: translateZ(var(--wall));
+  --ch: calc(var(--roof) + 16px * var(--grow));
+}
+.st-chimney i {
+  position: absolute;
+  display: block;
+}
+.st-chimney i:nth-child(1) {
+  left: 0;
+  top: calc(14px - var(--ch));
+  width: 14px;
+  height: var(--ch);
+  background: #b9523b;
+  transform-origin: 50% 100%;
+  transform: rotateX(-90deg);
+}
+.st-chimney i:nth-child(2) {
+  left: calc(-1 * var(--ch));
+  top: 0;
+  width: var(--ch);
+  height: 14px;
+  background: #9c4430;
+  transform-origin: 100% 50%;
+  transform: rotateY(90deg);
+}
+.st-chimney i:nth-child(3) {
+  inset: 0;
+  background: #3d2a22;
+  box-shadow: inset 0 0 0 2px #b9523b;
+  transform: translateZ(var(--ch));
+}
+/* ---- 3D trees: two crossed trunk planes + a crown of stacked discs that rise with the scroll ---- */
+.st-tree3d {
+  position: absolute;
+  left: var(--tx);
+  top: var(--ty);
+  width: 0;
+  height: 0;
+  transform-style: preserve-3d;
+}
+.st-tree3d::before {
+  content: '';
+  position: absolute;
+  width: calc(40px * var(--th));
+  height: calc(40px * var(--th));
+  margin: calc(-20px * var(--th)) 0 0 calc(-20px * var(--th));
+  border-radius: 50%;
+  background: #0c2a1c;
+  filter: blur(5px);
+  opacity: calc(0.18 * var(--grow));
+  transform: translate(7px, 6px);
+}
+.st-tree3d .trunk {
+  position: absolute;
+  left: -3px;
+  width: 6px;
+  height: calc(16px * var(--th) * var(--grow));
+  top: calc(-16px * var(--th) * var(--grow));
+  background: #7a5b45;
+  transform-origin: 50% 100%;
+  transform: rotateX(-90deg);
+}
+.st-tree3d .trunk.b {
+  background: #6a4c38;
+  transform: rotateZ(90deg) rotateX(-90deg);
+}
+.st-tree3d .crown {
+  position: absolute;
+  width: calc(36px * var(--th) * var(--r));
+  height: calc(36px * var(--th) * var(--r));
+  margin: calc(-18px * var(--th) * var(--r)) 0 0 calc(-18px * var(--th) * var(--r));
+  border-radius: 50%;
+  background: hsl(138 40% var(--l));
+  transform: translateZ(calc((14px + 15px * var(--z)) * var(--th) * var(--grow)));
+}

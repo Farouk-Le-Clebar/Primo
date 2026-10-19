@@ -1,0 +1,45 @@
+/* FAQ (native <details>). */
+.faq-section {
+  padding-top: 0;
+}
+.faq-list {
+  border-top: 1px solid var(--line);
+}
+.faq-list details {
+  border-bottom: 1px solid var(--line);
+  padding: 23px 0;
+}
+.faq-list summary {
+  font-size: 19px;
+  font-weight: 600;
+  cursor: pointer;
+  list-style-position: outside;
+  margin-left: 20px;
+  padding-left: 9px;
+}
+.faq-list summary:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 5px;
+}
+.faq-list details p {
+  color: var(--muted);
+  max-width: 850px;
+  margin: 18px 0 0 29px;
+  line-height: 1.75;
+  font-size: 16px;
+}
+.faq-list details p {
+  font-size: 14.5px;
+}
+.faq-list summary {
+  font-size: 17px;
+}
+/* section-specific spacing (ids beat the generic .section padding) */
+#questions {
+  padding-top: 24px;
+}
+@media (max-width: 680px) {
+  #questions {
+    padding-top: 16px;
+  }
+}
