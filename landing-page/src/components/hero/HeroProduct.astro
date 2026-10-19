@@ -1,0 +1,706 @@
+---
+// Animated, resolution-independent replica of Primo: workspace, AI assistant, map, parcel analysis.
+// The cadastral map is generated at build time (seeded, so it never changes).
+import { Image } from 'astro:assets';
+import {
+  ArrowLeft,
+  Search,
+  Plus,
+  Minus,
+  Layers,
+  MapPin,
+  Maximize2,
+  X,
+  TrendingUp,
+  Lock,
+  Sparkles,
+  Send,
+  House,
+  Map as MapIcon,
+  FolderKanban,
+  Bookmark,
+  ScanSearch,
+  Wallet,
+  ArrowUpRight,
+  Compass,
+  Check,
+} from 'lucide-react';
+import avatar from '../../assets/images/tony-fournales.jpg';
+import { buildHeroMap } from '../../lib/heroMap';
+import { round1 } from '../../lib/random';
+import { DPE_CLASSES, DPE_COLORS } from '../../data/parcel';
+
+const map = buildHeroMap();
+
+// DPE distribution in the sector (%, A → G)
+const DPE_SHARE = [6, 11, 24, 29, 17, 8, 5];
+const DPE_MAX = Math.max(...DPE_SHARE);
+// DVF median price over 12 months (€/m²), drawn as a sparkline
+const PRICES = [2890, 2940, 2915, 3010, 2990, 3060, 3040, 3120, 3105, 3170, 3210, 3240];
+const P_MIN = 2850,
+  P_MAX = 3260,
+  SPARK_W = 300,
+  SPARK_H = 46;
+const spark =
+  'M' +
+  PRICES.map(
+    (p, i) =>
+      `${round1((i / (PRICES.length - 1)) * SPARK_W)} ${round1(SPARK_H - ((p - P_MIN) / (P_MAX - P_MIN)) * SPARK_H)}`,
+  ).join(' L');
+
+const steps = ['Espace de travail', 'Question à l’IA', 'Fiche parcelle', 'Analyse', 'Ajout au projet'];
+const AI_ANSWER =
+  'Pour une maison avec jardin près du métro et des écoles, je vous conseille l’est de Toulouse : bien desservi, plusieurs groupes scolaires et des prix autour de 3 400 €/m², plus doux qu’en centre-ville.';
+const aiWords = AI_ANSWER.split(' ');
+const projects = [
+  { name: 'Prospection · Toulouse Est', parcels: 4, members: 4, hot: true },
+  { name: 'Lotissement Les Oliviers', parcels: 7, members: 2 },
+  { name: 'Achat résidence principale', parcels: 2, members: 1 },
+];
+---
+
+<div class="hp-demo" data-hp-demo>
+  <div class="product-window arrival-map">
+    <div class="window-bar">
+      <span class="hp-lights" aria-hidden="true">
+        <i></i>
+        <i></i>
+        <i></i>
+      </span>
+      <span class="hp-url">
+        <Lock size={10} /> app.primo-data.fr
+      </span>
+      <span class="hp-lights hp-spacer" aria-hidden="true"></span>
+    </div>
+    <div class="hp-frame" data-hp>
+      <div class="hp-stage" aria-hidden="true" style={`--tox:${map.target.x}px;--toy:${map.target.y}px`}>
+        <!-- Scene: map -->
+        <div class="hp-topbar">
+          <span class="hp-back">
+            <ArrowLeft size={15} /> Dashboard
+          </span>
+          <span class="hp-search">
+            <Search size={13} />
+            <span class="hp-typed" data-typed>
+              Votre adresse…
+            </span>
+            <i class="hp-caret"></i>
+          </span>
+          <span class="hp-user">
+            <Image
+              class="hp-avatar"
+              src={avatar}
+              alt=""
+              width={28}
+              height={28}
+              densities={[1, 2]}
+              loading="lazy"
+            />
+            <span>
+              <b>Tony Fournales</b>
+              <small>Projet · Toulouse Est</small>
+            </span>
+          </span>
+        </div>
+        <div class="hp-map">
+          <div class="hp-map-layer">
+            <div class="hp-map-zoom">
+              <svg viewBox={map.viewBox} width={map.width} height={map.height} set:html={map.svg} />
+            </div>
+          </div>
+          <div class="hp-controls">
+            <span>
+              <Plus size={14} />
+              <Minus size={14} />
+            </span>
+            <span>
+              <Layers size={14} />
+            </span>
+            <span class="hp-ai-btn" data-hp-ai-btn>
+              <Sparkles size={14} />
+            </span>
+            <span>
+              <MapPin size={14} />
+            </span>
+          </div>
+          <div class="hp-ai">
+            <div class="hp-ai-head">
+              <span>
+                <Sparkles size={13} /> <b>IA Primo</b>
+              </span>
+              <span class="hp-x">
+                <X size={12} />
+              </span>
+            </div>
+            <div class="hp-ai-body">
+              <p class="hp-ai-empty">Posez votre question sur un lieu, un marché ou un projet.</p>
+              <p class="hp-ai-user" data-ai-sent></p>
+              <p class="hp-ai-dots">
+                <i></i>
+                <i></i>
+                <i></i>
+              </p>
+              <p class="hp-ai-answer">
+                {aiWords.map((w, i) => (
+                  <>
+                    <span style={`--i:${i}`}>{w}</span>{' '}
+                  </>
+                ))}
+              </p>
+            </div>
+            <div class="hp-ai-input">
+              <span data-ai-typed>Demander à l'IA...</span>
+              <i>
+                <Send size={12} />
+              </i>
+            </div>
+          </div>
+          <div class="hp-modal">
+            <b>Redirection</b>
+            <p>
+              L'IA Primo souhaite vous rediriger vers <strong>Toulouse Est</strong>
+            </p>
+            <div>
+              <span>Refuser</span>
+              <span class="hp-accept" data-hp-accept>
+                Accepter
+              </span>
+            </div>
+          </div>
+          <div class="hp-card">
+            <div>
+              <p class="hp-card-id">
+                <i></i>31555000AB0142 <em>Actif</em>
+              </p>
+              <p class="hp-card-meta">
+                <MapPin size={12} /> 14 Rue des Lilas, 31500 Toulouse{' '}
+                <span class="hp-chip hp-violet">UB2</span>
+                <span class="hp-chip">640 m²</span>
+                <span class="hp-chip">AB · 0142</span>
+              </p>
+            </div>
+            <span class="hp-btn" data-hp-btn>
+              <Maximize2 size={12} /> Analyse complète
+            </span>
+          </div>
+          <aside class="hp-panel">
+            <div class="hp-panel-head">
+              <div>
+                <b>Analyse parcellaire</b>
+                <small>31555000AB0142 · 640 m²</small>
+              </div>
+              <span class="hp-add" data-hp-add>
+                <Plus size={12} /> Ajouter à un projet
+              </span>
+            </div>
+            <div class="hp-tabs">
+              <span class="on">Synthèse</span>
+              <span>PLU</span>
+              <span>DVF</span>
+              <span>DPE</span>
+              <span>Géorisques</span>
+            </div>
+            <div class="hp-box hp-plu">
+              <!-- no whitespace between the inline-block badge and its label -->
+              <!-- prettier-ignore -->
+              <div><small>Zonage PLU</small><b>UB2</b><span>Zone urbaine mixte</span></div>
+              <div class="hp-plu-stats">
+                <span>
+                  <small>Emprise max.</small>
+                  <b>60 %</b>
+                </span>
+                <span>
+                  <small>Hauteur max.</small>
+                  <b>12 m</b>
+                </span>
+              </div>
+            </div>
+            <div class="hp-box">
+              <div class="hp-row">
+                <small>DVF · prix médian sur 12 mois</small>
+                <span class="hp-up">
+                  <TrendingUp size={11} /> +4,2 %
+                </span>
+              </div>
+              <b class="hp-big">
+                <span data-count="3240">3 240</span> €/m²
+              </b>
+              <svg class="hp-spark" viewBox={`0 -4 ${SPARK_W} ${SPARK_H + 8}`} preserveAspectRatio="none">
+                <path class="hp-spark-area" d={`${spark} L${SPARK_W} ${SPARK_H + 4} L0 ${SPARK_H + 4}Z`} />
+                <path class="hp-spark-line" pathLength="1" d={spark} />
+              </svg>
+            </div>
+            <div class="hp-box">
+              <small>DPE · répartition dans le secteur</small>
+              <div class="hp-dpe">
+                {DPE_CLASSES.map((label, i) => (
+                  <div>
+                    <span class="hp-dpe-l" style={`background:${DPE_COLORS[i]}`}>
+                      {label}
+                    </span>
+                    <span class="hp-dpe-bar">
+                      <i style={`--w:${(DPE_SHARE[i] / DPE_MAX) * 100}%;--c:${DPE_COLORS[i]};--i:${i}`}></i>
+                    </span>
+                    <small>{DPE_SHARE[i]} %</small>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div class="hp-box">
+              <small>Géorisques</small>
+              <div class="hp-risks">
+                <span class="ok">Inondation · faible</span>
+                <span class="mid">Argiles · moyen</span>
+                <span class="ok">Séisme · très faible</span>
+              </div>
+            </div>
+          </aside>
+          <div class="hp-toast">
+            <Check size={13} /> Parcelle ajoutée à « Prospection · Toulouse Est »
+          </div>
+        </div>
+        <!-- Scene: workspace -->
+        <div class="hp-ws">
+          <aside class="hp-ws-side">
+            <b>
+              <img src="/logo-primo.svg" alt="" width="16" height="16" /> Primo
+            </b>
+            <span class="on">
+              <House size={14} /> Aperçu
+            </span>
+            <span>
+              <MapIcon size={14} /> Carte
+            </span>
+            <span>
+              <FolderKanban size={14} /> Projets
+            </span>
+            <span>
+              <Search size={14} /> Recherche
+            </span>
+            <div class="hp-ws-user">
+              <Image
+                class="hp-avatar"
+                src={avatar}
+                alt=""
+                width={28}
+                height={28}
+                densities={[1, 2]}
+                loading="lazy"
+              />
+              <span>
+                <b>Tony Fournales</b>
+                <small>Agence Atlantique</small>
+              </span>
+            </div>
+          </aside>
+          <div class="hp-ws-main">
+            <small class="hp-ws-kicker">Votre espace de travail</small>
+            <div class="hp-ws-welcome hp-ws-in" style="--k:0">
+              <div>
+                <b>Reprendre mon travail</b>
+                <span>Retrouvez vos projets et poursuivez votre exploration.</span>
+              </div>
+              <em>
+                <Plus size={13} /> Nouveau projet
+              </em>
+            </div>
+            <div class="hp-ws-stats">
+              <div class="hp-ws-in" style="--k:1">
+                <Bookmark size={15} />
+                <span>Parcelles sauvegardées</span>
+                <b class="hp-flip">
+                  <span>48</span>
+                  <span>49</span>
+                </b>
+              </div>
+              <div class="hp-ws-in" style="--k:2">
+                <ScanSearch size={15} />
+                <span>Parcelles analysées</span>
+                <b class="hp-flip">
+                  <span>312</span>
+                  <span>313</span>
+                </b>
+              </div>
+              <div class="hp-ws-in" style="--k:3">
+                <Wallet size={15} />
+                <span>Budget engagé</span>
+                <b>2,4 M€</b>
+              </div>
+            </div>
+            <div class="hp-ws-cards">
+              <div class="hp-ws-last hp-ws-in" style="--k:4">
+                <small>Dernier projet consulté</small>
+                <b>Prospection · Toulouse Est</b>
+                <span>
+                  Vue d’ensemble ·{' '}
+                  <b class="hp-flip">
+                    <span>4</span>
+                    <span>5</span>
+                  </b>{' '}
+                  parcelles
+                </span>
+              </div>
+              <div class="hp-ws-explore hp-ws-in" style="--k:5" data-hp-explore>
+                <span class="hp-ws-icon">
+                  <Compass size={17} />
+                </span>
+                <div>
+                  <b>Explorer la carte</b>
+                  <span>Une nouvelle adresse, une nouvelle possibilité.</span>
+                </div>
+                <ArrowUpRight size={15} />
+              </div>
+            </div>
+            <div class="hp-ws-projects hp-ws-in" style="--k:6">
+              <small>Projets</small>
+              {projects.map((p) => (
+                <div class:list={['hp-ws-project', { hot: p.hot }]}>
+                  <span class="hp-ws-icon">
+                    <FolderKanban size={14} />
+                  </span>
+                  <span>
+                    <b>{p.name}</b>
+                    <small>
+                      {p.hot ? (
+                        <>
+                          <b class="hp-flip">
+                            <span>{p.parcels}</span>
+                            <span>{p.parcels + 1}</span>
+                          </b>{' '}
+                          parcelles
+                        </>
+                      ) : (
+                        `${p.parcels} parcelles`
+                      )}{' '}
+                      · {p.members} {p.members > 1 ? 'membres' : 'membre'}
+                    </small>
+                  </span>
+                  {p.hot && <em class="hp-ws-badge">Mis à jour à l’instant</em>}
+                  <ArrowUpRight size={14} />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+        <i class="hp-ripple" data-hp-ripple></i>
+        <svg class="hp-cursor" data-hp-cursor viewBox="0 0 24 24" width="24" height="24">
+          <path
+            d="M4 2.5 19.5 11l-6.6 1.8L9.6 19.6z"
+            fill="#111"
+            stroke="#fff"
+            stroke-width="1.6"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </div>
+    </div>
+  </div>
+  <div class="hp-steps">
+    {steps.map((title, i) => (
+      <button type="button" class="hp-step" data-step={i}>
+        <i class="hp-step-bar">
+          <b></b>
+        </i>
+        <span class="hp-step-n">0{i + 1}</span>
+        <strong>{title}</strong>
+      </button>
+    ))}
+  </div>
+  <p class="hp-steps-caption" aria-hidden="true" data-hp-caption>
+    {steps[0]}
+  </p>
+  <p class="sr-only">
+    Démonstration animée de Primo avec des données d’exemple : depuis l’espace de travail, ouverture de la
+    carte, question posée à l’IA Primo qui recommande un secteur de Toulouse, sélection d’une parcelle,
+    analyse complète (zonage PLU, prix DVF, DPE, Géorisques), puis ajout de la parcelle au projet de l’équipe.
+  </p>
+</div>
+
+<script>
+  import { easeInOutCubic, prefersReducedMotion } from '../../lib/motion';
+
+  declare global {
+    interface Window {
+      __primoDemoCleanup?: () => void;
+    }
+  }
+
+  const STAGE_WIDTH = 1100; // px, design width of the replica (scaled to fit its frame)
+  const SPEED = 0.8; // timeline multiplier, < 1 = faster loop
+  const AI_QUESTION = 'Une maison avec jardin à Toulouse, près du métro et des écoles ?';
+  const AI_PLACEHOLDER = "Demander à l'IA...";
+  const SEARCH_PLACEHOLDER = 'Votre adresse…';
+  const STATES = [
+    'ws-in',
+    'is-map',
+    'is-ai',
+    'is-asked',
+    'is-answer',
+    'is-redirect',
+    'is-zoomed',
+    'is-drawn',
+    'is-picked',
+    'is-open',
+    'is-added',
+    'is-updated',
+  ];
+
+  const demo = document.querySelector<HTMLElement>('[data-hp-demo]');
+  if (demo) {
+    // A re-run of this script (dev hot reload) must stop the previous instance first,
+    // otherwise two timelines fight over the same cursor.
+    window.__primoDemoCleanup?.();
+    const ac = new AbortController();
+    const on = { signal: ac.signal };
+    const frame = demo.querySelector<HTMLElement>('[data-hp]')!;
+    const stage = frame.querySelector<HTMLElement>('.hp-stage')!;
+    const cursor = frame.querySelector<SVGElement>('[data-hp-cursor]')!;
+    const ripple = frame.querySelector<HTMLElement>('[data-hp-ripple]')!;
+    const typed = frame.querySelector<HTMLElement>('[data-typed]')!;
+    const aiTyped = frame.querySelector<HTMLElement>('[data-ai-typed]')!;
+    const aiSent = frame.querySelector<HTMLElement>('[data-ai-sent]')!;
+    const caption = demo.querySelector<HTMLElement>('[data-hp-caption]')!;
+    const stepEls = [...demo.querySelectorAll<HTMLButtonElement>('.hp-step')];
+    const fmt = new Intl.NumberFormat('fr-FR');
+    let rafId = 0;
+    let io: IntersectionObserver | null = null;
+    let timers: number[] = [];
+    let current = 0;
+
+    let scale = 1;
+    const fit = () => {
+      scale = frame.clientWidth / STAGE_WIDTH;
+      stage.style.setProperty('--hp-s', String(scale));
+    };
+    const ro = new ResizeObserver(fit);
+    ro.observe(frame);
+    fit();
+
+    const center = (sel: string): [number, number] => {
+      const s = stage.getBoundingClientRect(),
+        r = stage.querySelector(sel)!.getBoundingClientRect();
+      return [(r.left + r.width / 2 - s.left) / scale, (r.top + r.height / 2 - s.top) / scale];
+    };
+    const at = (ms: number, fn: () => void) => timers.push(window.setTimeout(fn, ms));
+    const stop = () => {
+      timers.forEach(clearTimeout);
+      timers = [];
+    };
+
+    // The cursor is animated frame by frame along a slight curve, always from where it currently is,
+    // so it never jumps, pauses with the tab and stays visible like in a screen recording.
+    type Point = { x: number; y: number };
+    const REST: Point = { x: 760, y: 560 };
+    const cur = { ...REST, a: 0 };
+    let from = REST,
+      to = REST,
+      ctrl = REST;
+    let t0 = 0,
+      dur = 1,
+      aTo = 0,
+      side = 1;
+    const frameCursor = (now: number) => {
+      const e = easeInOutCubic(Math.min(1, (now - t0) / dur)),
+        u = 1 - e;
+      cur.x = u * u * from.x + 2 * u * e * ctrl.x + e * e * to.x;
+      cur.y = u * u * from.y + 2 * u * e * ctrl.y + e * e * to.y;
+      cur.a += (aTo - cur.a) * 0.18;
+      if (Math.abs(aTo - cur.a) < 0.01) cur.a = aTo;
+      cursor.style.transform = `translate(${cur.x}px, ${cur.y}px)`;
+      cursor.style.opacity = String(cur.a);
+      rafId = requestAnimationFrame(frameCursor);
+    };
+    rafId = requestAnimationFrame(frameCursor);
+    const moveCursor = ([x, y]: [number, number], instant = false) => {
+      from = { x: cur.x, y: cur.y };
+      to = { x, y };
+      t0 = performance.now();
+      aTo = 1;
+      const dx = x - from.x,
+        dy = y - from.y,
+        dist = Math.hypot(dx, dy) || 1;
+      side = -side;
+      const bend = Math.min(60, dist * 0.12) * side; // gentle arc, alternating sides
+      ctrl = { x: from.x + dx / 2 - (dy / dist) * bend, y: from.y + dy / 2 + (dx / dist) * bend };
+      dur = Math.min(1000, Math.max(instant ? 420 : 600, dist * 1.1));
+    };
+    const click = (sel: string, then: () => void, instant: boolean) => {
+      if (instant) return then();
+      const [x, y] = center(sel);
+      cursor.classList.add('down');
+      ripple.style.setProperty('--x', `${x}px`);
+      ripple.style.setProperty('--y', `${y}px`);
+      ripple.classList.remove('go');
+      void ripple.offsetWidth;
+      ripple.classList.add('go');
+      at(140, () => {
+        cursor.classList.remove('down');
+        then();
+      });
+    };
+    const typeInto = (el: HTMLElement, text: string, speed: number, instant: boolean) => {
+      el.classList.add('on');
+      if (instant) {
+        el.textContent = text;
+        return;
+      }
+      el.textContent = '';
+      [...text].forEach((ch, k) => at(k * speed, () => (el.textContent += ch)));
+    };
+    const countUp = (el: HTMLElement) => {
+      const target = Number(el.dataset.count),
+        start = performance.now();
+      const step = (t: number) => {
+        const k = Math.min(1, (t - start) / 1100);
+        el.textContent = fmt.format(Math.round(target * (1 - Math.pow(1 - k, 3))));
+        if (k < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    };
+    const add = (...c: string[]) => stage.classList.add(...c);
+    const remove = (...c: string[]) => stage.classList.remove(...c);
+    const openPanel = () => {
+      add('is-open');
+      stage.querySelectorAll<HTMLElement>('.hp-panel [data-count]').forEach(countUp);
+    };
+    const resetInputs = () => {
+      typed.classList.remove('on');
+      typed.textContent = SEARCH_PLACEHOLDER;
+      aiTyped.classList.remove('on');
+      aiTyped.textContent = AI_PLACEHOLDER;
+    };
+
+    // Timeline: each event runs animated, or instantly when a step jump skips past it.
+    const ms = (t: number) => Math.round(t * SPEED);
+    const START = [0, 2500, 10100, 14400, 18600].map(ms); // one entry per step
+    const END = ms(24800);
+    type TimelineEvent = { t: number; run: (instant: boolean) => void };
+    const timeline: TimelineEvent[] = [
+      {
+        t: 0,
+        run: () => {
+          remove(...STATES);
+          resetInputs();
+          aiSent.textContent = '';
+        },
+      },
+      { t: 250, run: () => add('ws-in') },
+      { t: 1300, run: (i) => moveCursor(center('[data-hp-explore]'), i) },
+      { t: 2500, run: (i) => click('[data-hp-explore]', () => add('is-map'), i) },
+      { t: 3300, run: (i) => moveCursor(center('[data-hp-ai-btn]'), i) },
+      { t: 4100, run: (i) => click('[data-hp-ai-btn]', () => add('is-ai'), i) },
+      { t: 4500, run: (i) => typeInto(aiTyped, AI_QUESTION, 24, i) },
+      {
+        t: 6700,
+        run: () => {
+          aiSent.textContent = AI_QUESTION;
+          aiTyped.classList.remove('on');
+          aiTyped.textContent = AI_PLACEHOLDER;
+          add('is-asked');
+        },
+      },
+      { t: 7300, run: () => add('is-answer') },
+      { t: 9000, run: () => add('is-redirect') },
+      { t: 9300, run: (i) => moveCursor(center('[data-hp-accept]'), i) },
+      {
+        t: 10100,
+        run: (i) =>
+          click(
+            '[data-hp-accept]',
+            () => {
+              remove('is-redirect', 'is-ai');
+              add('is-zoomed', 'is-drawn');
+              typeInto(typed, 'Toulouse Est', 35, i);
+            },
+            i,
+          ),
+      },
+      { t: 11700, run: (i) => moveCursor(center('.hp-target'), i) },
+      { t: 12600, run: (i) => click('.hp-target', () => add('is-picked'), i) },
+      { t: 13500, run: (i) => moveCursor(center('[data-hp-btn]'), i) },
+      { t: 14400, run: (i) => click('[data-hp-btn]', openPanel, i) },
+      { t: 14900, run: (i) => moveCursor([430, 470], i) },
+      { t: 18600, run: (i) => moveCursor(center('[data-hp-add]'), i) },
+      { t: 19500, run: (i) => click('[data-hp-add]', () => add('is-added'), i) },
+      {
+        t: 21200,
+        run: () => {
+          remove('is-map', 'is-open', 'is-picked', 'is-added');
+          add('is-updated');
+          moveCursor([REST.x, REST.y]);
+        },
+      },
+    ];
+    const events = timeline.map((e) => ({ ...e, t: ms(e.t) }));
+
+    const showStep = (k: number, elapsed: number) => {
+      caption.textContent = stepEls[k].querySelector('strong')!.textContent;
+      stepEls.forEach((el, n) => {
+        const bar = el.querySelector<HTMLElement>('b')!,
+          len = (START[n + 1] ?? END) - START[n];
+        el.classList.toggle('on', n === k);
+        el.setAttribute('aria-current', String(n === k));
+        bar.style.transition = 'none';
+        bar.style.width = n < k ? '100%' : n > k ? '0%' : `${((elapsed - START[n]) / len) * 100}%`;
+        if (n === k) {
+          void bar.offsetWidth;
+          bar.style.transition = `width ${len - (elapsed - START[n])}ms linear`;
+          bar.style.width = '100%';
+        }
+      });
+    };
+    const playFrom = (from: number) => {
+      stop();
+      current = START.filter((s) => s <= from).length - 1;
+      events.forEach((e) => (e.t < from ? e.run(true) : at(e.t - from, () => e.run(false))));
+      START.forEach(
+        (s, k) =>
+          s > from &&
+          at(s - from, () => {
+            current = k;
+            showStep(k, s);
+          }),
+      );
+      at(END - from, () => playFrom(0));
+      showStep(current, from);
+    };
+    stepEls.forEach((el, k) => el.addEventListener('click', () => playFrom(START[k]), on));
+    window.__primoDemoCleanup = () => {
+      stop();
+      cancelAnimationFrame(rafId);
+      ro.disconnect();
+      io?.disconnect();
+      ac.abort();
+    };
+
+    if (prefersReducedMotion()) {
+      // Static frame: everything up to the open analysis panel, no cursor.
+      events.filter((e) => e.t <= START[3]).forEach((e) => e.run(true));
+      aTo = 0;
+      stepEls.forEach((el) => (el.querySelector<HTMLElement>('b')!.style.width = '100%'));
+    } else {
+      // Don't play behind the intro layer; start fresh once it has slid away.
+      const introOn = () => document.documentElement.classList.contains('has-intro');
+      let inView = false;
+      io = new IntersectionObserver(
+        ([e]) => {
+          inView = e.isIntersecting;
+          stop();
+          if (inView && !introOn() && !document.hidden) playFrom(0);
+        },
+        { threshold: 0.25 },
+      );
+      io.observe(frame);
+      addEventListener('primo:intro-done', () => playFrom(0), on);
+      // Pause in a background tab, resume the current step when coming back.
+      document.addEventListener(
+        'visibilitychange',
+        () => {
+          stop();
+          if (!document.hidden && inView && !introOn()) playFrom(START[current]);
+        },
+        on,
+      );
+    }
+  }
+</script>

@@ -1,0 +1,21 @@
+---
+import { ArrowUpRight } from 'lucide-react';
+import { EXTERNAL_LINKS } from '../../config/constants';
+---
+
+<section id="tarifs" class="shell pricing-wrap">
+  <div class="pricing-panel reveal">
+    <div>
+      <h2>Primo est en bêta.</h2>
+      <p>Créez un compte pour tester l’application. Les tarifs seront annoncés à l’ouverture.</p>
+      <p class="pricing-note">
+        Pour une agence ou une équipe, <a href={EXTERNAL_LINKS.EMAIL}>écrivez-nous</a>.
+      </p>
+    </div>
+    <div class="pricing-action">
+      <a class="primary primary-large" href={EXTERNAL_LINKS.APP_URL}>
+        Découvrir la bêta <ArrowUpRight size={20} />
+      </a>
+    </div>
+  </div>
+</section>
