@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const apiUrl = window?._env_?.API_URL;
+const apiUrl = window?._env_?.API_URL || "http://localhost:3000";
+const token = localStorage.getItem("token");
 
 export const getGeorisquesByInsee = async (
   insee: string,
@@ -9,19 +10,27 @@ export const getGeorisquesByInsee = async (
   const typeNames = `primo:georisques_${departement}`;
 
   const params = new URLSearchParams({
-    service: 'WFS',
-    version: '2.0.0',
-    request: 'GetFeature',
+    service: "WFS",
+    version: "2.0.0",
+    request: "GetFeature",
     typeName: typeNames,
-    outputFormat: 'application/json',
-    CQL_FILTER: `code_insee='${insee}'` 
+    outputFormat: "application/json",
+    CQL_FILTER: `code_insee='${insee}'`,
   });
 
-  return axios
-    .get(`${apiUrl}/geoserver/primo/wfs?${params}`)
-    .then((response) => response.data)
-    .catch((error) => {
-      console.error("Erreur WFS Géorisques:", error);
-      throw error;
-    });
+  try {
+    const response = await axios.get(
+      `${apiUrl}/geoserver/primo/wfs?${params}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("Erreur WFS Géorisques:", error);
+    throw error;
+  }
 };
