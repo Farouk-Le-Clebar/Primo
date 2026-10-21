@@ -79,7 +79,7 @@ export class AuthService {
     }
 
     const payload = { sub: user.id, email: user.email };
-    const token = this.jwtService.sign(payload);
+    const token = await this.jwtService.signAsync(payload);
 
     return {
       access_token: token,
@@ -125,7 +125,7 @@ export class AuthService {
       }
 
       const jwtPayload = { sub: user.id, email: user.email };
-      const token = this.jwtService.sign(jwtPayload);
+      const token = await this.jwtService.signAsync(jwtPayload);
 
       return {
         access_token: token,

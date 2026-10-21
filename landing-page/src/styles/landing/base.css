@@ -1,0 +1,379 @@
+/* Tokens (light / dark), fonts, reset, layout shell, typography, buttons, scroll reveal. */
+@font-face {
+  font-family: Primo;
+  src: url('../../assets/fonts/UberMoveMedium.woff2') format('woff2');
+  font-weight: 400 500;
+  font-display: swap;
+}
+@font-face {
+  font-family: Primo;
+  src: url('../../assets/fonts/UberMoveBold.woff2') format('woff2');
+  font-weight: 600 900;
+  font-display: swap;
+}
+:root {
+  --page: #fff;
+  --ink: #141817;
+  --muted: #626b67;
+  --line: #e4e9e6;
+  --surface: #f6f8f7;
+  --mint: #c8f9e5;
+  --accent: #007a55;
+  --button: #000;
+  --button-text: #fff;
+  color-scheme: light;
+}
+html[data-theme='dark'] {
+  --page: #101513;
+  --ink: #f3f7f5;
+  --muted: #a4b3ac;
+  --line: #2b3731;
+  --surface: #18221d;
+  --mint: #1e4938;
+  --accent: #77e8b5;
+  --button: #fff;
+  --button-text: #000;
+  color-scheme: dark;
+}
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 110px;
+}
+.primo-landing {
+  margin: 0;
+  background: var(--page);
+  color: var(--ink);
+  font-family: Primo, Inter, Arial, sans-serif;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+}
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+a,
+button {
+  transition:
+    background 0.2s,
+    color 0.2s,
+    transform 0.2s,
+    box-shadow 0.2s;
+}
+button {
+  cursor: pointer;
+}
+a {
+  text-decoration: none;
+}
+a:focus-visible,
+button:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 5px;
+}
+button svg {
+  pointer-events: none;
+}
+.shell {
+  max-width: 1240px;
+  margin: auto;
+  padding-inline: 40px;
+}
+.text-link:hover,
+footer a:hover {
+  color: var(--accent);
+}
+.primary {
+  background: var(--button);
+  color: var(--button-text);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  padding: 13px 20px;
+  border-radius: 9px;
+  font-size: 15px;
+  font-weight: 600;
+}
+.primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 22px #0002;
+}
+.primary-large {
+  padding: 20px 27px;
+  font-size: 17px;
+  gap: 32px;
+}
+.eyebrow {
+  font-size: 12px;
+  letter-spacing: 1.8px;
+  font-weight: 700;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+h1 {
+  font-size: clamp(48px, 6.4vw, 84px);
+  font-weight: 700;
+  line-height: 1.04;
+  letter-spacing: -3.9px;
+  margin: 24px 0;
+}
+h1 span {
+  position: relative;
+  z-index: 0;
+}
+h1 span:after {
+  content: '';
+  position: absolute;
+  bottom: 4px;
+  height: 0.26em;
+  left: -4px;
+  right: -7px;
+  background: var(--mint);
+  z-index: -1;
+  transform: rotate(-0.8deg);
+  border-radius: 3px;
+}
+.text-link {
+  display: inline-flex;
+  gap: 11px;
+  align-items: center;
+  font-size: 15px;
+  font-weight: 600;
+}
+.section {
+  padding-top: 100px;
+  padding-bottom: 100px;
+}
+.section-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 30px;
+  margin-bottom: 38px;
+}
+.section-heading > .eyebrow {
+  margin: 0;
+}
+h2 {
+  font-size: clamp(32px, 3.8vw, 47px);
+  letter-spacing: -1.8px;
+  line-height: 1.12;
+  font-weight: 600;
+  margin: 16px 0 0;
+}
+.section-heading > p,
+.section-copy {
+  color: var(--muted);
+  line-height: 1.65;
+  font-size: 16px;
+}
+.feature-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--mint);
+  color: var(--accent);
+  display: grid;
+  place-items: center;
+  margin-bottom: 24px;
+}
+h3 {
+  font-size: 25px;
+  line-height: 1.15;
+  font-weight: 600;
+  letter-spacing: -0.6px;
+  margin: 0 0 14px;
+}
+.step h3 {
+  font-size: 21px;
+}
+.step p {
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.7;
+}
+.section-copy {
+  margin: 24px 0;
+}
+.will-reveal {
+  opacity: 0;
+  translate: 0 22px;
+  transition:
+    opacity 0.7s ease,
+    translate 0.7s ease;
+}
+.will-reveal.visible {
+  opacity: 1;
+  translate: 0 0;
+}
+.step:nth-child(2) {
+  transition-delay: 80ms;
+}
+.step:nth-child(3) {
+  transition-delay: 160ms;
+}
+@media (max-width: 900px) {
+  .shell {
+    padding-inline: 25px;
+  }
+}
+@media (max-width: 680px) {
+  .shell {
+    padding-inline: 20px;
+  }
+  h1 {
+    letter-spacing: -2.4px;
+    font-size: 52px;
+    margin: 22px 0;
+  }
+  .primary-large {
+    padding: 18px 23px;
+  }
+  .section {
+    padding-top: 65px;
+    padding-bottom: 65px;
+  }
+  .section-heading {
+    display: block;
+  }
+  .section-heading > p {
+    margin-top: 22px;
+  }
+  .section-heading > .text-link {
+    margin-top: 24px;
+  }
+  .eyebrow {
+    font-size: 10px;
+    letter-spacing: 1.3px;
+  }
+  h2 {
+    font-size: 35px;
+  }
+  .feature-icon {
+    margin-bottom: 22px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *:before,
+  *:after {
+    animation: none !important;
+    transition: none !important;
+  }
+  .will-reveal {
+    opacity: 1;
+    translate: none;
+  }
+  .primary:hover {
+    transform: none;
+  }
+}
+@keyframes underline-draw {
+  from {
+    transform: scaleX(0) rotate(-3deg);
+  }
+  to {
+    transform: scaleX(1) rotate(-3deg);
+  }
+}
+.hp-risks .mid {
+  background: #fff1d6;
+  color: #a86500;
+}
+#contenu:focus {
+  outline: none;
+}
+.primo-landing {
+  padding-top: 86px;
+  font-size: 15px;
+}
+@media (max-width: 680px) {
+  .primo-landing {
+    padding-top: 72px;
+  }
+}
+.primo-landing {
+  padding-top: 68px;
+}
+html {
+  scroll-padding-top: 92px;
+}
+.primary {
+  padding: 10px 16px;
+  font-size: 14px;
+  gap: 14px;
+  border-radius: 8px;
+}
+.primary-large {
+  padding: 15px 22px;
+  font-size: 15px;
+  gap: 24px;
+}
+.text-link {
+  font-size: 14px;
+}
+.eyebrow {
+  font-size: 11px;
+  letter-spacing: 1.6px;
+}
+h1 {
+  font-size: clamp(38px, 5.1vw, 66px);
+  letter-spacing: -2.8px;
+  margin: 18px 0;
+}
+h1 span:after {
+  bottom: 3px;
+}
+h2 {
+  font-size: clamp(28px, 3.1vw, 40px);
+  letter-spacing: -1.4px;
+}
+h3 {
+  font-size: 21px;
+}
+.section {
+  padding-top: 84px;
+  padding-bottom: 84px;
+}
+.section-heading {
+  margin-bottom: 32px;
+}
+.section-heading > p,
+.section-copy {
+  font-size: 15px;
+}
+@media (max-width: 680px) {
+  .primo-landing {
+    padding-top: 60px;
+  }
+  html {
+    scroll-padding-top: 80px;
+  }
+  h1 {
+    font-size: 40px;
+    letter-spacing: -2px;
+  }
+  h2 {
+    font-size: 30px;
+  }
+  .section {
+    padding-top: 60px;
+    padding-bottom: 60px;
+  }
+}
+/* keep the mint underline inside the highlighted words (not under the period) */
+h1 span:after {
+  left: -3px;
+  right: -1px;
+}
+/* highlighter under "3 minutes": nearly flat, sits just under the letters */
+h1 span:after {
+  left: -4px;
+  right: -2px;
+  bottom: 0.04em;
+}

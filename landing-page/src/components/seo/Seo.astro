@@ -1,26 +1,109 @@
 ---
-interface Props { title: string; description: string; image?: string; noindex?: boolean; }
-const {title, description, image='/images/primo-map.webp', noindex=false}=Astro.props;
-const base=Astro.site || new URL('https://primo-data.fr');
-const path=Astro.url.pathname;
-const canonical=new URL(path==='/'?'/':path.replace(/\/$/,'')+'/',base).href;
-const home=new URL('/',base).href;
-const imageURL=new URL(image,base).href;
-const graph=[
- {'@type':'Organization','@id':home+'#organization',name:'Primo',url:home,logo:new URL('/logo-primo.svg',base).href,sameAs:['https://www.linkedin.com/company/primo-data-app/','https://www.instagram.com/primo.app/'],email:'contact@primo-data.fr'},
- {'@type':'WebSite','@id':home+'#website',url:home,name:'Primo',inLanguage:'fr-FR',publisher:{'@id':home+'#organization'}},
- {'@type':'WebPage','@id':canonical+'#webpage',url:canonical,name:title,description,inLanguage:'fr-FR',isPartOf:{'@id':home+'#website'},about:{'@id':home+'#organization'}},
- ...(path==='/'?[{'@type':'SoftwareApplication','@id':home+'#application',name:'Primo',url:home,applicationCategory:'BusinessApplication',operatingSystem:'Web',inLanguage:'fr-FR',description:'Application de recherche de parcelles cadastrales en France : critères géographiques, données foncières et espace projet collaboratif.',publisher:{'@id':home+'#organization'}}]:[])
+// <head> SEO tags: title, description, canonical, Open Graph / Twitter and a schema.org graph.
+// Pages can add their own schema.org nodes (FAQPage, Article…) through `schema`.
+import { CONTACT_EMAIL, EXTERNAL_LINKS, SITE_META } from '../../config/constants';
+
+interface Props {
+  title: string;
+  description: string;
+  image?: string;
+  imageAlt?: string;
+  type?: 'website' | 'article';
+  noindex?: boolean;
+  schema?: Record<string, unknown>[];
+}
+
+const {
+  title,
+  description,
+  image = SITE_META.DEFAULT_OG_IMAGE,
+  imageAlt = 'Primo : analyse d’une parcelle cadastrale sur une carte interactive',
+  type = 'website',
+  noindex = false,
+  schema = [],
+} = Astro.props;
+
+const site = Astro.site ?? new URL(SITE_META.DOMAIN);
+const { pathname } = Astro.url;
+const canonical = new URL(pathname.endsWith('/') ? pathname : `${pathname}/`, site).href;
+const home = new URL('/', site).href;
+const imageURL = new URL(image, site).href;
+const isHome = pathname === '/';
+
+const graph = [
+  {
+    '@type': 'Organization',
+    '@id': `${home}#organization`,
+    name: SITE_META.NAME,
+    url: home,
+    logo: new URL('/logo-primo.svg', site).href,
+    email: CONTACT_EMAIL,
+    sameAs: [EXTERNAL_LINKS.LINKEDIN, EXTERNAL_LINKS.INSTAGRAM],
+  },
+  {
+    '@type': 'WebSite',
+    '@id': `${home}#website`,
+    url: home,
+    name: SITE_META.NAME,
+    inLanguage: 'fr-FR',
+    publisher: { '@id': `${home}#organization` },
+  },
+  {
+    '@type': 'WebPage',
+    '@id': `${canonical}#webpage`,
+    url: canonical,
+    name: title,
+    description,
+    inLanguage: 'fr-FR',
+    isPartOf: { '@id': `${home}#website` },
+    about: { '@id': `${home}#organization` },
+    primaryImageOfPage: imageURL,
+  },
+  ...(isHome
+    ? [
+        {
+          '@type': 'SoftwareApplication',
+          '@id': `${home}#application`,
+          name: SITE_META.NAME,
+          url: EXTERNAL_LINKS.APP_URL,
+          applicationCategory: 'BusinessApplication',
+          operatingSystem: 'Web',
+          inLanguage: 'fr-FR',
+          description:
+            'Application de recherche et d’analyse de parcelles cadastrales en France : cadastre, PLU, DVF, DPE, risques et espace projet collaboratif.',
+          publisher: { '@id': `${home}#organization` },
+        },
+      ]
+    : []),
+  ...schema,
 ];
+const jsonLd = JSON.stringify({ '@context': 'https://schema.org', '@graph': graph }).replace(/</g, '\\u003c');
 ---
+
 <title>{title}</title>
-<meta name="description" content={description}/>
-<meta name="robots" content={noindex?'noindex, follow':'index, follow, max-image-preview:large'}/>
-<link rel="canonical" href={canonical}/>
-<meta property="og:type" content="website"/><meta property="og:site_name" content="Primo"/>
-<meta property="og:locale" content="fr_FR"/><meta property="og:url" content={canonical}/>
-<meta property="og:title" content={title}/><meta property="og:description" content={description}/>
-<meta property="og:image" content={imageURL}/><meta property="og:image:alt" content="Primo : recherche de parcelles et analyse cadastrale sur une carte interactive"/>
-<meta name="twitter:card" content="summary_large_image"/><meta name="twitter:title" content={title}/>
-<meta name="twitter:description" content={description}/><meta name="twitter:image" content={imageURL}/>
-<script type="application/ld+json" set:html={JSON.stringify({'@context':'https://schema.org','@graph':graph}).replace(/</g,'\\u003c')}/>
+<meta name="description" content={description} />
+<meta name="robots" content={noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large'} />
+<link rel="canonical" href={canonical} />
+
+<meta property="og:type" content={type} />
+<meta property="og:site_name" content={SITE_META.NAME} />
+<meta property="og:locale" content="fr_FR" />
+<meta property="og:url" content={canonical} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={imageURL} />
+<meta property="og:image:alt" content={imageAlt} />
+{image === SITE_META.DEFAULT_OG_IMAGE && (
+  <>
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+  </>
+)}
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={imageURL} />
+<meta name="twitter:image:alt" content={imageAlt} />
+
+<script type="application/ld+json" set:html={jsonLd} />

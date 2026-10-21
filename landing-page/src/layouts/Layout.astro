@@ -1,7 +1,30 @@
 ---
+// Shell of the secondary pages (blog, legal, about), styled with Tailwind.
+import '../styles/global.css';
 import Seo from '../components/seo/Seo.astro';
-interface Props { title: string; description?: string; ogImage?: string; }
-const {title,description="Primo centralise les données cadastrales, l’urbanisme, les risques et les informations foncières pour préparer votre projet.",ogImage}=Astro.props;
+import { SITE_META } from '../config/constants';
+
+interface Props {
+  title: string;
+  description?: string;
+  ogImage?: string;
+  type?: 'website' | 'article';
+  schema?: Record<string, unknown>[];
+}
+const { title, description = SITE_META.DESCRIPTION, ogImage, type, schema } = Astro.props;
 ---
-<!doctype html><html lang="fr"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><Seo title={title} description={description} image={ogImage}/><link rel="icon" href="/favicon.ico"/></head><body><slot/></body></html>
-<style is:global>@import "../styles/global.css";</style>
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <Seo title={title} description={description} image={ogImage} type={type} schema={schema} />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" href="/logo-primo.svg" type="image/svg+xml" />
+    <meta name="theme-color" content={SITE_META.THEME_COLOR.light} />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

@@ -19,16 +19,6 @@ import { StatisticsModule } from '../statistics/statistics.module';
     NotificationModule,
     MailModule,
     StatisticsModule,
-    JwtModule.registerAsync({
-      imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => ({
-        secret: configService.get<string>('JWT_SECRET') || 'defaultSecret',
-        signOptions: {
-          expiresIn: '1d'
-        },
-      }),
-      inject: [ConfigService],
-    }),
   ],
   providers: [AuthService, JwtStrategy, JwtAuthGuard],
   controllers: [AuthController],
