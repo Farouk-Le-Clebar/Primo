@@ -8,7 +8,6 @@ import {
     NEXT_SORT_ORDER,
     type SortOrder,
 } from "./constants";
-import GlobalScore from "./GlobalScore";
 import InfraCard, { InfraCardSkeleton } from "./InfraCard";
 import InfraSelector from "./InfraSelector";
 import ResultsToolbar from "./ResultsToolBar";
