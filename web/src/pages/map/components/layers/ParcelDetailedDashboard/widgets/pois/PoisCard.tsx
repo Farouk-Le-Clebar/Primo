@@ -204,18 +204,14 @@ export default function PoisCard({ feature }: ParcelWidgetProps) {
                         </div>
                     ) : (
                         <>
-                            {globalScore && (
-                                <GlobalScore
-                                    {...globalScore}
-                                    ariaLabel="Score global des infrastructures"
-                                />
-                            )}
                             <ResultsToolbar
+                                globalScore={globalScore}
                                 sortOrder={sortOrder}
                                 onCycleSort={cycleSort}
                                 grayNotFound={grayNotFound}
                                 onToggleGrayNotFound={toggleGrayNotFound}
                             />
+
                             <div className={GRID_CLASS}>
                                 {displayedCodes.map((code) => {
                                     const result = computed.get(code);
