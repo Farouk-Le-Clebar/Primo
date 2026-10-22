@@ -27,6 +27,15 @@ export type FeatureLike = {
 
 export type ComputedResults = ReadonlyMap<string, ProximityResult | null>;
 
+export type GlobalScoreSummary = {
+    /** Rounded average score, 0–100. */
+    score: number;
+    /** Number of infrastructure types taken into account. */
+    total: number;
+    /** Number of those types for which something was found. */
+    found: number;
+};
+
 export function getDistance(
     result: ProximityResult | null | undefined,
 ): number | null {
@@ -45,7 +54,8 @@ export function sortCodes(
         getDistance(results.get(code)) ?? Number.POSITIVE_INFINITY;
 
     return [...codes].sort((a, b) => {
-        if (notFoundLast && isFound(a) !== isFound(b)) return isFound(a) ? -1 : 1;
+        if (notFoundLast && isFound(a) !== isFound(b))
+            return isFound(a) ? -1 : 1;
         if (order === "none") return 0;
         const da = distanceOf(a);
         const db = distanceOf(b);
@@ -72,6 +82,33 @@ export function getParcelCache(
 export function clampScore(score: unknown): number {
     const value = Number(score ?? 0);
     return Number.isFinite(value) ? Math.max(0, Math.min(100, value)) : 0;
+}
+
+/**
+ * Average score over the given types. Types with nothing found count for 0,
+ * so a missing hospital lowers the overall score.
+ */
+export function computeGlobalScore(
+    codes: string[],
+    results: ComputedResults,
+): GlobalScoreSummary | null {
+    if (codes.length === 0) return null;
+    const total = codes.reduce(
+        (sum, code) => sum + clampScore(results.get(code)?.score),
+        0,
+    );
+    return {
+        score: Math.round(total / codes.length),
+        total: codes.length,
+        found: codes.filter((code) => results.get(code)).length,
+    };
+}
+
+export function getScoreLabel(score: number): string {
+    if (score >= 75) return "Très bien desservi";
+    if (score >= 50) return "Bien desservi";
+    if (score >= 25) return "Desserte limitée";
+    return "Peu desservi";
 }
 
 export function scoreColor(score: number): string {
