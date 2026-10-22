@@ -37,17 +37,17 @@ function InfraCard({ code, result, muted = false }: InfraCardProps) {
 
     return (
         <Card
-            className={`flex min-h-40 flex-col rounded-xl border border-slate-100 p-4 shadow-sm transition dark:border-slate-800 dark:ring-slate-800 ${
+            className={`flex min-h-40 flex-col rounded-xl p-4 shadow-sm transition ${
                 muted
-                    ? "bg-slate-100 opacity-60 grayscale dark:bg-slate-800/60"
-                    : "bg-white dark:bg-slate-900"
+                    ? "bg-slate-100 opacity-60 grayscale dark:bg-zinc-800/60"
+                    : "bg-white dark:bg-zinc-900"
             }`}
         >
-            <h4 className="text-[15px] font-semibold text-slate-800 dark:text-slate-100">
+            <h4 className="text-[15px] font-semibold text-slate-800 dark:text-zinc-100">
                 {title}
             </h4>
             <p
-                className="mt-0.5 min-h-5 truncate text-[13px] text-slate-500 dark:text-slate-400"
+                className="mt-0.5 min-h-5 truncate text-[13px] text-slate-500 dark:text-zinc-400"
                 title={name ?? undefined}
             >
                 {found
@@ -68,7 +68,7 @@ function InfraCard({ code, result, muted = false }: InfraCardProps) {
             </div>
             {found && (
                 <p
-                    className="line-clamp-2 border-t border-slate-200 pt-4 text-xs text-slate-500 dark:border-slate-800 dark:text-slate-400"
+                    className="line-clamp-2 border-t border-slate-200 pt-4 text-xs text-slate-500 dark:border-zinc-800 dark:text-zinc-400"
                     title={infraAddress ?? undefined}
                 >
                     {infraAddress ?? "Adresse non renseignée"}
@@ -84,16 +84,16 @@ export function InfraCardSkeleton() {
     return (
         <div
             aria-hidden="true"
-            className="flex min-h-40 animate-pulse flex-col rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900"
+            className="flex min-h-40 animate-pulse flex-col rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900"
         >
-            <div className="h-4 w-1/2 rounded bg-slate-200 dark:bg-slate-700" />
-            <div className="mt-2 h-4 w-3/4 rounded bg-slate-100 dark:bg-slate-800" />
-            <div className="mt-3 h-5 w-16 rounded-md bg-slate-200 dark:bg-slate-700" />
+            <div className="h-4 w-1/2 rounded bg-slate-200 dark:bg-zinc-700" />
+            <div className="mt-2 h-4 w-3/4 rounded bg-slate-100 dark:bg-zinc-800" />
+            <div className="mt-3 h-5 w-16 rounded-md bg-slate-200 dark:bg-zinc-700" />
             <div className="flex flex-1 items-center justify-center py-3">
-                <div className="h-[80px] w-[80px] rounded-full bg-slate-100 dark:bg-slate-800" />
+                <div className="h-[80px] w-[80px] rounded-full bg-slate-100 dark:bg-zinc-800" />
             </div>
-            <div className="border-t border-slate-200 pt-4 dark:border-slate-800">
-                <div className="h-3 w-2/3 rounded bg-slate-100 dark:bg-slate-800" />
+            <div className="border-t border-slate-200 pt-4 dark:border-zinc-800">
+                <div className="h-3 w-2/3 rounded bg-slate-100 dark:bg-zinc-800" />
             </div>
         </div>
     );
