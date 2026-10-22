@@ -8,10 +8,12 @@ import {
     NEXT_SORT_ORDER,
     type SortOrder,
 } from "./constants";
+import GlobalScore from "./GlobalScore";
 import InfraCard, { InfraCardSkeleton } from "./InfraCard";
 import InfraSelector from "./InfraSelector";
 import ResultsToolbar from "./ResultsToolBar";
 import {
+    computeGlobalScore,
     extractResults,
     getErrorMessage,
     getParcelCache,
@@ -57,15 +59,20 @@ export default function PoisCard({ feature }: ParcelWidgetProps) {
 
     useEffect(() => () => abortRef.current?.abort(), []);
 
+    // Selected types that have been computed: what is shown and averaged.
+    const visibleCodes = useMemo(
+        () => selectedTypes.filter((code) => computed.has(code)),
+        [selectedTypes, computed],
+    );
+
     const displayedCodes = useMemo(
-        () =>
-            sortCodes(
-                selectedTypes.filter((code) => computed.has(code)),
-                computed,
-                sortOrder,
-                grayNotFound,
-            ),
-        [selectedTypes, computed, sortOrder, grayNotFound],
+        () => sortCodes(visibleCodes, computed, sortOrder, grayNotFound),
+        [visibleCodes, computed, sortOrder, grayNotFound],
+    );
+
+    const globalScore = useMemo(
+        () => computeGlobalScore(visibleCodes, computed),
+        [visibleCodes, computed],
     );
 
     const toggleType = useCallback((code: string) => {
@@ -84,7 +91,10 @@ export default function PoisCard({ feature }: ParcelWidgetProps) {
         );
     }, []);
 
-    const resetTypes = useCallback(() => setSelectedTypes([...DEFAULT_TYPES]), []);
+    const resetTypes = useCallback(
+        () => setSelectedTypes([...DEFAULT_TYPES]),
+        [],
+    );
     const clearTypes = useCallback(() => setSelectedTypes([]), []);
     const cycleSort = useCallback(
         () => setSortOrder((current) => NEXT_SORT_ORDER[current]),
@@ -112,7 +122,12 @@ export default function PoisCard({ feature }: ParcelWidgetProps) {
 
         const publish = () =>
             setComputed(
-                new Map(selectedTypes.map((code) => [code, cache.get(code) ?? null])),
+                new Map(
+                    selectedTypes.map((code) => [
+                        code,
+                        cache.get(code) ?? null,
+                    ]),
+                ),
             );
 
         setError(null);
@@ -153,8 +168,7 @@ export default function PoisCard({ feature }: ParcelWidgetProps) {
     }, [currentFeature, parcelKey, selectedTypes, isUpToDate]);
 
     return (
-        <div className="flex h-full min-h-[520px] w-full flex-col gap-5 rounded-xl bg-slate-50 p-4 md:p-6">
-
+        <div className="flex h-full min-h-[720px] w-full flex-col gap-5">
             <div className="flex flex-1 flex-col gap-5 md:flex-row md:items-start">
                 <InfraSelector
                     selectedTypes={selectedTypes}
@@ -177,12 +191,12 @@ export default function PoisCard({ feature }: ParcelWidgetProps) {
                             ))}
                         </div>
                     ) : !hasCalculated ? (
-                        <div className="flex h-full min-h-64 items-center justify-center rounded-xl border border-dashed border-slate-300 bg-white p-8 text-center">
+                        <div className="flex h-full min-h-64 items-center justify-center rounded-xl border border-dashed border-slate-300 bg-white p-8 text-center dark:border-slate-700 dark:bg-slate-900">
                             <div>
-                                <p className="font-medium text-slate-700">
+                                <p className="font-medium text-slate-700 dark:text-slate-200">
                                     Découvrez les infrastructures à proximité
                                 </p>
-                                <p className="mt-1 text-sm text-slate-500">
+                                <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
                                     Sélectionnez les types souhaités puis lancez
                                     le calcul.
                                 </p>
@@ -190,6 +204,12 @@ export default function PoisCard({ feature }: ParcelWidgetProps) {
                         </div>
                     ) : (
                         <>
+                            {globalScore && (
+                                <GlobalScore
+                                    {...globalScore}
+                                    ariaLabel="Score global des infrastructures"
+                                />
+                            )}
                             <ResultsToolbar
                                 sortOrder={sortOrder}
                                 onCycleSort={cycleSort}
