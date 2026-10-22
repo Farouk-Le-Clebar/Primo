@@ -60,10 +60,10 @@ function CategorySection({
                 <button
                     type="button"
                     onClick={() => onToggleExpanded(category.label)}
-                    className="flex flex-1 items-center justify-between py-1 text-left text-sm text-slate-600"
+                    className="flex flex-1 items-center justify-between py-1 text-left text-sm text-slate-600 dark:text-slate-300"
                 >
                     <span>{category.label}</span>
-                    <span className="text-slate-500">
+                    <span className="text-slate-500 dark:text-slate-400">
                         {isExpanded ? "⌄" : "›"}
                     </span>
                 </button>
@@ -73,7 +73,7 @@ function CategorySection({
                     {category.types.map((type) => (
                         <label
                             key={type.code}
-                            className="flex cursor-pointer items-center gap-2 text-sm text-slate-600"
+                            className="flex cursor-pointer items-center gap-2 text-sm text-slate-600 dark:text-slate-300"
                         >
                             <input
                                 type="checkbox"
@@ -116,27 +116,26 @@ function InfraSelector({
     }, []);
 
     return (
-        <aside className="w-full shrink-0 self-start rounded-xl bg-white p-5 md:sticky md:top-0 md:max-h-[calc(100vh-2rem)] md:w-80 md:overflow-y-auto lg:w-96">
+        <aside className="w-full shrink-0 self-start rounded-xl bg-white p-5 dark:bg-slate-900 md:sticky md:top-0 md:max-h-[calc(100vh-2rem)] md:w-80 md:overflow-y-auto lg:w-96">
             <div className="mb-5 flex items-center justify-between text-xs">
-                
                 <button
                     type="button"
                     onClick={onClear}
                     disabled={selectedCount === 0}
-                    className="text-slate-500  hover:text-slate-900 disabled:cursor-not-allowed disabled:opacity-40 disabled:no-underline"
+                    className="text-slate-500 hover:text-slate-900 disabled:cursor-not-allowed disabled:opacity-40 dark:text-slate-400 dark:hover:text-white"
                 >
                     Tout désélectionner
                 </button>
                 <button
                     type="button"
                     onClick={onReset}
-                    className="text-slate-500  hover:text-slate-900 "
+                    className="text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
                 >
                     Réinitialiser
                 </button>
             </div>
 
-            <div className="divide-y divide-slate-100 border-y border-slate-500">
+            <div className="divide-y divide-slate-100 border-y border-slate-500 dark:divide-slate-800 dark:border-slate-700">
                 {INFRA_CATEGORIES.map((category) => (
                     <CategorySection
                         key={category.label}
@@ -154,10 +153,10 @@ function InfraSelector({
                 type="button"
                 onClick={onCalculate}
                 disabled={loading || !canCalculate || selectedCount === 0}
-                className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-50"
+                className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200"
             >
                 {loading && (
-                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
+                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white dark:border-slate-900/30 dark:border-t-slate-900" />
                 )}
                 {loading
                     ? "Calcul en cours…"
@@ -165,21 +164,28 @@ function InfraSelector({
                       ? "Recalculer la proximité"
                       : "Calculer la proximité"}
             </button>
-            <p className="mt-2 flex items-start gap-1 text-[11px] leading-snug text-slate-500">
-                <span aria-hidden="true" className="shrink-0 text-sm leading-none">
+            <p className="mt-2 flex items-start gap-1 text-[11px] leading-snug text-slate-500 dark:text-slate-400">
+                <span
+                    aria-hidden="true"
+                    className="shrink-0 text-sm leading-none"
+                >
                     ⓘ
                 </span>
                 <span>
                     Les distances sont calculées à vol d'oiseau : elles ne
                     reflètent pas la distance réelle à parcourir.
                     <span className="mt-1 block">
-                        L'indice de proximité est calculé par rapport à une distance maximale de 30km. Au-delà, l'indice est de 0%.
+                        L'indice de proximité est calculé par rapport à une
+                        distance maximale de 30km. Au-delà, l'indice est de 0%.
                     </span>
                 </span>
             </p>
-            
+
             {error && (
-                <p role="alert" className="mt-3 break-words text-xs text-red-700">
+                <p
+                    role="alert"
+                    className="mt-3 break-words text-xs text-red-700 dark:text-red-400"
+                >
                     {error}
                 </p>
             )}
