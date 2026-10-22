@@ -8,16 +8,19 @@ export const INFRA_CATEGORIES: InfraCategory[] = [
             { code: "bibliotheque", label: "Bibliothèque" },
             { code: "cinema", label: "Cinéma" },
             { code: "musee", label: "Musée" },
+            { code: "centre_culturel", label: "Centre culturel" },
+            { code: "theatre", label: "Théâtre" },
         ],
     },
     {
-    label: "Sport",
+        label: "Sport",
         types: [
-            { code: "piscine_publique", label: "Piscine publique" },
-            { code: "salle_de_sport", label: "Salle de sport" },
-            { code: "terrain_de_tennis", label: "Terrain de tennis" },
-        ],    
+            { code: "terrain_sport", label: "Terrain de sport" },
+            { code: "centre_sportif", label: "Centre sportif" },
+            { code: "stade", label: "Stade" },
+        ],
     },
+
     {
         label: "Santé",
         types: [
@@ -42,6 +45,13 @@ export const INFRA_CATEGORIES: InfraCategory[] = [
         label: "Environnement",
         types: [{ code: "parc", label: "Parc" }],
     },
+    {
+        label: "Sécurité",
+        types: [
+            { code: "police", label: "Poste de police" },
+            { code: "caserne_pompiers", label: "Caserne de pompiers" },
+        ],
+    },
 ];
 
 export const DEFAULT_TYPES = [
@@ -52,7 +62,7 @@ export const DEFAULT_TYPES = [
     "supermarche",
 ];
 
-export const DEFAULT_EXPANDED_CATEGORIES = ["Sports"];
+export const DEFAULT_EXPANDED_CATEGORIES = ["Sport"];
 
 export type SortOrder = "asc" | "desc" | "none";
 
@@ -73,16 +83,21 @@ export const INFRA_TYPE_BY_CODE: ReadonlyMap<
     INFRA_CATEGORIES.flatMap((category) =>
         category.types.map(
             (type) =>
-                [type.code, { label: type.label, family: category.label }] as const,
+                [
+                    type.code,
+                    { label: type.label, family: category.label },
+                ] as const,
         ),
     ),
 );
 
-export const SCORE_COLOR_STOPS: { at: number; color: [number, number, number] }[] =
-    [
-        { at: 0, color: [169, 0, 3] }, // #A90003
-        { at: 25, color: [232, 117, 40] }, // orange
-        { at: 50, color: [230, 194, 41] }, // yellow
-        { at: 75, color: [154, 205, 50] }, // yellow-green
-        { at: 100, color: [52, 199, 89] }, // #16e44a
-    ];
+export const SCORE_COLOR_STOPS: {
+    at: number;
+    color: [number, number, number];
+}[] = [
+    { at: 0, color: [169, 0, 3] }, // #A90003
+    { at: 25, color: [232, 117, 40] }, // orange
+    { at: 50, color: [230, 194, 41] }, // yellow
+    { at: 75, color: [154, 205, 50] }, // yellow-green
+    { at: 100, color: [52, 199, 89] }, // #16e44a
+];
