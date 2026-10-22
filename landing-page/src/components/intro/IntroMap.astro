@@ -1,0 +1,315 @@
+---
+// Full-screen interactive intro: pick a parcel, watch Primo gather its data in seconds,
+// then the whole layer slides up to reveal the landing page.
+import { ArrowRight, Check, ChevronDown, Timer } from 'lucide-react';
+import Logo from '../../assets/logos/logoPrimoBlack.svg?url';
+import { generateCadastre } from '../../lib/cadastre';
+import { round1 } from '../../lib/random';
+import { DATASETS, DATASET_ICONS } from '../../data/parcel';
+
+const W = 1600,
+  H = 1000;
+const map = generateCadastre({ width: W, height: H, seed: 21 });
+// 1 map unit ≈ 0.42 m, so the displayed area follows the parcel you click
+const M2_PER_UNIT = 0.42 * 0.42;
+---
+
+<div class="intro" data-intro role="dialog" aria-modal="true" aria-labelledby="intro-title">
+  <div class="intro-map" data-intro-map>
+    <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <g transform={map.transform}>
+        <rect x="-1200" y="-1200" width="4000" height="3400" class="im-road" />
+        {map.blocks.map((b) => (
+          <rect
+            class="im-block"
+            x={round1(b.x)}
+            y={round1(b.y)}
+            width={round1(b.w)}
+            height={round1(b.h)}
+            rx="3"
+          />
+        ))}
+        {map.parks.map((b) => (
+          <rect
+            class="im-park"
+            x={round1(b.x)}
+            y={round1(b.y)}
+            width={round1(b.w)}
+            height={round1(b.h)}
+            rx="3"
+          />
+        ))}
+        {map.trees.map((t) => (
+          <circle class="im-tree" cx={round1(t.x)} cy={round1(t.y)} r={round1(t.r)} />
+        ))}
+        {map.parcels.map(
+          ({ building: b }) =>
+            b && (
+              <rect
+                class="im-bd"
+                x={round1(b.x)}
+                y={round1(b.y)}
+                width={round1(b.w)}
+                height={round1(b.h)}
+                rx="1.5"
+              />
+            ),
+        )}
+        {map.parcels.map((p) => (
+          <rect
+            class="im-parcel"
+            data-id={p.id}
+            data-area={Math.round(p.w * p.h * M2_PER_UNIT)}
+            x={round1(p.x)}
+            y={round1(p.y)}
+            width={round1(p.w)}
+            height={round1(p.h)}
+          />
+        ))}
+      </g>
+    </svg>
+  </div>
+  <div class="intro-veil" aria-hidden="true"></div>
+
+  <header class="intro-top">
+    <span class="intro-brand">
+      <img src={Logo} alt="" width="26" height="26" />
+      Primo
+    </span>
+    <button type="button" class="intro-skip" data-intro-skip>
+      Passer l’intro <ArrowRight size={15} />
+    </button>
+  </header>
+
+  <div class="intro-prompt">
+    <h2 id="intro-title">Choisissez votre parcelle.</h2>
+  </div>
+
+  <div class="intro-tip" data-intro-tip aria-hidden="true"></div>
+  <div class="intro-timer" data-intro-timer aria-live="polite">
+    <Timer size={15} /> Récupération des données · <b data-intro-clock>0,0 s</b>
+  </div>
+
+  <div class="intro-cards" data-intro-cards>
+    {DATASETS.map((d, i) => {
+      const Icon = DATASET_ICONS[d.key];
+      return (
+        <div class:list={['intro-card', i < 4 ? 'l' : 'r']} style={`--row:${i % 4}`} data-key={d.key}>
+          <span class="ic-icon">
+            <Icon size={17} />
+          </span>
+          <div class="ic-body">
+            <small>{d.source}</small>
+            <b data-ic-value>{d.value}</b>
+            <span data-ic-detail>{d.detail}</span>
+            <i class="ic-skel" aria-hidden="true">
+              <i />
+              <i />
+            </i>
+          </div>
+          <span class="ic-state" aria-hidden="true">
+            <i class="ic-spin" />
+            <Check size={14} className="ic-ok" />
+          </span>
+        </div>
+      );
+    })}
+  </div>
+
+  <div class="intro-result" data-intro-result>
+    <h2>Vous avez récupéré les informations de la parcelle en quelques secondes.</h2>
+    <p>Sans Primo, cela aurait pris des heures.</p>
+    <button type="button" class="intro-go" data-intro-go>
+      <span>Découvrir Primo</span>
+      <i>
+        <ChevronDown size={18} />
+      </i>
+    </button>
+  </div>
+</div>
+
+<script>
+  const MOBILE = 700; // px, matches the intro's mobile layout
+  const CARD_STAGGER = 260; // ms between two data cards
+  const CARD_LOAD = 420; // ms a card "loads" before its check mark
+  const ZOOM_DELAY = 950; // ms of zoom before loading starts
+  const LEAVE_DURATION = 1000; // ms, matches the .is-leaving transition
+
+  const root = document.documentElement;
+  const intro = document.querySelector<HTMLElement>('[data-intro]');
+
+  if (intro && root.classList.contains('has-intro')) {
+    intro.dataset.ready = '';
+    const $ = <T extends Element = HTMLElement>(sel: string) => intro.querySelector<T>(sel)!;
+    const mapEl = $('[data-intro-map]');
+    const tip = $('[data-intro-tip]');
+    const clock = $('[data-intro-clock]');
+    const cardsEl = $('[data-intro-cards]');
+    const result = $('[data-intro-result]');
+    const cards = [...intro.querySelectorAll<HTMLElement>('.intro-card')];
+    const parcels = [...intro.querySelectorAll<SVGRectElement>('.im-parcel')];
+
+    // Every global listener and timer is tied to this controller, so leaving the intro cleans up everything.
+    const ac = new AbortController();
+    const on = { signal: ac.signal };
+    const timers: number[] = [];
+    const at = (ms: number, fn: () => void) => timers.push(window.setTimeout(fn, ms));
+
+    const fmt = (ms: number) => `${(ms / 1000).toFixed(1).replace('.', ',')} s`;
+    const isMobile = () => innerWidth < MOBILE;
+    let state: 'choose' | 'loading' | 'done' | 'leaving' = 'choose';
+    let picked: SVGRectElement | null = null;
+    let raf = 0;
+
+    // Centre the picked parcel at (fx, fy) of the viewport and zoom in.
+    const zoomTo = (el: SVGRectElement, fx: number, fy: number) => {
+      const prev = mapEl.style.transform;
+      mapEl.style.transition = 'none';
+      mapEl.style.transform = 'none';
+      const r = el.getBoundingClientRect();
+      mapEl.style.transform = prev;
+      void mapEl.offsetWidth;
+      mapEl.style.transition = '';
+      const s = Math.min(
+        4,
+        Math.max(
+          1.8,
+          (Math.min(innerWidth, innerHeight) * (isMobile() ? 0.34 : 0.24)) / Math.max(r.width, r.height),
+        ),
+      );
+      const tx = innerWidth * fx - (r.left + r.width / 2) * s;
+      const ty = innerHeight * fy - (r.top + r.height / 2) * s;
+      mapEl.style.transform = `translate(${tx}px, ${ty}px) scale(${s})`;
+    };
+    const focusY = () => (isMobile() ? 0.27 : 0.5);
+
+    // Result state: fit the cards (and the parcel) in the space left above the message, so nothing overlaps.
+    const settle = () => {
+      if (!picked) return;
+      const resultTop = innerHeight - parseFloat(getComputedStyle(result).bottom) - result.offsetHeight;
+      if (isMobile()) return zoomTo(picked, 0.5, Math.max(0.16, (resultTop * 0.5) / innerHeight));
+      const bandTop = 150,
+        band = resultTop - 28 - bandTop;
+      const s = Math.min(1, band / (4 * 92)); // four rows of cards
+      const mid = bandTop + band / 2;
+      cardsEl.style.transform = `translateY(${mid - innerHeight / 2}px) scale(${s})`;
+      cardsEl.style.opacity = s < 0.55 ? '0' : '1';
+      zoomTo(picked, 0.5, mid / innerHeight);
+    };
+
+    const pick = (el: SVGRectElement) => {
+      if (state !== 'choose') return;
+      state = 'loading';
+      picked = el;
+      tip.classList.remove('on');
+      el.classList.add('picked');
+      intro.classList.add('is-picked');
+      const cadastre = $('[data-key="cadastre"]');
+      cadastre.querySelector('[data-ic-value]')!.textContent =
+        `${new Intl.NumberFormat('fr-FR').format(Number(el.dataset.area))} m²`;
+      cadastre.querySelector('[data-ic-detail]')!.textContent = `Parcelle ${el.dataset.id}`;
+      zoomTo(el, 0.5, focusY());
+
+      at(ZOOM_DELAY, () => {
+        intro.classList.add('is-loading');
+        const t0 = performance.now();
+        const tick = () => {
+          clock.textContent = fmt(performance.now() - t0);
+          raf = requestAnimationFrame(tick);
+        };
+        tick();
+        cards.forEach((card, i) => {
+          at(i * CARD_STAGGER, () => card.classList.add('in'));
+          at(i * CARD_STAGGER + CARD_LOAD + (i % 3) * 90, () => card.classList.add('done'));
+        });
+        at((cards.length - 1) * CARD_STAGGER + CARD_LOAD + 180 + 700, () => {
+          cancelAnimationFrame(raf);
+          clock.textContent = fmt(performance.now() - t0);
+          state = 'done';
+          intro.classList.add('is-done');
+          settle();
+        });
+      });
+    };
+
+    // Swallow trackpad momentum while the layer slides away, so the page doesn't scroll on its own.
+    let holdUntil = 0;
+    const hold = (e: Event) => {
+      if (performance.now() < holdUntil) e.preventDefault();
+    };
+    addEventListener('wheel', hold, { passive: false, signal: ac.signal });
+    addEventListener('touchmove', hold, { passive: false, signal: ac.signal });
+
+    const leave = () => {
+      if (state === 'leaving') return;
+      state = 'leaving';
+      timers.forEach(clearTimeout);
+      cancelAnimationFrame(raf);
+      holdUntil = performance.now() + LEAVE_DURATION + 900;
+      scrollTo({ top: 0, behavior: 'instant' });
+      intro.classList.add('is-leaving');
+      window.setTimeout(() => {
+        root.classList.remove('has-intro');
+        intro.remove();
+        scrollTo({ top: 0, behavior: 'instant' });
+        dispatchEvent(new Event('primo:intro-done'));
+        document.querySelector<HTMLElement>('#contenu')?.focus({ preventScroll: true });
+      }, LEAVE_DURATION);
+      // keep swallowing momentum a little longer, then drop every listener
+      window.setTimeout(() => ac.abort(), LEAVE_DURATION + 900);
+    };
+
+    parcels.forEach((p) => {
+      p.addEventListener('pointerenter', () => {
+        if (state !== 'choose') return;
+        tip.textContent = `Parcelle ${p.dataset.id}`;
+        tip.classList.add('on');
+      });
+      p.addEventListener('pointerleave', () => tip.classList.remove('on'));
+      p.addEventListener('click', () => pick(p));
+    });
+    intro.addEventListener('pointermove', (e) => {
+      tip.style.setProperty('--x', `${e.clientX}px`);
+      tip.style.setProperty('--y', `${e.clientY}px`);
+    });
+    $('[data-intro-skip]').addEventListener('click', leave);
+    $('[data-intro-go]').addEventListener('click', leave);
+
+    // Once the result is shown, any "scroll down" gesture continues to the site.
+    let touchY = 0;
+    addEventListener('wheel', (e) => state === 'done' && e.deltaY > 8 && leave(), {
+      passive: true,
+      signal: ac.signal,
+    });
+    addEventListener('touchstart', (e) => (touchY = e.touches[0].clientY), {
+      passive: true,
+      signal: ac.signal,
+    });
+    addEventListener('touchmove', (e) => state === 'done' && touchY - e.touches[0].clientY > 30 && leave(), {
+      passive: true,
+      signal: ac.signal,
+    });
+    addEventListener(
+      'keydown',
+      (e) => {
+        if (e.key === 'Escape') return leave();
+        if (state === 'done' && ['ArrowDown', 'PageDown', ' '].includes(e.key)) {
+          e.preventDefault();
+          leave();
+        }
+      },
+      on,
+    );
+    addEventListener(
+      'resize',
+      () => {
+        if (!picked || state === 'leaving') return;
+        if (state === 'done') settle();
+        else zoomTo(picked, 0.5, focusY());
+      },
+      on,
+    );
+  } else {
+    intro?.remove();
+  }
+</script>

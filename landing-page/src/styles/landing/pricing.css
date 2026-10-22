@@ -1,0 +1,67 @@
+/* Beta / pricing panel and mid-page CTA. */
+.pricing-wrap {
+  padding-bottom: 88px;
+}
+.pricing-panel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 30px;
+  background: var(--mint);
+  padding: 48px;
+  border-radius: 20px;
+}
+.pricing-panel > div > p:not(.eyebrow) {
+  color: var(--muted);
+  margin-top: 20px;
+  font-size: 16px;
+}
+.pricing-panel .pricing-note {
+  font-size: 13px !important;
+  line-height: 1.7;
+}
+.pricing-note a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.pricing-action {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  flex-shrink: 0;
+}
+@media (max-width: 900px) {
+  .pricing-panel {
+    padding: 34px;
+  }
+  .pricing-panel h2 {
+    font-size: 36px;
+  }
+}
+@media (max-width: 680px) {
+  .pricing-panel {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 30px 24px;
+  }
+  .pricing-panel h2 {
+    font-size: 33px;
+  }
+  .pricing-action {
+    align-items: flex-start;
+  }
+  .pricing-wrap {
+    padding-bottom: 55px;
+  }
+}
+.pricing-panel {
+  padding: 40px;
+}
+/* mid-page CTA */
+.mid-cta {
+  display: flex;
+  justify-content: center;
+  padding-top: 20px;
+  padding-bottom: 12px;
+}

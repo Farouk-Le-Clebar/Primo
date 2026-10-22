@@ -1,0 +1,14 @@
+/* Landing page styles, in page order. Partials only rely on the tokens declared in base.css. */
+@import './base.css';
+@import './header.css';
+@import './intro.css';
+@import './hero.css';
+@import './story.css';
+@import './tools.css';
+@import './project.css';
+@import './testimonials.css';
+@import './team.css';
+@import './faq.css';
+@import './pricing.css';
+@import './contact.css';
+@import './footer.css';

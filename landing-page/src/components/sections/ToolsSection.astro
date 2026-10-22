@@ -1,0 +1,115 @@
+---
+// "Moins d'outils": scattered tool tabs converge into one Primo workspace, then key figures.
+import { House, Map, FolderKanban, Search, ArrowUpRight, Bookmark, ScanSearch, Wallet } from 'lucide-react';
+
+const producers = [
+  { name: 'DGFiP', what: 'Cadastre et ventes DVF' },
+  { name: 'ADEME', what: 'Diagnostics DPE' },
+  { name: 'IGN', what: 'Bâti et cartographie' },
+  { name: 'Géorisques', what: 'Risques naturels' },
+  { name: 'Géoportail de l’urbanisme', what: 'Règles du PLU' },
+];
+const figures = [
+  { value: '100 M', label: 'parcelles cadastrales en France' },
+  { value: '7', label: 'volets d’analyse par parcelle' },
+  { value: '5 ans', label: 'de transactions DVF' },
+  { value: '30 ans', label: 'de moyennes climatiques' },
+];
+---
+
+<section class="tools-sec section shell" aria-labelledby="tools-title">
+  <div class="section-heading reveal">
+    <div>
+      <p class="eyebrow">ESPACE DE TRAVAIL</p>
+      <h2 id="tools-title">Un outil au lieu de dix</h2>
+    </div>
+  </div>
+  <div class="tools-stage reveal" aria-hidden="true">
+    <div class="tools-ws">
+      <aside>
+        <b>
+          <img src="/logo-primo.svg" alt="" width="14" height="14" /> Primo
+        </b>
+        <span class="on">
+          <House size={12} /> Aperçu
+        </span>
+        <span>
+          <Map size={12} /> Carte
+        </span>
+        <span>
+          <FolderKanban size={12} /> Projets
+        </span>
+        <span>
+          <Search size={12} /> Recherche
+        </span>
+      </aside>
+      <div class="tools-main">
+        <small>Votre espace de travail</small>
+        <div class="tools-welcome">
+          <div>
+            <b>Reprendre mon travail</b>
+            <span>Retrouvez vos projets et poursuivez votre exploration.</span>
+          </div>
+          <em>Nouveau projet</em>
+        </div>
+        <div class="tools-stats">
+          <div>
+            <Bookmark size={13} />
+            <span>Parcelles sauvegardées</span>
+            <b>48</b>
+          </div>
+          <div>
+            <ScanSearch size={13} />
+            <span>Parcelles analysées</span>
+            <b>312</b>
+          </div>
+          <div>
+            <Wallet size={13} />
+            <span>Budget engagé</span>
+            <b>2,4 M€</b>
+          </div>
+        </div>
+        <div class="tools-projects">
+          <div>
+            <span>
+              <b>Prospection · Toulouse Est</b>
+              <small>4 parcelles · 4 membres</small>
+            </span>
+            <ArrowUpRight size={13} />
+          </div>
+          <div>
+            <span>
+              <b>Lotissement Les Oliviers</b>
+              <small>7 parcelles · 2 membres</small>
+            </span>
+            <ArrowUpRight size={13} />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="facts reveal" id="donnees">
+    <div class="tools-figures">
+      {figures.map((f) => (
+        <div>
+          <b>{f.value}</b>
+          <span>{f.label}</span>
+        </div>
+      ))}
+    </div>
+    <div class="facts-sources">
+      <p class="facts-title">Sources des données</p>
+      <ul>
+        {producers.map((p) => (
+          <li>
+            <b>{p.name}</b>
+            <span>{p.what}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+    <small class="facts-license">
+      Données publiques et ouvertes, réutilisées sous Licence Ouverte (Etalab 2.0).
+    </small>
+  </div>
+</section>

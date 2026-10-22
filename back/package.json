@@ -34,6 +34,7 @@
     "@nestjs/swagger": "^7.0.0",
     "@nestjs/typeorm": "^11.0.0",
     "@types/geoip-lite": "^1.4.4",
+    "@types/multer": "^2.2.0",
     "@types/ua-parser-js": "^0.7.39",
     "axios": "^1.13.2",
     "bcrypt": "^6.0.0",

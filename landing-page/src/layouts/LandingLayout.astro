@@ -1,0 +1,92 @@
+---
+// Shell of the landing-style pages (home, 404): head, theme, header, footer and scroll reveal.
+import '../styles/global.css';
+import '../styles/landing/index.css';
+import Seo from '../components/seo/Seo.astro';
+import SiteHeader from '../components/layout/SiteHeader.astro';
+import SiteFooter from '../components/layout/SiteFooter.astro';
+import IntroMap from '../components/intro/IntroMap.astro';
+import fontMedium from '../assets/fonts/UberMoveMedium.woff2?url';
+import fontBold from '../assets/fonts/UberMoveBold.woff2?url';
+import { SITE_META } from '../config/constants';
+
+interface Props {
+  title: string;
+  description: string;
+  image?: string;
+  noindex?: boolean;
+  schema?: Record<string, unknown>[];
+  /** Full-screen interactive intro shown before the page (home only). */
+  intro?: boolean;
+}
+const { intro = false, ...seo } = Astro.props;
+---
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <Seo {...seo} />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" href="/logo-primo.svg" type="image/svg+xml" />
+    <meta name="theme-color" content={SITE_META.THEME_COLOR.light} media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content={SITE_META.THEME_COLOR.dark} media="(prefers-color-scheme: dark)" />
+    <link rel="preload" href={fontBold} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={fontMedium} as="font" type="font/woff2" crossorigin />
+    <script is:inline>
+      try {
+        const saved = localStorage.getItem('primo-theme');
+        document.documentElement.dataset.theme =
+          saved || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      } catch {}
+    </script>
+    {intro && <script is:inline>
+      // Show the intro on a plain visit (no #anchor, motion allowed). If its script never boots
+      // (blocked, network error…), release the page instead of leaving it locked behind the layer.
+      try {
+        if (!location.hash && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          const root = document.documentElement;
+          root.classList.add('has-intro');
+          history.scrollRestoration = 'manual';
+          scrollTo(0, 0);
+          setTimeout(() => {
+            if (!document.querySelector('[data-intro][data-ready]')) root.classList.remove('has-intro');
+          }, 8000);
+        }
+      } catch {}
+    </script>}
+  </head>
+  <body class="primo-landing">
+    {intro && <IntroMap />}
+    <a class="skip-link" href="#contenu">
+      Aller au contenu
+    </a>
+    <SiteHeader />
+    <main id="contenu" tabindex="-1">
+      <slot />
+    </main>
+    <SiteFooter />
+
+    <script>
+      import { prefersReducedMotion } from '../lib/motion';
+
+      // Fade sections in as they enter the viewport.
+      if (!prefersReducedMotion() && 'IntersectionObserver' in window) {
+        const observer = new IntersectionObserver(
+          (entries) =>
+            entries.forEach((entry) => {
+              if (!entry.isIntersecting) return;
+              entry.target.classList.add('visible');
+              observer.unobserve(entry.target);
+            }),
+          { threshold: 0.08 },
+        );
+        document.querySelectorAll('.reveal').forEach((el) => {
+          el.classList.add('will-reveal');
+          observer.observe(el);
+        });
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,258 @@
+---
+// Two ways to search, one result: criteria filters vs. natural-language AI query.
+// Scenarios rotate; both cards switch together so the equivalence is obvious.
+import {
+  SlidersHorizontal,
+  Sparkles,
+  MapPin,
+  ArrowRight,
+  TrainFront,
+  Trees,
+  Euro,
+  Zap,
+  Waves,
+  Ruler,
+  Film,
+  ShoppingBag,
+  Sun,
+  Mountain,
+  School,
+  UtensilsCrossed,
+  Thermometer,
+  Activity,
+  Send,
+} from 'lucide-react';
+import '../../styles/search-showcase.css';
+
+const scenarios = [
+  {
+    city: 'Paris',
+    count: 186,
+    query:
+      'Un immeuble de [plus de 250 m²] à [Paris], à [5 minutes d’un métro] et [d’un parc], avec des [ventes sous 11 000 €/m²], un [DPE C minimum] et [hors zone inondable].',
+    criteria: [
+      { cat: 'Bâti', icon: Ruler, label: 'Surface bâtie', value: '≥ 250 m²' },
+      { cat: 'Proximité', icon: TrainFront, label: 'Station de métro', value: '≤ 400 m' },
+      { cat: 'Proximité', icon: Trees, label: 'Parc ou jardin', value: '≤ 500 m' },
+      { cat: 'DVF', icon: Euro, label: 'Prix de vente', value: '≤ 11 000 €/m²' },
+      { cat: 'DPE', icon: Zap, label: 'Classe énergétique', value: 'C minimum' },
+      { cat: 'Géorisques', icon: Waves, label: 'Inondation', value: 'Hors zone' },
+    ],
+  },
+  {
+    city: 'Montpellier',
+    count: 92,
+    query:
+      'Un terrain d’[au moins 600 m²] à [Montpellier], [près d’un cinéma] et [des commerces], [très ensoleillé], avec un [risque argiles faible] et des [prix sous 4 500 €/m²].',
+    criteria: [
+      { cat: 'Foncier', icon: Ruler, label: 'Surface du terrain', value: '≥ 600 m²' },
+      { cat: 'Proximité', icon: Film, label: 'Cinéma', value: '≤ 1,5 km' },
+      { cat: 'Proximité', icon: ShoppingBag, label: 'Commerces', value: '≤ 300 m' },
+      { cat: 'Météo', icon: Sun, label: 'Ensoleillement', value: '≥ 2 600 h/an' },
+      { cat: 'Géorisques', icon: Mountain, label: 'Argiles', value: 'Aléa faible' },
+      { cat: 'DVF', icon: Euro, label: 'Prix de vente', value: '≤ 4 500 €/m²' },
+    ],
+  },
+  {
+    city: 'Toulouse',
+    count: 143,
+    query:
+      'Une maison avec [400 m² de terrain] à [Toulouse], à [10 minutes d’une école] et [du métro], [DPE D minimum], [hors zone inondable] et [plus de 2 000 heures de soleil] par an.',
+    criteria: [
+      { cat: 'Foncier', icon: Ruler, label: 'Surface du terrain', value: '≥ 400 m²' },
+      { cat: 'Proximité', icon: School, label: 'École', value: '≤ 800 m' },
+      { cat: 'Proximité', icon: TrainFront, label: 'Station de métro', value: '≤ 600 m' },
+      { cat: 'DPE', icon: Zap, label: 'Classe énergétique', value: 'D minimum' },
+      { cat: 'Géorisques', icon: Waves, label: 'Inondation', value: 'Hors zone' },
+      { cat: 'Météo', icon: Sun, label: 'Ensoleillement', value: '≥ 2 000 h/an' },
+    ],
+  },
+  {
+    city: 'Bordeaux',
+    count: 61,
+    query:
+      'Un local de [150 m² minimum] à [Bordeaux], [à moins d’un kilomètre de la gare], [entouré de restaurants], [sous 5 200 €/m²], au [climat doux] et à [risque sismique très faible].',
+    criteria: [
+      { cat: 'Bâti', icon: Ruler, label: 'Surface bâtie', value: '≥ 150 m²' },
+      { cat: 'Proximité', icon: TrainFront, label: 'Gare', value: '≤ 1 km' },
+      { cat: 'Proximité', icon: UtensilsCrossed, label: 'Restaurants', value: '≤ 200 m' },
+      { cat: 'DVF', icon: Euro, label: 'Prix de vente', value: '≤ 5 200 €/m²' },
+      { cat: 'Météo', icon: Thermometer, label: 'Température moyenne', value: '≥ 14 °C' },
+      { cat: 'Géorisques', icon: Activity, label: 'Séisme', value: 'Très faible' },
+    ],
+  },
+];
+
+// Split the query into phrases (marked = criterion understood by the AI) and words,
+// so the AI side can "stream" the sentence in word by word.
+const parse = (q: string) => {
+  let i = 0;
+  return q
+    .split(/(\[[^\]]+\])/)
+    .filter(Boolean)
+    .map((part) => ({
+      marked: part.startsWith('['),
+      words: part
+        .replace(/[[\]]/g, '')
+        .split(/(\s+)/)
+        .filter(Boolean)
+        .map((t) => ({ t, i: /\s/.test(t) ? -1 : i++ })),
+    }));
+};
+const STEP = 55;
+---
+
+<div class="srch reveal" data-srch>
+  <div class="srch-tabs" role="tablist" aria-label="Exemples de recherche">
+    {scenarios.map((s, i) => (
+      <button
+        type="button"
+        role="tab"
+        class:list={['srch-tab', { on: i === 0 }]}
+        data-i={i}
+        aria-selected={i === 0 ? 'true' : 'false'}
+      >
+        <MapPin size={14} />
+        {s.city}
+        <i aria-hidden="true">
+          <b></b>
+        </i>
+      </button>
+    ))}
+  </div>
+  <div class="srch-grid">
+    <article class="srch-card">
+      <header class="srch-head">
+        <span class="feature-icon">
+          <SlidersHorizontal size={21} />
+        </span>
+        <div>
+          <h3>Recherche par critères</h3>
+          <p>Réglez chaque filtre, au mètre près.</p>
+        </div>
+      </header>
+      <div class="srch-panes">
+        {scenarios.map((s, i) => (
+          <div class:list={['srch-pane', { on: i === 0 }]} data-i={i}>
+            <div class="srch-where">
+              <MapPin size={14} /> {s.city}
+            </div>
+            <ul class="srch-criteria">
+              {s.criteria.map((c, k) => (
+                <li style={`--k:${k}`}>
+                  <span class="srch-ic">
+                    <c.icon size={15} />
+                  </span>
+                  <span class="srch-label">
+                    <small>{c.cat}</small>
+                    {c.label}
+                  </span>
+                  <b>{c.value}</b>
+                </li>
+              ))}
+            </ul>
+            <div class="srch-result">
+              <span>
+                <b>{s.count}</b> parcelles correspondent
+              </span>
+              <span class="srch-link">
+                Voir sur la carte <ArrowRight size={14} />
+              </span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </article>
+    <span class="srch-equal" aria-hidden="true">
+      =
+    </span>
+    <article class="srch-card srch-ai">
+      <header class="srch-head">
+        <span class="feature-icon">
+          <Sparkles size={21} />
+        </span>
+        <div>
+          <h3>Recherche IA</h3>
+          <p>Décrivez votre projet en langage naturel.</p>
+        </div>
+      </header>
+      <div class="srch-panes">
+        {scenarios.map((s, i) => {
+          const parts = parse(s.query);
+          const n = parts.flatMap((p) => p.words).filter((w) => w.i >= 0).length;
+          return (
+            <div class:list={['srch-pane', { on: i === 0 }]} data-i={i}>
+              <p class="srch-q">
+                {parts.map((p) => {
+                  const ws = p.words.map((w) =>
+                    w.i < 0 ? (
+                      w.t
+                    ) : (
+                      <span class="srch-w" style={`--i:${w.i}`}>
+                        {w.t}
+                      </span>
+                    ),
+                  );
+                  return p.marked ? (
+                    <mark style={`--i:${p.words.find((w) => w.i >= 0)?.i ?? 0}`}>{ws}</mark>
+                  ) : (
+                    ws
+                  );
+                })}
+                <span class="srch-send">
+                  <Send size={13} />
+                </span>
+              </p>
+              <div class="srch-ans" style={`--after:${n * STEP + 250}ms`}>
+                <small>
+                  <Sparkles size={12} /> Critères compris par l’IA
+                </small>
+                <div class="srch-chips">
+                  <span>{s.city}</span>
+                  {s.criteria.map((c, k) => (
+                    <span style={`--k:${k + 1}`}>
+                      {c.label} · {c.value}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              <div class="srch-result" style={`--after:${n * STEP + 900}ms`}>
+                <span>
+                  <b>{s.count}</b> parcelles correspondent
+                </span>
+                <span class="srch-link">
+                  Voir sur la carte <ArrowRight size={14} />
+                </span>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </article>
+  </div>
+  <p class="srch-note">Exemples de recherches, résultats donnés à titre indicatif.</p>
+</div>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-srch]');
+  if (root) {
+    const tabs = [...root.querySelectorAll<HTMLButtonElement>('.srch-tab')];
+    const show = (i: number) => {
+      tabs.forEach((t, k) => {
+        t.classList.toggle('on', k === i);
+        t.setAttribute('aria-selected', String(k === i));
+      });
+      root.querySelectorAll<HTMLElement>('.srch-pane').forEach((p) => p.classList.remove('on'));
+      void root.offsetWidth; // restart the word / chip animations
+      root.querySelectorAll<HTMLElement>(`.srch-pane[data-i="${i}"]`).forEach((p) => p.classList.add('on'));
+    };
+    tabs.forEach((t, i) => {
+      t.addEventListener('click', () => show(i));
+      // the tab's progress bar drives the rotation: when it fills, move on
+      t.querySelector('b')!.addEventListener('animationend', () => show((i + 1) % tabs.length));
+    });
+    new IntersectionObserver(([e]) => root.classList.toggle('is-visible', e.isIntersecting), {
+      threshold: 0.3,
+    }).observe(root);
+  }
+</script>

@@ -1,0 +1,50 @@
+---
+// ⚠️ PLACEHOLDERS — ces témoignages sont fictifs. À remplacer par de vrais retours de bêta-testeurs
+// (avec leur accord) AVANT la mise en ligne : publier de faux avis est une pratique commerciale
+// trompeuse (art. L121-2 du Code de la consommation).
+const quotes = [
+  {
+    text: 'Avant un rendez-vous vendeur, je passais une heure à croiser le cadastre, les ventes du quartier et Géorisques. Maintenant j’ouvre la fiche et j’ai tout.',
+    name: 'Julien',
+    role: 'Négociateur immobilier',
+    initials: 'J',
+  },
+  {
+    text: 'Pour repérer des terrains à diviser, avoir le PLU et la surface sur la même carte, c’est exactement ce qui me manquait.',
+    name: 'Camille',
+    role: 'Marchande de biens',
+    initials: 'C',
+  },
+  {
+    text: 'On partage les parcelles dans un projet avec mon associé. Ça évite les captures d’écran envoyées par mail.',
+    name: 'Mathieu',
+    role: 'Promoteur',
+    initials: 'M',
+  },
+];
+---
+
+<section class="section shell quotes-sec" aria-labelledby="quotes-title">
+  <div class="section-heading reveal">
+    <div>
+      <p class="eyebrow">RETOURS DE LA BÊTA</p>
+      <h2 id="quotes-title">Ce qu’en disent nos testeurs</h2>
+    </div>
+  </div>
+  <div class="quotes-grid">
+    {quotes.map((q) => (
+      <figure class="quote reveal">
+        <blockquote>« {q.text} »</blockquote>
+        <figcaption>
+          <span class="quote-av" aria-hidden="true">
+            {q.initials}
+          </span>
+          <span>
+            <b>{q.name}</b>
+            <small>{q.role} · Toulouse</small>
+          </span>
+        </figcaption>
+      </figure>
+    ))}
+  </div>
+</section>

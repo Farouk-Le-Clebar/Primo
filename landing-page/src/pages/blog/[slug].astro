@@ -1,13 +1,13 @@
 ---
-import { getCollection, getEntry } from "astro:content";
-import Layout from "@layouts/Layout.astro";
-import Navbar from "@components/navbar/Navbar";
-import Footer from "@components/footer/Footer.astro";
-import ArticleHeader from "@components/blog/ArticleHeader.astro";
-import { ArrowLeft } from "lucide-react";
+import { getCollection } from 'astro:content';
+import Layout from '@layouts/Layout.astro';
+import Navbar from '@components/navbar/Navbar';
+import Footer from '@components/footer/Footer.astro';
+import ArticleHeader from '@components/blog/ArticleHeader.astro';
+import { ArrowLeft } from 'lucide-react';
 
 export async function getStaticPaths() {
-  const blogEntries = await getCollection("blog");
+  const blogEntries = await getCollection('blog');
   return blogEntries.map((entry) => ({
     params: { slug: entry.slug },
     props: { entry },
@@ -16,20 +16,34 @@ export async function getStaticPaths() {
 
 const { entry } = Astro.props;
 const { Content } = await entry.render();
+const home = new URL('/', Astro.site).href;
+const articleSchema = {
+  '@type': 'BlogPosting',
+  headline: entry.data.title,
+  description: entry.data.description,
+  datePublished: entry.data.date,
+  inLanguage: 'fr-FR',
+  keywords: entry.data.tags.join(', '),
+  mainEntityOfPage: new URL(Astro.url.pathname, Astro.site).href,
+  author: { '@id': `${home}#organization` },
+  publisher: { '@id': `${home}#organization` },
+};
 ---
 
 <Layout
-  title={`${entry.data.title} - Primo Blog`}
+  title={`${entry.data.title} | Primo`}
   description={entry.data.description}
+  type="article"
+  schema={[articleSchema]}
 >
   <div class="flex flex-col min-h-screen">
-    <Navbar client:load />
+    <Navbar client:idle />
 
     <main class="grow bg-gray-50">
       <!-- Back Button -->
       <div class="container mx-auto px-6 pt-24">
         <a
-          href="/blog"
+          href="/blog/"
           class="inline-flex items-center gap-2 text-green-600 hover:text-green-700 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
@@ -39,9 +53,7 @@ const { Content } = await entry.render();
 
       <!-- Article Header -->
       <article class="container mx-auto px-6 py-12">
-        <div
-          class="max-w-4xl mx-auto bg-white rounded-xl shadow-sm p-8 md:p-12"
-        >
+        <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-sm p-8 md:p-12">
           <ArticleHeader
             title={entry.data.title}
             description={entry.data.description}

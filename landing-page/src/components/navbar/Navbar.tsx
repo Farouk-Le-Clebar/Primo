@@ -1,113 +1,66 @@
-import { useState } from "react";
-import { Menu, X } from "lucide-react";
-import Logo from "../../assets/logos/logoPrimoBlack.svg?url";
+import { useState } from 'react';
+import { Menu, X } from 'lucide-react';
+import Logo from '../../assets/logos/logoPrimoBlack.svg?url';
+import { NAV_ITEMS } from '../../config/constants';
+
+// Navbar of the secondary pages (blog, legal…): links back to the landing sections.
+const LINKS = [
+  ...NAV_ITEMS.map((item) => ({ href: `/#${item.id}`, label: item.label })),
+  { href: '/blog/', label: 'Blog' },
+  { href: '/a-propos/', label: 'À propos' },
+];
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  const scrollToSection = (sectionId: string) => {
-    setIsMenuOpen(false);
-
-    if (window.location.pathname !== "/") {
-      window.location.href = `/#${sectionId}`;
-      return;
-    }
-
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-    }
-  };
+  const linkClass = 'text-gray-700 hover:text-green-600 transition-colors';
 
   return (
-    <>
-      <nav className="fixed top-0 left-0 w-full z-50 bg-white/60 backdrop-blur-md shadow-sm">
-        <div className="max-w-7xl mx-auto flex items-center justify-between px-4 md:px-8 py-4 gap-85">
-          <a href="/" className="flex items-center gap-2">
-            <img src={Logo} alt="Logo" className="h-7 w-7" />
-            <span className="text-xl text-gray-800 font-medium">Primo</span>
-          </a>
+    <nav
+      className="fixed top-0 left-0 w-full z-50 bg-white/60 backdrop-blur-md shadow-sm"
+      aria-label="Navigation principale"
+    >
+      <div className="max-w-7xl mx-auto flex items-center justify-between px-4 md:px-8 py-4 gap-85">
+        <a href="/" className="flex items-center gap-2">
+          <img src={Logo} alt="" className="h-7 w-7" width={28} height={28} />
+          <span className="text-xl text-gray-800 font-medium">Primo</span>
+        </a>
 
-          <div className="hidden md:flex items-center gap-8 w-full">
-            <button
-              onClick={() => scrollToSection("home")}
-              className="text-gray-700 hover:text-green-600 transition-colors"
-            >
-              Accueil
-            </button>
-            <button
-              onClick={() => scrollToSection("features")}
-              className="text-gray-700 hover:text-green-600 transition-colors"
-            >
-              Fonctionnalités
-            </button>
-            <button
-              onClick={() => scrollToSection("services")}
-              className="text-gray-700 hover:text-green-600 transition-colors"
-            >
-              Services
-            </button>
-            <a
-              href="/blog"
-              className="text-gray-700 hover:text-green-600 transition-colors"
-            >
-              Blog
+        <div className="hidden md:flex items-center gap-8 w-full">
+          {LINKS.map((link) => (
+            <a key={link.href} href={link.href} className={linkClass}>
+              {link.label}
             </a>
-            <button
-              onClick={() => scrollToSection("about")}
-              className="text-gray-700 hover:text-green-600 transition-colors"
-            >
-              À propos
-            </button>
-          </div>
-
-          <button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden text-gray-700 hover:text-green-600 transition-colors"
-            aria-label="Toggle menu"
-          >
-            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
+          ))}
         </div>
 
-        {isMenuOpen && (
-          <div className="md:hidden bg-white/95 backdrop-blur-md border-t border-gray-200">
-            <div className="flex flex-col px-4 py-4 space-y-4">
-              <button
-                onClick={() => scrollToSection("home")}
-                className="text-gray-700 hover:text-green-600 transition-colors text-left py-2"
-              >
-                Accueil
-              </button>
-              <button
-                onClick={() => scrollToSection("features")}
-                className="text-gray-700 hover:text-green-600 transition-colors text-left py-2"
-              >
-                Fonctionnalités
-              </button>
-              <button
-                onClick={() => scrollToSection("services")}
-                className="text-gray-700 hover:text-green-600 transition-colors text-left py-2"
-              >
-                Services
-              </button>
+        <button
+          type="button"
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+          className={`md:hidden ${linkClass}`}
+          aria-label={isMenuOpen ? 'Fermer le menu' : 'Ouvrir le menu'}
+          aria-expanded={isMenuOpen}
+          aria-controls="navbar-mobile"
+        >
+          {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
+      </div>
+
+      {isMenuOpen && (
+        <div id="navbar-mobile" className="md:hidden bg-white/95 backdrop-blur-md border-t border-gray-200">
+          <div className="flex flex-col px-4 py-4 space-y-4">
+            {LINKS.map((link) => (
               <a
-                href="/blog"
-                className="text-gray-700 hover:text-green-600 transition-colors text-left py-2"
+                key={link.href}
+                href={link.href}
+                className={`${linkClass} py-2`}
                 onClick={() => setIsMenuOpen(false)}
               >
-                Blog
+                {link.label}
               </a>
-              <button
-                onClick={() => scrollToSection("about")}
-                className="text-gray-700 hover:text-green-600 transition-colors text-left py-2"
-              >
-                À propos
-              </button>
-            </div>
+            ))}
           </div>
-        )}
-      </nav>
-    </>
+        </div>
+      )}
+    </nav>
   );
 }
