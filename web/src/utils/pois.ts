@@ -14,7 +14,6 @@ type BBox = {
     h: number;
 };
 
-/** Check if two bounding boxes (with padding) overlap */
 export const bboxOverlaps = (a: BBox, b: BBox, pad: number): boolean => {
     return !(
         a.x + a.w + pad < b.x - pad ||
@@ -147,10 +146,7 @@ export const selectPoiLabels = (
     return selected;
 };
 
-/**
- * Compute the pixel bounding box for a POI marker + label.
- * The icon circle is centred on the pixel point; the label sits to the right.
- */
+
 export const computePoiBBox = (
     px: L.Point,
     labelLength: number,
@@ -285,3 +281,14 @@ export const formatOpeningHours = (
             };
         });
 };
+
+
+export const createPoiDotIcon = () =>
+    L.divIcon({
+        className: "poi-dot-marker",
+        html: `
+            <span class="poi-dot-marker__core"></span>
+        `,
+        iconSize: [12, 12],
+        iconAnchor: [6, 6],
+    });

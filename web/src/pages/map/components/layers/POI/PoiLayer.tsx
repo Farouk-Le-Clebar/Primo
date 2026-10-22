@@ -5,20 +5,16 @@ import L from "leaflet";
 import { getPoisByBbox } from "../../../../../requests/map";
 import {
     getMaxFeaturesForZoom,
-    getPoiLabelDensity,
     MIN_ZOOM_FOR_POIS,
     POI_CONFIGS,
     POI_ICON_SIZE,
+    getPoiDisplayRatio,
     type PoiType,
 } from "../../PoiConfig";
 import { boundToBbox } from "../../../../../utils/map";
 import type { FeatureCollection } from "geojson";
-import {
-    filterOverlappingPois,
-    buildAddress,
-    formatOpeningHours,
-    selectPoiLabels,
-} from "../../../../../utils/pois";
+import { buildAddress, formatOpeningHours } from "../../../../../utils/pois";
+import { buildPoiDisplay } from "./PoiDisplay";
 
 type PoiLayerProps = {
     onPoisChange: (data: FeatureCollection | null) => void;
@@ -39,6 +35,38 @@ const parseTags = (props: Record<string, any>): Record<string, any> => {
     if (props.tags && typeof props.tags === "object") return props.tags;
     return {};
 };
+
+// const createPoiDotIcon = () =>
+//     L.divIcon({
+//         html: `<span style="
+//             display: block;
+//             width: 8px;
+//             height: 8px;
+//             border-radius: 50%;
+//             background: #64748b;
+//             border: 1px solid white;
+//             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+//         "></span>`,
+//         className: "poi-dot-marker",
+//         iconSize: [8, 8],
+//         iconAnchor: [4, 4],
+//     });
+
+const createPoiDotIcon = (color: string, size: number) =>
+    L.divIcon({
+        className: "poi-dot-marker",
+        html: `
+            <span
+                class="poi-dot-marker__core"
+                style="
+                    --poi-dot-color: ${color};
+                    --poi-dot-size: ${size}px;
+                "
+            ></span>
+        `,
+        iconSize: [size + 4, size + 4],
+        iconAnchor: [(size + 4) / 2, (size + 4) / 2],
+    });
 
 const PoiLayer = ({
     onPoisChange,
@@ -84,29 +112,58 @@ const PoiLayer = ({
         }
     }, [mapBounds, currentZoom, enabledPoiTypes]);
 
-    const visibleFeatures = useMemo(() => {
+    const display = useMemo(() => {
         if (!dataPois.pois || currentZoom < MIN_ZOOM_FOR_POIS) {
-            return [];
+            return { featured: [], dots: [] };
         }
 
-        const maxFeatures = getMaxFeaturesForZoom(currentZoom);
-
-        const features = dataPois.pois.features.slice(0, maxFeatures);
-
-        const labelDensity = getPoiLabelDensity(currentZoom);
-
-        const labelFeatures = selectPoiLabels(features, map, labelDensity);
-
-        return filterOverlappingPois(features, map, labelFeatures);
+        return buildPoiDisplay(dataPois.pois, map, currentZoom);
     }, [dataPois.pois, currentZoom, map, mapBounds]);
-    if (visibleFeatures.length === 0) return null;
+
+    const { featured, dots } = display;
+
+    if (featured.length === 0 && dots.length === 0) {
+        return null;
+    }
 
     return (
         <>
-            {visibleFeatures.map((feature: any, index: number) => {
+            {dots.map((feature) => {
+                const [lng, lat] = feature.geometry.coordinates;
+                const props = feature.properties ?? {};
+                const tags = parseTags(props);
+                const name = props.name || tags.name || "Infrastructure";
+                const config = POI_CONFIGS[feature.properties?.type];
+
+                if (!config) return null;
+
+                const icon = createPoiDotIcon(
+                    config.color,
+                    getPoiDisplayRatio(currentZoom).dotSize,
+                );
+
+                return (
+                    <Marker
+                        key={`dot-${props.id ?? props.osm_id ?? `${lng}-${lat}`}`}
+                        position={[lat, lng]}
+                        icon={icon}
+                        keyboard={false}
+                        bubblingMouseEvents={false}
+                        eventHandlers={{
+                            click: () => {
+                                // Le clic est conserve pour permettre un detail cible plus tard.
+                            },
+                        }}
+                    >
+                        <Popup>
+                            <strong>{name}</strong>
+                        </Popup>
+                    </Marker>
+                );
+            })}
+            {featured.map((feature: any, index: number) => {
                 const coords = feature.geometry.coordinates;
                 const props = feature.properties;
-                // props.type = le "code" du type d'infrastructure (ex: 'pharmacie',
                 const config = POI_CONFIGS[props.type];
                 if (!config) return null;
 
