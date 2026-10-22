@@ -10,10 +10,6 @@ function prefersReducedMotion(): boolean {
     );
 }
 
-/**
- * Animates a number from its previous value (0 on mount) to `target`
- * with an ease-out curve. Skipped when the user prefers reduced motion.
- */
 export function useAnimatedNumber(
     target: number,
     duration = DEFAULT_DURATION_MS,
@@ -52,16 +48,10 @@ type ScoreRingProps = {
     stroke?: number;
     ariaLabel: string;
     title?: string;
-    /** Classes of the centered content (font size, weight...). */
     centerClassName?: string;
-    /** Centered content; a function receives the current animated score. */
     children?: ReactNode | ((animatedScore: number) => ReactNode);
 };
 
-/**
- * Circular gauge that "charges" from 0 (red) up to its score on mount,
- * its color following the score gradient along the way.
- */
 export default function ScoreRing({
     score,
     size = 80,
