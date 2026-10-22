@@ -190,12 +190,12 @@ export default function PoisCard({ feature }: ParcelWidgetProps) {
                             ))}
                         </div>
                     ) : !hasCalculated ? (
-                        <div className="flex h-full min-h-64 items-center justify-center rounded-xl border border-dashed border-slate-300 bg-white p-8 text-center dark:border-slate-700 dark:bg-slate-900">
+                        <div className="flex h-full min-h-64 items-center justify-center rounded-xl border border-dashed border-slate-300 bg-white p-8 text-center dark:border-zinc-700 dark:bg-zinc-900">
                             <div>
-                                <p className="font-medium text-slate-700 dark:text-slate-200">
+                                <p className="font-medium text-slate-700 dark:text-zinc-200">
                                     Découvrez les infrastructures à proximité
                                 </p>
-                                <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                                <p className="mt-1 text-sm text-slate-500 dark:text-zinc-400">
                                     Sélectionnez les types souhaités puis lancez
                                     le calcul.
                                 </p>
