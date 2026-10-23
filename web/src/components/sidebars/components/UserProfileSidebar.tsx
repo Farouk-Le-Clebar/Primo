@@ -1,32 +1,12 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import DropdownMenu from "./settingsDropdown/dropdownMenu";
 import { useOutsideClick } from "../../../hooks/useOutsideClick";
 
 // ASSETS
-import PPGreen from "../../../assets/profilePictures/green.svg?react";
-import PPCyan from "../../../assets/profilePictures/cyan.svg?react";
-import PPBlue from "../../../assets/profilePictures/blue.svg?react";
-import PPOrange from "../../../assets/profilePictures/orange.svg?react";
-import PPpink from "../../../assets/profilePictures/pink.svg?react";
-import PPRed from "../../../assets/profilePictures/red.svg?react";
-import PPWhite from "../../../assets/profilePictures/white.svg?react";
-import PPWhitePink from "../../../assets/profilePictures/whitepink.svg?react";
-import PPYellow from "../../../assets/profilePictures/yellow.svg?react";
+import { getAvatarComponent } from "../../avatar/Avatar";
 
 // ICONS
 import DoubleChevron from "../../../assets/icons/doubleChevron.svg?react";
-
-const AVATAR_COMPONENTS: Record<string, React.FC<React.SVGProps<SVGSVGElement>>> = {
-  "green.png": PPGreen,
-  "cyan.png": PPCyan,
-  "blue.png": PPBlue,
-  "orange.png": PPOrange,
-  "pink.png": PPpink,
-  "red.png": PPRed,
-  "white.png": PPWhite,
-  "whitepink.png": PPWhitePink,
-  "yellow.png": PPYellow,
-};
 
 export default function UserProfileSidebar() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -34,7 +14,7 @@ export default function UserProfileSidebar() {
   const dropdownRef = useOutsideClick(() => setIsDropdownOpen(false));
   const profilePictureValue = user?.profilePicture || "green.png";
   const isExternalUrl = profilePictureValue.startsWith("http");
-  const AvatarComponent = AVATAR_COMPONENTS[profilePictureValue] || PPGreen;
+  const AvatarComponent = getAvatarComponent(profilePictureValue);
 
   return (
     <div 
