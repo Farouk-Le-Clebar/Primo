@@ -20,15 +20,9 @@ const AdminRoute = () => {
         }
     }, [isError]);
 
-    if (isLoading) {
-        return (
-            <div className="flex h-screen w-full items-center justify-center bg-white">
-                <div className="h-10 w-10 animate-spin rounded-full border-4 border-gray-200 border-t-blue-600"></div>
-            </div>
-        );
-    }
+    if (isLoading) return null;
 
-    return isError ? <Navigate to="/" /> : <Outlet />;
+    return isError ? <Navigate to="/search" replace /> : <Outlet />;
 };
 
 export default AdminRoute;
