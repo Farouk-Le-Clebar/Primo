@@ -1,13 +1,5 @@
 import { BarChart } from '@tremor/react';
-import type { BuildingType } from './types';
-
-const buildingTypes: BuildingType[] = [
-  { name: 'Résidentiel', count: 420 },
-  { name: 'Commercial', count: 235 },
-  { name: 'Industriel', count: 130 },
-  { name: 'Agricole', count: 95 },
-  { name: 'Annexe', count: 150 },
-];
+import { buildingTypes } from './dashboardData';
 
 export default function BuildingTypologyChart() {
   return (

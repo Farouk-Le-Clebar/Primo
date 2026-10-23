@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { UserStatistic } from "../../../../../types/admin";
 import { formatDate } from "../../shared/statistics";
+import BentoCard from "../../../../map/components/layers/Dashboard/BentoCard";
 import {
   Table,
   TableBody,
@@ -8,7 +9,6 @@ import {
   TableHead,
   TableHeaderCell,
   TableRow,
-  Card,
 } from "@tremor/react";
 
 export default function UserConnectionsTable({
@@ -24,38 +24,33 @@ export default function UserConnectionsTable({
   const pages = Math.max(1, Math.ceil(stats.length / 10));
   const currentPage = Math.min(page, pages - 1);
   return (
-    <Card className="p-0 border-gray-200 dark:border-white/10 ring-0 shadow-sm rounded-xl overflow-hidden dark:bg-[#111111]/40">
-      <div className="border-b border-gray-100 p-5 dark:border-white/5">
-        <h2 className="text-sm font-semibold text-gray-900 dark:text-white">
-          Historique des connexions
-        </h2>
-        <p className="mt-1 text-xs text-gray-500">
-          {stats.length} enregistrements · du plus récent au plus ancien
-        </p>
-      </div>
+    <BentoCard title="Historique des connexions" className="@3xl:col-span-12" bodyClassName="p-0">
+      <p className="px-5 pt-4 text-xs text-gray-500">
+        {stats.length} enregistrements · du plus récent au plus ancien
+      </p>
       <div className="overflow-x-auto">
         <Table>
           <TableHead>
-            <TableRow className="border-b border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5">
-              <TableHeaderCell className="text-gray-900 dark:text-white font-semibold">
+            <TableRow className="border-b border-gray-200 dark:border-white/10">
+              <TableHeaderCell className="text-gray-500 dark:text-gray-400">
                 Date
               </TableHeaderCell>
-              <TableHeaderCell className="text-gray-900 dark:text-white font-semibold">
+              <TableHeaderCell className="text-gray-500 dark:text-gray-400">
                 Adresse IP
               </TableHeaderCell>
-              <TableHeaderCell className="text-gray-900 dark:text-white font-semibold">
+              <TableHeaderCell className="text-gray-500 dark:text-gray-400">
                 Localisation
               </TableHeaderCell>
-              <TableHeaderCell className="text-gray-900 dark:text-white font-semibold">
+              <TableHeaderCell className="text-gray-500 dark:text-gray-400">
                 Navigateur
               </TableHeaderCell>
-              <TableHeaderCell className="text-gray-900 dark:text-white font-semibold">
+              <TableHeaderCell className="text-gray-500 dark:text-gray-400">
                 OS
               </TableHeaderCell>
-              <TableHeaderCell className="text-gray-900 dark:text-white font-semibold">
+              <TableHeaderCell className="text-gray-500 dark:text-gray-400">
                 Appareil
               </TableHeaderCell>
-              <TableHeaderCell className="text-gray-900 dark:text-white font-semibold text-right">
+              <TableHeaderCell className="text-gray-500 dark:text-gray-400 text-right">
                 Langue
               </TableHeaderCell>
             </TableRow>
@@ -108,7 +103,7 @@ export default function UserConnectionsTable({
         </Table>
       </div>
       {pages > 1 && (
-        <div className="flex items-center justify-between border-t border-gray-100 p-4 text-sm text-gray-500 dark:border-white/5">
+        <div className="flex items-center justify-between border-t border-gray-200 p-4 text-sm text-gray-500 dark:border-white/10">
           <button
             className="rounded-lg px-3 py-2 hover:bg-gray-100 disabled:opacity-40 dark:hover:bg-white/5"
             disabled={currentPage === 0}
@@ -128,6 +123,6 @@ export default function UserConnectionsTable({
           </button>
         </div>
       )}
-    </Card>
+    </BentoCard>
   );
 }

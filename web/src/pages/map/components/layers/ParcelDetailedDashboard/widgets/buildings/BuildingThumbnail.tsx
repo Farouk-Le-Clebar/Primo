@@ -1,54 +1,35 @@
 import { useMemo } from "react";
 
-export function BuildingThumbnail({ feature, colorClasses }: { feature: any, colorClasses: any }) {  const geoData = useMemo(() => {
-    if (!feature?.geometry) return null;
+import { toSvgPaths } from "./geometry";
+import type { BuildingColor, BuildingFeature } from "./types";
 
-    const { type, coordinates } = feature.geometry;
-    const polygons = type === "MultiPolygon" ? coordinates : [coordinates];
-    
-    const allPoints = coordinates.flat(type === "MultiPolygon" ? 2 : 1);
-    let minLng = Infinity, minLat = Infinity, maxLng = -Infinity, maxLat = -Infinity;
+type BuildingThumbnailProps = {
+  feature: BuildingFeature;
+  color: BuildingColor;
+};
 
-    allPoints.forEach(([lng, lat]: [number, number]) => {
-      if (lng < minLng) minLng = lng;
-      if (lat < minLat) minLat = lat;
-      if (lng > maxLng) maxLng = lng;
-      if (lat > maxLat) maxLat = lat;
-    });
+const FRAME = { width: 100, height: 100, padding: 18 };
 
-    const diffLng = maxLng - minLng;
-    const diffLat = maxLat - minLat;
-    const maxDiff = Math.max(diffLng, diffLat);
+export function BuildingThumbnail({ feature, color }: BuildingThumbnailProps) {
+  const path = useMemo(
+    () => toSvgPaths([feature.geometry], FRAME)?.[0] ?? null,
+    [feature],
+  );
 
-    if (!Number.isFinite(maxDiff) || maxDiff === 0) return null;
-
-    const size = 100;
-    const padding = 22;
-    const innerSize = size - padding * 2;
-
-    const pathCommands = polygons.map((polygon: any) => {
-      return polygon.map((ring: any[]) => {
-        const points = ring.map(([lng, lat]) => {
-          const x = padding + ((lng - minLng) / maxDiff) * innerSize + (innerSize - (diffLng / maxDiff) * innerSize) / 2;
-          const y = (size - padding) - ((lat - minLat) / maxDiff) * innerSize - (innerSize - (diffLat / maxDiff) * innerSize) / 2;
-          return `${x.toFixed(2)},${y.toFixed(2)}`;
-        });
-        return `M ${points.join(" L ")} Z`;
-      }).join(" ");
-    }).join(" ");
-
-    return { d: pathCommands };
-  }, [feature]);
-
-  if (!geoData) return <div className="w-full h-full bg-gray-50 flex items-center justify-center text-[10px] text-gray-500 dark:text-gray-400">N/A</div>;
+  if (!path)
+    return (
+      <div className="flex h-full w-full items-center justify-center text-[10px] text-gray-400">
+        —
+      </div>
+    );
 
   return (
-    <div className={`w-full h-full ${colorClasses.bg} relative flex items-center justify-center overflow-hidden rounded-lg`}>
-      <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-sm" preserveAspectRatio="xMidYMid meet">
-        <path 
-          d={geoData.d} 
-          className={`${colorClasses.fill} ${colorClasses.stroke}`}
-          strokeWidth="3"
+    <div className={`flex h-full w-full items-center justify-center ${color.bg}`}>
+      <svg viewBox="0 0 100 100" className="h-full w-full" aria-hidden="true">
+        <path
+          d={path}
+          className={`${color.fill} ${color.stroke}`}
+          strokeWidth="2.5"
           strokeLinejoin="round"
           fillRule="evenodd"
         />

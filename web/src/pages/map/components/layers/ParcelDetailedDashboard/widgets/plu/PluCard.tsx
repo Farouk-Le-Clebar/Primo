@@ -1,5 +1,5 @@
-import { useEffect, useMemo } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Card } from "@tremor/react";
 import { AlertTriangle } from "lucide-react";
 
@@ -17,17 +17,13 @@ export default function PluCard({ feature }: ParcelWidgetProps) {
     return inseeCode.startsWith('97') ? inseeCode.substring(0, 3) : inseeCode.substring(0, 2);
   }, [inseeCode, feature?.id]);
 
-  const { mutate, data, isPending, isError } = useMutation({
-    mutationFn: async ({ geometry, dept }: { geometry: any; dept: string }) => {
-      const response = await getZonesUrbaByGeometry(geometry, dept);
-      return response?.features || [];
-    }
+  const { data, isLoading: isPending, isError } = useQuery({
+    queryKey: ["urban-summary", String(feature?.properties?.id || "")],
+    queryFn: () => getZonesUrbaByGeometry(feature.geometry, departement),
+    enabled: !!feature?.geometry && !!departement,
+    retry: false,
+    select: (response) => response?.features || [],
   });
-
-  useEffect(() => {
-    if (!feature?.geometry || !departement) return;
-    mutate({ geometry: feature.geometry, dept: departement });
-  }, [feature, departement, mutate]);
 
   const { mainZone, zoneInfo, docAction, uniqueZones, hasMultipleZones } = useMemo(() => {
     const zones = data?.reduce((acc: any[], zone: any) => {

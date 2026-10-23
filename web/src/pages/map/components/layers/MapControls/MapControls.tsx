@@ -71,19 +71,19 @@ export default function MapControls({
     return (
         <div className="absolute top-6 right-6 pointer-events-auto flex flex-col gap-2 items-end z-[1002]">
 
-            <div className="flex flex-col rounded-xl shadow-md bg-white dark:bg-[#0A0A0A] border border-gray-100 dark:border-[#262626] overflow-hidden text-gray-700 dark:text-white">
+            <div className="flex flex-col rounded-xl shadow-md glass border border-black/5 dark:border-white/10 overflow-hidden text-gray-600 dark:text-gray-300">
                 <button
                     type="button"
                     onClick={onZoomIn}
-                    className="h-10 w-10 text-xl font-medium flex items-center justify-center hover:bg-gray-50 dark:hover:bg-[#1a1a1a] transition-colors cursor-pointer"
+                    className="h-10 w-10 text-xl font-medium flex items-center justify-center hover:bg-black/[0.04] dark:hover:bg-white/[0.06] transition-colors cursor-pointer"
                 >
                     <PlusIcon className="w-4.5 h-4.5 stroke-current" />
                 </button>
-                <div className="w-full h-px bg-gray-100 dark:bg-[#262626]" />
+                <div className="w-full h-px bg-black/5 dark:bg-white/10" />
                 <button
                     type="button"
                     onClick={onZoomOut}
-                    className="h-10 w-10 text-xl font-medium flex items-center justify-center hover:bg-gray-50 dark:hover:bg-[#1a1a1a] transition-colors cursor-pointer"
+                    className="h-10 w-10 text-xl font-medium flex items-center justify-center hover:bg-black/[0.04] dark:hover:bg-white/[0.06] transition-colors cursor-pointer"
                 >
                     <MinusIcon className="w-4.5 h-4.5 stroke-current" />
                 </button>
@@ -98,22 +98,22 @@ export default function MapControls({
                     />
                 </div>
 
-                <div className="flex flex-col rounded-xl shadow-md bg-white dark:bg-[#0A0A0A] border border-gray-100 dark:border-[#262626] overflow-hidden text-gray-700 dark:text-white">
+                <div className="flex flex-col rounded-xl shadow-md glass border border-black/5 dark:border-white/10 overflow-hidden text-gray-600 dark:text-gray-300">
                     <button
                         type="button"
                         onClick={() => toggleMenu("preference")}
-                        className={`h-10 w-10 flex items-center justify-center transition-colors cursor-pointer ${isPreferenceOpen ? "bg-gray-50 dark:bg-[#1a1a1a] text-green-600" : "hover:bg-gray-50 dark:hover:bg-[#1a1a1a]"
+                        className={`h-10 w-10 flex items-center justify-center transition-colors cursor-pointer ${isPreferenceOpen ? "glass-selected text-emerald-600 dark:text-emerald-400" : "hover:bg-black/[0.04] dark:hover:bg-white/[0.06]"
                             }`}
                     >
                         <LayersIcon className="w-4.5 h-4.5 stroke-current" />
                     </button>
 
-                    <div className="w-full h-px bg-gray-100 dark:bg-[#262626]" />
+                    <div className="w-full h-px bg-black/5 dark:bg-white/10" />
 
                     <button
                         type="button"
                         onClick={onLocateUser}
-                        className="h-10 w-10 flex items-center justify-center hover:bg-gray-50 dark:hover:bg-[#1a1a1a] transition-colors cursor-pointer"
+                        className="h-10 w-10 flex items-center justify-center hover:bg-black/[0.04] dark:hover:bg-white/[0.06] transition-colors cursor-pointer"
                     >
                         <LocateIcon className="w-4.5 h-4.5 stroke-current" />
                     </button>
@@ -127,14 +127,15 @@ export default function MapControls({
                     </div>
                 </div>
 
-                <button
-                    type="button"
-                    onClick={() => toggleMenu("ai")}
-                    className={`h-10 w-10 rounded-xl shadow-md border cursor-pointer border-gray-100 dark:border-[#262626] flex items-center justify-center transition-colors text-gray-700 dark:text-white ${isAiOpen ? "bg-gray-50 dark:bg-[#1a1a1a] text-green-600" : "bg-white dark:bg-[#0A0A0A] hover:bg-gray-50 dark:hover:bg-[#1a1a1a]"
-                        }`}
-                >
-                    <IaIcon className="w-4.5 h-4.5 stroke-current" />
-                </button>
+                <div className="rounded-xl shadow-md glass border border-black/5 dark:border-white/10 overflow-hidden text-gray-600 dark:text-gray-300">
+                    <button
+                        type="button"
+                        onClick={() => toggleMenu("ai")}
+                        className={`h-10 w-10 flex items-center justify-center transition-colors cursor-pointer ${isAiOpen ? "glass-selected text-emerald-600 dark:text-emerald-400" : "hover:bg-black/[0.04] dark:hover:bg-white/[0.06]"}`}
+                    >
+                        <IaIcon className="w-4.5 h-4.5 stroke-current" />
+                    </button>
+                </div>
 
                 <div className="absolute top-12 right-0 z-50">
                     <AiLayer
@@ -159,14 +160,15 @@ export default function MapControls({
                     </div>
                 </div>
 
-                <button
-                    type="button"
-                    onClick={() => toggleMenu("poi")}
-                    className={`h-10 w-10 rounded-xl shadow-md cursor-pointer border border-gray-100 dark:border-[#262626] flex items-center justify-center transition-colors text-gray-700 dark:text-white ${isPoiOpen ? "bg-gray-50 dark:bg-[#1a1a1a] text-green-600" : "bg-white dark:bg-[#0A0A0A] hover:bg-gray-50 dark:hover:bg-[#1a1a1a]"
-                        }`}
-                >
-                    <PoiIcon className="w-4.5 h-4.5 stroke-current" />
-                </button>
+                <div className="rounded-xl shadow-md glass border border-black/5 dark:border-white/10 overflow-hidden text-gray-600 dark:text-gray-300">
+                    <button
+                        type="button"
+                        onClick={() => toggleMenu("poi")}
+                        className={`h-10 w-10 flex items-center justify-center transition-colors cursor-pointer ${isPoiOpen ? "glass-selected text-emerald-600 dark:text-emerald-400" : "hover:bg-black/[0.04] dark:hover:bg-white/[0.06]"}`}
+                    >
+                        <PoiIcon className="w-4.5 h-4.5 stroke-current" />
+                    </button>
+                </div>
             </div>
 
         </div>

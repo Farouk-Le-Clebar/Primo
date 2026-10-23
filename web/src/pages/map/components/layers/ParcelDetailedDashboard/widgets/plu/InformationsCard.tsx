@@ -1,5 +1,6 @@
-import { useEffect, useMemo } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
+import type { Feature } from "geojson";
 import { Card, Table, TableBody, TableRow, TableCell } from "@tremor/react";
 import { Info } from "lucide-react";
 
@@ -17,25 +18,23 @@ export default function InformationsCard({ feature }: ParcelWidgetProps) {
     return inseeCode.startsWith('97') ? inseeCode.substring(0, 3) : inseeCode.substring(0, 2);
   }, [inseeCode, feature?.id]);
 
-  const { mutate, data, isPending } = useMutation({
-    mutationFn: async ({ geometry, dept }: { geometry: any; dept: string }) => {
+  const { data, isLoading: isPending } = useQuery({
+    queryKey: ["informations", String(feature?.properties?.id || "")],
+    queryFn: async () => {
       const [surf, lin, pct] = await Promise.all([
-        getInformationsSurf(geometry, dept),
-        getInformationsLin(geometry, dept),
-        getInformationsPct(geometry, dept)
+        getInformationsSurf(feature.geometry, departement),
+        getInformationsLin(feature.geometry, departement),
+        getInformationsPct(feature.geometry, departement)
       ]);
       return [
-        ...surf.map((f: any) => ({ ...f, _kind: 'surface' })),
-        ...lin.map((f: any) => ({ ...f, _kind: 'lineaire' })),
-        ...pct.map((f: any) => ({ ...f, _kind: 'ponctuel' }))
+        ...surf.map((f: Feature) => ({ ...f, _kind: 'surface' })),
+        ...lin.map((f: Feature) => ({ ...f, _kind: 'lineaire' })),
+        ...pct.map((f: Feature) => ({ ...f, _kind: 'ponctuel' }))
       ];
-    }
+    },
+    enabled: !!feature?.geometry && !!departement,
+    retry: false,
   });
-
-  useEffect(() => {
-    if (!feature?.geometry || !departement) return;
-    mutate({ geometry: feature.geometry, dept: departement });
-  }, [feature, departement, mutate]);
 
   const uniqueInformations = useMemo(() => {
     if (!data) return [];

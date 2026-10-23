@@ -1,21 +1,7 @@
 import L from "leaflet";
+import { defaultShapeStyle as defaultStyle, hoverShapeStyle as hoverStyle, selectedShapeStyle as selectedStyle } from "../../../../utils/map";
 
 export let selectedLayer: L.Path | null = null;
-
-const defaultStyle = {
-    fillOpacity: 0.2,
-    weight: 2
-};
-
-const selectedStyle = {
-    fillOpacity: 0.7,
-    weight: 3,
-};
-
-const hoverStyle = {
-    fillOpacity: 0.7,
-    weight: 3
-};
 
 export const onEachFeature = (
     feature: GeoJSON.Feature,

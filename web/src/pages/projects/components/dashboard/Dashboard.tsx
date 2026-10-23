@@ -32,7 +32,7 @@ export default function DashboardProjects() {
   }
 
   return (
-    <div className="w-full min-h-screen bg-transparent dark:bg-[#0A0A0A] p-6 sm:p-10 font-inter overflow-y-auto scrollbar-custom">
+    <div className="w-full p-6 font-inter">
       <main>
 
         <Card className="p-0 border-gray-200 dark:border-white/10 ring-0 shadow-sm overflow-hidden rounded-xl">

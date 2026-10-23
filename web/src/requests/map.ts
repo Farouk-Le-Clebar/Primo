@@ -3,7 +3,7 @@ import axios from "axios";
 const apiUrl = window?._env_?.API_URL;
 const token = localStorage.getItem("token");
 
-export const getCityByBbox = async (bbox: string) => {
+export const getCityByBbox = async (bbox: string, signal?: AbortSignal) => {
     const params = new URLSearchParams({
         service: "WFS",
         version: "2.0.0",
@@ -15,6 +15,7 @@ export const getCityByBbox = async (bbox: string) => {
     });
     return axios
         .get(`${apiUrl}/geoserver/primo/wfs?${params}`, {
+            signal,
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -52,6 +53,7 @@ export const getDepartementByBbox = async (bbox: string) => {
 export const getParcellesByBboxAndDepartments = async (
     bbox: string,
     departments: string[],
+    signal?: AbortSignal,
 ) => {
     const promises = departments.map((dept) => {
         const layerName = `primo:parcelles_${dept}`;
@@ -67,6 +69,7 @@ export const getParcellesByBboxAndDepartments = async (
 
         return axios
             .get(`${apiUrl}/geoserver/primo/wfs?${params}`, {
+                signal,
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -96,6 +99,7 @@ export const getParcellesByBboxAndDepartments = async (
 export const getDivisionsByBboxAndDepartments = async (
     bbox: string,
     departments: string[],
+    signal?: AbortSignal,
 ) => {
     const promises = departments.map((dept) => {
         const layerName = `primo:sections_${dept}`;
@@ -111,6 +115,7 @@ export const getDivisionsByBboxAndDepartments = async (
 
         return axios
             .get(`${apiUrl}/geoserver/primo/wfs?${params}`, {
+                signal,
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -141,6 +146,7 @@ export const getPoisByBbox = async (
     bbox: string,
     types?: string[],
     maxFeatures: number = 200,
+    signal?: AbortSignal,
 ) => {
     const params = new URLSearchParams({
         service: "WFS",
@@ -165,6 +171,7 @@ export const getPoisByBbox = async (
 
     return axios
     .get(`${apiUrl}/geoserver/primo/wfs?${params}`, {
+        signal,
         headers: {
             Authorization: `Bearer ${token}`,
         },

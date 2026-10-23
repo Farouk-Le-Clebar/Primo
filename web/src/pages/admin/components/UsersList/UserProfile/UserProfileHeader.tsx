@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
-import { Badge, Card } from "@tremor/react";
+import { Card } from "@tremor/react";
 import Avatar from "../../../../../components/avatar/Avatar";
 import type { UserType } from "../../../../../types/admin";
 import { adminCardClass, formatDate } from "../../shared/statistics";
@@ -20,14 +20,14 @@ export default function UserProfileHeader({ user }: { user: UserType }) {
     ],
   ];
   return (
-    <header>
+    <header className="primo-page-enter">
       <Link
-        to="/admin/dashboard"
-        className="mb-5 inline-flex items-center gap-2 text-sm text-gray-500 transition-colors hover:text-gray-900 dark:hover:text-white"
+        to="/search/admin/users"
+        className="mb-4 inline-flex items-center gap-2 text-sm text-gray-500 transition-colors hover:text-gray-900 dark:hover:text-white"
       >
-        <ArrowLeft size={16} /> Administration
+        <ArrowLeft size={16} /> Utilisateurs
       </Link>
-      <Card className={`${adminCardClass} p-5 sm:p-6`}>
+      <Card className={`${adminCardClass} p-5`}>
         <div className="flex flex-wrap items-center gap-4">
           <Avatar profilePicture={user.profilePicture} size="h-16 w-16" />
           <div className="min-w-0 flex-1">
@@ -41,14 +41,11 @@ export default function UserProfileHeader({ user }: { user: UserType }) {
               {user.email}
             </p>
           </div>
-          <Badge
-            className="!bg-gray-100 !text-gray-700 dark:!bg-white/10 dark:!text-gray-200"
-            color={user.isAdmin ? "emerald" : "gray"}
-          >
+          <span className={`px-2.5 py-1 text-xs font-medium ${user.isAdmin ? "rounded-md bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400" : "rounded-md bg-black/[0.04] text-gray-700 dark:bg-white/10 dark:text-gray-200"}`}>
             {user.isAdmin ? "Administrateur" : "Utilisateur"}
-          </Badge>
+          </span>
         </div>
-        <dl className="mt-6 grid grid-cols-1 gap-5 border-t border-gray-100 pt-5 dark:border-white/5 sm:grid-cols-2 xl:grid-cols-4">
+        <dl className="mt-6 grid grid-cols-1 gap-5 border-t border-gray-200 pt-5 dark:border-white/10 sm:grid-cols-2 xl:grid-cols-4">
           {details.map(([label, value]) => (
             <div key={label}>
               <dt className="text-xs text-gray-500 dark:text-gray-400">

@@ -92,7 +92,7 @@ export default function WorkspaceWelcome({
       ) : (
         <div className="mt-5 grid gap-3 sm:grid-cols-2">
           <Link
-            to={`/projects/${project.id}/${page}`}
+            to={`/search/projects/${project.id}/${page}`}
             className="group flex min-w-0 items-center gap-4 rounded-lg border border-gray-200 p-4 transition-colors hover:border-emerald-400 hover:bg-emerald-50/30 focus-visible:outline-2 focus-visible:outline-emerald-600 dark:border-white/10 dark:hover:border-emerald-700 dark:hover:bg-emerald-950/20"
           >
             <FolderOpen

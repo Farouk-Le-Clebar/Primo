@@ -1,14 +1,9 @@
 import { MapPin, ExternalLink, Plus } from "lucide-react";
-import { useState } from "react";
+import { lazy, Suspense, useState } from "react";
 
-// COMPONENTS
-import { getDvfParcelle } from "../../../../../requests/dvf/information";
-import { getBuildingsByGeometry } from "../../../../../requests/geoserver/bdTopo";
-import { getZonesUrbaByGeometry } from "../../../../../requests/geoserver/urbanAreas";
-import { extractDepartement } from "../ParcelDetailedDashboard/widgets/plu/utils";
-import { useQuery } from "@tanstack/react-query";
-import AddPlotToProjectModal from "./AddPlotToProjectModal";
 import { Tooltip } from "../../../../../ui/Tooltip";
+
+const AddPlotToProjectModal = lazy(() => import("./AddPlotToProjectModal"));
 
 type ParcelInfoPanelProps = {
   selectedParcelle: any;
@@ -19,37 +14,13 @@ export default function ParcelInfoPanel({ selectedParcelle, onOpenDashboard }: P
   const [addPlotModalOpen, setAddPlotModalOpen] = useState(false);
   const feature = selectedParcelle?.feature;
   const properties = feature?.properties;
-  console.log("Selected Parcelle:", selectedParcelle);
-  console.log("Selected Feature:", feature);
-  console.log("Selected Properties:", properties);
   const geometry = feature?.geometry;
   const parcelId = properties?.id || "Parcelle inconnue";
   const address = selectedParcelle?.addokData?.features?.[0]?.properties?.label || "Adresse non renseignée";
-  const inseeCode = feature?.properties?.commune;
-  const departement = (inseeCode ? (inseeCode.startsWith('97') ? inseeCode.substring(0, 3) : inseeCode.substring(0, 2)) : extractDepartement(String(feature?.id))) || "";
-
-  const { data: dvfData, isLoading: isDvfLoading } = useQuery({
-    queryKey: ['dvf-summary', parcelId],
-    queryFn: () => getDvfParcelle(String(parcelId)),
-    enabled: !!parcelId,
-  });
-
-  const { data: buildData, isLoading: isBuildLoading } = useQuery({
-    queryKey: ['buildings-summary', parcelId],
-    queryFn: () => getBuildingsByGeometry(geometry, departement),
-    enabled: !!geometry,
-  });
-
-  const { data: urbanData, isLoading: isUrbaLoading } = useQuery({
-    queryKey: ['urban-summary', parcelId],
-    queryFn: () => getZonesUrbaByGeometry(geometry, departement),
-    enabled: !!geometry,
-  });
-
   if (!selectedParcelle?.feature) return null;
 
   return (
-    <aside className="flex flex-col w-full h-full bg-white dark:bg-[#0A0A0A] rounded-xl overflow-hidden pointer-events-auto">
+    <aside className="flex flex-col w-full h-full rounded-xl overflow-hidden pointer-events-auto">
       <div className="px-6 py-4  shrink-0">
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-2">
@@ -77,43 +48,13 @@ export default function ParcelInfoPanel({ selectedParcelle, onOpenDashboard }: P
           </div>
         </div>
 
-        <div className="flex items-center gap-3 text-[#6B7280] mt-3 flex-wrap">
-          <div className="flex items-center gap-1.5">
-            <MapPin size={13} className="shrink-0" />
-            <span className="font-inter font-medium text-xs truncate">{address}</span>
-          </div>
-          <div className="w-1 h-1 rounded-full bg-gray-300"></div>
-          {isBuildLoading ? (
-            <span className="text-xs text-gray-400">Chargement...</span>
-          ) : (
-            <span className="font-inter font-medium text-xs">
-              {buildData?.features?.length || 0} bâtiment{buildData?.features?.length !== 1 ? 's' : ''}
-            </span>
-          )}
-
-          <div className="w-1 h-1 rounded-full bg-gray-300"></div>
-          {isUrbaLoading ? (
-            <span className="text-xs text-gray-400">Chargement...</span>
-          ) : (
-            <span className="font-inter font-medium text-xs text-gray-700">
-              {urbanData?.features?.[0]?.properties?.typezone || 'Zone non renseignée'}
-            </span>
-          )}
-
-          <div className="w-1 h-1 rounded-full bg-gray-300"></div>
-          {isDvfLoading ? (
-            <span className="text-xs text-gray-400">Chargement...</span>
-          ) : (
-            <span className="font-inter font-medium text-xs text-emerald-600">
-              {dvfData?.stats?.prixMoyenM2
-                ? `${Math.round(dvfData.stats.prixMoyenM2).toLocaleString('fr-FR')} €/m²`
-                : 'Pas de données DVF'
-              }
-            </span>
-          )}
+        <div className="mt-2 flex items-center gap-1.5 text-gray-500 dark:text-gray-400">
+          <MapPin size={13} className="shrink-0" />
+          <span className="font-inter font-medium text-xs truncate">{address}</span>
         </div>
       </div>
       {addPlotModalOpen && (
+        <Suspense fallback={null}>
         <AddPlotToProjectModal
           onClose={() => setAddPlotModalOpen(false)}
           plotData={{
@@ -124,6 +65,7 @@ export default function ParcelInfoPanel({ selectedParcelle, onOpenDashboard }: P
             geometry,
           }}
         />
+        </Suspense>
       )}
     </aside>
   );

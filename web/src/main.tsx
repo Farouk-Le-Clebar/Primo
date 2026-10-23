@@ -7,7 +7,16 @@ import "./index.css";
 import { AuthModalProvider } from "./context/AuthModalProvider";
 import { ThemeProvider } from "./context/ThemeProvider.tsx";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000,
+      gcTime: 10 * 60 * 1000,
+      refetchOnWindowFocus: false,
+      retry: 1,
+    },
+  },
+});
 
 const GOOGLE_CLIENT_ID = "43730285685-g8mns49ja7c2ndo8mbm0d95fduse0sfb.apps.googleusercontent.com";
 

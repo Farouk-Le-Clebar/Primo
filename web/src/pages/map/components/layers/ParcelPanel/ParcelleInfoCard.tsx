@@ -53,7 +53,7 @@ export const ParcelInfoCard = ({
       <span className="text-sm font-medium text-[#878D96]">{label}</span>
       <span className="text-sm font-medium text-[#111111] text-right">
         {loading ? (
-          <div className="h-4 w-16 bg-gray-100 animate-pulse rounded ml-auto" />
+          <div className="h-4 w-16 bg-black/[0.06] animate-pulse dark:bg-white/10 rounded ml-auto" />
         ) : (
           value
         )}
@@ -65,7 +65,7 @@ export const ParcelInfoCard = ({
     <div className="flex flex-col pl-1">
       <InfoRow
         label="Identifiant"
-        value={<span className="font-inter text-[13px] bg-gray-50 px-1.5 py-0.5 rounded border border-gray-100">{properties.id}</span>}
+        value={<span className="font-inter text-[13px] bg-black/[0.04] px-1.5 py-0.5 rounded border border-black/[0.06] dark:bg-white/[0.06] dark:border-white/10">{properties.id}</span>}
       />
       <InfoRow
         label="Commune (INSEE)"

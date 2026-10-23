@@ -50,7 +50,7 @@ export default function UserProfile() {
 
   if (isUserPending) {
     return (
-      <div className="flex items-center justify-center w-full min-h-[600px] bg-transparent dark:bg-[#0A0A0A]">
+      <div className="flex items-center justify-center w-full min-h-[600px]">
         <LoadingPrimoLogo className="h-10 w-10 dark:invert" />
       </div>
     );
@@ -59,7 +59,7 @@ export default function UserProfile() {
   if (!user) return null;
 
   return (
-    <div className="w-full h-full bg-transparent dark:bg-[#0A0A0A] p-4 sm:p-6 font-inter overflow-y-auto scrollbar-custom">
+    <div className="w-full font-inter">
       <main>
         <UserProfileHeader user={user} />
 
@@ -76,19 +76,10 @@ export default function UserProfile() {
           </div>
         ) : (
           <>
-            <div className="mt-6">
+            <div className="primo-stagger mt-4 grid grid-cols-1 gap-4 @3xl:grid-cols-12">
               <UserHabits stats={stats} />
-            </div>
-
-            <div className="mt-6 grid grid-cols-1 md:grid-cols-12 gap-6">
-              <div className="md:col-span-8">
-                <UserConnectionChart stats={stats} />
-              </div>
-              <div className="md:col-span-4">
-                <UserPeakHour stats={stats} />
-              </div>
-            </div>
-            <div className="mt-6">
+              <UserConnectionChart stats={stats} />
+              <UserPeakHour stats={stats} />
               <UserConnectionsTable stats={stats} />
             </div>
           </>
