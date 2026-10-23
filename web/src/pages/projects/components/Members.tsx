@@ -48,14 +48,14 @@ const Members = () => {
 
     if (isPending) {
         return (
-            <div className='flex items-center justify-center w-full h-full bg-transparent dark:bg-[#0A0A0A] transition-colors duration-200'>
+            <div className='flex items-center justify-center w-full h-full bg-transparent transition-colors duration-200'>
                 <LoadingPrimoLogo className="h-10 w-10 dark:invert" />
             </div>
         );
     }
 
     return (
-        <div className="flex flex-col w-full h-full p-4 pl-10 pr-10 overflow-hidden bg-transparent dark:bg-[#0A0A0A] transition-colors duration-200">
+        <div className="flex flex-col w-full h-full p-4 pl-10 pr-10 overflow-hidden bg-transparent transition-colors duration-200">
             <Card className="w-full h-80/100 scrollbar-custom flex-1 flex flex-col rounded-xl border border-gray-100 dark:border-white/5 transition-colors duration-200 ring-0 dark:ring-0">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                     <div>
