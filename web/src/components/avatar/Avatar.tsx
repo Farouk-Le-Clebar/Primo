@@ -1,29 +1,37 @@
 import React, { useState } from "react";
 
 // ASSETS
-import PPGreen from "../../assets/profilePictures/green.svg?react";
-import PPCyan from "../../assets/profilePictures/cyan.svg?react";
-import PPBlue from "../../assets/profilePictures/blue.svg?react";
-import PPOrange from "../../assets/profilePictures/orange.svg?react";
-import PPPink from "../../assets/profilePictures/pink.svg?react";
-import PPRed from "../../assets/profilePictures/red.svg?react";
-import PPWhite from "../../assets/profilePictures/white.svg?react";
-import PPWhitePink from "../../assets/profilePictures/whitepink.svg?react";
-import PPYellow from "../../assets/profilePictures/yellow.svg?react";
+import greenUrl from "../../assets/profilePictures/green.svg";
+import cyanUrl from "../../assets/profilePictures/cyan.svg";
+import blueUrl from "../../assets/profilePictures/blue.svg";
+import orangeUrl from "../../assets/profilePictures/orange.svg";
+import pinkUrl from "../../assets/profilePictures/pink.svg";
+import redUrl from "../../assets/profilePictures/red.svg";
+import whiteUrl from "../../assets/profilePictures/white.svg";
+import whitePinkUrl from "../../assets/profilePictures/whitepink.svg";
+import yellowUrl from "../../assets/profilePictures/yellow.svg";
 
-export const AVATAR_COMPONENTS: Record<
-  string,
-  React.FC<React.SVGProps<SVGSVGElement>>
-> = {
+type AvatarImageComponent = React.FC<{ className?: string }>;
+
+const createAvatarImage = (src: string): AvatarImageComponent => {
+  const AvatarImage = ({ className }: { className?: string }) => (
+    <img src={src} alt="" decoding="async" className={className} />
+  );
+  return AvatarImage;
+};
+
+const PPGreen = createAvatarImage(greenUrl);
+
+export const AVATAR_COMPONENTS: Record<string, AvatarImageComponent> = {
   "green.png": PPGreen,
-  "cyan.png": PPCyan,
-  "blue.png": PPBlue,
-  "orange.png": PPOrange,
-  "pink.png": PPPink,
-  "red.png": PPRed,
-  "white.png": PPWhite,
-  "whitepink.png": PPWhitePink,
-  "yellow.png": PPYellow,
+  "cyan.png": createAvatarImage(cyanUrl),
+  "blue.png": createAvatarImage(blueUrl),
+  "orange.png": createAvatarImage(orangeUrl),
+  "pink.png": createAvatarImage(pinkUrl),
+  "red.png": createAvatarImage(redUrl),
+  "white.png": createAvatarImage(whiteUrl),
+  "whitepink.png": createAvatarImage(whitePinkUrl),
+  "yellow.png": createAvatarImage(yellowUrl),
 };
 
 export const DEFAULT_AVATAR = "green.png";
@@ -41,7 +49,7 @@ export const PRESET_AVATARS = [
 
 export function getAvatarComponent(
   profilePicture: string | null | undefined,
-): React.FC<React.SVGProps<SVGSVGElement>> {
+): AvatarImageComponent {
   return AVATAR_COMPONENTS[profilePicture ?? DEFAULT_AVATAR] ?? PPGreen;
 }
 
