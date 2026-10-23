@@ -9,9 +9,11 @@ import { ProjectMembers } from 'src/database/project-members.entity';
 import { User } from 'src/database/user.entity';
 import { ProjectInvite } from 'src/database/project-invite.entity';
 import { MailModule } from 'src/mail/mail.module';
+import { ProjectDocuments } from 'src/database/project-documents.entity';
+import { StorageModule } from 'src/storage/storage.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Projects, ProjectPlots, ProjectMembers, ProjectInvite, User]), JwtModule, MailModule],
+  imports: [TypeOrmModule.forFeature([Projects, ProjectPlots, ProjectMembers, ProjectInvite, ProjectDocuments, User]), JwtModule, MailModule, StorageModule],
   controllers: [ProjectsController],
   providers: [ProjectsService]
 })

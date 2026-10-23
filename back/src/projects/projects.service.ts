@@ -1,14 +1,28 @@
-import { Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, In } from 'typeorm';
+import { Repository, In, MoreThan } from 'typeorm';
 import { Projects } from 'src/database/project.entity';
-import { AddDocumentToProjectDto, AddPlotToProjectDto, CreateProjectDto, InviteUserDto } from './project.type';
+import { AddPlotToProjectDto, CreateProjectDto, InviteUserDto, RequestDocumentUploadDto } from './project.type';
 import { ProjectPlots } from 'src/database/project-plots.entity';
 import { ProjectMembers } from 'src/database/project-members.entity';
 import { User } from 'src/database/user.entity';
-import { randomBytes } from 'crypto';
+import { randomBytes, randomUUID } from 'crypto';
 import { ProjectInvite } from 'src/database/project-invite.entity';
 import { MailService } from 'src/mail/mail.service';
+import { ProjectDocuments } from 'src/database/project-documents.entity';
+import { StorageService } from 'src/storage/storage.service';
+
+const MAX_DOCUMENT_SIZE = 20 * 1024 * 1024;
+const USER_STORAGE_QUOTA = 1024 * 1024 * 1024;
+// Presigned upload URLs expire after 5 minutes, so older pending uploads can no longer complete.
+const PENDING_UPLOAD_WINDOW_MS = 10 * 60 * 1000;
+
+const ALLOWED_DOCUMENT_TYPES: Record<string, { documentType: string; extensions: string[] }> = {
+    'application/pdf': { documentType: 'pdf', extensions: ['pdf'] },
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document': { documentType: 'document', extensions: ['docx'] },
+    'image/png': { documentType: 'image', extensions: ['png'] },
+    'image/jpeg': { documentType: 'image', extensions: ['jpg', 'jpeg'] },
+};
 
 @Injectable()
 export class ProjectsService {
@@ -23,8 +37,11 @@ export class ProjectsService {
         private usersRepository: Repository<User>,
         @InjectRepository(ProjectInvite)
         private projectInviteRepository: Repository<ProjectInvite>,
+        @InjectRepository(ProjectDocuments)
+        private projectDocumentsRepository: Repository<ProjectDocuments>,
 
         private mailService: MailService,
+        private storageService: StorageService,
     ) { }
 
     async userIsMemberOfProject(userId: string, projectId: string): Promise<boolean> {
@@ -119,9 +136,13 @@ export class ProjectsService {
         if (!isAdmin)
             throw new UnauthorizedException('Project not found or does not belong to the user');
 
+        const documents = await this.projectDocumentsRepository.findBy({ projectId: projectId });
+        await Promise.all(documents.map(document => this.storageService.deleteObject(document.storageKey)));
+
         await this.projectsRepository.delete({ id: projectId });
         await this.projectMembersRepository.delete({ projectId: projectId });
         await this.projectPlotsRepository.delete({ projectId: projectId });
+        await this.projectDocumentsRepository.delete({ projectId: projectId });
     }
 
 
@@ -363,7 +384,121 @@ export class ProjectsService {
         await this.projectsRepository.save(project);
     }
 
-    async addDocumentToProject(addDocumentToProjectDto: AddDocumentToProjectDto, file: Express.Multer.File) {
+    async getDocumentsOfProject(projectId: string) {
+        return this.projectDocumentsRepository.find({
+            where: { projectId: projectId, isUploaded: true },
+            order: { createdAt: "DESC" },
+        });
+    }
 
+    async getUsedStorage(userId: string, excludedDocumentId?: string): Promise<number> {
+        const documents = await this.projectDocumentsRepository.find({
+            where: [
+                { uploadedBy: userId, isUploaded: true },
+                { uploadedBy: userId, isUploaded: false, createdAt: MoreThan(new Date(Date.now() - PENDING_UPLOAD_WINDOW_MS)) },
+            ],
+            select: { id: true, size: true },
+        });
+
+        return documents
+            .filter(document => document.id !== excludedDocumentId)
+            .reduce((total, document) => total + document.size, 0);
+    }
+
+    async getStorageUsage(userId: string) {
+        return { used: await this.getUsedStorage(userId), quota: USER_STORAGE_QUOTA };
+    }
+
+    async requestDocumentUpload(projectId: string, requestDocumentUploadDto: RequestDocumentUploadDto, userId: string) {
+        const allowedType = ALLOWED_DOCUMENT_TYPES[requestDocumentUploadDto.mimetype];
+        const extension = requestDocumentUploadDto.documentName.split('.').pop()?.toLowerCase() ?? '';
+        if (!allowedType || !allowedType.extensions.includes(extension))
+            throw new BadRequestException('Type de fichier non supporté. Formats acceptés : PDF, DOCX, PNG, JPG, JPEG.');
+
+        if (requestDocumentUploadDto.size > MAX_DOCUMENT_SIZE)
+            throw new BadRequestException('Le fichier dépasse la taille maximale de 20 Mo.');
+
+        const usedStorage = await this.getUsedStorage(userId);
+        if (usedStorage + requestDocumentUploadDto.size > USER_STORAGE_QUOTA)
+            throw new BadRequestException('Vous avez atteint votre limite de stockage de 1 Go.');
+
+        const id = randomUUID();
+        const document = this.projectDocumentsRepository.create({
+            id: id,
+            projectId: projectId,
+            documentName: requestDocumentUploadDto.documentName,
+            mimetype: requestDocumentUploadDto.mimetype,
+            documentType: allowedType.documentType,
+            size: requestDocumentUploadDto.size,
+            storageKey: `projects/${projectId}/${id}`,
+            uploadedBy: userId,
+        });
+
+        await this.projectDocumentsRepository.save(document);
+
+        const uploadUrl = await this.storageService.getUploadUrl(document.storageKey, document.mimetype);
+
+        return { documentId: document.id, uploadUrl: uploadUrl };
+    }
+
+    async confirmDocumentUpload(projectId: string, documentId: string) {
+        const document = await this.projectDocumentsRepository.findOneBy({
+            id: documentId,
+            projectId: projectId,
+        });
+
+        if (!document)
+            throw new NotFoundException('Document introuvable.');
+
+        const size = await this.storageService.getObjectSize(document.storageKey);
+
+        if (size === null)
+            throw new BadRequestException('Le fichier n\'a pas été envoyé.');
+
+        if (size > MAX_DOCUMENT_SIZE) {
+            await this.storageService.deleteObject(document.storageKey);
+            await this.projectDocumentsRepository.delete({ id: document.id });
+            throw new BadRequestException('Le fichier dépasse la taille maximale de 20 Mo.');
+        }
+
+        // The size declared at upload-url time is not trusted: re-check the quota with the real size.
+        const usedStorage = document.uploadedBy ? await this.getUsedStorage(document.uploadedBy, document.id) : 0;
+        if (usedStorage + size > USER_STORAGE_QUOTA) {
+            await this.storageService.deleteObject(document.storageKey);
+            await this.projectDocumentsRepository.delete({ id: document.id });
+            throw new BadRequestException('Vous avez atteint votre limite de stockage de 1 Go.');
+        }
+
+        document.size = size;
+        document.isUploaded = true;
+        return this.projectDocumentsRepository.save(document);
+    }
+
+    async getDocumentDownloadUrl(projectId: string, documentId: string, disposition: 'inline' | 'attachment' = 'attachment') {
+        const document = await this.projectDocumentsRepository.findOneBy({
+            id: documentId,
+            projectId: projectId,
+            isUploaded: true,
+        });
+
+        if (!document)
+            throw new NotFoundException('Document introuvable.');
+
+        const url = await this.storageService.getDownloadUrl(document.storageKey, document.documentName, disposition);
+
+        return { url: url };
+    }
+
+    async deleteDocumentFromProject(projectId: string, documentId: string) {
+        const document = await this.projectDocumentsRepository.findOneBy({
+            id: documentId,
+            projectId: projectId,
+        });
+
+        if (!document)
+            throw new NotFoundException('Document introuvable.');
+
+        await this.storageService.deleteObject(document.storageKey);
+        await this.projectDocumentsRepository.delete({ id: document.id });
     }
 }

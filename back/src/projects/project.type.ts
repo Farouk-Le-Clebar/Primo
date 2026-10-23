@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, IsUUID } from "class-validator";
+import { IsInt, IsNotEmpty, IsPositive, IsString, MaxLength } from "class-validator";
 
 export type CreateProjectDto = {
     name: string;
@@ -19,12 +19,17 @@ export type InviteUserDto = {
     email: string;
 };
 
-export class AddDocumentToProjectDto {
-  @IsUUID()
+export class RequestDocumentUploadDto {
+  @IsString()
   @IsNotEmpty()
-  projectId: string;
+  @MaxLength(255)
+  documentName: string;
 
   @IsString()
   @IsNotEmpty()
-  documentName: string;
+  mimetype: string;
+
+  @IsInt()
+  @IsPositive()
+  size: number;
 }
