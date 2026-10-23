@@ -32,7 +32,7 @@ export default function ParcelDetailedDashboard({
     "Adresse non renseignée";
 
   return (
-    <div className="flex flex-col h-full w-full bg-[#F8F9FB] dark:bg-[#0A0A0A] animate-in fade-in duration-300">
+    <div className="flex min-h-0 flex-1 flex-col w-full animate-in fade-in duration-300">
       <ParcelDetailedNavbar
         parcelId={parcelId}
         address={address}
