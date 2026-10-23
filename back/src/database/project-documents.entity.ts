@@ -17,8 +17,8 @@ export class ProjectDocuments {
     @Column()
     documentType: string;
 
-    @Column({ type: 'varchar', length: 512 })
-    storageKey: string;
+    @Column({ type: 'varchar', length: 512, nullable: true })
+    storageKey: string | null;
 
     @Column({ type: 'int', default: 0 })
     size: number;
