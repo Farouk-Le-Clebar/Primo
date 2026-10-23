@@ -17,7 +17,7 @@ const ROUTE_NAMES: Record<string, string> = {
   "/settings": "Paramètres",
   "/dashboard": "Aperçu",
   "/search": "Carte",
-  "/admin/dashboard": "Administration",
+  "/search/admin/overview": "Administration",
   "/projects": "Projets",
 };
 
