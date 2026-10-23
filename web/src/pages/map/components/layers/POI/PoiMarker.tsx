@@ -10,7 +10,7 @@ type PoiMarkerProps = {
     showLabel: boolean;
 };
 
-const parseTags = (tags: unknown): Record<string, string> => {
+export const parseTags = (tags: unknown): Record<string, string> => {
     if (typeof tags === "string") {
         try {
             return JSON.parse(tags);
