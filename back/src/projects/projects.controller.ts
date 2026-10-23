@@ -1,10 +1,8 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Req, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Req, UseGuards } from '@nestjs/common';
 import { ProjectsService } from './projects.service';
 import { JwtAuthGuard } from 'src/guard/jwt-auth.guard';
 import type { AddPlotToProjectDto, CreateProjectDto, InviteUserDto } from './project.type';
-import { AddDocumentToProjectDto } from './project.type';
-import { FileInterceptor } from '@nestjs/platform-express';
-import 'multer';
+import { RequestDocumentUploadDto } from './project.type';
 import { ProjectGuard } from 'src/guard/project.guard';
 
 @Controller('projects')
@@ -25,6 +23,14 @@ export class ProjectsController {
     async getProjects(@Req() req) {
         const userId = req.user.id;
         return this.projectsService.getProjects(userId);
+    }
+
+    // Declared before ":projectId" so "storage" is not captured as a project id.
+    @UseGuards(JwtAuthGuard)
+    @Get("storage")
+    async getStorageUsage(@Req() req) {
+        const userId = req.user.id;
+        return this.projectsService.getStorageUsage(userId);
     }
 
     @UseGuards(JwtAuthGuard, ProjectGuard)
@@ -91,13 +97,39 @@ export class ProjectsController {
     }
 
     @UseGuards(JwtAuthGuard, ProjectGuard)
-    @Post("documents/upload")
-    @UseInterceptors(FileInterceptor('document'))
-    async addDocumentToProject(
-        @Req() req,
-        @UploadedFile() file: Express.Multer.File,
-        @Body() body: AddDocumentToProjectDto
-    ) {
-        return this.projectsService.addDocumentToProject(body, file);
+    @Get(":projectId/documents")
+    async getDocumentsOfProject(@Param("projectId") projectId: string) {
+        return this.projectsService.getDocumentsOfProject(projectId);
+    }
+
+    @UseGuards(JwtAuthGuard, ProjectGuard)
+    @Post(":projectId/documents/upload-url")
+    async requestDocumentUpload(@Req() req, @Param("projectId") projectId: string, @Body() body: RequestDocumentUploadDto) {
+        const userId = req.user.id;
+        return this.projectsService.requestDocumentUpload(projectId, body, userId);
+    }
+
+    @UseGuards(JwtAuthGuard, ProjectGuard)
+    @Post(":projectId/documents/:documentId/confirm")
+    async confirmDocumentUpload(@Param("projectId") projectId: string, @Param("documentId") documentId: string) {
+        return this.projectsService.confirmDocumentUpload(projectId, documentId);
+    }
+
+    @UseGuards(JwtAuthGuard, ProjectGuard)
+    @Get(":projectId/documents/:documentId/download")
+    async getDocumentDownloadUrl(@Param("projectId") projectId: string, @Param("documentId") documentId: string) {
+        return this.projectsService.getDocumentDownloadUrl(projectId, documentId);
+    }
+
+    @UseGuards(JwtAuthGuard, ProjectGuard)
+    @Get(":projectId/documents/:documentId/view")
+    async getDocumentViewUrl(@Param("projectId") projectId: string, @Param("documentId") documentId: string) {
+        return this.projectsService.getDocumentDownloadUrl(projectId, documentId, 'inline');
+    }
+
+    @UseGuards(JwtAuthGuard, ProjectGuard)
+    @Delete(":projectId/documents/:documentId")
+    async deleteDocumentFromProject(@Param("projectId") projectId: string, @Param("documentId") documentId: string) {
+        return this.projectsService.deleteDocumentFromProject(projectId, documentId);
     }
 }
