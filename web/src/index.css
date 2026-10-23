@@ -160,3 +160,21 @@ nav a:visited,
 .nav-link:visited {
   color: inherit !important;
 }
+
+.poi-dot-marker {
+    background: transparent;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.poi-dot-marker__core {
+    display: block;
+    width: var(--poi-dot-size, 6px);
+    height: var(--poi-dot-size, 6px);
+    border-radius: 50%;
+    background: var(--poi-dot-color, #64748b);
+    border: 1px solid rgba(255, 255, 255, 0.95);
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.22);
+}

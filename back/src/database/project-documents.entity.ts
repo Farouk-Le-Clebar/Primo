@@ -17,6 +17,18 @@ export class ProjectDocuments {
     @Column()
     documentType: string;
 
+    @Column({ type: 'varchar', length: 512 })
+    storageKey: string;
+
+    @Column({ type: 'int', default: 0 })
+    size: number;
+
+    @Column({ type: 'varchar', length: 255, nullable: true })
+    uploadedBy: string | null;
+
+    @Column({ type: 'boolean', default: false })
+    isUploaded: boolean;
+
     @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     createdAt: Date;
 

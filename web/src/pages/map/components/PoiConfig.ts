@@ -442,3 +442,33 @@ export const getPoiLabelDensity = (zoom: number): number => {
 
     return 1;
 };
+
+
+export type PoiDisplayRatio = {
+    featuredRatio: number;
+    dotSize: number;
+    featuredCellSize: number;
+};
+
+export const POI_DISPLAY_RATIOS: Record<number, PoiDisplayRatio> = {
+    11: { featuredRatio: 0.10, dotSize: 5, featuredCellSize: 180 },
+    12: { featuredRatio: 0.12, dotSize: 5, featuredCellSize: 160 },
+    13: { featuredRatio: 0.15, dotSize: 5, featuredCellSize: 140 },
+    14: { featuredRatio: 0.18, dotSize: 5, featuredCellSize: 120 },
+    15: { featuredRatio: 0.20, dotSize: 6, featuredCellSize: 100 },
+    16: { featuredRatio: 0.30, dotSize: 6, featuredCellSize: 85 },
+    17: { featuredRatio: 0.45, dotSize: 7, featuredCellSize: 70 },
+    18: { featuredRatio: 0.65, dotSize: 8, featuredCellSize: 55 },
+    19: { featuredRatio: 0.85, dotSize: 9, featuredCellSize: 45 },
+    20: { featuredRatio: 1.00, dotSize: 10, featuredCellSize: 35 },
+};
+
+export const getPoiDisplayRatio = (zoom: number): PoiDisplayRatio => {
+    const levels = Object.keys(POI_DISPLAY_RATIOS)
+        .map(Number)
+        .sort((a, b) => a - b);
+
+    const level = levels.filter((z) => z <= zoom).pop();
+
+    return POI_DISPLAY_RATIOS[level ?? levels[0]];
+};
