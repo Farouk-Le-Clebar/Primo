@@ -24,7 +24,7 @@ export default function Dashboard() {
     queryFn: getProjects,
   });
   return (
-    <div className="w-full min-h-screen bg-white dark:bg-[#0A0A0A] px-4 pb-6 sm:px-6 font-inter">
+    <div className="w-full px-4 pb-6 sm:px-6 font-inter">
       <main>
         {isPending ? (
           <div
