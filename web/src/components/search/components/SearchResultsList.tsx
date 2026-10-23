@@ -1,7 +1,12 @@
+import type { Feature, Point } from "geojson";
 import { MapPin } from "lucide-react";
+import { MapPinIcon } from "@heroicons/react/24/outline";
+import SearchResultRow, { SearchSectionTitle } from "./SearchResultRow";
+
+type AddressFeature = Feature<Point, { id?: string; label: string }>;
 
 type SearchResultsListProps = {
-  adressList: any[];
+  adressList: AddressFeature[];
   addressQuery: string;
   isPending: boolean;
   onSelect: (coords: [number, number], label: string) => void;
@@ -11,18 +16,14 @@ export default function SearchResultsList({ adressList, addressQuery, isPending,
   if (adressList.length > 0) {
     return (
       <div className="mb-2">
-        <div className="px-3 py-2 text-[0.70rem] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider select-none">
-          Résultats d'adresses
-        </div>
-        {adressList.map((feature: any) => (
-          <button
+        <SearchSectionTitle>Résultats d'adresses</SearchSectionTitle>
+        {adressList.map((feature) => (
+          <SearchResultRow
             key={feature.properties.id || feature.properties.label}
+            icon={MapPinIcon}
+            label={feature.properties.label}
             onClick={() => onSelect([feature.geometry.coordinates[1], feature.geometry.coordinates[0]], feature.properties.label)}
-            className="flex w-full items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-50 dark:hover:bg-[#262626] text-gray-700 dark:text-white transition-colors cursor-pointer text-left"
-          >
-            <MapPin className="text-gray-300 dark:text-white shrink-0" size={16} />
-            <span className="text-xs font-medium truncate">{feature.properties.label}</span>
-          </button>
+          />
         ))}
       </div>
     );
