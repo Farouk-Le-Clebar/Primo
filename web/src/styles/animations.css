@@ -173,7 +173,27 @@
   animation: primo-page-enter 300ms cubic-bezier(0.2, 0.8, 0.2, 1) 70ms backwards;
 }
 .primo-dashboard-reveal > :nth-child(2) { animation-delay: 120ms; }
+@keyframes primo-slide-enter {
+  from { opacity: 0; transform: translateX(-8px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+.primo-slide-enter {
+  animation: primo-slide-enter 280ms cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+}
+.primo-stagger > * {
+  animation: primo-page-enter 360ms cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+  animation-delay: calc(var(--primo-stagger-index, 8) * 45ms + 40ms);
+}
+.primo-stagger > :nth-child(1) { --primo-stagger-index: 0; }
+.primo-stagger > :nth-child(2) { --primo-stagger-index: 1; }
+.primo-stagger > :nth-child(3) { --primo-stagger-index: 2; }
+.primo-stagger > :nth-child(4) { --primo-stagger-index: 3; }
+.primo-stagger > :nth-child(5) { --primo-stagger-index: 4; }
+.primo-stagger > :nth-child(6) { --primo-stagger-index: 5; }
+.primo-stagger > :nth-child(7) { --primo-stagger-index: 6; }
 @media (prefers-reduced-motion: reduce) {
   .primo-page-enter,
+  .primo-slide-enter,
+  .primo-stagger > *,
   .primo-dashboard-reveal > * { animation: none; }
 }
