@@ -29,7 +29,7 @@ export default function OnboardingRoot() {
             plan: selectedPlan,
         };
         console.log("Onboarding terminé :", userData);
-        navigate("/dashboard", { state: { welcome: true } });
+        navigate("/", { state: { welcome: true } });
     };
 
   return (
