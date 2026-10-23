@@ -1,204 +1,87 @@
 import { useMemo } from "react";
-import { Card, Text, Metric, Flex, CategoryBar, Divider } from "@tremor/react";
-import { BUILDING_COLORS } from "./config";
+import { Card } from "@tremor/react";
+import type { Feature } from "geojson";
 
-interface BuildingInPlotProps {
-  parcelFeature: any;
-  buildings: any[];
-  onBuildingClick?: (index: number) => void;
-}
+import { buildingColor } from "./config";
+import { toSvgPaths } from "./geometry";
+import type { BuildingFeature } from "./types";
 
-function getBuildingArea(geometry: any): number {
-  if (!geometry || !geometry.coordinates) return 0;
+type BuildingInPlotProps = {
+  parcelFeature: Feature;
+  buildings: BuildingFeature[];
+  activeIndex: number | null;
+  onHover: (index: number | null) => void;
+  onSelect: (index: number) => void;
+};
 
-  let ring;
-  if (geometry.type === 'Polygon') {
-    ring = geometry.coordinates[0];
-  } else if (geometry.type === 'MultiPolygon') {
-    ring = geometry.coordinates[0][0];
-  }
-  if (!ring || ring.length < 3) return 0;
+const FRAME = { width: 320, height: 220, padding: 24 };
 
-  const R = 6378137;
-  const rad = Math.PI / 180;
-  const lat0 = ring[0][1] * rad;
-  const cosLat0 = Math.cos(lat0);
+export function BuildingInPlot({
+  parcelFeature,
+  buildings,
+  activeIndex,
+  onHover,
+  onSelect,
+}: BuildingInPlotProps) {
+  const paths = useMemo(
+    () =>
+      toSvgPaths(
+        [parcelFeature.geometry, ...buildings.map((b) => b.geometry)],
+        FRAME,
+      ),
+    [parcelFeature, buildings],
+  );
 
-  let area = 0;
-  for (let i = 0; i < ring.length - 1; i++) {
-    const x1 = ring[i][0] * rad * R * cosLat0;
-    const y1 = ring[i][1] * rad * R;
-    const x2 = ring[i + 1][0] * rad * R * cosLat0;
-    const y2 = ring[i + 1][1] * rad * R;
-    area += x1 * y2 - x2 * y1;
-  }
-  return Math.abs(area / 2);
-}
-
-export function BuildingInPlot({ parcelFeature, buildings, onBuildingClick }: BuildingInPlotProps) {
-  
-  const geoData = useMemo(() => {
-    if (!parcelFeature?.geometry) return null;
-    const parcelGeom = parcelFeature.geometry;
-    // Include entire intersecting buildings, even when they extend beyond the parcel.
-    const allGeometries = [parcelGeom, ...buildings.map(building => building.geometry)];
-    const parcelCoords = allGeometries.flatMap(geometry =>
-      geometry?.type === "MultiPolygon" ? geometry.coordinates.flat(2)
-        : geometry?.type === "Polygon" ? geometry.coordinates.flat(1) : []
-    );
-
-    let minLng = Infinity, minLat = Infinity, maxLng = -Infinity, maxLat = -Infinity;
-
-    parcelCoords.forEach(([lng, lat]: [number, number]) => {
-      if (lng < minLng) minLng = lng;
-      if (lat < minLat) minLat = lat;
-      if (lng > maxLng) maxLng = lng;
-      if (lat > maxLat) maxLat = lat;
-    });
-
-    if (![minLng, minLat, maxLng, maxLat].every(Number.isFinite)) return null;
-    const longitudeScale = Math.cos(((minLat + maxLat) / 2) * Math.PI / 180);
-    const diffLng = (maxLng - minLng) * longitudeScale;
-    const diffLat = maxLat - minLat;
-    if (Math.max(diffLng, diffLat) === 0) return null;
-    const width = 320;
-    const height = 200;
-    const padding = 32;
-    const scale = Math.min(
-      diffLng ? (width - padding * 2) / diffLng : Infinity,
-      diffLat ? (height - padding * 2) / diffLat : Infinity,
-    );
-    const project = (lng: number, lat: number) => {
-      const x = (width - diffLng * scale) / 2 + (lng - minLng) * longitudeScale * scale;
-      const y = (height + diffLat * scale) / 2 - (lat - minLat) * scale;
-      return `${x.toFixed(2)},${y.toFixed(2)}`;
-    };
-
-    const generatePath = (geom: any) => {
-      if (!geom || !["Polygon", "MultiPolygon"].includes(geom.type)) return "";
-      const polygons = geom.type === "MultiPolygon" ? geom.coordinates : [geom.coordinates];
-      return polygons.map((polygon: any) => {
-        return polygon.map((ring: any[]) => {
-          const points = ring.map(([lng, lat]) => project(lng, lat));
-          return `M ${points.join(" L ")} Z`;
-        }).join(" ");
-      }).join(" ");
-    };
-    const parcelPath = generatePath(parcelGeom);
-    const buildingsPaths = buildings.map(b => generatePath(b.geometry));
-
-    return { parcelPath, buildingsPaths };
-  }, [parcelFeature, buildings]);
-
-
-  const stats = useMemo(() => {
-    const totalBuildings = buildings.length;
-    let totalArea = 0;
-    let totalSHON = 0;
-    const usageCounts: Record<string, number> = {};
-
-    buildings.forEach(b => {
-      const area = getBuildingArea(b.geometry);
-      totalArea += area;
-      const floors = b.properties.nb_etages || 1;
-      totalSHON += area * floors;
-      const usage = b.properties.usage1 || "Indéfini";
-      usageCounts[usage] = (usageCounts[usage] || 0) + 1;
-    });
-    const empriseTotale = totalArea > 0 ? `${Math.round(totalArea).toLocaleString('fr-FR')} m²` : "0 m²";
-    const shonTotale = totalSHON > 0 ? `${Math.round(totalSHON).toLocaleString('fr-FR')} m²` : "0 m²";
-    const categories = Object.entries(usageCounts).map(([name, count]) => {
-      return {
-        name,
-        percentage: Math.round((count / totalBuildings) * 100),
-        count
-      };
-    }).sort((a, b) => b.percentage - a.percentage);
-
-    return { totalBuildings, empriseTotale, shonTotale, categories };
-  }, [buildings]);
-
-  if (!geoData) return null;
+  if (!paths) return null;
+  const [parcelPath, ...buildingPaths] = paths;
 
   return (
-    <Card className="flex flex-col p-4 shadow-sm border-gray-200 ring-0 font-inter">
-      <div className="w-full h-48 flex items-center justify-center relative overflow-hidden">
-        <svg 
-          viewBox="0 0 320 200" 
-          className="h-full w-full drop-shadow-sm"
-          preserveAspectRatio="xMidYMid meet"
+    <Card className="overflow-hidden rounded-xl border-gray-200 p-0 shadow-sm ring-0 dark:border-white/10 dark:bg-[#171717]">
+      <div className="flex items-center justify-between border-b border-gray-100 px-4 py-3 dark:border-white/5">
+        <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
+          Implantation
+        </h3>
+        <span className="text-[10px] font-medium uppercase tracking-widest text-gray-400">
+          Plan cadastral
+        </span>
+      </div>
+      <div className="bg-[radial-gradient(circle,rgba(0,0,0,0.06)_1px,transparent_1px)] [background-size:14px_14px] p-2 dark:bg-[radial-gradient(circle,rgba(255,255,255,0.06)_1px,transparent_1px)]">
+        <svg
+          viewBox={`0 0 ${FRAME.width} ${FRAME.height}`}
+          className="h-56 w-full"
+          role="img"
+          aria-label="Bâtiments sur le plan de la parcelle"
         >
-          <path 
-            d={geoData.parcelPath} 
-            className="fill-gray-50/50 dark:fill-[#232323]/50 stroke-gray-300 dark:stroke-[#333333]"
-            strokeWidth="1"
-            strokeDasharray="3 2"
+          <path
+            d={parcelPath}
+            className="fill-emerald-500/5 stroke-emerald-600/60 dark:stroke-emerald-400/50"
+            strokeWidth="1.5"
+            strokeDasharray="4 3"
             fillRule="evenodd"
           />
-          {geoData.buildingsPaths.map((path, idx) => {
-            const color = BUILDING_COLORS[idx % BUILDING_COLORS.length];
-            return (
-              <path 
-                key={idx}
-                d={path} 
-                onClick={() => onBuildingClick?.(idx)}
-                className={`${color.fill} ${color.stroke} cursor-pointer hover:opacity-60 transition-opacity`}
-                strokeWidth="2"
-                strokeLinejoin="round"
-                fillRule="evenodd"
-              />
-            );
-          })}
-        </svg>
-
-        <div className="absolute top-0 right-0">
-           <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest bg-white/80 dark:bg-[#111111]/80 px-2 py-1 rounded">
-             Plan Cadastral
-           </span>
-        </div>
-      </div>
-
-      <Divider className="my-4 dark:border-[#232323]" />
-
-      <div className="flex flex-col gap-4 pb-2">
-        {stats.categories.length > 0 && (
-          <div>
-            <Flex className="mb-2">
-              <Text className="text-[11px] font-medium text-slate-700 dark:text-gray-300">Répartition des types</Text>
-            </Flex>
-            <CategoryBar
-              values={stats.categories.map(c => c.percentage)}
-              colors={["emerald", "blue", "amber", "rose", "indigo"].slice(0, stats.categories.length) as any[]}
-              className="mt-2 h-2"
-              showLabels={false}
+          {buildingPaths.map((path, index) => (
+            <path
+              key={index}
+              d={path}
+              tabIndex={0}
+              aria-label={`Bâtiment ${index + 1}`}
+              onMouseEnter={() => onHover(index)}
+              onMouseLeave={() => onHover(null)}
+              onFocus={() => onHover(index)}
+              onBlur={() => onHover(null)}
+              onClick={() => onSelect(index)}
+              className={`${buildingColor(index).fill} ${buildingColor(index).stroke} cursor-pointer outline-none transition-opacity duration-200 ${activeIndex !== null && activeIndex !== index ? "opacity-30" : "opacity-90"}`}
+              strokeWidth="1.5"
+              strokeLinejoin="round"
+              fillRule="evenodd"
             />
-            <div className="mt-3 flex flex-wrap gap-x-4 gap-y-2">
-              {stats.categories.map((cat, idx) => {
-                const colorCode = ["emerald", "blue", "amber", "rose", "indigo"][idx % 5];
-                return (
-                  <div key={cat.name} className="flex items-center gap-1.5">
-                    <div className={`w-2 h-2 rounded-full bg-${colorCode}-500`} />
-                    <span className="text-[10px] font-medium text-slate-600 dark:text-gray-400 truncate max-w-[100px]">
-                      {cat.name} ({cat.percentage}%)
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
-
-        <div className="grid grid-cols-2 gap-4 mt-2 bg-slate-50 dark:bg-[#232323] p-3 rounded-lg border border-slate-100 dark:border-[#333333]">
-          <div>
-            <Text className="text-[11px] text-gray-500 uppercase tracking-wider font-semibold">Bâtiments</Text>
-            <Metric className="text-xl text-slate-800 dark:text-white">{stats.totalBuildings}</Metric>
-          </div>
-          <div>
-            <Text className="text-[11px] text-gray-500 uppercase tracking-wider font-semibold">Emprise au Sol</Text>
-            <Metric className="text-xl text-slate-800 dark:text-white">{stats.empriseTotale}</Metric>
-          </div>
-        </div>
+          ))}
+        </svg>
       </div>
+      <p className="border-t border-gray-100 px-4 py-2.5 text-[11px] leading-relaxed text-gray-500 dark:border-white/5 dark:text-gray-400">
+        Survolez un bâtiment pour le retrouver dans la liste. Les bâtiments
+        débordant de la parcelle sont représentés en entier.
+      </p>
     </Card>
   );
 }
