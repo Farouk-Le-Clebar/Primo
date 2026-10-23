@@ -1,13 +1,5 @@
 import { DonutChart } from '@tremor/react';
-import type { UrbanZone } from './types';
-
-const urbanZones: UrbanZone[] = [
-  { name: 'Urbaine dense', code: 'UA', value: 34, color: 'violet' },
-  { name: 'Urbaine', code: 'UB', value: 26, color: 'blue' },
-  { name: 'À urbaniser', code: 'AU', value: 18, color: 'amber' },
-  { name: 'Naturelle', code: 'N', value: 14, color: 'emerald' },
-  { name: 'Agricole', code: 'A', value: 8, color: 'rose' },
-];
+import { urbanZones } from './dashboardData';
 
 const dotColorClasses: Record<string, string> = {
   violet: 'bg-violet-500',
