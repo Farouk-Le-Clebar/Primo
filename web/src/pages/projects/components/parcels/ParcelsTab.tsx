@@ -45,7 +45,7 @@ const ParcelsTab = () => {
         const center = geoJsonLayer.getBounds().getCenter();
         const x = center.lng;
         const y = center.lat;
-        navigate(`/search?coo_x=${x}&coo_y=${y}`);
+        navigate("/search", { state: { centerOn: [y, x] } });
     };
 
     return (
