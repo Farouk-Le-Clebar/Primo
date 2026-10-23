@@ -2,22 +2,19 @@ import { useQuery } from "@tanstack/react-query";
 import { Loader2, Plus } from "lucide-react";
 import { useState } from "react";
 import {
-    Card,
     Table,
     TableHead,
     TableRow,
     TableHeaderCell,
     TableBody,
     TableCell,
-    Button,
-    Title,
-    Text
 } from "@tremor/react";
 
 // COMPONENTS
 import { getAdmins } from "../../../../requests/admin";
 import type { UserType } from "../../../../types/admin";
 import AddAdminModal from "./AddAdminModal";
+import BentoCard from "../../../map/components/layers/Dashboard/BentoCard";
 
 const AdminList = () => {
     const [addAdminModalOpen, setAddAdminModalOpen] = useState(false);
@@ -28,29 +25,24 @@ const AdminList = () => {
     });
 
     return (
-        <Card className="w-full rounded-xl border border-gray-100 dark:border-[#171717] transition-colors duration-200 ring-0 dark:ring-0">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-                <div>
-                    <Title className="text-gray-900 dark:text-white flex items-center gap-2">
-                        Liste des administrateurs
-                        {isLoading && <Loader2 className="w-4 h-4 text-blue-500 animate-spin" />}
-                    </Title>
-                    <Text className="text-gray-500 dark:text-gray-400">
-                        Gérez les membres ayant un accès complet au système.
-                    </Text>
+        <BentoCard
+            title="Liste des administrateurs"
+            className="primo-page-enter"
+            action={
+                <div className="flex items-center gap-2">
+                    {isLoading && <Loader2 className="h-4 w-4 animate-spin text-gray-400" />}
+                    <button
+                        onClick={() => setAddAdminModalOpen(true)}
+                        className="inline-flex h-8 items-center gap-1.5 rounded-lg bg-black px-3 text-sm font-medium text-white transition-opacity duration-150 hover:opacity-80 cursor-pointer dark:bg-white dark:text-black"
+                    >
+                        <Plus className="h-4 w-4" aria-hidden="true" />
+                        Ajouter un admin
+                    </button>
                 </div>
-                
-                <Button 
-                    icon={Plus} 
-                    onClick={() => setAddAdminModalOpen(true)}
-                    className="!bg-black hover:!bg-gray-800 !text-white !border-transparent dark:!bg-white dark:hover:!bg-gray-200 dark:!text-black transition-colors cursor-pointer"
-                >
-                    Ajouter un admin
-                </Button>
-            </div>
-
+            }
+        >
             <div className="overflow-x-auto">
-                <Table className="mt-4">
+                <Table>
                     <TableHead>
                         <TableRow className="border-b border-gray-200 dark:border-white/5">
                             <TableHeaderCell className="text-gray-500 dark:text-gray-400">Nom complet</TableHeaderCell>
@@ -67,7 +59,7 @@ const AdminList = () => {
                                 <TableCell className="text-gray-600 dark:text-gray-400">
                                     {admin.email}
                                 </TableCell>
-                                <TableCell className="text-gray-600 dark:text-gray-400">
+                                <TableCell className="tabular-nums text-gray-600 dark:text-gray-400">
                                     {admin.lastConnection 
                                         ? new Date(admin.lastConnection).toLocaleDateString('fr-FR', { 
                                             day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' 
@@ -88,7 +80,7 @@ const AdminList = () => {
                 isOpen={addAdminModalOpen} 
                 onClose={() => setAddAdminModalOpen(false)} 
             />
-        </Card>
+        </BentoCard>
     );
 };
 
