@@ -2,21 +2,17 @@ import { useEffect } from "react";
 import { useMapEvents } from "react-leaflet";
 
 type MapBoundsProps = {
-    onChange: (bounds: L.LatLngBounds) => void;
+    onChange: (bounds: L.LatLngBounds, zoom: number) => void;
 }
 
 const MapBounds = ({ onChange }: MapBoundsProps) => {
     const map = useMapEvents({
-        moveend: () => {
-            const bounds = map.getBounds();
-            onChange(bounds);
-        },
+        moveend: () => onChange(map.getBounds(), map.getZoom()),
     });
 
     useEffect(() => {
-        if (map)
-            onChange(map.getBounds());
-    }, [map]);
+        onChange(map.getBounds(), map.getZoom());
+    }, [map, onChange]);
 
     return null;
 }
