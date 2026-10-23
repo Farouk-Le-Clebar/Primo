@@ -127,7 +127,7 @@ export default function Sidebar() {
               />
               {isAdmin && (
                 <CustomNavLink
-                  to="/admin/dashboard"
+                  to="/search/admin"
                   textColor="text-black dark:text-white dark:hover:text-white"
                   rounded="rounded-lg"
                   label="Administration"
