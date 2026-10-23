@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "leaflet/dist/leaflet.css" layer(base);
 @import "./styles/fonts.css";
 @import "./styles/animations.css";
 @import "./styles/onBoarding.css";
@@ -50,6 +51,80 @@
 .scrollbar-custom {
     scrollbar-width: thin;
     scrollbar-color: rgba(100, 100, 100, 0.5) transparent;
+}
+
+@utility surface {
+    background-color: #ffffff;
+
+    @variant dark {
+        background-color: #000000;
+    }
+}
+
+@utility glass {
+    background-color: rgba(255, 255, 255, 0.78);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+
+    @variant dark {
+        background-color: rgba(28, 28, 30, 0.82);
+    }
+}
+
+@utility glass-selected {
+    background-color: rgba(0, 0, 0, 0.06);
+
+    @variant dark {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+}
+
+.selection-locked path.leaflet-interactive {
+    pointer-events: none;
+}
+
+@layer base {
+    .leaflet-container .map-overlay a {
+        color: inherit;
+    }
+}
+
+.scrollbar-glass {
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+    transition: scrollbar-color 150ms ease-out;
+}
+
+.scrollbar-glass:hover {
+    scrollbar-color: rgba(0, 0, 0, 0.18) transparent;
+}
+
+.dark .scrollbar-glass:hover {
+    scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
+}
+
+.scrollbar-glass::-webkit-scrollbar {
+    width: 10px;
+    background: transparent;
+}
+
+.scrollbar-glass::-webkit-scrollbar-track {
+    margin: 12px 0;
+}
+
+.scrollbar-glass::-webkit-scrollbar-thumb {
+    background-color: transparent;
+    border: 3px solid transparent;
+    border-radius: 9999px;
+    background-clip: content-box;
+}
+
+.scrollbar-glass:hover::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.18);
+}
+
+.dark .scrollbar-glass:hover::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.18);
 }
 
 .poi-marker {
