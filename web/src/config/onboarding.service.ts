@@ -22,7 +22,7 @@ const onboardingTours = [
     steps: dashboardSteps
   },
   {
-    paths: ["/admin/dashboard"],
+    paths: ["/search/admin/overview"],
     steps: adminSteps
   }
 ];
