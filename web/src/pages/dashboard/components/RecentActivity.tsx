@@ -1,39 +1,5 @@
 import type { ActivityItem } from './types';
-
-const activityFeed: ActivityItem[] = [
-  {
-    id: '1',
-    userInitials: 'JC',
-    userColor: 'violet',
-    message: 'Jacques a ajouté une nouvelle parcelle',
-    tag: 'Maison de Campagne',
-    timestamp: 'il y a 2 h',
-  },
-  {
-    id: '2',
-    userInitials: 'SM',
-    userColor: 'emerald',
-    message: 'Sophie a mis à jour le budget',
-    tag: 'Loft Toulouse Centre',
-    timestamp: 'il y a 5 h',
-  },
-  {
-    id: '3',
-    userInitials: 'FH',
-    userColor: 'amber',
-    message: 'Félix a validé le critère PLU',
-    tag: 'Terrain Bordeaux Sud',
-    timestamp: 'il y a 8 h',
-  },
-  {
-    id: '4',
-    userInitials: 'LR',
-    userColor: 'sky',
-    message: 'Léa a sauvegardé une recherche',
-    tag: 'Zone UA — Lyon',
-    timestamp: 'il y a 1 j',
-  },
-];
+import { activityFeed } from './dashboardData';
 
 const avatarColorClasses: Record<ActivityItem['userColor'], string> = {
   violet: 'bg-violet-500/15 text-violet-600 dark:text-violet-400',
