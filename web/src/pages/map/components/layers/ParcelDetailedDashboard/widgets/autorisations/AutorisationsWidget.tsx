@@ -1,78 +1,63 @@
-import { useMemo } from "react";
-import ParcelAnalysisLayout from "../../ParcelAnalysisLayout";
-import AutorisationsSummary from "./AutorisationsSummary";
-import AutorisationsList from "./AutorisationsList";
-import { prepareAutorisations } from "./data";
+import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 
-// COMPONENTS
-import LoadingPrimoLogo from "../../../../../../../components/animations/LoadingPrimoLogo";
-import type { ParcelWidgetProps } from "../../types";
 import { getAutorisationsParcelle } from "../../../../../../../requests/autorisations/information";
+import ParcelAnalysisLayout from "../../ParcelAnalysisLayout";
+import type { ParcelWidgetProps } from "../../types";
+import { SourceNote, WidgetEmpty, WidgetLoading } from "../shared/WidgetStatus";
+import AutorisationsExplorer from "./AutorisationsExplorer";
+import AutorisationsKpis from "./AutorisationsKpis";
+import AutorisationsOverview from "./AutorisationsOverview";
+import { prepareAutorisations } from "./data";
+
+const PARCEL_ID_PATTERN = /^[0-9AB]{5}[0-9]{3}[0-9A-Z]{2}[0-9]{4}$/;
 
 export default function AutorisationsWidget({ feature }: ParcelWidgetProps) {
-  const idParcelle = String(feature?.properties?.id || "")
-    .trim()
-    .toUpperCase();
-  const isValidParcelle = /^[0-9AB]{5}[0-9]{3}[0-9A-Z]{2}[0-9]{4}$/.test(
-    idParcelle,
-  );
-
-  const {
-    data,
-    isLoading: isPending,
-    isError,
-    refetch,
-  } = useQuery({
+  const idParcelle = String(feature?.properties?.id || "").trim().toUpperCase();
+  const isValidParcelle = PARCEL_ID_PATTERN.test(idParcelle);
+  const [type, setType] = useState<string | null>(null);
+  const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["autorisations-parcelle", idParcelle],
     queryFn: () => getAutorisationsParcelle(idParcelle),
     enabled: isValidParcelle,
     staleTime: 300000,
     retry: false,
   });
+  const dossiers = useMemo(() => prepareAutorisations(data || []), [data]);
+  const filtered = useMemo(() => dossiers.filter((d) => !type || d.type === type), [dossiers, type]);
 
-  const autorisations = useMemo(() => prepareAutorisations(data || []), [data]);
+  if (isLoading) return <WidgetLoading label="Récupération des autorisations d’urbanisme…" />;
+
+  if (!isValidParcelle || isError || !dossiers.length)
+    return (
+      <WidgetEmpty
+        message={
+          !isValidParcelle
+            ? "La référence cadastrale de cette parcelle est indisponible."
+            : isError
+              ? "Les autorisations d’urbanisme sont momentanément indisponibles."
+              : "Aucune autorisation référencée pour cette parcelle dans les données disponibles."
+        }
+        onRetry={isValidParcelle && isError ? () => void refetch() : undefined}
+      />
+    );
 
   return (
-    <div className="font-inter w-full">
-      {isPending && (
-        <div className="flex items-center gap-2 mb-4">
-          <LoadingPrimoLogo className="w-6 h-6 text-black-500" />
-          <span className="text-[11px] font-medium text-[#878D96] dark:text-gray-400">
-            Récupération des autorisations d’urbanisme...
-          </span>
-        </div>
-      )}
-
-      {!isPending &&
-        (!isValidParcelle || isError || autorisations.length === 0) && (
-          <div className="py-8 text-sm text-[#878D96] dark:text-gray-400 text-center bg-gray-50 dark:bg-[#171717] rounded-xl border border-dashed border-gray-200 dark:border-[#232323]">
-            {!isValidParcelle
-              ? "La référence cadastrale de cette parcelle est indisponible."
-              : isError
-                ? "Les autorisations d’urbanisme sont momentanément indisponibles."
-                : "Aucune autorisation référencée pour cette parcelle dans les données disponibles."}
-            {isValidParcelle && isError && (
-              <button
-                onClick={() => void refetch()}
-                className="mt-3 block w-full font-medium text-emerald-700 underline dark:text-emerald-400"
-              >
-                Réessayer
-              </button>
-            )}
+    <div className="flex w-full flex-col gap-4 font-inter lg:gap-6">
+      <AutorisationsKpis dossiers={dossiers} />
+      <ParcelAnalysisLayout
+        summary={
+          <div className="primo-stagger flex flex-col gap-4">
+            <AutorisationsOverview dossiers={dossiers} activeType={type} onSelectType={setType} />
           </div>
-        )}
-
-      {!isPending &&
-        !isError &&
-        isValidParcelle &&
-        autorisations.length > 0 && (
-          <ParcelAnalysisLayout
-            summary={<AutorisationsSummary dossiers={autorisations} />}
-          >
-            <AutorisationsList key={idParcelle} dossiers={autorisations} />
-          </ParcelAnalysisLayout>
-        )}
+        }
+      >
+        <AutorisationsExplorer key={`${idParcelle}-${type}`} dossiers={filtered} type={type} onClearType={() => setType(null)} />
+        <SourceNote>
+          Source : SDES · base Sitadel des autorisations d’urbanisme. Historique des projets déclarés,
+          dossiers annulés compris ; les références cadastrales peuvent avoir changé depuis le dépôt.
+        </SourceNote>
+      </ParcelAnalysisLayout>
     </div>
   );
 }
