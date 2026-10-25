@@ -1,6 +1,9 @@
 import { ChevronDown } from "lucide-react";
 
 import { dateLabel, text } from "../shared/format";
+import MatchBadge from "../logement/MatchBadge";
+import { floorLabel, normalizeFloor } from "../logement/normalize";
+import type { MatchLevel } from "../logement/types";
 import type { DpeEntry } from "./data";
 import DpeDetails from "./DpeDetails";
 import { formatEuro, getDpeColors } from "./utils";
@@ -9,17 +12,20 @@ type DpeRowProps = {
   entry: DpeEntry;
   open: boolean;
   onToggle: (key: string) => void;
+  match?: MatchLevel;
+  onTarget?: (entry: DpeEntry) => void;
 };
 
-const locationOf = (entry: DpeEntry): string =>
-  [
-    text(entry.raw.logement_etage, "") && `Étage ${text(entry.raw.logement_etage)}`,
-    text(entry.raw.logement_porte, "") && `Porte ${text(entry.raw.logement_porte)}`,
-  ]
-    .filter(Boolean)
-    .join(" · ") || text(entry.raw.type_batiment, "Logement");
+const capitalize = (value: string): string => value.charAt(0).toUpperCase() + value.slice(1);
 
-export default function DpeRow({ entry, open, onToggle }: DpeRowProps) {
+const locationOf = (entry: DpeEntry): string => {
+  const floor = normalizeFloor(entry.raw.logement_etage);
+  const door = text(entry.raw.logement_porte, "");
+  const parts = [floor !== null ? floorLabel(floor) : "", door ? `Porte ${door}` : ""].filter(Boolean);
+  return capitalize(parts.join(" · ") || text(entry.raw.complement_adresse_logement, "") || text(entry.raw.type_batiment, "Logement"));
+};
+
+export default function DpeRow({ entry, open, onToggle, match, onTarget }: DpeRowProps) {
   const energy = getDpeColors(entry.label);
   const ges = getDpeColors(entry.ges);
 
@@ -36,7 +42,8 @@ export default function DpeRow({ entry, open, onToggle }: DpeRowProps) {
         </span>
         <span className="min-w-0">
           <span className="flex items-center gap-2">
-            <span className="truncate text-sm font-semibold capitalize text-gray-900 dark:text-white">{locationOf(entry)}</span>
+            <span className="truncate text-sm font-semibold text-gray-900 dark:text-white">{locationOf(entry)}</span>
+            {match && <MatchBadge level={match} />}
             {entry.expired && (
               <span className="shrink-0 rounded bg-rose-50 px-1.5 py-0.5 text-[10px] font-medium text-rose-700 dark:bg-rose-500/10 dark:text-rose-300">Expiré</span>
             )}
@@ -57,7 +64,7 @@ export default function DpeRow({ entry, open, onToggle }: DpeRowProps) {
           <ChevronDown size={16} className={`text-gray-400 transition-transform duration-200 ${open ? "rotate-180" : ""}`} />
         </span>
       </button>
-      {open && <DpeDetails entry={entry} />}
+      {open && <DpeDetails entry={entry} onTarget={onTarget} />}
     </li>
   );
 }

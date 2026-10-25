@@ -6,7 +6,9 @@ type Detail = { label: string; value: string };
 const join = (...values: unknown[]): string =>
   values.map((v) => text(v, "")).filter(Boolean).join(" · ") || "Non renseigné";
 
-export default function DpeDetails({ entry }: { entry: DpeEntry }) {
+type DpeDetailsProps = { entry: DpeEntry; onTarget?: (entry: DpeEntry) => void };
+
+export default function DpeDetails({ entry, onTarget }: DpeDetailsProps) {
   const { raw } = entry;
   const groups: { title: string; details: Detail[] }[] = [
     {
@@ -28,6 +30,7 @@ export default function DpeDetails({ entry }: { entry: DpeEntry }) {
     {
       title: "Diagnostic",
       details: [
+        { label: "Complément d’adresse", value: join(raw.complement_adresse_logement, raw.complement_adresse_batiment) },
         { label: "Construction", value: join(raw.annee_construction) },
         { label: "Émissions", value: entry.emission ? `${Math.round(entry.emission)} kg CO₂/m²/an` : "Non renseigné" },
         { label: "Fin de validité", value: dateLabel(raw.date_fin_validite_dpe) },
@@ -48,9 +51,19 @@ export default function DpeDetails({ entry }: { entry: DpeEntry }) {
           ))}
         </dl>
       ))}
-      {text(raw.numero_dpe, "") && (
-        <p className="font-mono text-[11px] text-gray-500 sm:col-span-3 dark:text-gray-400">N° DPE {text(raw.numero_dpe)}</p>
-      )}
+      <div className="flex flex-wrap items-center justify-between gap-2 sm:col-span-3">
+        {text(raw.numero_dpe, "") && (
+          <p className="font-mono text-[11px] text-gray-500 dark:text-gray-400">N° DPE {text(raw.numero_dpe)}</p>
+        )}
+        {onTarget && (
+          <button
+            onClick={() => onTarget(entry)}
+            className="rounded-lg bg-gray-900 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-gray-700 dark:bg-white dark:text-black dark:hover:bg-gray-200"
+          >
+            Cibler ce logement
+          </button>
+        )}
+      </div>
     </div>
   );
 }

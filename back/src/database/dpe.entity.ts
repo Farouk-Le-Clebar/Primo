@@ -6,9 +6,15 @@ export class DpeEntity {
   ogrFid: number;
 
   @Column({ name: 'numero_dpe', type: 'text', nullable: true })
+  @Index({ unique: true })
   numero_dpe: string;
 
-  @Column({ name: 'identifiant_ban', type: 'varchar', length: 50, nullable: true })
+  @Column({
+    name: 'identifiant_ban',
+    type: 'varchar',
+    length: 50,
+    nullable: true,
+  })
   @Index()
   identifiant_ban: string;
 
@@ -21,10 +27,18 @@ export class DpeEntity {
   @Column({ name: 'etiquette_ges', type: 'text', nullable: true })
   etiquette_ges: string;
 
-  @Column({ name: 'coordonnee_cartographique_x_ban', type: 'text', nullable: true })
+  @Column({
+    name: 'coordonnee_cartographique_x_ban',
+    type: 'text',
+    nullable: true,
+  })
   coordonnee_cartographique_x_ban: string;
 
-  @Column({ name: 'coordonnee_cartographique_y_ban', type: 'text', nullable: true })
+  @Column({
+    name: 'coordonnee_cartographique_y_ban',
+    type: 'text',
+    nullable: true,
+  })
   coordonnee_cartographique_y_ban: string;
 
   @Column({ name: 'adresse_ban', type: 'text', nullable: true })
@@ -57,7 +71,11 @@ export class DpeEntity {
   @Column({ name: 'type_installation_chauffage', type: 'text', nullable: true })
   type_installation_chauffage: string;
 
-  @Column({ name: 'type_energie_principale_chauffage', type: 'text', nullable: true })
+  @Column({
+    name: 'type_energie_principale_chauffage',
+    type: 'text',
+    nullable: true,
+  })
   type_energie_principale_chauffage: string;
 
   @Column({ name: 'type_installation_ecs', type: 'text', nullable: true })
@@ -84,7 +102,11 @@ export class DpeEntity {
   @Column({ name: 'qualite_isolation_enveloppe', type: 'text', nullable: true })
   qualite_isolation_enveloppe: string;
 
-  @Column({ name: 'qualite_isolation_menuiseries', type: 'text', nullable: true })
+  @Column({
+    name: 'qualite_isolation_menuiseries',
+    type: 'text',
+    nullable: true,
+  })
   qualite_isolation_menuiseries: string;
 
   @Column({ name: 'surface_parois_opaques', type: 'text', nullable: true })
@@ -120,9 +142,25 @@ export class DpeEntity {
   @Column({ name: 'conso_ecs_depense_2', type: 'text', nullable: true })
   conso_ecs_depense_2: string;
 
-  @Column({ name: 'conso_refroidissement_depense_2', type: 'text', nullable: true })
+  @Column({
+    name: 'conso_refroidissement_depense_2',
+    type: 'text',
+    nullable: true,
+  })
   conso_refroidissement_depense_2: string;
 
   @Column({ name: 'conso_eclairage_depense_2', type: 'text', nullable: true })
   conso_eclairage_depense_2: string;
+
+  @Column({ name: 'numero_etage_appartement', type: 'text', nullable: true })
+  numero_etage_appartement: string;
+
+  @Column({ name: 'complement_adresse_logement', type: 'text', nullable: true })
+  complement_adresse_logement: string;
+
+  @Column({ name: 'complement_adresse_batiment', type: 'text', nullable: true })
+  complement_adresse_batiment: string;
+
+  @Column({ name: 'nom_residence', type: 'text', nullable: true })
+  nom_residence: string;
 }
