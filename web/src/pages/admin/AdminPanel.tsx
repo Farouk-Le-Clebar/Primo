@@ -1,5 +1,6 @@
 import { useCallback } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { ROUTES } from "../../constants/routes";
 import MapPanel from "../map/components/layers/Navbar/MapPanel";
 import { ADMIN_PANEL_ID } from "../map/components/layers/Navbar/panelIds";
 import AdminRail from "./components/AdminRail/AdminRail";
@@ -9,7 +10,7 @@ export default function AdminPanel() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const section = findAdminSection(pathname);
-  const handleClose = useCallback(() => navigate("/search"), [navigate]);
+  const handleClose = useCallback(() => navigate(ROUTES.map), [navigate]);
 
   return (
     <MapPanel id={ADMIN_PANEL_ID} label="Administration" onClose={handleClose}>

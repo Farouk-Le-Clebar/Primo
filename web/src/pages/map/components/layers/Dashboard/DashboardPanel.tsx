@@ -1,4 +1,8 @@
+import { useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import { CalendarDaysIcon } from "@heroicons/react/24/outline";
+import { ROUTES } from "../../../../../constants/routes";
+import { DASHBOARD_PANEL_ID } from "../Navbar/panelIds";
 import MapPanel from "../Navbar/MapPanel";
 import BentoCard from "./BentoCard";
 import StatsCards from "../../../../dashboard/components/StatsCards";
@@ -8,16 +12,14 @@ import UrbanZonesDonut from "../../../../dashboard/components/UrbanZonesDonut";
 import BuildingTypologyChart from "../../../../dashboard/components/BuildingTypologyChart";
 import RecentParcels from "../../../../dashboard/components/RecentParcels";
 
-type DashboardPanelProps = {
-  id: string;
-  onClose: () => void;
-};
-
 const TODAY = new Intl.DateTimeFormat("fr-FR", { weekday: "long", day: "numeric", month: "long" }).format(new Date());
 
-export default function DashboardPanel({ id, onClose }: DashboardPanelProps) {
+export default function DashboardPanel() {
+  const navigate = useNavigate();
+  const handleClose = useCallback(() => navigate(ROUTES.map), [navigate]);
+
   return (
-    <MapPanel id={id} label="Vue d'ensemble" onClose={onClose}>
+    <MapPanel id={DASHBOARD_PANEL_ID} label="Vue d'ensemble" onClose={handleClose}>
       <header className="primo-page-enter mx-auto flex w-full max-w-7xl shrink-0 items-center px-6 pt-6 pb-1">
         <div className="flex items-center gap-2.5">
           <h2 className="text-base font-semibold tracking-tight text-gray-900 dark:text-white">Vue d'ensemble</h2>

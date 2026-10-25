@@ -4,6 +4,7 @@ import { Trash2 } from "lucide-react";
 import Avatar from "../../../../components/avatar/Avatar";
 import type { UserType } from "../../../../types/admin";
 import { formatRelative, getActivityStatus } from "../shared/userActivity";
+import { ROUTES } from "../../../../constants/routes";
 
 type UserCardProps = {
   user: UserType;
@@ -27,7 +28,7 @@ export default function UserCard({ user, isDeletePending, onDelete }: UserCardPr
         <Avatar profilePicture={user.profilePicture} size="h-10 w-10" />
         <div className="min-w-0 flex-1">
           <Link
-            to={`/search/admin/users/${user.id}`}
+            to={ROUTES.adminUser(user.id)}
             className="block truncate text-sm font-medium text-gray-900 after:absolute after:inset-0 after:content-[''] dark:text-white"
           >
             {fullName}

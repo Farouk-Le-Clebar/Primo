@@ -1,43 +1,30 @@
-import { useCallback, useEffect, useState } from "react";
 import { useMatch, useNavigate } from "react-router-dom";
-
-const MAP_PATH = "/search";
-const PROJECTS_PATH = "/search/projects";
-const ADMIN_PATH = "/search/admin";
+import { ROUTES } from "../constants/routes";
 
 export function useMapPanels() {
   const navigate = useNavigate();
-  const isProjectsOpen = !!useMatch(`${PROJECTS_PATH}/*`);
-  const isAdminOpen = !!useMatch(`${ADMIN_PATH}/*`);
-  const isRoutePanelOpen = isProjectsOpen || isAdminOpen;
-  const [isDashboardOpen, setIsDashboardOpen] = useState(false);
-
-  const closeDashboard = useCallback(() => setIsDashboardOpen(false), []);
-  const closeProjects = useCallback(() => navigate(MAP_PATH), [navigate]);
-
-  useEffect(() => {
-    if (isRoutePanelOpen) closeDashboard();
-  }, [isRoutePanelOpen, closeDashboard]);
-
-  const toggleDashboard = () => {
-    if (isRoutePanelOpen) closeProjects();
-    setIsDashboardOpen(!isDashboardOpen);
-  };
-
-  const toggleProjects = () => {
-    closeDashboard();
-    navigate(isProjectsOpen ? MAP_PATH : PROJECTS_PATH);
-  };
-
-  const toggleAdmin = () => {
-    closeDashboard();
-    navigate(isAdminOpen ? MAP_PATH : ADMIN_PATH);
-  };
+  const isDashboardOpen = !!useMatch(ROUTES.dashboard);
+  const isProjectsOpen = !!useMatch(`${ROUTES.projects}/*`);
+  const isAdminOpen = !!useMatch(`${ROUTES.admin}/*`);
+  const isFeedbackOpen = !!useMatch(ROUTES.feedback);
+  const isProfileOpen = !!useMatch(ROUTES.profile);
+  const isAnyPanelOpen = isDashboardOpen || isProjectsOpen || isAdminOpen || isFeedbackOpen || isProfileOpen;
 
   const showMap = () => {
-    closeDashboard();
-    if (isRoutePanelOpen) closeProjects();
+    if (isAnyPanelOpen) navigate(ROUTES.map);
   };
+  const toggle = (path: string, isOpen: boolean) => navigate(isOpen ? ROUTES.map : path);
 
-  return { showMap, isDashboardOpen, isProjectsOpen, isAdminOpen, toggleDashboard, toggleAdmin, toggleProjects, closeDashboard, closeProjects };
+  return {
+    showMap,
+    isAnyPanelOpen,
+    isDashboardOpen,
+    isProjectsOpen,
+    isAdminOpen,
+    isFeedbackOpen,
+    isProfileOpen,
+    toggleDashboard: () => toggle(ROUTES.dashboard, isDashboardOpen),
+    toggleProjects: () => toggle(ROUTES.projects, isProjectsOpen),
+    toggleAdmin: () => toggle(ROUTES.admin, isAdminOpen),
+  };
 }

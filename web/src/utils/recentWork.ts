@@ -11,7 +11,7 @@ function storageKey() {
 export function rememberProjectPage(pathname: string) {
   try {
     const match = pathname.match(
-      /^(?:\/search)?\/projects\/([^/]+)\/(dashboard|plots|members)$/,
+      /^\/projects\/([^/]+)\/(dashboard|plots|members)$/,
     );
     const key = storageKey();
     if (match && key)

@@ -1,5 +1,6 @@
 import { NavLink } from "react-router-dom";
 import type { AdminSection } from "../../adminSections";
+import { ROUTES } from "../../../../constants/routes";
 
 type AdminRailItemProps = {
   section: AdminSection;
@@ -12,7 +13,7 @@ export default function AdminRailItem({ section, subtitle }: AdminRailItemProps)
   return (
     <NavLink
       id={section.tourId}
-      to={`/search/admin/${section.path}`}
+      to={ROUTES.adminSection(section.path)}
       className={({ isActive }) =>
         `group flex items-center gap-3 rounded-xl px-2 py-2 transition-colors duration-150 text-gray-900 dark:text-white ${isActive ? "glass-selected" : "hover:bg-black/[0.04] dark:hover:bg-white/[0.06]"}`
       }

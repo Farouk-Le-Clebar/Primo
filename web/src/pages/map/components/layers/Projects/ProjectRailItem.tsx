@@ -1,6 +1,7 @@
 import { NavLink } from "react-router-dom";
 import { StarIcon } from "@heroicons/react/20/solid";
 import type { ProjectResponse } from "../../../../../types/project/projects";
+import { ROUTES } from "../../../../../constants/routes";
 
 type ProjectRailItemProps = {
   project: ProjectResponse;
@@ -19,7 +20,7 @@ export default function ProjectRailItem({ project }: ProjectRailItemProps) {
 
   return (
     <NavLink
-      to={`/search/projects/${project.id}`}
+      to={ROUTES.project(project.id)}
       title={project.name}
       className={({ isActive }) =>
         `group flex items-center gap-3 rounded-xl px-2 py-2 transition-colors duration-150 text-gray-900 dark:text-white ${isActive ? "glass-selected" : "hover:bg-black/[0.04] dark:hover:bg-white/[0.06]"}`
