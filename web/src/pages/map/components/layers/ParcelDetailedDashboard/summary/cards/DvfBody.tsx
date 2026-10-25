@@ -12,8 +12,8 @@ const euros = (value: number | null): string =>
 export default function DvfBody({ dvf }: DvfBodyProps) {
   const facts = [
     { label: "Dernière mutation", value: dateLabel(dvf.latestDate) },
-    { label: "Valeur déclarée", value: euros(dvf.latestValue) },
-    { label: "Fiches DVF", value: String(dvf.count) },
+    { label: "Prix de vente", value: euros(dvf.latestValue) },
+    { label: "Ventes", value: String(dvf.count) },
   ];
 
   return (
@@ -24,7 +24,7 @@ export default function DvfBody({ dvf }: DvfBodyProps) {
       </p>
       <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
         Médiane sur {dvf.ratiosCount} vente{dvf.ratiosCount > 1 ? "s" : ""} exploitable
-        {dvf.ratiosCount > 1 ? "s" : ""}, hors lignes ambiguës
+        {dvf.ratiosCount > 1 ? "s" : ""} d’un seul bien
       </p>
       <dl className="mt-auto pt-4">
         {facts.map((fact) => (

@@ -1,4 +1,5 @@
 import { text, validDate, type SourceRow } from "../shared/format";
+import type { Tone } from "../shared/tones";
 
 export const types: Record<string, string> = {
   PC: "Permis de construire",
@@ -43,3 +44,15 @@ export function prepareAutorisations(rows: SourceRow[]): Dossier[] {
     (a, b) => b.date.localeCompare(a.date) || a.key.localeCompare(b.key),
   );
 }
+
+export const TYPE_TONES: Record<string, Tone> = { PC: "emerald", DP: "sky", PA: "violet", PD: "rose" };
+export const STATE_TONES: Record<string, Tone> = { "2": "sky", "4": "rose", "5": "amber", "6": "emerald" };
+
+export const dossierState = (dossier: Dossier): string =>
+  text(dossier.rows[0]?.etat_autorisation, "");
+
+export const countBy = <T>(values: T[], key: (value: T) => string): { key: string; count: number }[] => {
+  const counts = new Map<string, number>();
+  values.forEach((value) => counts.set(key(value), (counts.get(key(value)) ?? 0) + 1));
+  return [...counts].map(([k, count]) => ({ key: k, count })).sort((a, b) => b.count - a.count);
+};

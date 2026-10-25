@@ -74,7 +74,6 @@ export const NEXT_SORT_ORDER: Record<SortOrder, SortOrder> = {
     none: "asc",
 };
 
-export const API_URL = window?._env_?.API_URL;
 
 export const INFRA_TYPE_BY_CODE: ReadonlyMap<
     string,
@@ -95,9 +94,9 @@ export const SCORE_COLOR_STOPS: {
     at: number;
     color: [number, number, number];
 }[] = [
-    { at: 0, color: [169, 0, 3] }, // #A90003
-    { at: 25, color: [232, 117, 40] }, // orange
-    { at: 50, color: [230, 194, 41] }, // yellow
-    { at: 75, color: [154, 205, 50] }, // yellow-green
-    { at: 100, color: [52, 199, 89] }, // #16e44a
+    { at: 0, color: [169, 0, 3] },
+    { at: 25, color: [232, 117, 40] },
+    { at: 50, color: [230, 194, 41] },
+    { at: 75, color: [154, 205, 50] },
+    { at: 100, color: [52, 199, 89] },
 ];

@@ -25,7 +25,7 @@ export default function NavbarLinks({ panels, isSearchOpen, onOpenSearch }: Navb
         icon={MapIcon}
         activeIcon={MapSolidIcon}
         label="Carte"
-        active={!panels.isDashboardOpen && !panels.isProjectsOpen && !panels.isAdminOpen}
+        active={!panels.isAnyPanelOpen}
         onClick={panels.showMap}
       />
       <NavIconButton

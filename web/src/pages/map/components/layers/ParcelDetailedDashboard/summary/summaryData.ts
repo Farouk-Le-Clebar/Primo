@@ -1,6 +1,7 @@
 import { prepareAutorisations, types as PERMIT_TYPES } from "../widgets/autorisations/data";
 import { ORDERED_LABELS } from "../widgets/dpe/utils";
-import { median, prepareDvf } from "../widgets/dvf/data";
+import { prepareDvf } from "../widgets/dvf/data";
+import { computeDvfStats } from "../widgets/dvf/stats";
 import { prepareGeorisques } from "../widgets/georisques/data";
 import { prepareRiskCards } from "../widgets/georisques/riskCards";
 import { text, validDate, type SourceRow } from "../widgets/shared/format";
@@ -41,14 +42,14 @@ export function summarizeDpe(data: DpePayload | undefined) {
 
 export function summarizeDvf(data: unknown) {
   const records = prepareDvf(data).records;
-  const ratios = records.flatMap((r) => (r.priceM2 !== null ? [r.priceM2] : []));
+  const stats = computeDvfStats(records);
   const latest = [...records]
     .filter((r) => validDate(r.date_mutation))
     .sort((a, b) => b.date_mutation.localeCompare(a.date_mutation))[0];
   return {
     count: records.length,
-    ratiosCount: ratios.length,
-    medianPrice: median(ratios),
+    ratiosCount: stats.usablePrices,
+    medianPrice: stats.medianPrice,
     latestDate: latest?.date_mutation ?? null,
     latestValue: latest?.valeur_fonciere ?? null,
   };

@@ -18,4 +18,4 @@ export const ADMIN_SECTIONS: AdminSection[] = [
 ];
 
 export const findAdminSection = (pathname: string): AdminSection =>
-  ADMIN_SECTIONS.find((section) => pathname.split("/")[3] === section.path) ?? ADMIN_SECTIONS[0];
+  ADMIN_SECTIONS.find((section) => pathname.split("/")[2] === section.path) ?? ADMIN_SECTIONS[0];

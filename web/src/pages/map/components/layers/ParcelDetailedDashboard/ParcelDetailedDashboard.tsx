@@ -1,18 +1,10 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
-// TABS
-import ParcelSummary from "./ParcelSummary";
 import AddPlotToProjectModal from "../ParcelPanel/AddPlotToProjectModal";
-import GpuUrbanAreasWidget from "./widgets/plu/GpuWidget";
-import BuildingsWidget from "./widgets/buildings/BuildingsWidget";
-import DpeWidget from "./widgets/dpe/DpeWidget";
-import DvfWidget from "./widgets/dvf/DvfWidget";
-import GeorisquesWidget from "./widgets/georisques/GeorisquesWidget";
-import AutorisationsWidget from "./widgets/autorisations/AutorisationsWidget";
-
-// COMPONENTS
 import ParcelDetailedNavbar from "./ParcelDetailedNavbar";
-import PoisCard from "./widgets/pois/PoisCard";
+import ParcelPageHeader from "./ParcelPageHeader";
+import ParcelTabContent from "./ParcelTabContent";
+import { useLogementTarget } from "./useLogementTarget";
 
 type ParcelDetailedDashboardProps = {
     selectedParcelle: any;
@@ -31,6 +23,10 @@ export default function ParcelDetailedDashboard({
     const address =
         selectedParcelle?.addokData?.features?.[0]?.properties?.label ||
         "Adresse non renseignée";
+    const banId: string | undefined =
+        selectedParcelle?.addokData?.features?.[0]?.properties?.id;
+    const openLogement = useCallback(() => setActiveTab("logement"), []);
+    const { target, setTarget, openTarget } = useLogementTarget(parcelId, openLogement);
 
   return (
     <div className="flex min-h-0 flex-1 flex-col w-full animate-in fade-in duration-300">
@@ -48,71 +44,16 @@ export default function ParcelDetailedDashboard({
                 className="min-h-0 flex-1 w-full overflow-y-auto px-4 py-4 sm:px-5 sm:py-5 lg:px-6 scrollbar-custom"
             >
                 <div className="w-full">
-                    {activeTab !== "dvf" && (
-                        <div className="mb-6 flex shrink-0 flex-wrap items-start justify-between gap-4 font-inter">
-                            <div className="min-w-0">
-                                <p className="mb-1 text-xs text-gray-500 dark:text-gray-400">
-                                    Parcelle {parcelId}
-                                </p>
-                                <h1 className="text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">
-                                    {
-                                        (
-                                            {
-                                                synthese: "Vue d’ensemble",
-                                                batiments: "Bâtiments",
-                                                dpe: "Performance énergétique",
-                                                georisques:
-                                                    "Risques & environnement",
-                                                autorisations:
-                                                    "Autorisations d’urbanisme",
-                                                plu: "Urbanisme & réglementation",
-                                                dvf: "Transactions immobilières",
-                                                pois: "Environnement & Points d’intérêts",
-                                            } as Record<string, string>
-                                        )[activeTab]
-                                    }
-                                </h1>
-                                <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                                    {address}
-                                </p>
-                            </div>
-                        </div>
-                    )}
-                    {activeTab === "synthese" && (
-                        <ParcelSummary
-                            feature={selectedParcelle?.feature}
-                            banId={
-                                selectedParcelle?.addokData?.features?.[0]
-                                    ?.properties?.id
-                            }
-                            onNavigate={setActiveTab}
-                        />
-                    )}
-                    {activeTab === "plu" && (
-                        <GpuUrbanAreasWidget
-                            feature={selectedParcelle?.feature}
-                        />
-                    )}
-                    {activeTab === "batiments" && (
-                        <BuildingsWidget feature={selectedParcelle?.feature} />
-                    )}
-                    {activeTab === "dvf" && (
-                        <DvfWidget feature={selectedParcelle?.feature} />
-                    )}
-                    {activeTab === "dpe" && (
-                        <DpeWidget selectedParcelle={selectedParcelle} />
-                    )}
-                    {activeTab === "pois" && (
-                        <PoisCard feature={selectedParcelle?.feature} />
-                    )}
-                    {activeTab === "georisques" && (
-                        <GeorisquesWidget selectedParcelle={selectedParcelle} />
-                    )}
-                    {activeTab === "autorisations" && (
-                        <AutorisationsWidget
-                            feature={selectedParcelle?.feature}
-                        />
-                    )}
+                    <ParcelPageHeader parcelId={parcelId} address={address} activeTab={activeTab} />
+                    <ParcelTabContent
+                        activeTab={activeTab}
+                        feature={selectedParcelle?.feature}
+                        banId={banId}
+                        target={target}
+                        onTargetChange={setTarget}
+                        onOpenTarget={openTarget}
+                        onNavigate={setActiveTab}
+                    />
                 </div>
             </div>
 

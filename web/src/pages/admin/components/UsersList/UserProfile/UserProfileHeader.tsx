@@ -4,6 +4,7 @@ import { Card } from "@tremor/react";
 import Avatar from "../../../../../components/avatar/Avatar";
 import type { UserType } from "../../../../../types/admin";
 import { adminCardClass, formatDate } from "../../shared/statistics";
+import { ROUTES } from "../../../../../constants/routes";
 
 export default function UserProfileHeader({ user }: { user: UserType }) {
   const details = [
@@ -22,7 +23,7 @@ export default function UserProfileHeader({ user }: { user: UserType }) {
   return (
     <header className="primo-page-enter">
       <Link
-        to="/search/admin/users"
+        to={ROUTES.adminSection("users")}
         className="mb-4 inline-flex items-center gap-2 text-sm text-gray-500 transition-colors hover:text-gray-900 dark:hover:text-white"
       >
         <ArrowLeft size={16} /> Utilisateurs

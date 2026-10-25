@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useOutsideClick } from "../../../../../hooks/useOutsideClick";
-import DropdownMenu from "../../../../../components/sidebars/components/settingsDropdown/dropdownMenu";
+import UserMenu from "./userMenu/UserMenu";
 
 // ASSETS
 import { getAvatarComponent } from "../../../../../components/avatar/Avatar";
@@ -56,7 +56,7 @@ export default function UserProfileS() {
             transition={{ duration: 0.15, ease: "easeOut" }}
             className="fixed top-20 right-22 z-[1020]"
           >
-            <DropdownMenu onClose={() => setIsDropdownOpen(false)} />
+            <UserMenu onClose={() => setIsDropdownOpen(false)} />
           </motion.div>
         )}
       </AnimatePresence>

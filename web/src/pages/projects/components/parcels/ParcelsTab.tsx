@@ -8,6 +8,7 @@ import Button from "../../../../ui/Button";
 import { useState } from "react";
 import L from "leaflet";
 import { deletePlotFromProject, getPlotsOfProject } from "../../../../requests/projects";
+import { ROUTES } from "../../../../constants/routes";
 
 const ParcelsTab = () => {
     const queryClient = useQueryClient();
@@ -45,7 +46,7 @@ const ParcelsTab = () => {
         const center = geoJsonLayer.getBounds().getCenter();
         const x = center.lng;
         const y = center.lat;
-        navigate("/search", { state: { centerOn: [y, x] } });
+        navigate(ROUTES.map, { state: { centerOn: [y, x] } });
     };
 
     return (
@@ -132,7 +133,7 @@ const ParcelsTab = () => {
                         backgroundColor="bg-black dark:bg-white"
                         backgroundHoverColor="hover:bg-gray-700 dark:hover:bg-gray-300"
                         textSize="text-base"
-                        onClick={() => navigate("/search")}
+                        onClick={() => navigate(ROUTES.map)}
                     >
                         <div className="flex flex-row items-center justify-center gap-1 text-white dark:text-black">
                             <p>Ajouter une parcelle</p>

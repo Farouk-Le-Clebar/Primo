@@ -86,7 +86,9 @@ export const useShapesData = (
     }, [level, data, onShapesChange]);
 
     return {
-        isLoading: isAllDepartementsLoading || (level === "city" && isFetching),
+        isInitialLoading: isAllDepartementsLoading,
+        isFetchingShapes: !isAllDepartementsLoading && isFetching,
+        level,
         parcelles: level === "parcelles" && isFeatureCollection(data) ? data : null,
     };
 };
