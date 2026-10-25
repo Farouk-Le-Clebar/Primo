@@ -28,7 +28,13 @@ export const getUserByToken = async (token: string) => {
   return response.data;
 };
 
-export const updateUserProfile = async (token: string, profileData: any) => {
+export type UpdateProfilePayload = {
+  firstName?: string;
+  surName?: string;
+  profilePicture?: string;
+};
+
+export const updateUserProfile = async (token: string, profileData: UpdateProfilePayload) => {
   const response = await axios.put(`${apiUrl}/user/profile`, profileData, {
     headers: {
       Authorization: `Bearer ${token}`

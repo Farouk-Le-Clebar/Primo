@@ -1,5 +1,5 @@
 import { Link, useOutlet } from "react-router-dom";
-import { lazy, Suspense, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useMap } from "react-leaflet";
 import L from "leaflet";
 import type { Feature, FeatureCollection } from "geojson";
@@ -9,13 +9,12 @@ import NavbarLinks from "./NavbarLinks";
 import NavbarActions from "./NavbarActions";
 import MapSearch from "../Search/MapSearch";
 import { useMapPanels } from "../../../../../hooks/useMapPanels";
-import { DASHBOARD_PANEL_ID } from "./panelIds";
+import { ROUTES } from "../../../../../constants/routes";
 
 // ICONS
 import { selectedShapeStyle } from "../../../../../utils/map";
 import PrimoIcon from "../../../../../assets/logos/logoPrimoWhite.svg?react";
 
-const DashboardPanel = lazy(() => import("../Dashboard/DashboardPanel"));
 
 
 type NavbarProps = {
@@ -42,8 +41,8 @@ export default function Navbar({
   const [newSearchSelected, setNewSearchSelected] = useState(true);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const panels = useMapPanels();
-  const projectsPanel = useOutlet();
-  const isAnyPanelOpen = panels.isDashboardOpen || panels.isProjectsOpen || panels.isAdminOpen;
+  const routePanel = useOutlet();
+  const { isAnyPanelOpen } = panels;
   const isOverlayOpen = isAnyPanelOpen || isParcelDashboardOpen;
 
   useEffect(() => {
@@ -110,7 +109,7 @@ export default function Navbar({
       <nav className="fixed top-0 left-0 right-0 z-40 flex h-14 w-full items-center rounded-none border-b border-black/[0.08] px-6 pointer-events-auto dark:border-white/10">
         {!isOverlayOpen && <div aria-hidden="true" className="glass absolute inset-0 -z-10" />}
         <Link
-          to="/"
+          to={ROUTES.map}
           aria-label="Primo"
           className="flex shrink-0 items-center gap-2"
         >
@@ -139,15 +138,7 @@ export default function Navbar({
           onAdressSelect={handleAdressSelect}
         />
       )}
-      {panels.isDashboardOpen && (
-        <Suspense fallback={null}>
-          <DashboardPanel
-            id={DASHBOARD_PANEL_ID}
-            onClose={panels.closeDashboard}
-          />
-        </Suspense>
-      )}
-      {projectsPanel}
+      {routePanel}
     </>
   );
 }
