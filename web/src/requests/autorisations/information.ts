@@ -14,7 +14,6 @@ export const getAutorisationsParcelle = async (idParcelle: string) => {
       throw new Error("La réponse doit contenir une liste d’autorisations.");
     }
 
-    console.log(`[Autorisations] Données récupérées pour ${idParcelle} :`, response.data);
     return response.data;
   } catch (error) {
     console.error(`[Autorisations] Erreur de récupération pour ${idParcelle}`, error);
