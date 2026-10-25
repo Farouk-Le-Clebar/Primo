@@ -1,8 +1,9 @@
-import { Home, Building, CarFront, Store, Euro } from "lucide-react";
+import { Building, CarFront, Euro, Home, Store, type LucideIcon } from "lucide-react";
+
+import { TONES } from "../shared/tones";
 
 export function formatCurrency(value: number | null | undefined): string {
-  if (value === null || value === undefined || !Number.isFinite(value))
-    return "-";
+  if (value === null || value === undefined || !Number.isFinite(value)) return "—";
   return new Intl.NumberFormat("fr-FR", {
     style: "currency",
     currency: "EUR",
@@ -11,9 +12,9 @@ export function formatCurrency(value: number | null | undefined): string {
 }
 
 export function formatDate(dateString: string): string {
-  if (!dateString) return "-";
+  if (!dateString) return "—";
   const date = new Date(dateString);
-  if (!Number.isFinite(date.getTime())) return "-";
+  if (!Number.isFinite(date.getTime())) return "—";
   return new Intl.DateTimeFormat("fr-FR", {
     day: "2-digit",
     month: "short",
@@ -21,50 +22,13 @@ export function formatDate(dateString: string): string {
   }).format(date);
 }
 
-export function getTypeLocalStyle(typeLocal: string | null) {
-  const type = typeLocal?.toLowerCase() || "";
+export type TypeLocalStyle = { icon: LucideIcon; tone: string };
 
-  if (type.includes("maison")) {
-    return {
-      icon: Home,
-      color: "text-emerald-600",
-      bg: "bg-emerald-50",
-      border: "border-emerald-100",
-      bar: "bg-emerald-500",
-    };
-  }
-  if (type.includes("appartement")) {
-    return {
-      icon: Building,
-      color: "text-indigo-600",
-      bg: "bg-indigo-50",
-      border: "border-indigo-100",
-      bar: "bg-indigo-500",
-    };
-  }
-  if (type.includes("dépendance") || type.includes("dependance")) {
-    return {
-      icon: CarFront,
-      color: "text-slate-500",
-      bg: "bg-slate-50",
-      border: "border-slate-200",
-      bar: "bg-slate-400",
-    };
-  }
-  if (type.includes("commercial") || type.includes("industriel")) {
-    return {
-      icon: Store,
-      color: "text-amber-600",
-      bg: "bg-amber-50",
-      border: "border-amber-100",
-      bar: "bg-amber-500",
-    };
-  }
-  return {
-    icon: Euro,
-    color: "text-sky-600",
-    bg: "bg-sky-50",
-    border: "border-sky-100",
-    bar: "bg-sky-400",
-  };
+export function getTypeLocalStyle(typeLocal: string | null): TypeLocalStyle {
+  const type = typeLocal?.toLowerCase() || "";
+  if (type.includes("maison")) return { icon: Home, tone: TONES.emerald };
+  if (type.includes("appartement")) return { icon: Building, tone: TONES.violet };
+  if (type.includes("dépendance") || type.includes("dependance")) return { icon: CarFront, tone: TONES.gray };
+  if (type.includes("commercial") || type.includes("industriel")) return { icon: Store, tone: TONES.amber };
+  return { icon: Euro, tone: TONES.sky };
 }
