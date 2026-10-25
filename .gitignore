@@ -128,3 +128,8 @@ back/data
 env-config.js
 
 coverage
+CLAUDE.md
+GEMINI.md
+SKILL.md
+__pycache__/
+*.pyc
