@@ -21,6 +21,8 @@ export default function UserPeakHour({ stats }: { stats: UserStatistic[] }) {
       title="Moments d’activité"
       description="Tout l’historique · heures de votre fuseau horaire"
       data={valid ? periods : []}
+      color="violet"
+      className="@3xl:col-span-4"
     />
   );
 }

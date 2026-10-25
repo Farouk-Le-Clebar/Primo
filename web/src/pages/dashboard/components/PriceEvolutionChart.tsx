@@ -1,15 +1,5 @@
 import { AreaChart } from '@tremor/react';
-import type { PricePoint } from './types';
-
-const priceHistory: PricePoint[] = [
-  { year: '2019', Appartements: 4350, Maisons: 2980 },
-  { year: '2020', Appartements: 4420, Maisons: 3080 },
-  { year: '2021', Appartements: 4780, Maisons: 3320 },
-  { year: '2022', Appartements: 5020, Maisons: 3560 },
-  { year: '2023', Appartements: 4880, Maisons: 3610 },
-  { year: '2024', Appartements: 5150, Maisons: 3780 },
-  { year: '2025', Appartements: 5420, Maisons: 3950 },
-];
+import { priceHistory } from './dashboardData';
 
 const valueFormatter = (value: number) => `${new Intl.NumberFormat('fr-FR').format(value)} €`;
 

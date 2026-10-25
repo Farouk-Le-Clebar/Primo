@@ -32,57 +32,6 @@
   animation: slideInLeft 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
-@keyframes spin-slow {
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.group:hover .animate-spin-slow {
-  animation: spin-slow 1s linear infinite;
-}
-
-.animated-primo-svg {
-  animation: fadeOutLogo 0.1s ease-in-out 2s forwards;
-}
-
-@keyframes fadeOutLogo {
-  0% {
-    opacity: 1;
-    transform: scale(1);
-  }
-
-  100% {
-    opacity: 0;
-    transform: scale(0.92);
-  }
-}
-
-.animated-primo-svg path {
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
-  animation:
-    drawLogo 1s ease-in-out forwards,
-    fillLogo 0.2s ease-in-out 1.2s forwards;
-}
-
-@keyframes drawLogo {
-  to {
-    stroke-dashoffset: 0;
-  }
-}
-
-@keyframes fillLogo {
-  to {
-    fill: black;
-    stroke-width: 0;
-  }
-}
-
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -99,65 +48,54 @@
   animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* --- Loading Primo Logo Animation --- */
+.primo-loader-ghost {
+  fill: currentColor;
+  opacity: 0.12;
+}
 
-/* Follow the four sides: bottom-right, bottom-left, top-left, top-right (clockwise).
-   Every side stays filled until the whole logo fades out together. */
 .primo-loader-fill {
   fill: currentColor;
   stroke: none;
-  animation: primo-loader-fade 2s ease-in-out infinite;
 }
 
 .primo-loader-fill path {
-  --primo-empty: inset(100% 0 0 0) fill-box;
-  animation-duration: 2s;
-  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  animation-iteration-count: infinite;
+  --primo-from: inset(100% 0 0 0 round 6px) fill-box;
+  --primo-to: inset(0 0 100% 0 round 6px) fill-box;
+  animation: primo-loader-flow 2.4s cubic-bezier(0.65, 0, 0.35, 1) infinite backwards;
 }
 
-.primo-loader-fill path:nth-child(1) { animation-name: primo-side-one; }
-.primo-loader-fill path:nth-child(2) { animation-name: primo-side-two; }
-.primo-loader-fill path:nth-child(3) { animation-name: primo-side-three; }
-.primo-loader-fill path:nth-child(4) { animation-name: primo-side-four; }
-
-/* Right-hand sides fill downward; left-hand sides fill upward. */
 .primo-loader-fill path:nth-child(1),
 .primo-loader-fill path:nth-child(4) {
-  --primo-empty: inset(0 0 100% 0) fill-box;
+  --primo-from: inset(0 0 100% 0 round 6px) fill-box;
+  --primo-to: inset(100% 0 0 0 round 6px) fill-box;
 }
 
-@keyframes primo-side-one {
-  0% { clip-path: var(--primo-empty); }
-  18%, 100% { clip-path: inset(0 0 0 0) fill-box; }
+.primo-loader-fill path:nth-child(1) { animation-delay: 0s; }
+.primo-loader-fill path:nth-child(2) { animation-delay: 0.3s; }
+.primo-loader-fill path:nth-child(3) { animation-delay: 0.6s; }
+.primo-loader-fill path:nth-child(4) { animation-delay: 0.9s; }
+
+@keyframes primo-loader-flow {
+  0% { clip-path: var(--primo-from); }
+  25%, 55% { clip-path: inset(0 0 0 0 round 6px) fill-box; }
+  80%, 100% { clip-path: var(--primo-to); }
 }
 
-@keyframes primo-side-two {
-  0%, 18% { clip-path: var(--primo-empty); }
-  36%, 100% { clip-path: inset(0 0 0 0) fill-box; }
+@keyframes primo-progress-slide {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(250%); }
 }
 
-@keyframes primo-side-three {
-  0%, 36% { clip-path: var(--primo-empty); }
-  54%, 100% { clip-path: inset(0 0 0 0) fill-box; }
-}
-
-@keyframes primo-side-four {
-  0%, 54% { clip-path: var(--primo-empty); }
-  72%, 100% { clip-path: inset(0 0 0 0) fill-box; }
-}
-
-@keyframes primo-loader-fade {
-  0%, 82% { opacity: 1; }
-  97%, 100% { opacity: 0; }
+.primo-progress-bar {
+  animation: primo-progress-slide 1.2s cubic-bezier(0.65, 0, 0.35, 1) infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .primo-loader-fill,
-  .primo-loader-fill path {
+  .primo-loader-fill path,
+  .primo-progress-bar {
     animation: none;
     clip-path: none;
-    opacity: 1;
+    transform: none;
   }
 }
 
@@ -169,11 +107,26 @@
 .primo-page-enter {
   animation: primo-page-enter 240ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
-.primo-dashboard-reveal > * {
-  animation: primo-page-enter 300ms cubic-bezier(0.2, 0.8, 0.2, 1) 70ms backwards;
+@keyframes primo-slide-enter {
+  from { opacity: 0; transform: translateX(-8px); }
+  to { opacity: 1; transform: translateX(0); }
 }
-.primo-dashboard-reveal > :nth-child(2) { animation-delay: 120ms; }
+.primo-slide-enter {
+  animation: primo-slide-enter 280ms cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+}
+.primo-stagger > * {
+  animation: primo-page-enter 360ms cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+  animation-delay: calc(var(--primo-stagger-index, 8) * 45ms + 40ms);
+}
+.primo-stagger > :nth-child(1) { --primo-stagger-index: 0; }
+.primo-stagger > :nth-child(2) { --primo-stagger-index: 1; }
+.primo-stagger > :nth-child(3) { --primo-stagger-index: 2; }
+.primo-stagger > :nth-child(4) { --primo-stagger-index: 3; }
+.primo-stagger > :nth-child(5) { --primo-stagger-index: 4; }
+.primo-stagger > :nth-child(6) { --primo-stagger-index: 5; }
+.primo-stagger > :nth-child(7) { --primo-stagger-index: 6; }
 @media (prefers-reduced-motion: reduce) {
   .primo-page-enter,
-  .primo-dashboard-reveal > * { animation: none; }
+  .primo-slide-enter,
+  .primo-stagger > * { animation: none; }
 }

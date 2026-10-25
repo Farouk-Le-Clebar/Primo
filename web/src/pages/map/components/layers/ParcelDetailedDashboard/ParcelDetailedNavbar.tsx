@@ -27,7 +27,7 @@ export default function ParcelDetailedNavbar({
 
   return (
     <>
-      <header className="flex items-center justify-between w-full min-h-[58px] flex-wrap gap-y-3 px-2 py-3 sm:px-3 bg-white dark:bg-[#0A0A0A] border-b border-gray-200 dark:border-[#262626] shrink-0 font-inter z-10">
+      <header className="flex items-center justify-between w-full min-h-[58px] flex-wrap gap-y-3 px-2 py-3 sm:px-3 border-b border-black/[0.06] dark:border-white/10 shrink-0 font-inter z-10">
         <div className="flex items-center gap-2 text-[13px] min-w-0 flex-1">
           <span className="h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
           <span className="font-semibold text-gray-900 dark:text-white truncate max-w-[180px]">

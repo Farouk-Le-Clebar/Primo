@@ -18,7 +18,7 @@ type FeedbacksTableProps = {
 const FeedbacksTable = ({ feedbacks, isWorking, isDeletePending, onDelete }: FeedbacksTableProps) => {
     return (
         <div className="overflow-x-auto">
-            <Table className="mt-4">
+            <Table>
                 <TableHead>
                     <TableRow className="border-b border-gray-200 dark:border-white/5">
                         <TableHeaderCell className="text-gray-500 dark:text-gray-400">Date</TableHeaderCell>
@@ -32,7 +32,7 @@ const FeedbacksTable = ({ feedbacks, isWorking, isDeletePending, onDelete }: Fee
                 <TableBody>
                     {feedbacks.map((feedback) => (
                         <TableRow key={feedback.id} className="hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors">
-                            <TableCell className="text-gray-600 dark:text-gray-400 text-xs">
+                            <TableCell className="text-xs tabular-nums text-gray-600 dark:text-gray-400">
                                 {new Date(feedback.createdAt).toLocaleDateString('fr-FR', { 
                                     day: '2-digit', month: 'short', year: 'numeric' 
                                 })}

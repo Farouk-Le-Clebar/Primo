@@ -1,83 +1,31 @@
-import { TabGroup, TabList, Tab, TabPanels, TabPanel } from "@tremor/react";
+import { useCallback } from "react";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { ROUTES } from "../../constants/routes";
+import MapPanel from "../map/components/layers/Navbar/MapPanel";
+import { ADMIN_PANEL_ID } from "../map/components/layers/Navbar/panelIds";
+import AdminRail from "./components/AdminRail/AdminRail";
+import { findAdminSection } from "./adminSections";
 
-// COMPONENTS
-import AdminOverview from "./components/AdminOverview/AdminOverview";
-import UsersList from "./components/UsersList/UsersList";
-import AdminList from "./components/AdminList/AdminList";
-import FeedbacksList from "./components/Feedback/FeedbacksList";
+export default function AdminPanel() {
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const section = findAdminSection(pathname);
+  const handleClose = useCallback(() => navigate(ROUTES.map), [navigate]);
 
-const AdminPanel = () => {
   return (
-    <div className="flex flex-col w-full h-full p-4 sm:p-6 overflow-y-auto bg-transparent dark:bg-[#0A0A0A] transition-colors duration-200">
-      <div className="mb-2" id="admin-header-tour">
-        <h1 className="font-inter font-bold text-3xl text-gray-900 dark:text-white transition-colors duration-200">
-          Administration
-        </h1>
-        <p className="font-inter text-sm text-gray-500 dark:text-gray-400 mt-1 transition-colors duration-200">
-          Gérez vos utilisateurs, administrateurs et analysez les statistiques
-          de la plateforme.
-        </p>
+    <MapPanel id={ADMIN_PANEL_ID} label="Administration" onClose={handleClose}>
+      <div className="flex min-h-0 flex-1">
+        <AdminRail />
+        <div className="relative flex min-w-0 flex-1 flex-col">
+          <header key={section.path} className="primo-page-enter shrink-0 border-b border-black/[0.06] px-6 pt-5 pb-5 dark:border-white/10">
+            <h2 className="truncate text-xl font-semibold tracking-tight text-gray-900 dark:text-white">{section.label}</h2>
+            <p className="mt-1 truncate text-sm text-gray-500 dark:text-gray-400">{section.description}</p>
+          </header>
+          <div key={pathname} className="scrollbar-glass @container min-h-0 flex-1 overflow-y-auto p-6">
+            <Outlet />
+          </div>
+        </div>
       </div>
-
-      <TabGroup className="mt-6 flex-1 flex flex-col">
-        <TabList
-          className="mb-6 overflow-x-auto overflow-y-hidden shrink-0"
-          id="admin-tabs-tour"
-        >
-          <Tab
-            id="admin-overview-tour"
-            className="text-gray-700 dark:text-gray-300 dark:hover:text-white aria-selected:!text-black aria-selected:!border-black dark:aria-selected:!text-white dark:aria-selected:!border-white cursor-pointer"
-          >
-            Aperçu
-          </Tab>
-          <Tab
-            id="admin-users-tour"
-            className="text-gray-700 dark:text-gray-300 dark:hover:text-white aria-selected:!text-black aria-selected:!border-black dark:aria-selected:!text-white dark:aria-selected:!border-white cursor-pointer"
-          >
-            Utilisateurs
-          </Tab>
-          <Tab
-            id="admin-admins-tour"
-            className="text-gray-700 dark:text-gray-300 dark:hover:text-white aria-selected:!text-black aria-selected:!border-black dark:aria-selected:!text-white dark:aria-selected:!border-white cursor-pointer"
-          >
-            Administrateurs
-          </Tab>
-          <Tab
-            id="admin-feedbacks-tour"
-            className="text-gray-700 dark:text-gray-300 dark:hover:text-white aria-selected:!text-black aria-selected:!border-black dark:aria-selected:!text-white dark:aria-selected:!border-white cursor-pointer"
-          >
-            Retours & Suggestions
-          </Tab>
-        </TabList>
-
-        <TabPanels className="flex-1">
-          <TabPanel>
-            <div className="animate-fade-in">
-              <AdminOverview />
-            </div>
-          </TabPanel>
-
-          <TabPanel>
-            <div className="animate-fade-in">
-              <UsersList />
-            </div>
-          </TabPanel>
-
-          <TabPanel>
-            <div className="animate-fade-in">
-              <AdminList />
-            </div>
-          </TabPanel>
-
-          <TabPanel>
-            <div className="animate-fade-in">
-              <FeedbacksList />
-            </div>
-          </TabPanel>
-        </TabPanels>
-      </TabGroup>
-    </div>
+    </MapPanel>
   );
-};
-
-export default AdminPanel;
+}

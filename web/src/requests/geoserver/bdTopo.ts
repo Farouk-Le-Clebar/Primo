@@ -1,9 +1,10 @@
 import axios from "axios";
 
 const apiUrl = window?._env_?.API_URL;
+const token = localStorage.getItem("token");
 
 export const getBuildingsByGeometry = async (
-  geometry: any, 
+  geometry: any,
   departement: string
 ) => {
   const typeNames = `primo:batiment_${departement}`;
@@ -21,7 +22,11 @@ export const getBuildingsByGeometry = async (
   });
 
   return axios
-    .get(`${apiUrl}/geoserver/primo/wfs?${params}`)
+    .get(`${apiUrl}/geoserver/primo/wfs?${params}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
     .then((response) => response.data)
     .catch((error) => {
       console.error("Error fetching buildings data:", error);
@@ -38,16 +43,16 @@ function convertGeoJSONToWKT(geometry: any): string {
       }).join(', ');
       return `(${rings})`;
     }).join(', ');
-    
+
     return `MULTIPOLYGON(${polygons})`;
   } else if (geometry.type === 'Polygon') {
     const rings = geometry.coordinates.map((ring: number[][]) => {
       const coords = ring.map(([lng, lat]) => `${lat} ${lng}`).join(', ');
       return `(${coords})`;
     }).join(', ');
-    
+
     return `POLYGON(${rings})`;
   }
-  
+
   throw new Error(`Type de géométrie non supporté: ${geometry.type}`);
 }

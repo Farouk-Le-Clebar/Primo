@@ -14,7 +14,6 @@ type BBox = {
     h: number;
 };
 
-/** Check if two bounding boxes (with padding) overlap */
 export const bboxOverlaps = (a: BBox, b: BBox, pad: number): boolean => {
     return !(
         a.x + a.w + pad < b.x - pad ||
@@ -24,15 +23,151 @@ export const bboxOverlaps = (a: BBox, b: BBox, pad: number): boolean => {
     );
 };
 
-/**
- * Compute the pixel bounding box for a POI marker + label.
- * The icon circle is centred on the pixel point; the label sits to the right.
- */
-export const computePoiBBox = (px: L.Point, labelLength: number): BBox => {
+
+const hashString = (value: string): number => {
+    let hash = 0;
+
+    for (let i = 0; i < value.length; i++) {
+        hash = (hash << 5) - hash + value.charCodeAt(i);
+        hash |= 0;
+    }
+
+    return Math.abs(hash);
+};
+
+export const shouldShowPoiLabel = (feature: any, density: number): boolean => {
+    if (density <= 0) return false;
+
+    if (density >= 1) return true;
+
+    const props = feature.properties ?? {};
+    const tags =
+        typeof props.tags === "string"
+            ? (() => {
+                  try {
+                      return JSON.parse(props.tags);
+                  } catch {
+                      return {};
+                  }
+              })()
+            : (props.tags ?? {});
+
+    const name = props.name || tags.name || "";
+
+    if (!name) return false;
+
+    const id = String(
+        props.id ??
+            props.osm_id ??
+            `${feature.geometry?.coordinates?.[0]}-${feature.geometry?.coordinates?.[1]}`,
+    );
+
+    const hash = hashString(id);
+
+    return hash / 0x7fffffff < density;
+};
+
+const getPoiGridKey = (px: L.Point, cellSize = 120): string => {
+    const x = Math.floor(px.x / cellSize);
+    const y = Math.floor(px.y / cellSize);
+
+    return `${x}:${y}`;
+};
+
+export const selectPoiLabels = (
+    features: any[],
+    map: L.Map,
+    density: number,
+): Set<any> => {
+    const selected = new Set<any>();
+
+    if (density <= 0) return selected;
+
+    if (density >= 1) {
+        for (const feature of features) {
+            selected.add(feature);
+        }
+
+        return selected;
+    }
+
+    const cells = new Map<string, any[]>();
+
+    for (const feature of features) {
+        const props = feature.properties ?? {};
+
+        const tags =
+            typeof props.tags === "string"
+                ? (() => {
+                      try {
+                          return JSON.parse(props.tags);
+                      } catch {
+                          return {};
+                      }
+                  })()
+                : (props.tags ?? {});
+
+        const name = props.name || tags.name || "";
+
+        if (!name) continue;
+
+        const coords = feature.geometry?.coordinates;
+
+        if (!coords) continue;
+
+        const latlng = L.latLng(coords[1], coords[0]);
+        const px = map.latLngToContainerPoint(latlng);
+
+        const key = getPoiGridKey(px);
+
+        if (!cells.has(key)) {
+            cells.set(key, []);
+        }
+
+        cells.get(key)!.push(feature);
+    }
+
+    for (const cellFeatures of cells.values()) {
+        const count = Math.max(1, Math.ceil(cellFeatures.length * density));
+
+        const sorted = [...cellFeatures].sort((a, b) => {
+            const aId = String(a.properties?.id ?? a.properties?.osm_id ?? "");
+
+            const bId = String(b.properties?.id ?? b.properties?.osm_id ?? "");
+
+            return hashString(aId) - hashString(bId);
+        });
+
+        for (const feature of sorted.slice(0, count)) {
+            selected.add(feature);
+        }
+    }
+
+    return selected;
+};
+
+
+export const computePoiBBox = (
+    px: L.Point,
+    labelLength: number,
+    showLabel: boolean,
+): BBox => {
     const iconR = POI_ICON_SIZE / 2;
-    // totalW = icon diam + gap(6) + label text width
+
+    // Si aucun label n'est affiché,
+    // la collision correspond uniquement à l'icône.
+    if (!showLabel) {
+        return {
+            x: px.x - iconR,
+            y: px.y - iconR,
+            w: POI_ICON_SIZE,
+            h: POI_ICON_SIZE,
+        };
+    }
+
     const labelW = labelLength * POI_LABEL_CHAR_WIDTH;
     const totalW = POI_ICON_SIZE + 6 + labelW;
+
     return {
         x: px.x - iconR,
         y: px.y - Math.max(iconR, POI_LABEL_HEIGHT / 2),
@@ -45,7 +180,11 @@ export const computePoiBBox = (px: L.Point, labelLength: number): BBox => {
  * Given a list of features, return only those whose marker+label
  * does not overlap (greedy)
  */
-export const filterOverlappingPois = (features: any[], map: L.Map): any[] => {
+export const filterOverlappingPois = (
+    features: any[],
+    map: L.Map,
+    labelFeatures: Set<any>,
+): any[] => {
     const accepted: BBox[] = [];
     const result: any[] = [];
 
@@ -53,14 +192,19 @@ export const filterOverlappingPois = (features: any[], map: L.Map): any[] => {
         const coords = feature.geometry.coordinates;
         const props = feature.properties;
         const config = POI_CONFIGS[props.type];
+
         if (!config) continue;
 
         const name: string = props.name || props.tags?.name || "";
+
         const displayName = name.length > 22 ? name.slice(0, 20) + "…" : name;
+
+        const showLabel = labelFeatures.has(feature);
 
         const latlng = L.latLng(coords[1], coords[0]);
         const px = map.latLngToContainerPoint(latlng);
-        const bbox = computePoiBBox(px, displayName.length || 5);
+
+        const bbox = computePoiBBox(px, displayName.length || 5, showLabel);
 
         const overlaps = accepted.some((existing) =>
             bboxOverlaps(existing, bbox, POI_COLLISION_PADDING),
@@ -68,7 +212,11 @@ export const filterOverlappingPois = (features: any[], map: L.Map): any[] => {
 
         if (!overlaps) {
             accepted.push(bbox);
-            result.push(feature);
+
+            result.push({
+                ...feature,
+                _showLabel: showLabel,
+            });
         }
     }
 
@@ -133,3 +281,14 @@ export const formatOpeningHours = (
             };
         });
 };
+
+
+export const createPoiDotIcon = () =>
+    L.divIcon({
+        className: "poi-dot-marker",
+        html: `
+            <span class="poi-dot-marker__core"></span>
+        `,
+        iconSize: [12, 12],
+        iconAnchor: [6, 6],
+    });

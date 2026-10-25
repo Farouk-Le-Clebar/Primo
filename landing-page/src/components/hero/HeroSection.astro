@@ -1,0 +1,26 @@
+---
+import { ArrowRight, ArrowUpRight } from 'lucide-react';
+import HeroProduct from './HeroProduct.astro';
+import { EXTERNAL_LINKS } from '../../config/constants';
+---
+
+<section class="hero shell">
+  <h1>
+    Analysez une parcelle
+    <br />
+    en <span>3 minutes</span>.
+  </h1>
+  <p class="hero-copy">
+    Primo rassemble sur une seule fiche les données publiques d’une parcelle et de son quartier,
+    <br class="desktop-break" /> et vous permet de les partager avec votre équipe.
+  </p>
+  <div class="hero-actions">
+    <a class="primary primary-large" href={EXTERNAL_LINKS.APP_URL}>
+      Découvrir la bêta <ArrowUpRight size={20} />
+    </a>
+    <a class="text-link" href="#fonctionnalites">
+      Voir comment ça marche <ArrowRight size={17} />
+    </a>
+  </div>
+  <HeroProduct />
+</section>

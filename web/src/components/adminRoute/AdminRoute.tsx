@@ -3,6 +3,8 @@ import { useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { checkAdminStatus } from '../../requests/UserRequests';
+import PanelFallback from '../lazyPage/PanelFallback';
+import { ROUTES } from '../../constants/routes';
 
 const AdminRoute = () => {
     const { isLoading, isError } = useQuery({
@@ -20,15 +22,9 @@ const AdminRoute = () => {
         }
     }, [isError]);
 
-    if (isLoading) {
-        return (
-            <div className="flex h-screen w-full items-center justify-center bg-white">
-                <div className="h-10 w-10 animate-spin rounded-full border-4 border-gray-200 border-t-blue-600"></div>
-            </div>
-        );
-    }
+    if (isLoading) return <PanelFallback />;
 
-    return isError ? <Navigate to="/" /> : <Outlet />;
+    return isError ? <Navigate to={ROUTES.map} replace /> : <Outlet />;
 };
 
 export default AdminRoute;

@@ -2,7 +2,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeaderCell, TableRow, Text
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getUsersOfProject, removeMemberFromProject } from "../../../requests/projects";
 import { useParams } from "react-router-dom";
-import { Search, Plus, Trash, Shield, X, Check } from "lucide-react";
+import { Search, Plus, Trash, Shield, X, Check, Clock } from "lucide-react";
 import { useState } from 'react';
 import LoadingPrimoLogo from "../../../components/animations/LoadingPrimoLogo";
 import InviteMembersModal from './InviteMembersModal';
@@ -48,14 +48,14 @@ const Members = () => {
 
     if (isPending) {
         return (
-            <div className='flex items-center justify-center w-full h-full bg-transparent dark:bg-[#0A0A0A] transition-colors duration-200'>
+            <div className='flex items-center justify-center w-full h-full bg-transparent transition-colors duration-200'>
                 <LoadingPrimoLogo className="h-10 w-10 dark:invert" />
             </div>
         );
     }
 
     return (
-        <div className="flex flex-col w-full h-full p-4 pl-10 pr-10 overflow-hidden bg-transparent dark:bg-[#0A0A0A] transition-colors duration-200">
+        <div className="flex flex-col w-full h-full p-4 pl-10 pr-10 overflow-hidden bg-transparent transition-colors duration-200">
             <Card className="w-full h-80/100 scrollbar-custom flex-1 flex flex-col rounded-xl border border-gray-100 dark:border-white/5 transition-colors duration-200 ring-0 dark:ring-0">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                     <div>
@@ -107,12 +107,12 @@ const Members = () => {
                                 </TableCell>
                                 <TableCell className="text-gray-600 dark:text-gray-400 font-medium text-center">
                                     <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-xs font-medium dark:bg-white/10 bg-gray-100">
-                                        {member.isAdmin && <Shield className="w-3 h-3 text-blue-500" />}
-                                        {member.role === 'admin' ? 'Administrateur' : 'Membre'}
+                                        {member.isAdmin ? <Shield className="w-3 h-3 text-blue-500" /> : member.isPending ? <Clock className="w-3 h-3 text-yellow-500" /> : null}
+                                        <span>{member.role === 'admin' ? 'Administrateur' : member.isPending ? 'En attente' : 'Membre'}</span>
                                     </span>
                                 </TableCell>
                                 <TableCell className="text-gray-600 dark:text-gray-400 text-center">
-                                    {member.joinedAt ? new Date(member.joinedAt).toLocaleDateString('fr-FR') : "N/A"}
+                                    {member.joinedAt ? new Date(member.joinedAt).toLocaleDateString('fr-FR') : "-"}
                                 </TableCell>
                                 {currentUser?.isAdmin && (
                                     <TableCell className="text-right">
@@ -148,7 +148,7 @@ const Members = () => {
                                                         }}
                                                         title="Retirer le membre"
                                                     >
-                                                        <Trash className='w-5 h-5 text-red-500 hover:text-red-600' />
+                                                        <Trash className='w-5 h-5 text-red-700' />
                                                     </button>
                                                 )
                                             )}

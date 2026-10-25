@@ -1,4 +1,7 @@
-import { FileText, Download, ExternalLink, type LucideIcon } from "lucide-react";
+import { Download, ExternalLink, FileText, type LucideIcon } from "lucide-react";
+
+import { TONES } from "../shared/tones";
+import type { GpuProperties } from "./types";
 
 export interface DocumentAction {
   url: string;
@@ -49,62 +52,53 @@ export function getMainZoneType(typezone: string): string {
   return "DEFAULT";
 }
 
-export function extractDepartement(featureId: string): string | null {
-  const parts = featureId.split('_');
-  if (parts.length >= 2) {
-    const potentialDept = parts[1].split('.')[0];
-    if (/^(\d{2,3}|2[AB])$/.test(potentialDept)) return potentialDept;
-  }
-  const parcelMatch = featureId.match(/(\d{2,3}|2[AB])\d{3}\d{6}/);
-  return parcelMatch ? parcelMatch[1] : null;
-}
+const ZONE_TONES: Record<string, string> = {
+  U: TONES.rose,
+  AU: TONES.violet,
+  A: TONES.amber,
+  N: TONES.emerald,
+  DEFAULT: TONES.gray,
+};
 
-export function formatDate(dateString: string | null): string {
+export const zoneTone = (libelle = ""): string =>
+  ZONE_TONES[getMainZoneType(libelle.replace(/^\d+/, ""))];
+
+export const zoneInfo = (libelle = ""): { label: string; desc: string } =>
+  ZONE_DESCRIPTIONS[libelle] ?? ZONE_DESCRIPTIONS[getMainZoneType(libelle)] ?? ZONE_DESCRIPTIONS.DEFAULT;
+
+export function formatDate(dateString?: string): string {
   if (!dateString) return "—";
-  try {
-    return new Date(dateString).toLocaleDateString("fr-FR", { year: 'numeric', month: 'short' });
-  } catch (e) {
-    return dateString;
-  }
+  const date = new Date(dateString);
+  if (!Number.isFinite(date.getTime())) return dateString;
+  return date.toLocaleDateString("fr-FR", { year: "numeric", month: "short" });
 }
 
-export function getDocumentAction(props: any, inseeCode?: string ): DocumentAction | null {
-  if (props.gpu_doc_id) {
+export function getDocumentAction(props: GpuProperties, inseeCode?: string): DocumentAction | null {
+  if (props.gpu_doc_id)
     return {
       url: `https://www.geoportail-urbanisme.gouv.fr/document/by-id/${props.gpu_doc_id}/download-archive`,
-      label: "Télécharger le dossier (officiel)",
+      label: "Télécharger le dossier officiel",
       icon: Download,
       type: "zip",
-      source: "OFFICIAL_ID"
+      source: "OFFICIAL_ID",
     };
-  }
-  if (props.partition) {
+  if (props.partition)
     return {
       url: `https://www.geoportail-urbanisme.gouv.fr/api/document/download-by-partition/${props.partition}`,
       label: "Télécharger le dossier (partition)",
       icon: Download,
       type: "zip",
-      source: "OFFICIAL_PARTITION"
+      source: "OFFICIAL_PARTITION",
     };
-  }
-  if (props.urlfic && (props.urlfic.startsWith('http') || props.urlfic.startsWith('https'))) {
-    return {
-      url: props.urlfic,
-      label: "Voir le règlement (fichier)",
-      icon: FileText,
-      type: "pdf",
-      source: "DIRECT"
-    };
-  }
-  if (inseeCode) {
+  if (props.urlfic?.startsWith("http"))
+    return { url: props.urlfic, label: "Voir le règlement", icon: FileText, type: "pdf", source: "DIRECT" };
+  if (inseeCode)
     return {
       url: `https://www.geoportail-urbanisme.gouv.fr/document/?insee=${inseeCode}`,
       label: "Rechercher les documents",
       icon: ExternalLink,
       type: "external",
-      source: "SEARCH"
+      source: "SEARCH",
     };
-  }
-
   return null;
 }

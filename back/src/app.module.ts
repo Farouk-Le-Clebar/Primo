@@ -1,8 +1,6 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { User } from './database/user.entity';
 import { Projects } from './database/project.entity';
 import { Notification } from './database/notification.entity';
@@ -11,7 +9,6 @@ import { DpeEntity } from './database/dpe.entity';
 import { AddokProxyMiddleware } from './api/addok.middleware';
 import { AuthModule } from './auth/auth.module';
 import { GeoServerProxyMiddleware } from './api/geoserver.middleware';
-import { GeoModule } from './geo/geo.module';
 import { UserModule } from './user/user.module';
 import { NotificationModule } from './notification/notification.module';
 import { FeedbackModule } from './feedback/feedback.module';
@@ -27,6 +24,11 @@ import { ProjectPlots } from './database/project-plots.entity';
 import { ProjectsModule } from './projects/projects.module';
 import { ProjectMembers } from './database/project-members.entity';
 import { AiModule } from './ai/ai.module';
+import { ProximiteModule } from './proximite/proximite.module';
+import { ProjectDocuments } from './database/project-documents.entity';
+import { JwtModule } from '@nestjs/jwt/dist/jwt.module';
+import { ProjectInvite } from './database/project-invite.entity';
+import { AutorisationsModule } from './autorisations/autorisations.module';
 
 @Module({
   imports: [
@@ -34,32 +36,59 @@ import { AiModule } from './ai/ai.module';
       isGlobal: true,
     }),
     TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: process.env.MYSQL_HOST,
-      port: process.env.MYSQL_PORT
-        ? parseInt(process.env.MYSQL_PORT, 10)
-        : 6673,
-      username: process.env.MYSQL_USER,
-      password: process.env.MYSQL_PASSWORD,
-      database: process.env.MYSQL_DATABASE,
-      entities: [User, SearchHistory, Projects, DvfMutation, DpeEntity, Notification, VerifiedUser, ResetPassword, UserStatistics, Feedback, ProjectPlots, ProjectMembers],
+      type: 'postgres',
+      host: process.env.POSTGRES_HOST,
+      port: process.env.POSTGRES_PORT
+        ? parseInt(process.env.POSTGRES_PORT, 10)
+        : 5432,
+      username: process.env.POSTGRES_USER,
+      password: process.env.POSTGRES_PASSWORD,
+      database: process.env.POSTGRES_DATABASE,
+      entities: [User, SearchHistory, Projects, DvfMutation, DpeEntity, Notification, VerifiedUser, ResetPassword, UserStatistics, Feedback, ProjectPlots, ProjectMembers, ProjectDocuments, ProjectInvite],
       synchronize: true,
-      timezone: 'Z',
+    }),
+    TypeOrmModule.forRoot({
+      name: 'bdtopo',
+      type: 'postgres',
+        
+      host: process.env.POSTGRES_HOST,
+        
+      port: process.env.POSTGRES_PORT
+        ? parseInt(process.env.POSTGRES_PORT, 10)
+        : 5432,
+        
+      username: process.env.POSTGRES_USER,
+      password: process.env.POSTGRES_PASSWORD,
+        
+      database: process.env.BDTOPO_DATABASE ?? 'bdtopo',
+        
+      entities: [],
+      synchronize: false,
+
     }),
     TypeOrmModule.forFeature([User, SearchHistory, Projects, DvfMutation, DpeEntity, Notification, VerifiedUser, ResetPassword, UserStatistics, Feedback, ProjectPlots, ProjectMembers]),
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      global: true,
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        secret: configService.getOrThrow<string>('JWT_SECRET'),
+        signOptions: { expiresIn: '1h' },
+      }),
+    }),
+    TypeOrmModule.forFeature([User, SearchHistory, Projects, DvfMutation, DpeEntity, Notification, VerifiedUser, ResetPassword, UserStatistics, Feedback, ProjectPlots, ProjectMembers, ProjectDocuments, ProjectInvite]),
     AuthModule,
-    GeoModule,
     UserModule,
     DvfModule,
     DpeModule,
+    AutorisationsModule,
     NotificationModule,
     FeedbackModule,
     MailModule,
     ProjectsModule,
     AiModule,
+    ProximiteModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

@@ -1,32 +1,13 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { useOutsideClick } from "../../../../../hooks/useOutsideClick";
-import DropdownMenu from "../../../../../components/sidebars/components/settingsDropdown/dropdownMenu";
+import UserMenu from "./userMenu/UserMenu";
 
 // ASSETS
-import PPGreen from "../../../../../assets/profilePictures/green.svg?react";
-import PPCyan from "../../../../../assets/profilePictures/cyan.svg?react";
-import PPBlue from "../../../../../assets/profilePictures/blue.svg?react";
-import PPOrange from "../../../../../assets/profilePictures/orange.svg?react";
-import PPpink from "../../../../../assets/profilePictures/pink.svg?react";
-import PPRed from "../../../../../assets/profilePictures/red.svg?react";
-import PPWhite from "../../../../../assets/profilePictures/white.svg?react";
-import PPWhitePink from "../../../../../assets/profilePictures/whitepink.svg?react";
-import PPYellow from "../../../../../assets/profilePictures/yellow.svg?react";
+import { getAvatarComponent } from "../../../../../components/avatar/Avatar";
 
 // ICONS
-import DoubleChevron from "../../../../../assets/icons/doubleChevron.svg?react";
-
-const AVATAR_COMPONENTS: Record<string, React.FC<React.SVGProps<SVGSVGElement>>> = {
-  "green.png": PPGreen,
-  "cyan.png": PPCyan,
-  "blue.png": PPBlue,
-  "orange.png": PPOrange,
-  "pink.png": PPpink,
-  "red.png": PPRed,
-  "white.png": PPWhite,
-  "whitepink.png": PPWhitePink,
-  "yellow.png": PPYellow,
-};
+import { ChevronUpDownIcon } from "@heroicons/react/20/solid";
 
 export default function UserProfileS() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -34,54 +15,51 @@ export default function UserProfileS() {
   const dropdownRef = useOutsideClick(() => setIsDropdownOpen(false));
   const profilePictureValue = user?.profilePicture || "green.png";
   const isExternalUrl = profilePictureValue.startsWith("http");
-  const AvatarComponent = AVATAR_COMPONENTS[profilePictureValue] || PPGreen;
+  const AvatarComponent = getAvatarComponent(profilePictureValue);
 
   return (
-    <div 
-      className="relative w-full" h-full 
-      ref={dropdownRef}
-    >
-      <button 
+    <div className="relative" ref={dropdownRef}>
+      <button
         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-        className="flex h-12 w-full items-center px-2 gap-1 transition-all duration-300 rounded-xl hover:bg-gray-200/50 dark:hover:bg-[#262626] active:scale-95 group cursor-pointer"
+        aria-expanded={isDropdownOpen}
+        className={`flex h-10 max-w-56 items-center gap-2.5 rounded-lg pl-1 pr-2 transition-colors duration-150 cursor-pointer ${isDropdownOpen ? "glass-selected" : "hover:bg-black/[0.04] dark:hover:bg-white/[0.06]"}`}
       >
-        <div className="w-8 h-8 rounded-lg overflow-hidden border border-gray-100 dark:border-[#0A0A0A] shadow-sm flex-shrink-0 transition-transform duration-300 group-hover:border-gray-300 bg-white">
+        <div className="h-8 w-8 shrink-0 overflow-hidden rounded-md bg-white ring-1 ring-black/5 dark:ring-white/10">
           {isExternalUrl ? (
-            <img 
-              src={profilePictureValue} 
-              alt={`Profil de ${user.firstName || 'utilisateur'}`} 
-              className="w-full h-full object-cover"
+            <img
+              src={profilePictureValue}
+              alt={`Profil de ${user.firstName || "utilisateur"}`}
+              className="h-full w-full object-cover"
               referrerPolicy="no-referrer"
             />
           ) : (
-            <AvatarComponent className="w-full h-full" />
+            <AvatarComponent className="h-full w-full" />
           )}
-
         </div>
-
-        <div className="flex items-center justify-between flex-1 min-w-0 ml-1">
-          <div className="flex flex-col items-start text-left min-w-0 w-full">
-            <div className="font-inter font-medium text-sm text-gray-800 truncate leading-tight w-full dark:text-white">
-              {user.firstName || "Utilisateur"}
-            </div>
-            <div className="font-inter font-normal text-xs text-gray-500 truncate leading-none w-full mt-0.5 dark:text-gray-400">
-              {user.email || "email@exemple.com"}
-            </div>
-          </div>
-
-          <DoubleChevron 
-            className={`w-4 h-4 text-gray-400  dark:invert transition-all duration-300 flex-shrink-0 ml-2 ${
-              isDropdownOpen ? "rotate-180 text-black" : "rotate-0"
-            }`} 
-          />
+        <div className="hidden min-w-0 flex-col items-start text-left lg:flex">
+          <span className="w-full truncate text-sm font-medium leading-tight text-gray-900 dark:text-white">
+            {user.firstName || "Utilisateur"}
+          </span>
+          <span className="w-full truncate text-xs leading-tight text-gray-500 dark:text-gray-400">
+            {user.email || "email@exemple.com"}
+          </span>
         </div>
+        <ChevronUpDownIcon className="h-4 w-4 shrink-0 text-gray-400" aria-hidden="true" />
       </button>
 
-      {isDropdownOpen && (
-        <div className="absolute top-full right-0 mt-2 z-[99999] transition-all duration-200">
-          <DropdownMenu onClose={() => setIsDropdownOpen(false)} />
-        </div>
-      )}
+      <AnimatePresence>
+        {isDropdownOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -4 }}
+            transition={{ duration: 0.15, ease: "easeOut" }}
+            className="fixed top-20 right-22 z-[1020]"
+          >
+            <UserMenu onClose={() => setIsDropdownOpen(false)} />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

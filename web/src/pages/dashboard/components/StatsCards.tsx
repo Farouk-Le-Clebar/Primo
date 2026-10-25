@@ -1,29 +1,7 @@
+import { Card } from '@tremor/react';
 import { MapPin, Bookmark, Wallet } from 'lucide-react';
 import type { StatCardData } from './types';
-
-const stats: StatCardData[] = [
-  {
-    label: 'Parcelles analysées',
-    value: '137',
-    delta: '+18 ce mois',
-    deltaColor: 'violet',
-    icon: 'parcels',
-  },
-  {
-    label: 'Parcelles sauvegardées',
-    value: '48',
-    delta: '+6 cette semaine',
-    deltaColor: 'emerald',
-    icon: 'saved',
-  },
-  {
-    label: 'Budget engagé',
-    value: '2,4 M€',
-    delta: 'sur 3,1 M€',
-    deltaColor: 'amber',
-    icon: 'budget',
-  },
-];
+import { stats } from './dashboardData';
 
 const iconMap: Record<StatCardData['icon'], typeof MapPin> = {
   parcels: MapPin,
@@ -31,7 +9,7 @@ const iconMap: Record<StatCardData['icon'], typeof MapPin> = {
   budget: Wallet,
 };
 
-const colorClasses: Record<StatCardData['deltaColor'], { text: string; iconBg: string; iconText: string }> = {
+export const colorClasses: Record<StatCardData['deltaColor'], { text: string; iconBg: string; iconText: string }> = {
   violet: {
     text: 'text-violet-500 dark:text-violet-400',
     iconBg: 'bg-violet-100 dark:bg-violet-500/10',
@@ -57,9 +35,9 @@ export default function StatsCards() {
         const colors = colorClasses[stat.deltaColor];
 
         return (
-          <div
+          <Card
             key={stat.label}
-            className="h-24 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/[0.02] px-4 py-3 flex flex-col justify-between "
+            className="flex h-24 flex-col justify-between rounded-xl border-gray-200 px-4 py-3 shadow-sm ring-0 dark:border-white/10"
           >
             <div className="flex items-start justify-between">
               <span className="text-sm text-gray-500 dark:text-gray-400">{stat.label}</span>
@@ -72,7 +50,7 @@ export default function StatsCards() {
                 <span className="text-2xl font-semibold text-gray-900 dark:text-white">{stat.value}</span>
                 <p className={`text-xs font-medium ${colors.text}`}>{stat.delta}</p>
               </div>
-          </div>
+          </Card>
         );
       })}
     </>

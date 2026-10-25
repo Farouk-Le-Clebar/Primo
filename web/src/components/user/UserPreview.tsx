@@ -4,27 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getUserByMail } from "../../requests/UserRequests";
 
 // ASSETS
-import PPGreen from "../../assets/profilePictures/green.svg?react";
-import PPCyan from "../../assets/profilePictures/cyan.svg?react";
-import PPBlue from "../../assets/profilePictures/blue.svg?react";
-import PPOrange from "../../assets/profilePictures/orange.svg?react";
-import PPpink from "../../assets/profilePictures/pink.svg?react";
-import PPRed from "../../assets/profilePictures/red.svg?react";
-import PPWhite from "../../assets/profilePictures/white.svg?react";
-import PPWhitePink from "../../assets/profilePictures/whitepink.svg?react";
-import PPYellow from "../../assets/profilePictures/yellow.svg?react";
-
-const AVATAR_COMPONENTS: Record<string, React.FC<React.SVGProps<SVGSVGElement>>> = {
-  "green.png": PPGreen,
-  "cyan.png": PPCyan,
-  "blue.png": PPBlue,
-  "orange.png": PPOrange,
-  "pink.png": PPpink,
-  "red.png": PPRed,
-  "white.png": PPWhite,
-  "whitepink.png": PPWhitePink,
-  "yellow.png": PPYellow,
-};
+import { getAvatarComponent } from "../avatar/Avatar";
 
 export default function UserPreview({ email }: { email: string }) {
     const { data, isLoading, error } = useQuery({
@@ -56,7 +36,7 @@ export default function UserPreview({ email }: { email: string }) {
     }
 
     const isGoogleAvatar = data.profilePicture?.startsWith("http");
-    const AvatarComponent = !isGoogleAvatar ? (AVATAR_COMPONENTS[data.profilePicture] || PPGreen) : null;
+    const AvatarComponent = !isGoogleAvatar ? (getAvatarComponent(data.profilePicture)) : null;
 
     return (
         <div className="flex items-center bg-[#EFEFF4] dark:bg-[#171717] w-full px-4 py-3 border border-transparent dark:border-[#262626] rounded-xl transition-colors duration-200">

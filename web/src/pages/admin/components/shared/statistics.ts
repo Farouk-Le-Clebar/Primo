@@ -1,7 +1,7 @@
 import type { UserStatistic } from "../../../../types/admin";
 
 export const adminCardClass =
-  "rounded-xl border-gray-200 dark:border-white/10 bg-white dark:bg-[#111111] ring-0 shadow-sm";
+  "rounded-xl border-gray-200 ring-0 shadow-sm dark:border-white/10";
 export const formatDate = (value?: string | Date | null) => {
   if (!value || !Number.isFinite(new Date(value).getTime()))
     return "Non renseignée";

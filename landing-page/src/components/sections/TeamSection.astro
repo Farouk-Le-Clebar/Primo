@@ -1,0 +1,46 @@
+---
+import type { ImageMetadata } from 'astro';
+import { Image } from 'astro:assets';
+import { ArrowUpRight } from 'lucide-react';
+import BrandIcon from '../icons/BrandIcon.astro';
+import { TEAM } from '../../data/team';
+
+const photos = import.meta.glob<{ default: ImageMetadata }>('../../assets/images/team/*.jpg', {
+  eager: true,
+});
+const photoOf = (slug: string) => photos[`../../assets/images/team/${slug}.jpg`]?.default;
+---
+
+<section id="equipe" class="section shell">
+  <div class="section-heading reveal">
+    <div>
+      <h2>Notre équipe</h2>
+    </div>
+  </div>
+  <div class="people-grid">
+    {TEAM.map((person) => {
+      const photo = photoOf(person.slug);
+      return (
+        <a
+          class="person-card reveal"
+          href={person.linkedin}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={`${person.name} sur LinkedIn (nouvel onglet)`}
+        >
+          <div class="person-avatar" aria-hidden="true">
+            {photo ? (
+              <Image src={photo} alt="" width={96} height={96} densities={[1, 2]} loading="lazy" />
+            ) : (
+              <span>{person.initials}</span>
+            )}
+          </div>
+          <h3>{person.name}</h3>
+          <span class="person-link">
+            <BrandIcon name="linkedin" size={17} /> Voir le profil LinkedIn <ArrowUpRight size={16} />
+          </span>
+        </a>
+      );
+    })}
+  </div>
+</section>

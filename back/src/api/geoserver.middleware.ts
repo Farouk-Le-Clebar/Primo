@@ -1,21 +1,25 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
-import { createProxyMiddleware, Options } from 'http-proxy-middleware';
+import { ExecutionContextHost } from '@nestjs/core/helpers/execution-context-host';
+import { createProxyMiddleware } from 'http-proxy-middleware';
 import { Request, Response, NextFunction } from 'express';
+import { JwtAuthGuard } from '../guard/jwt-auth.guard';
 
 @Injectable()
 export class GeoServerProxyMiddleware implements NestMiddleware {
   private proxy = createProxyMiddleware({
-    target: process.env.EXTERNE_GEOSERVER_URL || 'http://api.primo-data.fr:8080/geoserver',
+    target: process.env.EXTERNE_GEOSERVER_URL,
     changeOrigin: true,
     pathRewrite: { '^/geoserver': '' },
-    logger: console,
+  });
 
-    onProxyReq: (proxyReq, req, res) => {
-      console.log(`[GeoServer Proxy] ${req.method} ${req.url}`);
-    },
-  } as Options);
+  constructor(private readonly jwtAuthGuard: JwtAuthGuard) { }
 
-  use(req: Request, res: Response, next: NextFunction) {
+  async use(req: Request, res: Response, next: NextFunction) {
+    const context = new ExecutionContextHost([req, res, next]);
+    context.setType('http');
+
+    await this.jwtAuthGuard.canActivate(context);
+
     this.proxy(req, res, next);
   }
 }

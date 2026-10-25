@@ -1,37 +1,6 @@
 import { Badge } from '@tremor/react';
 import { MapPin } from 'lucide-react';
-import type { ParcelItem } from './types';
-
-const recentParcels: ParcelItem[] = [
-  {
-    id: '75001000AC0023',
-    zoneCode: 'UA3',
-    address: '14 Rue des Lilas, 75020 Paris',
-    surface: '420 m²',
-    updatedAt: 'il y a 2 h',
-  },
-  {
-    id: '31555000BH0114',
-    zoneCode: 'UB1',
-    address: 'Bd de la Marquette, Toulouse',
-    surface: '1 240 m²',
-    updatedAt: 'il y a 5 h',
-  },
-  {
-    id: '69123000CD0042',
-    zoneCode: 'AU2',
-    address: 'Chemin des Vignes, Lyon',
-    surface: '860 m²',
-    updatedAt: 'il y a 1 j',
-  },
-  {
-    id: '33063000EF0087',
-    zoneCode: 'UA1',
-    address: 'Cours Victor Hugo, Bordeaux',
-    surface: '310 m²',
-    updatedAt: 'il y a 2 j',
-  },
-];
+import { recentParcels } from './dashboardData';
 
 export default function RecentParcels() {
   return (

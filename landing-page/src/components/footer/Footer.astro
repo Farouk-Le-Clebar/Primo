@@ -1,7 +1,8 @@
 ---
-import { Linkedin, Instagram, Mail } from "lucide-react";
-import Logo from "@assets/logos/logoPrimoWhite.svg?url";
-import { EXTERNAL_LINKS, NAV_ITEMS, SITE_META } from "@config/constants";
+import { Mail } from 'lucide-react';
+import BrandIcon from '@components/icons/BrandIcon.astro';
+import Logo from '@assets/logos/logoPrimoWhite.svg?url';
+import { EXTERNAL_LINKS, NAV_ITEMS } from '@config/constants';
 ---
 
 <footer class="bg-gray-900 text-white py-12">
@@ -9,12 +10,11 @@ import { EXTERNAL_LINKS, NAV_ITEMS, SITE_META } from "@config/constants";
     <div class="grid md:grid-cols-4 gap-8 mb-8">
       <div class="md:col-span-2">
         <div class="flex items-center gap-2 mb-4">
-          <img src={Logo} alt="Logo Primo" class="h-8 w-8" />
+          <img src={Logo} alt="" class="h-8 w-8" />
           <span class="text-2xl font-bold">Primo</span>
         </div>
         <p class="text-gray-400 mb-4 max-w-md">
-          La plateforme qui centralise toutes les informations sur une parcelle
-          cadastrale en un clic.
+          La plateforme qui centralise toutes les informations sur une parcelle cadastrale en un clic.
         </p>
         <div class="flex items-center gap-4">
           <a
@@ -24,7 +24,7 @@ import { EXTERNAL_LINKS, NAV_ITEMS, SITE_META } from "@config/constants";
             class="bg-gray-800 p-2 rounded-lg hover:bg-green-600 transition"
             aria-label="LinkedIn"
           >
-            <Linkedin size={20} />
+            <BrandIcon name="linkedin" />
           </a>
           <a
             href={EXTERNAL_LINKS.INSTAGRAM}
@@ -33,7 +33,7 @@ import { EXTERNAL_LINKS, NAV_ITEMS, SITE_META } from "@config/constants";
             class="bg-gray-800 p-2 rounded-lg hover:bg-green-600 transition"
             aria-label="Instagram"
           >
-            <Instagram size={20} />
+            <BrandIcon name="instagram" />
           </a>
           <a
             href={EXTERNAL_LINKS.EMAIL}
@@ -48,18 +48,13 @@ import { EXTERNAL_LINKS, NAV_ITEMS, SITE_META } from "@config/constants";
       <div>
         <h3 class="font-semibold text-lg mb-4">Navigation</h3>
         <ul class="space-y-2">
-          {
-            NAV_ITEMS.map((item) => (
-              <li>
-                <a
-                  href={`#${item.id}`}
-                  class="text-gray-400 hover:text-green-500 transition"
-                >
-                  {item.label}
-                </a>
-              </li>
-            ))
-          }
+          {NAV_ITEMS.map((item) => (
+            <li>
+              <a href={`/#${item.id}`} class="text-gray-400 hover:text-green-500 transition">
+                {item.label}
+              </a>
+            </li>
+          ))}
         </ul>
       </div>
 
@@ -67,18 +62,12 @@ import { EXTERNAL_LINKS, NAV_ITEMS, SITE_META } from "@config/constants";
         <h3 class="font-semibold text-lg mb-4">Liens utiles</h3>
         <ul class="space-y-2">
           <li>
-            <a
-              href="/a-propos"
-              class="text-gray-400 hover:text-green-500 transition"
-            >
+            <a href="/a-propos/" class="text-gray-400 hover:text-green-500 transition">
               À propos de Primo
             </a>
           </li>
           <li>
-            <a
-              href="/blog"
-              class="text-gray-400 hover:text-green-500 transition"
-            >
+            <a href="/blog/" class="text-gray-400 hover:text-green-500 transition">
               Blog Primo
             </a>
           </li>
@@ -108,23 +97,15 @@ import { EXTERNAL_LINKS, NAV_ITEMS, SITE_META } from "@config/constants";
 
     <div class="border-t border-gray-800 pt-8">
       <div class="flex flex-col md:flex-row justify-between items-center gap-4">
-        <p class="text-gray-400 text-sm">
-          © {SITE_META.CURRENT_YEAR} Primo Tous droits réservés.
-        </p>
+        <p class="text-gray-400 text-sm">© {new Date().getFullYear()} Primo. Tous droits réservés.</p>
         <div class="flex gap-6 text-sm">
-          <a
-            href="/mentions-legales"
-            class="text-gray-400 hover:text-green-500 transition"
-          >
+          <a href="/mentions-legales/" class="text-gray-400 hover:text-green-500 transition">
             Mentions légales
           </a>
-          <a
-            href="/confidentialite"
-            class="text-gray-400 hover:text-green-500 transition"
-          >
+          <a href="/confidentialite/" class="text-gray-400 hover:text-green-500 transition">
             Confidentialité
           </a>
-          <a href="/cgu" class="text-gray-400 hover:text-green-500 transition">
+          <a href="/cgu/" class="text-gray-400 hover:text-green-500 transition">
             CGU
           </a>
         </div>

@@ -7,7 +7,10 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "check": "astro check",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "dependencies": {
     "@astrojs/mdx": "^4.3.12",
@@ -27,5 +30,12 @@
     "fsevents@2.3.3": true,
     "sharp@0.34.5": true,
     "esbuild@0.25.12": true
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "@emnapi/runtime": "1.11.3",
+    "prettier": "^3.9.10",
+    "prettier-plugin-astro": "^1.1.1",
+    "typescript": "^5.9"
   }
 }
