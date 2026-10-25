@@ -58,7 +58,6 @@
 @utility glass {
     background-color: rgba(255, 255, 255, 0.78);
     backdrop-filter: blur(24px) saturate(180%);
-    -webkit-backdrop-filter: blur(24px) saturate(180%);
 
     @variant dark {
         background-color: rgba(28, 28, 30, 0.82);
