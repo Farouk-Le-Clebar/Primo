@@ -5,7 +5,8 @@ import L from "leaflet";
 import { defaultShapeStyle, getShapeKey, selectedShapeStyle, type DataType, type ShapeLevel } from "../../../../utils/map";
 import { onEachFeature } from "./ShapesClick";
 import { useShapesData } from "./useShapesData";
-import LoadingPrimoLogo from "../../../../components/animations/LoadingPrimoLogo";
+import MapSplashLoader from "./loading/MapSplashLoader";
+import MapFetchIndicator from "./loading/MapFetchIndicator";
 
 type ShapesLayerProps = {
     shapes: DataType;
@@ -32,7 +33,7 @@ const ShapesLayer = ({
 }: ShapesLayerProps) => {
     const map = useMap();
     const initialSelectionDoneRef = useRef(!initialPlacement);
-    const { isLoading, parcelles } = useShapesData(mapBounds, currentZoom, onShapesChange);
+    const { isInitialLoading, isFetchingShapes, level, parcelles } = useShapesData(mapBounds, currentZoom, onShapesChange);
 
     useEffect(() => {
         if (!parcelles || !initialCoordinates || initialSelectionDoneRef.current) return;
@@ -52,14 +53,8 @@ const ShapesLayer = ({
 
     return (
         <>
-            {isLoading && (
-                <div className="absolute top-0 left-0 w-full h-full bg-white/20 backdrop-blur-sm z-[400] flex items-center justify-center">
-                    <div className="flex flex-col items-center gap-2">
-                        <LoadingPrimoLogo className="w-20 h-20" />
-                        <span className="text-black text-lg">Chargement des données...</span>
-                    </div>
-                </div>
-            )}
+            <MapSplashLoader isVisible={isInitialLoading} />
+            <MapFetchIndicator isVisible={isFetchingShapes} level={level} />
             {SHAPE_LEVELS.map((level) => {
                 const data = shapes[level];
                 if (!data) return null;

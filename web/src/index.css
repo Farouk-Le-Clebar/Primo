@@ -2,7 +2,6 @@
 @import "leaflet/dist/leaflet.css" layer(base);
 @import "./styles/fonts.css";
 @import "./styles/animations.css";
-@import "./styles/onBoarding.css";
 @import "./styles/tremor.css";
 
 @source "../node_modules/@tremor/react";
@@ -17,7 +16,6 @@
 
   --animate-fade-in: fade-in 0.2s ease-out;
   --animate-slide-in-left: slideInLeft 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-  --animate-spin-slow: spin-slow 1s linear infinite;
 
   --color-gray-background: #f7f7fa;
 
@@ -28,10 +26,6 @@
   @keyframes slideInLeft {
     from { opacity: 0; transform: translateX(-50px); }
     to { opacity: 1; transform: translateX(0); }
-  }
-  @keyframes spin-slow {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
   }
 }
 

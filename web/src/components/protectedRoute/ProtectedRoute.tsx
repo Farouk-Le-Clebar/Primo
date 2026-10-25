@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 
 // COMPONENTS
 import { checkAuth } from "../../utils/auth";
+import PrimoSplash from "../animations/PrimoSplash";
 
 export default function ProtectedRoute() {
   const [isAuth, setIsAuth] = useState<boolean | null>(null);
@@ -25,7 +26,11 @@ export default function ProtectedRoute() {
   }, []);
 
   if (isAuth === null) {
-    return <div className="h-screen w-full bg-white"></div>;
+    return (
+      <div className="flex h-screen w-full items-center justify-center bg-[#FAFAFA] dark:bg-[#0A0A0A]">
+        <PrimoSplash />
+      </div>
+    );
   }
 
   return isAuth ? <Outlet /> : <Navigate to="/auth" replace />;
