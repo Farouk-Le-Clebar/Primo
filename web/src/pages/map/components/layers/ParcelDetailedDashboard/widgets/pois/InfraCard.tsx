@@ -1,100 +1,61 @@
 import { memo } from "react";
 import { Card } from "@tremor/react";
+
 import { INFRA_TYPE_BY_CODE } from "./constants";
 import ScoreRing from "./ScoreRing";
-import {
-    clampScore,
-    formatDistance,
-    getDistance,
-    type ProximityResult,
-} from "./utils";
+import { clampScore, formatDistance, getDistance, type ProximityResult } from "./utils";
 
 type InfraCardProps = {
-    code: string;
-    result?: ProximityResult | null;
-    muted?: boolean;
+  code: string;
+  result?: ProximityResult | null;
+  muted?: boolean;
 };
 
+const CARD_CLASS = "flex flex-col rounded-xl border-gray-200 p-0 shadow-sm ring-0 dark:border-white/10 dark:bg-[#171717]";
+
 function InfraCard({ code, result, muted = false }: InfraCardProps) {
-    const configured = INFRA_TYPE_BY_CODE.get(code);
-    const found = Boolean(result);
+  const configured = INFRA_TYPE_BY_CODE.get(code);
+  const title = result?.type_label ?? result?.categorie ?? result?.label ?? configured?.label ?? code;
+  const name = result?.nom ?? result?.name ?? null;
+  const address = result?.adresse ?? result?.address ?? null;
+  const family = result?.famille ?? result?.family ?? configured?.family ?? "Infrastructure";
+  const score = clampScore(result?.score);
+  const distance = formatDistance(getDistance(result));
 
-    const title =
-        result?.type_label ??
-        result?.categorie ??
-        result?.label ??
-        configured?.label ??
-        code;
-    const name = result?.nom ?? result?.name ?? null;
-    const infraAddress = result?.adresse ?? result?.address ?? null;
-    const family =
-        result?.famille ??
-        result?.family ??
-        configured?.family ??
-        "Infrastructure";
-    const score = clampScore(result?.score);
-    const formattedDistance = formatDistance(getDistance(result));
-
-    return (
-        <Card
-            className={`flex min-h-40 flex-col rounded-xl p-4 shadow-sm transition ${
-                muted
-                    ? "bg-slate-100 opacity-60 grayscale dark:bg-zinc-800/60"
-                    : "bg-white dark:bg-zinc-900"
-            }`}
-        >
-            <h4 className="text-[15px] font-semibold text-slate-800 dark:text-zinc-100">
-                {title}
-            </h4>
-            <p
-                className="mt-0.5 min-h-5 truncate text-[13px] text-slate-500 dark:text-zinc-400"
-                title={name ?? undefined}
-            >
-                {found
-                    ? (name ?? "Nom non renseigné")
-                    : "Aucune infrastructure trouvée"}
-            </p>
-            <div className="mt-2 self-start rounded-[9px] bg-black px-2.5 py-1 text-xs font-semibold tracking-wide text-white dark:bg-white dark:text-black">
-                {family}
-            </div>
-            <div className="flex flex-1 items-center justify-center py-3 pb-5">
-                <ScoreRing
-                    score={score}
-                    ariaLabel={`Distance ${formattedDistance}, indice de proximité ${score}%`}
-                    title={`Indice de proximité : ${score}%`}
-                >
-                    {formattedDistance}
-                </ScoreRing>
-            </div>
-            {found && (
-                <p
-                    className="line-clamp-2 border-t border-slate-200 pt-4 text-xs text-slate-500 dark:border-zinc-800 dark:text-zinc-400"
-                    title={infraAddress ?? undefined}
-                >
-                    {infraAddress ?? "Adresse non renseignée"}
-                </p>
-            )}
-        </Card>
-    );
+  return (
+    <Card className={`${CARD_CLASS} transition-opacity ${muted ? "opacity-50 grayscale" : ""}`}>
+      <div className="flex items-center gap-3 p-4">
+        <ScoreRing score={score} size={56} stroke={6} ariaLabel={`Distance ${distance}, indice de proximité ${score} %`} title={`Indice de proximité : ${score} %`} centerClassName="text-[10px] font-semibold tabular-nums">
+          {distance}
+        </ScoreRing>
+        <div className="min-w-0 flex-1">
+          <span className="text-[11px] font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">{family}</span>
+          <h4 className="truncate text-sm font-semibold text-gray-900 dark:text-white">{title}</h4>
+          <p className="truncate text-xs text-gray-500 dark:text-gray-400" title={name ?? undefined}>
+            {result ? (name ?? "Nom non renseigné") : "Aucune infrastructure trouvée"}
+          </p>
+        </div>
+      </div>
+      {result && (
+        <p className="mt-auto truncate border-t border-gray-100 px-4 py-2.5 text-[11px] text-gray-500 dark:border-white/5 dark:text-gray-400" title={address ?? undefined}>
+          {address ?? "Adresse non renseignée"}
+        </p>
+      )}
+    </Card>
+  );
 }
 
 export default memo(InfraCard);
 
 export function InfraCardSkeleton() {
-    return (
-        <div
-            aria-hidden="true"
-            className="flex min-h-40 animate-pulse flex-col rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900"
-        >
-            <div className="h-4 w-1/2 rounded bg-slate-200 dark:bg-zinc-700" />
-            <div className="mt-2 h-4 w-3/4 rounded bg-slate-100 dark:bg-zinc-800" />
-            <div className="mt-3 h-5 w-16 rounded-md bg-slate-200 dark:bg-zinc-700" />
-            <div className="flex flex-1 items-center justify-center py-3">
-                <div className="h-[80px] w-[80px] rounded-full bg-slate-100 dark:bg-zinc-800" />
-            </div>
-            <div className="border-t border-slate-200 pt-4 dark:border-zinc-800">
-                <div className="h-3 w-2/3 rounded bg-slate-100 dark:bg-zinc-800" />
-            </div>
-        </div>
-    );
+  return (
+    <div aria-hidden="true" className="flex animate-pulse items-center gap-3 rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-[#171717]">
+      <div className="h-14 w-14 shrink-0 rounded-full bg-gray-100 dark:bg-white/5" />
+      <div className="flex-1 space-y-2">
+        <div className="h-3 w-1/3 rounded bg-gray-100 dark:bg-white/5" />
+        <div className="h-4 w-2/3 rounded bg-gray-200 dark:bg-white/10" />
+        <div className="h-3 w-1/2 rounded bg-gray-100 dark:bg-white/5" />
+      </div>
+    </div>
+  );
 }

@@ -86,7 +86,7 @@ export default function ScoreRing({
                     r={radius}
                     fill="none"
                     strokeWidth={stroke - 2}
-                    className="stroke-neutral-100 dark:stroke-slate-700"
+                    className="stroke-gray-100 dark:stroke-white/10"
                 />
                 {value > 0 && (
                     <circle
@@ -103,7 +103,7 @@ export default function ScoreRing({
                 )}
             </svg>
             <span
-                className={`absolute whitespace-nowrap text-slate-900 dark:text-slate-100 ${centerClassName}`}
+                className={`absolute whitespace-nowrap text-gray-900 dark:text-white ${centerClassName}`}
             >
                 {typeof children === "function" ? children(value) : children}
             </span>

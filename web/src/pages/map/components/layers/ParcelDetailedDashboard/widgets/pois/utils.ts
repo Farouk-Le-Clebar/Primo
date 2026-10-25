@@ -1,7 +1,4 @@
-import axios from "axios";
 import { SCORE_COLOR_STOPS, type SortOrder } from "./constants";
-
-const MAX_CACHED_PARCELS = 20;
 
 export type ProximityResult = {
     type_code?: string;
@@ -28,11 +25,8 @@ export type FeatureLike = {
 export type ComputedResults = ReadonlyMap<string, ProximityResult | null>;
 
 export type GlobalScoreSummary = {
-    /** Rounded average score, 0–100. */
     score: number;
-    /** Number of infrastructure types taken into account. */
     total: number;
-    /** Number of those types for which something was found. */
     found: number;
 };
 
@@ -64,30 +58,10 @@ export function sortCodes(
     });
 }
 
-const proximityCache = new Map<string, Map<string, ProximityResult | null>>();
-
-export function getParcelCache(
-    parcelKey: string,
-): Map<string, ProximityResult | null> {
-    const entry = proximityCache.get(parcelKey) ?? new Map();
-    proximityCache.delete(parcelKey);
-    proximityCache.set(parcelKey, entry);
-    if (proximityCache.size > MAX_CACHED_PARCELS) {
-        const oldest = proximityCache.keys().next().value;
-        if (oldest !== undefined) proximityCache.delete(oldest);
-    }
-    return entry;
-}
-
 export function clampScore(score: unknown): number {
     const value = Number(score ?? 0);
     return Number.isFinite(value) ? Math.max(0, Math.min(100, value)) : 0;
 }
-
-/**
- * Average score over the given types. Types with nothing found count for 0,
- * so a missing hospital lowers the overall score.
- */
 export function computeGlobalScore(
     codes: string[],
     results: ComputedResults,
@@ -137,44 +111,3 @@ export function formatDistance(distance: number | null | undefined): string {
     return `${(metres / 1000).toFixed(1)}km`;
 }
 
-export function getResultType(result: ProximityResult): string {
-    return result.type_code ?? result.code ?? "";
-}
-
-export function extractResults(payload: unknown): ProximityResult[] {
-    if (Array.isArray(payload)) return payload;
-    const envelope = payload as
-        | { results?: unknown; data?: unknown }
-        | null
-        | undefined;
-    if (Array.isArray(envelope?.results)) return envelope.results;
-    if (Array.isArray(envelope?.data)) return envelope.data;
-    return [];
-}
-
-export function indexResultsByType(
-    results: ProximityResult[],
-): Map<string, ProximityResult> {
-    const map = new Map<string, ProximityResult>();
-    for (const result of results) {
-        const code = getResultType(result);
-        if (code) map.set(code, result);
-    }
-    return map;
-}
-
-export function getErrorMessage(err: unknown): string {
-    if (axios.isAxiosError(err)) {
-        const status = err.response?.status;
-        const detail =
-            typeof err.response?.data?.message === "string"
-                ? err.response.data.message
-                : err.message;
-        return status
-            ? `Erreur API (${status}) : ${detail}`
-            : `API inaccessible : ${detail}`;
-    }
-    return err instanceof Error
-        ? err.message
-        : "Impossible de calculer les proximités.";
-}

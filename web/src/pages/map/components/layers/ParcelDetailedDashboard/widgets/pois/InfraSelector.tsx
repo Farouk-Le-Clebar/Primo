@@ -1,196 +1,66 @@
 import { memo, useCallback, useState } from "react";
-import {
-    DEFAULT_EXPANDED_CATEGORIES,
-    INFRA_CATEGORIES,
-    type InfraCategory,
-} from "./constants";
 
-type InfraSelectorProps = {
-    selectedTypes: string[];
-    loading: boolean;
-    isUpToDate: boolean;
-    canCalculate: boolean;
-    error: string | null;
-    onToggleType: (code: string) => void;
-    onSetTypes: (codes: string[], selected: boolean) => void;
-    onReset: () => void;
-    onClear: () => void;
-    onCalculate: () => void;
-};
+import PanelCard from "../shared/PanelCard";
+import CategorySection from "./CategorySection";
+import { DEFAULT_EXPANDED_CATEGORIES, INFRA_CATEGORIES } from "./constants";
+import type { PoisProximityState } from "./usePoisProximity";
 
-type CategorySectionProps = {
-    category: InfraCategory;
-    selectedTypes: string[];
-    isExpanded: boolean;
-    onToggleExpanded: (label: string) => void;
-    onToggleType: (code: string) => void;
-    onSetTypes: (codes: string[], selected: boolean) => void;
-};
+type InfraSelectorProps = Pick<
+  PoisProximityState,
+  "selectedTypes" | "loading" | "isUpToDate" | "error" | "toggleType" | "setTypes" | "resetTypes" | "clearTypes" | "calculate"
+> & { canCalculate: boolean };
 
-function CategorySection({
-    category,
-    selectedTypes,
-    isExpanded,
-    onToggleExpanded,
-    onToggleType,
-    onSetTypes,
-}: CategorySectionProps) {
-    const codes = category.types.map((type) => type.code);
-    const selectedInCategory = codes.filter((code) =>
-        selectedTypes.includes(code),
-    ).length;
-    const allSelected = codes.length > 0 && selectedInCategory === codes.length;
+function InfraSelector({ selectedTypes, loading, isUpToDate, canCalculate, error, toggleType, setTypes, resetTypes, clearTypes, calculate }: InfraSelectorProps) {
+  const [expanded, setExpanded] = useState<string[]>(DEFAULT_EXPANDED_CATEGORIES);
+  const selectedCount = selectedTypes.length;
 
-    return (
-        <section className="py-4">
-            <div className="flex items-center gap-3">
-                <input
-                    aria-label={`Sélectionner toute la catégorie ${category.label}`}
-                    type="checkbox"
-                    checked={allSelected}
-                    ref={(element) => {
-                        if (element) {
-                            element.indeterminate =
-                                selectedInCategory > 0 && !allSelected;
-                        }
-                    }}
-                    onChange={() => onSetTypes(codes, !allSelected)}
-                    className="h-3.5 w-3.5 accent-emerald-600"
-                />
-                <button
-                    type="button"
-                    onClick={() => onToggleExpanded(category.label)}
-                    className="flex flex-1 items-center justify-between py-1 text-left text-sm text-slate-600 dark:text-zinc-200"
-                >
-                    <span>{category.label}</span>
-                    <span className="text-slate-500 dark:text-zinc-400">
-                        {isExpanded ? "⌄" : "›"}
-                    </span>
-                </button>
-            </div>
-            {isExpanded && (
-                <div className="ml-5 mt-1.5 space-y-2 pb-1">
-                    {category.types.map((type) => (
-                        <label
-                            key={type.code}
-                            className="flex cursor-pointer items-center gap-2 text-sm text-slate-600 dark:text-zinc-300"
-                        >
-                            <input
-                                type="checkbox"
-                                checked={selectedTypes.includes(type.code)}
-                                onChange={() => onToggleType(type.code)}
-                                className="h-3.5 w-3.5 accent-emerald-600"
-                            />
-                            {type.label}
-                        </label>
-                    ))}
-                </div>
-            )}
-        </section>
-    );
-}
+  const toggleExpanded = useCallback((label: string) => {
+    setExpanded((current) => (current.includes(label) ? current.filter((item) => item !== label) : [...current, label]));
+  }, []);
 
-function InfraSelector({
-    selectedTypes,
-    loading,
-    isUpToDate,
-    canCalculate,
-    error,
-    onToggleType,
-    onSetTypes,
-    onReset,
-    onClear,
-    onCalculate,
-}: InfraSelectorProps) {
-    const [expanded, setExpanded] = useState<string[]>(
-        DEFAULT_EXPANDED_CATEGORIES,
-    );
-    const selectedCount = selectedTypes.length;
-
-    const toggleExpanded = useCallback((label: string) => {
-        setExpanded((current) =>
-            current.includes(label)
-                ? current.filter((item) => item !== label)
-                : [...current, label],
-        );
-    }, []);
-
-    return (
-        <aside className="w-full shrink-0 self-start rounded-xl bg-white p-5 dark:bg-[#171717] md:sticky md:top-0 md:max-h-[calc(100vh-2rem)] md:w-80 md:overflow-y-auto lg:w-96">
-            <div className="mb-5 flex items-center justify-between text-xs">
-                <button
-                    type="button"
-                    onClick={onClear}
-                    disabled={selectedCount === 0}
-                    className="text-slate-500 hover:text-slate-900 disabled:cursor-not-allowed disabled:opacity-40 dark:text-zinc-400 dark:hover:text-white"
-                >
-                    Tout désélectionner
-                </button>
-                <button
-                    type="button"
-                    onClick={onReset}
-                    className="text-slate-500 hover:text-slate-900 dark:text-zinc-400 dark:hover:text-white"
-                >
-                    Réinitialiser
-                </button>
-            </div>
-
-            <div className="divide-y divide-slate-100 border-y border-slate-500 dark:divide-zinc-800 dark:border-zinc-700">
-                {INFRA_CATEGORIES.map((category) => (
-                    <CategorySection
-                        key={category.label}
-                        category={category}
-                        selectedTypes={selectedTypes}
-                        isExpanded={expanded.includes(category.label)}
-                        onToggleExpanded={toggleExpanded}
-                        onToggleType={onToggleType}
-                        onSetTypes={onSetTypes}
-                    />
-                ))}
-            </div>
-
-            <button
-                type="button"
-                onClick={onCalculate}
-                disabled={loading || !canCalculate || selectedCount === 0}
-                className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
-            >
-                {loading && (
-                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white dark:border-zinc-900/30 dark:border-t-zinc-900" />
-                )}
-                {loading
-                    ? "Calcul en cours…"
-                    : isUpToDate
-                      ? "Recalculer la proximité"
-                      : "Calculer la proximité"}
-            </button>
-            <p className="mt-2 flex items-start gap-1 text-[11px] leading-snug text-slate-500 dark:text-zinc-400">
-                <span
-                    aria-hidden="true"
-                    className="shrink-0 text-sm leading-none"
-                >
-                    ⓘ
-                </span>
-                <span>
-                    Les distances sont calculées à vol d'oiseau : elles ne
-                    reflètent pas la distance réelle à parcourir.
-                    <span className="mt-1 block">
-                        L'indice de proximité est calculé par rapport à une
-                        distance maximale de 30km. Au-delà, l'indice est de 0%.
-                    </span>
-                </span>
-            </p>
-
-            {error && (
-                <p
-                    role="alert"
-                    className="mt-3 break-words text-xs text-red-700 dark:text-red-400"
-                >
-                    {error}
-                </p>
-            )}
-        </aside>
-    );
+  return (
+    <PanelCard title="Infrastructures" aside={`${selectedCount} sélectionnée${selectedCount > 1 ? "s" : ""}`}>
+      <div className="flex items-center justify-between text-xs">
+        <button type="button" onClick={clearTypes} disabled={!selectedCount} className="text-gray-500 hover:text-gray-900 disabled:opacity-40 dark:text-gray-400 dark:hover:text-white">
+          Tout désélectionner
+        </button>
+        <button type="button" onClick={resetTypes} className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">
+          Réinitialiser
+        </button>
+      </div>
+      <ul className="mt-2 divide-y divide-gray-100 border-y border-gray-100 dark:divide-white/5 dark:border-white/5">
+        {INFRA_CATEGORIES.map((category) => (
+          <CategorySection
+            key={category.label}
+            category={category}
+            selectedTypes={selectedTypes}
+            isExpanded={expanded.includes(category.label)}
+            onToggleExpanded={toggleExpanded}
+            onToggleType={toggleType}
+            onSetTypes={setTypes}
+          />
+        ))}
+      </ul>
+      <button
+        type="button"
+        onClick={() => void calculate()}
+        disabled={loading || !canCalculate || !selectedCount}
+        className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg bg-gray-900 px-3 py-2 text-xs font-medium text-white transition-colors hover:bg-gray-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-white dark:text-black dark:hover:bg-gray-200"
+      >
+        {loading && <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-white/40 border-t-white dark:border-black/30 dark:border-t-black" />}
+        {loading ? "Calcul en cours…" : isUpToDate ? "Recalculer la proximité" : "Calculer la proximité"}
+      </button>
+      {error && (
+        <p role="alert" className="mt-3 break-words rounded-md bg-rose-50 px-2.5 py-2 text-xs text-rose-700 dark:bg-rose-500/10 dark:text-rose-300">
+          {error}
+        </p>
+      )}
+      <p className="mt-4 text-[11px] leading-relaxed text-gray-500 dark:text-gray-400">
+        Distances à vol d’oiseau, différentes du trajet réel. L’indice de proximité est calculé sur
+        30 km maximum ; au-delà, il vaut 0 %.
+      </p>
+    </PanelCard>
+  );
 }
 
 export default memo(InfraSelector);
