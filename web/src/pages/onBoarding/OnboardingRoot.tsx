@@ -21,14 +21,7 @@ export default function OnboardingRoot() {
         setCurrentStep((prev) => prev - 1);
     };
 
-    const finishOnboarding = (selectedPlan: string) => {
-        const userData = {
-            theme,
-            publicActivity,
-            newsletter,
-            plan: selectedPlan,
-        };
-        console.log("Onboarding terminé :", userData);
+    const finishOnboarding = () => {
         navigate("/", { state: { welcome: true } });
     };
 
