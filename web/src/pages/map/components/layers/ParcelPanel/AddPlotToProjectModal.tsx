@@ -30,7 +30,9 @@ const AddPlotToProjectModal = ({ isOpen = true, onClose, plotData }: AddPlotToPr
             plotBanId: plotData.plotBanId,
             adress: plotData.adress,
             coordinates: plotData.coordinates,
-            geometry: JSON.stringify(plotData.geometry)
+            geometry: JSON.stringify(plotData.geometry),
+            parcelProperties: plotData.parcelProperties,
+            addressProperties: plotData.addressProperties,
         }),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["projects"] });
