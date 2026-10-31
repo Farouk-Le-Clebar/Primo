@@ -11,6 +11,9 @@ import { ProjectInvite } from 'src/database/project-invite.entity';
 import { MailService } from 'src/mail/mail.service';
 import { ProjectDocuments } from 'src/database/project-documents.entity';
 import { StorageService } from 'src/storage/storage.service';
+import { ProjectPlotComparison } from 'src/database/project-plot-comparison.entity';
+import { PlotEnrichmentService } from './plot-enrichment.service';
+import { buildPlotSummary } from './plot-summary';
 
 const MAX_DOCUMENT_SIZE = 20 * 1024 * 1024;
 const USER_STORAGE_QUOTA = 1024 * 1024 * 1024;
@@ -39,9 +42,12 @@ export class ProjectsService {
         private projectInviteRepository: Repository<ProjectInvite>,
         @InjectRepository(ProjectDocuments)
         private projectDocumentsRepository: Repository<ProjectDocuments>,
+        @InjectRepository(ProjectPlotComparison)
+        private comparisonsRepository: Repository<ProjectPlotComparison>,
 
         private mailService: MailService,
         private storageService: StorageService,
+        private plotEnrichmentService: PlotEnrichmentService,
     ) { }
 
     async userIsMemberOfProject(userId: string, projectId: string): Promise<boolean> {
@@ -143,6 +149,7 @@ export class ProjectsService {
         await this.projectMembersRepository.delete({ projectId: projectId });
         await this.projectPlotsRepository.delete({ projectId: projectId });
         await this.projectDocumentsRepository.delete({ projectId: projectId });
+        await this.comparisonsRepository.delete({ projectId: projectId });
     }
 
 
@@ -169,6 +176,13 @@ export class ProjectsService {
             coordinates: addPlotToProjectDto.coordinates,
             adress: addPlotToProjectDto.adress,
             geometry: addPlotToProjectDto.geometry,
+            ...await this.plotEnrichmentService.enrich({
+                plotId: addPlotToProjectDto.plotId,
+                plotBanId: addPlotToProjectDto.plotBanId,
+                geometry: this.plotEnrichmentService.parseGeometry(addPlotToProjectDto.geometry),
+                parcelProperties: addPlotToProjectDto.parcelProperties,
+                addressProperties: addPlotToProjectDto.addressProperties,
+            }),
         });
 
         const response = await this.projectPlotsRepository.save(projectPlot);
@@ -216,11 +230,17 @@ export class ProjectsService {
         if (!project)
             throw new NotFoundException('Project not found or does not belong to the user');
 
-        const plots = await this.projectPlotsRepository.find({
-            where: { projectId: projectId },
-        });
+        const plots = await this.projectPlotsRepository
+            .createQueryBuilder('plot')
+            .addSelect(['plot.dvf', 'plot.dpe', 'plot.urbanPermits', 'plot.plu', 'plot.buildings', 'plot.risks', 'plot.climate', 'plot.proximity'])
+            .where('plot.projectId = :projectId', { projectId })
+            .getMany();
 
-        return plots;
+        // The raw snapshots can be large: only a digest goes to the client.
+        return plots.map(({ dvf, dpe, urbanPermits, plu, buildings, risks, climate, proximity, cadastreProperties, addressProperties, ...plot }) => ({
+            ...plot,
+            summary: buildPlotSummary({ dvf, dpe, urbanPermits, plu, buildings, risks, climate, proximity } as ProjectPlots),
+        }));
     }
 
     async inviteUserToProject(inviteUserDto: InviteUserDto, userId: string) {

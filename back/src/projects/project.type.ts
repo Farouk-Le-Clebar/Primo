@@ -12,6 +12,8 @@ export type AddPlotToProjectDto = {
     adress: string;
     coordinates: string;
     geometry: any;
+    parcelProperties?: Record<string, any>;
+    addressProperties?: Record<string, any>;
 };
 
 export type InviteUserDto = {

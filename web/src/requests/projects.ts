@@ -1,5 +1,6 @@
 import axios from "axios";
 import type { AddPlotToProjectPayload } from "../types/project/plots";
+import type { CreateComparisonPayload, PlotComparison } from "../types/project/comparisons";
 import type { DocumentUploadResponse, ProjectDocument, StorageUsage } from "../types/project/documents";
 const apiUrl = window?._env_?.API_URL;
 const token = localStorage.getItem("token");
@@ -239,5 +240,53 @@ export const deleteDocumentFromProject = async (projectId: string, documentId: s
         .then((response) => response.data)
         .catch((error) => {
             throw error.response.data;
+        });
+}
+
+export const createPlotComparison = async (projectId: string, payload: CreateComparisonPayload): Promise<PlotComparison> => {
+    return axios.post(`${apiUrl}/projects/${projectId}/comparisons`, payload, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
+        .then((response) => response.data)
+        .catch((error) => {
+            throw error.response?.data ?? error;
+        });
+}
+
+export const getPlotComparisons = async (projectId: string): Promise<PlotComparison[]> => {
+    return axios.get(`${apiUrl}/projects/${projectId}/comparisons`, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
+        .then((response) => response.data)
+        .catch((error) => {
+            throw error.response?.data ?? error;
+        });
+}
+
+export const getPlotComparison = async (projectId: string, comparisonId: string): Promise<PlotComparison> => {
+    return axios.get(`${apiUrl}/projects/${projectId}/comparisons/${comparisonId}`, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
+        .then((response) => response.data)
+        .catch((error) => {
+            throw error.response?.data ?? error;
+        });
+}
+
+export const deletePlotComparison = async (projectId: string, comparisonId: string) => {
+    return axios.delete(`${apiUrl}/projects/${projectId}/comparisons/${comparisonId}`, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
+        .then((response) => response.data)
+        .catch((error) => {
+            throw error.response?.data ?? error;
         });
 }

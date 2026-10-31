@@ -1,4 +1,7 @@
 import type { FeatureCollection } from 'geojson';
+import { DEFAULT_MAP_COLORS } from '../constants/mapColorPresets';
+import { toShapeStyles, type ShapeStyles } from './mapColors';
+
 const cartodbToken = window?._env_?.CARTODB_TOKEN;
 
 export const MIN_ZOOM_FOR_PARCELLES = 18;
@@ -8,28 +11,12 @@ export const MIN_ZOOM_FOR_CITY = 11;
 export const isFeatureCollection = (d: any): d is FeatureCollection =>
     !!d && Array.isArray((d as any).features);
 
-export const defaultShapeStyle = {
-    color: "#ffffff",
-    opacity: 0.95,
-    weight: 2,
-    fillColor: "#ffffff",
-    fillOpacity: 0.06,
-};
+let activeShapeStyles: ShapeStyles = toShapeStyles(DEFAULT_MAP_COLORS.light);
 
-export const hoverShapeStyle = {
-    color: "#67e8f9",
-    opacity: 1,
-    weight: 3,
-    fillColor: "#22d3ee",
-    fillOpacity: 0.15,
-};
+export const getShapeStyles = (): ShapeStyles => activeShapeStyles;
 
-export const selectedShapeStyle = {
-    color: "#22d3ee",
-    opacity: 1,
-    weight: 4.5,
-    fillColor: "#06b6d4",
-    fillOpacity: 0.28,
+export const setShapeStyles = (styles: ShapeStyles) => {
+    activeShapeStyles = styles;
 };
 
 export type DataType = {

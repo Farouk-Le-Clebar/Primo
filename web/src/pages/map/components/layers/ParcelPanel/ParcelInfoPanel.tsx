@@ -63,6 +63,8 @@ export default function ParcelInfoPanel({ selectedParcelle, onOpenDashboard }: P
             adress: address,
             coordinates: `${selectedParcelle?.addokData?.features?.[0]?.geometry?.coordinates[0]},${selectedParcelle?.addokData?.features?.[0]?.geometry?.coordinates[1]}`,
             geometry,
+            parcelProperties: properties,
+            addressProperties: selectedParcelle?.addokData?.features?.[0]?.properties,
           }}
         />
         </Suspense>

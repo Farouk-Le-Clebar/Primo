@@ -10,6 +10,7 @@ import { AddokProxyMiddleware } from './api/addok.middleware';
 import { AuthModule } from './auth/auth.module';
 import { GeoServerProxyMiddleware } from './api/geoserver.middleware';
 import { UserModule } from './user/user.module';
+import { MapColorsModule } from './map-colors/map-colors.module';
 import { NotificationModule } from './notification/notification.module';
 import { FeedbackModule } from './feedback/feedback.module';
 import { DvfModule } from './dvf/dvf.module';
@@ -24,6 +25,8 @@ import { ProjectPlots } from './database/project-plots.entity';
 import { ProjectsModule } from './projects/projects.module';
 import { ProjectMembers } from './database/project-members.entity';
 import { AiModule } from './ai/ai.module';
+import { ComparisonsModule } from './comparisons/comparisons.module';
+import { ProjectPlotComparison } from './database/project-plot-comparison.entity';
 import { ProximiteModule } from './proximite/proximite.module';
 import { ProjectDocuments } from './database/project-documents.entity';
 import { JwtModule } from '@nestjs/jwt/dist/jwt.module';
@@ -44,7 +47,7 @@ import { AutorisationsModule } from './autorisations/autorisations.module';
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DATABASE,
-      entities: [User, SearchHistory, Projects, DvfMutation, DpeEntity, Notification, VerifiedUser, ResetPassword, UserStatistics, Feedback, ProjectPlots, ProjectMembers, ProjectDocuments, ProjectInvite],
+      entities: [User, SearchHistory, Projects, DvfMutation, DpeEntity, Notification, VerifiedUser, ResetPassword, UserStatistics, Feedback, ProjectPlots, ProjectMembers, ProjectDocuments, ProjectInvite, ProjectPlotComparison],
       synchronize: true,
     }),
     TypeOrmModule.forRoot({
@@ -79,6 +82,7 @@ import { AutorisationsModule } from './autorisations/autorisations.module';
     TypeOrmModule.forFeature([User, SearchHistory, Projects, DvfMutation, DpeEntity, Notification, VerifiedUser, ResetPassword, UserStatistics, Feedback, ProjectPlots, ProjectMembers, ProjectDocuments, ProjectInvite]),
     AuthModule,
     UserModule,
+    MapColorsModule,
     DvfModule,
     DpeModule,
     AutorisationsModule,
@@ -87,6 +91,7 @@ import { AutorisationsModule } from './autorisations/autorisations.module';
     MailModule,
     ProjectsModule,
     AiModule,
+    ComparisonsModule,
     ProximiteModule,
   ],
 })

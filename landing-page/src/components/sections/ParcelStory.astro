@@ -256,7 +256,7 @@ const neighbours = [
         if (mobile) {
           const col = i % 2,
             row = Math.floor(i / 2),
-            y0 = top + areaH * 0.46;
+            y0 = top + Math.min(areaH * 0.46, areaH - (cardH * 4 + 24));
           return { x: left + col * (cardW + 8) + cardW / 2, y: y0 + row * (cardH + 8) + cardH / 2 };
         }
         // leave on the side where the card will sit in the final dashboard, so paths never cross
@@ -266,25 +266,29 @@ const neighbours = [
           rowH = Math.min(116, areaH / 4);
         return { x: C.x + side * gap, y: C.y + (row - 1.5) * rowH };
       });
-      // dashboard grid
+      // Content-sized rows keep the finished dashboard compact, even on tall screens.
+      // The second row reserves a little more room for the DVF and DPE charts.
       const gx = left,
-        gy = top + (mobile ? 0 : 56),
+        gy = top + (mobile ? 0 : 48),
         gw = shellW,
-        gh = areaH - (mobile ? 0 : 56),
         gap = 12;
+      const rowScale = Math.min(1, (areaH - 48 - gap * 2) / (148 + 194 + 152));
+      const rows = [148, 194, 152].map((height) => height * rowScale);
+      const rowOffsets = [0, rows[0] + gap, rows[0] + rows[1] + gap * 2];
+      const gh = rows.reduce((sum, height) => sum + height, 0) + gap * 2;
       const cw = (gw - gap * 3) / 4,
-        ch = (gh - gap * 2) / 3;
+        sceneH = rows[0] + gap + rows[1];
       const slots = mobile
         ? orbit.map((o) => ({ ...o, w: cardW, h: cardH }))
         : slotOrder.map(([c, r]) => ({
             x: gx + c * (cw + gap) + cw / 2,
-            y: gy + r * (ch + gap) + ch / 2,
+            y: gy + rowOffsets[r] + rows[r] / 2,
             w: cw,
-            h: ch,
+            h: rows[r],
           }));
       const center = mobile
         ? { x: C.x, y: C.y, s: sceneScale }
-        : { x: gx + gw / 2, y: gy + ch + gap / 2, s: Math.min((cw * 2 + gap) / 520, (ch * 2 + gap) / 380) };
+        : { x: gx + gw / 2, y: gy + sceneH / 2, s: Math.min(1, (cw * 2 + gap) / 520, sceneH / 380) };
       G = {
         W,
         H,
@@ -311,8 +315,9 @@ const neighbours = [
       if (!G) return;
       const g = G;
       const rect = story.getBoundingClientRect();
-      const p = reduce || locked ? 1 : clamp(-rect.top / (rect.height - sticky.clientHeight));
-      if (!locked && p >= 0.98) {
+      const stickyTop = parseFloat(getComputedStyle(sticky).top) || 0;
+      const p = reduce || locked ? 1 : clamp((stickyTop - rect.top) / (rect.height - sticky.clientHeight));
+      if (!locked && p >= 1) {
         lock();
         return;
       }
@@ -380,20 +385,27 @@ const neighbours = [
       dashFrame.style.opacity = String(g.mobile ? 0 : seg(p, 0.8, 0.9));
     };
 
-    // Once the story has played, keep the finished dashboard: collapse the section to one screen
-    // and compensate the scroll so nothing moves on screen. It never replays after that.
+    // Collapse only once the sticky scene reaches the end of its track. Preserve an absolute
+    // scroll destination: layout changes can already adjust scrollY through browser anchoring.
     const lock = () => {
       if (locked) return;
-      const hh = parseFloat(getComputedStyle(story).getPropertyValue('--hh')) || 0;
-      const start = story.offsetTop - hh,
-        extra = story.offsetHeight - sticky.clientHeight;
-      // only remove the part of the story that is already above the viewport
-      const shift = Math.min(Math.max(scrollY - start, 0), extra);
+      const root = document.documentElement;
+      const previousAnchor = root.style.overflowAnchor;
+      root.style.overflowAnchor = 'none';
+      const scrollBefore = window.scrollY;
+      const storyTop = story.getBoundingClientRect().top + scrollBefore;
+      const sceneTop = sticky.getBoundingClientRect().top;
+      const extra = story.offsetHeight - sticky.clientHeight;
+      const shift = Math.min(Math.max(scrollBefore - (storyTop - sceneTop), 0), extra);
+      const destination = scrollBefore - shift;
       locked = true;
       story.classList.add('is-done');
-      if (shift) window.scrollBy({ top: -shift, behavior: 'instant' as ScrollBehavior });
       measure();
+      window.scrollTo({ top: destination, behavior: 'instant' as ScrollBehavior });
       render();
+      requestAnimationFrame(() => {
+        root.style.overflowAnchor = previousAnchor;
+      });
     };
     // Jumping to a section below the story (menu links…): finish it first, so the browser
     // scrolls to the right place on the collapsed page.
