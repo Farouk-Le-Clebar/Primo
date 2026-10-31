@@ -10,6 +10,7 @@ import { AddokProxyMiddleware } from './api/addok.middleware';
 import { AuthModule } from './auth/auth.module';
 import { GeoServerProxyMiddleware } from './api/geoserver.middleware';
 import { UserModule } from './user/user.module';
+import { MapColorsModule } from './map-colors/map-colors.module';
 import { NotificationModule } from './notification/notification.module';
 import { FeedbackModule } from './feedback/feedback.module';
 import { DvfModule } from './dvf/dvf.module';
@@ -81,6 +82,7 @@ import { AutorisationsModule } from './autorisations/autorisations.module';
     TypeOrmModule.forFeature([User, SearchHistory, Projects, DvfMutation, DpeEntity, Notification, VerifiedUser, ResetPassword, UserStatistics, Feedback, ProjectPlots, ProjectMembers, ProjectDocuments, ProjectInvite]),
     AuthModule,
     UserModule,
+    MapColorsModule,
     DvfModule,
     DpeModule,
     AutorisationsModule,

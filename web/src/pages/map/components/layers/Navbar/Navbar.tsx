@@ -12,7 +12,7 @@ import { useMapPanels } from "../../../../../hooks/useMapPanels";
 import { ROUTES } from "../../../../../constants/routes";
 
 // ICONS
-import { selectedShapeStyle } from "../../../../../utils/map";
+import { getShapeStyles } from "../../../../../utils/map";
 import PrimoIcon from "../../../../../assets/logos/logoPrimoWhite.svg?react";
 
 
@@ -75,7 +75,7 @@ export default function Navbar({
           layer instanceof L.Polygon &&
           layer.getBounds().contains(coordsSelected)
         ) {
-          layer.setStyle(selectedShapeStyle);
+          layer.setStyle(getShapeStyles().selected);
           layer.bringToFront();
           found = true;
           onParcelleSelect(layer.getBounds(), layer.feature, layer);

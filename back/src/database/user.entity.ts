@@ -2,6 +2,7 @@ import { Entity, Column, PrimaryGeneratedColumn, OneToMany, CreateDateColumn } f
 import { SearchHistory } from './search-history.entity';
 import { Feedback } from './feedback.entity';
 import { UserStatistics } from './user-statistics.entity';
+import type { MapColors } from '../map-colors/map-colors.types';
 
 @Entity()
 export class User {
@@ -28,6 +29,9 @@ export class User {
 
   @Column({ type: 'varchar', nullable: false, default: 'basic' })
   mapPreference: string;
+
+  @Column({ type: 'jsonb', nullable: true, default: null, select: false })
+  mapColors: MapColors | null;
 
   @Column({ type: 'boolean', nullable: false, default: false })
   isAdmin: boolean;
