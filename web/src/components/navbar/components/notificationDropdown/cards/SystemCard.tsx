@@ -11,7 +11,7 @@ export default function SystemCard({
             onClick={() =>
                 !notification.isRead && onMarkAsRead(notification.id)
             }
-            className={`p-3 rounded-xl transition-colors ${
+            className={`p-3 rounded-xl transition-colors cursor-pointer ${
                 !notification.isRead
                     ? "bg-emerald-50/60 hover:bg-emerald-50"
                     : "hover:bg-gray-50 opacity-60"

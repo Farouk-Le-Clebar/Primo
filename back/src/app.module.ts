@@ -33,6 +33,8 @@ import { ProjectAddress } from './database/project-address.entity';
 import { JwtModule } from '@nestjs/jwt/dist/jwt.module';
 import { ProjectInvite } from './database/project-invite.entity';
 import { AutorisationsModule } from './autorisations/autorisations.module';
+import { ProjectNotes } from './database/project-notes.entity';
+import { NotesModule } from './notes/notes.module';
 
 @Module({
   imports: [
@@ -48,7 +50,7 @@ import { AutorisationsModule } from './autorisations/autorisations.module';
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DATABASE,
-      entities: [User, SearchHistory, Projects, DvfMutation, DpeEntity, Notification, VerifiedUser, ResetPassword, UserStatistics, Feedback, ProjectPlots, ProjectMembers, ProjectDocuments, ProjectInvite, ProjectPlotComparison, ProjectAddress],
+      entities: [User, SearchHistory, Projects, DvfMutation, DpeEntity, Notification, VerifiedUser, ResetPassword, UserStatistics, Feedback, ProjectPlots, ProjectMembers, ProjectDocuments, ProjectInvite, ProjectPlotComparison, ProjectNotes, ProjectAddress],
       synchronize: true,
     }),
     TypeOrmModule.forRoot({
@@ -93,6 +95,7 @@ import { AutorisationsModule } from './autorisations/autorisations.module';
     ProjectsModule,
     AiModule,
     ComparisonsModule,
+    NotesModule,
     ProximiteModule,
   ],
 })

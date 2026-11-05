@@ -9,6 +9,7 @@ export const ROUTES = {
   profile: "/profile",
   feedback: "/feedback",
   onboarding: "/onboarding",
+  projectInvitation: "/project/invitation",
 } as const;
 
 export const LEGACY_MAP_PREFIX = "/search";

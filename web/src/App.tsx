@@ -23,6 +23,7 @@ const AdminList = lazyPage(() => import("./pages/admin/components/AdminList/Admi
 const FeedbacksList = lazyPage(() => import("./pages/admin/components/Feedback/FeedbacksList"));
 const OnboardingRoot = lazyPage(() => import("./pages/onBoarding/OnboardingRoot"));
 const EmailVerify = lazyPage(() => import("./pages/mailling/EmailVerify"));
+const ProjectInvitation = lazyPage(() => import("./pages/mailling/ProjectInvitation"));
 const PostRegisterEmailVerify = lazyPage(() => import("./pages/mailling/PostRegisterEmailVerify"));
 const ResetPassword = lazyPage(() => import("./pages/mailling/ResetPassword"));
 const SendEmailResetPassword = lazyPage(() => import("./pages/mailling/SendEmailResetPassword"));
@@ -31,6 +32,7 @@ const DashboardProjects = lazyPage(() => import("./pages/projects/components/das
 const ParcelsTab = lazyPage(() => import("./pages/projects/components/parcels/ParcelsTab"));
 const Members = lazyPage(() => import("./pages/projects/components/Members"));
 const DocumentsTab = lazyPage(() => import("./pages/projects/components/documents/DocumentsTab"));
+const NotesTab = lazyPage(() => import("./pages/projects/components/notes/NotesTab"));
 const AddressesTab = lazyPage(() => import("./pages/projects/components/addresses/AddressesTab"));
 const DashboardPanel = lazyPanel(() => import("./pages/map/components/layers/Dashboard/DashboardPanel"));
 const ProjectsPanel = lazyPanel(() => import("./pages/map/components/layers/Projects/ProjectsPanel"));
@@ -44,6 +46,7 @@ export default function App() {
 
       <Routes>
         <Route path="/verify" element={EmailVerify} />
+        <Route path={ROUTES.projectInvitation} element={ProjectInvitation} />
         <Route path="/reset/password" element={ResetPassword} />
         <Route path="/auth" element={AuthLayout}>
           <Route index element={AuthRoot} />
@@ -66,6 +69,7 @@ export default function App() {
                 <Route path="plots" element={ParcelsTab} />
                 <Route path="members" element={Members} />
                 <Route path="documents" element={DocumentsTab} />
+                <Route path="notes" element={NotesTab} />
                 <Route path="addresses" element={AddressesTab} />
               </Route>
             </Route>

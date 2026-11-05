@@ -16,20 +16,6 @@ export function getProjectMembers(
         .then((res) => res.data);
 }
 
-export function inviteMember(
-    projectId: string,
-    email: string,
-    role?: MemberRole,
-): Promise<MemberResponse> {
-    return axios
-        .post(
-            `${apiUrl}/projects/${projectId}/members/invite`,
-            { email, ...(role && { role }) },
-            { headers: getAuthHeaders() },
-        )
-        .then((res) => res.data);
-}
-
 export function updateMemberRole(
     projectId: string,
     memberId: string,
