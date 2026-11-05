@@ -1,4 +1,4 @@
-import { IsInt, IsNotEmpty, IsPositive, IsString, MaxLength } from "class-validator";
+import { IsBoolean, IsEmail, IsInt, IsNotEmpty, IsPositive, IsString, IsUUID, MaxLength } from "class-validator";
 
 export type CreateProjectDto = {
     name: string;
@@ -16,10 +16,30 @@ export type AddPlotToProjectDto = {
     addressProperties?: Record<string, any>;
 };
 
-export type InviteUserDto = {
-    projectId: string;
-    email: string;
-};
+export class InviteUserDto {
+  @IsUUID()
+  projectId: string;
+
+  @IsEmail()
+  @MaxLength(255)
+  email: string;
+}
+
+export class InvitationTokenDto {
+  @IsString()
+  @IsNotEmpty()
+  token: string;
+}
+
+export class RespondInvitationByTokenDto extends InvitationTokenDto {
+  @IsBoolean()
+  accept: boolean;
+}
+
+export class RespondInvitationDto {
+  @IsBoolean()
+  accept: boolean;
+}
 
 export class RequestDocumentUploadDto {
   @IsString()
