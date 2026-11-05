@@ -22,6 +22,8 @@ interface MapControlsProps {
     onTogglePoi: (type: string, enabled: boolean) => void;
     currentZoom: number;
     minZoomForPois: number;
+    addressProjectId: string;
+    onAddressProjectChange: (projectId: string) => void;
 }
 
 export default function MapControls({
@@ -33,7 +35,9 @@ export default function MapControls({
     enabledPoiTypes,
     onTogglePoi,
     currentZoom,
-    minZoomForPois
+    minZoomForPois,
+    addressProjectId,
+    onAddressProjectChange
 }: MapControlsProps) {
     const [isPreferenceOpen, setIsPreferenceOpen] = useState(false);
     const [isPoiOpen, setIsPoiOpen] = useState(false);
@@ -46,6 +50,7 @@ export default function MapControls({
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             const target = event.target as Node;
+            if (target instanceof Element && target.closest("#headlessui-portal-root")) return;
 
             if (preferenceRef.current && !preferenceRef.current.contains(target)) {
                 setIsPreferenceOpen(false);
@@ -155,6 +160,8 @@ export default function MapControls({
                                 onTogglePoi={onTogglePoi}
                                 currentZoom={currentZoom}
                                 minZoomForPois={minZoomForPois}
+                                addressProjectId={addressProjectId}
+                                onAddressProjectChange={onAddressProjectChange}
                             />
                         )}
                     </div>
