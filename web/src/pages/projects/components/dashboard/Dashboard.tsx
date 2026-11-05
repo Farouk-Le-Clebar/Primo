@@ -52,7 +52,7 @@ export default function DashboardProjects() {
 
         <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2">
           <RecentPlots />
-          <ProjectNotes notes={project?.notes} />
+          <ProjectNotes />
           <ZoningChart plotsCount={project?.numberOfPlots || 0} />
           <ProjectTeam />
         </div>
