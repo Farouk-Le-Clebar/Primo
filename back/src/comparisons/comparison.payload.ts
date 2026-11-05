@@ -1,3 +1,4 @@
+import { ProjectNotes } from '../database/project-notes.entity';
 import { ProjectPlots } from '../database/project-plots.entity';
 import { buildPlotSummary } from '../projects/plot-summary';
 import { comparisonSystemPrompt } from './comparison.prompt';
@@ -25,9 +26,28 @@ return {
     };
 }
 
-export function buildComparisonPayload(plotA: ProjectPlots, plotB: ProjectPlots, question: string | null) {
+// Total size of the project notes sent to the model, so they cannot blow up the prompt.
+const MAX_NOTES_CHARS = 6000;
+
+export function buildNotesPayload(notes: Pick<ProjectNotes, 'title' | 'content'>[]) {
+    let remaining = MAX_NOTES_CHARS;
+    const result: { title: string; content: string }[] = [];
+
+    for (const note of notes) {
+        const content = note.content.trim();
+        if (!content || remaining <= 0)
+            continue;
+        const truncated = content.slice(0, remaining);
+        remaining -= truncated.length;
+        result.push({ title: note.title.trim(), content: truncated });
+    }
+    return result;
+}
+
+export function buildComparisonPayload(plotA: ProjectPlots, plotB: ProjectPlots, question: string | null, notes: Pick<ProjectNotes, 'title' | 'content'>[] = []) {
     return {
         brief: question ?? '',
+        projectNotes: buildNotesPayload(notes),
         plots: { A: buildPlotPayload(plotA), B: buildPlotPayload(plotB) },
     };
 }
