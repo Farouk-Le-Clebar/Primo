@@ -37,3 +37,19 @@ export function sendVerificationEmail(email: string) {
     return axios.post(apiUrl + `/mail/send/verification`, { email }, {
     })
 }
+
+export function getProjectInvitation(token: string): Promise<{ projectName: string; inviterName: string | null }> {
+    return axios.post(apiUrl + `/projects/invitation/verify`, { token })
+        .then(response => response.data)
+        .catch(error => {
+            throw new Error(error.response?.data?.message);
+        });
+}
+
+export function respondToProjectInvitation(token: string, accept: boolean): Promise<{ accepted: boolean; projectName: string }> {
+    return axios.post(apiUrl + `/projects/invitation/respond`, { token, accept })
+        .then(response => response.data)
+        .catch(error => {
+            throw new Error(error.response?.data?.message);
+        });
+}
