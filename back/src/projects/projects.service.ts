@@ -15,6 +15,7 @@ import { ProjectDocuments } from 'src/database/project-documents.entity';
 import { StorageService } from 'src/storage/storage.service';
 import { ProjectPlotComparison } from 'src/database/project-plot-comparison.entity';
 import { PlotEnrichmentService } from './plot-enrichment.service';
+import { ProjectAddressesService } from './project-addresses.service';
 import { buildPlotSummary } from './plot-summary';
 
 // Invitation links stay valid for 48 hours.
@@ -53,6 +54,7 @@ export class ProjectsService {
         private notificationService: NotificationService,
         private storageService: StorageService,
         private plotEnrichmentService: PlotEnrichmentService,
+        private projectAddressesService: ProjectAddressesService,
     ) { }
 
     async userIsMemberOfProject(userId: string, projectId: string): Promise<boolean> {
@@ -160,6 +162,7 @@ export class ProjectsService {
         await this.projectPlotsRepository.delete({ projectId: projectId });
         await this.projectDocumentsRepository.delete({ projectId: projectId });
         await this.comparisonsRepository.delete({ projectId: projectId });
+        await this.projectAddressesService.deleteAddressesOfProject(projectId);
     }
 
 

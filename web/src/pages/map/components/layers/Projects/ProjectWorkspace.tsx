@@ -10,6 +10,7 @@ const TABS = [
   { path: "members", label: "Membres" },
   { path: "documents", label: "Documents" },
   { path: "notes", label: "Notes" },
+  { path: "addresses", label: "Adresses" },
 ];
 
 export default function ProjectWorkspace() {

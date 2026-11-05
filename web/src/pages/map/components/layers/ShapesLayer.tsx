@@ -2,7 +2,8 @@ import { memo, useCallback, useEffect, useRef } from "react";
 import { GeoJSON, useMap } from "react-leaflet";
 import type { Feature } from "geojson";
 import L from "leaflet";
-import { defaultShapeStyle, getShapeKey, selectedShapeStyle, type DataType, type ShapeLevel } from "../../../../utils/map";
+import { getShapeKey, setShapeStyles, type DataType, type ShapeLevel } from "../../../../utils/map";
+import { useMapShapeStyles } from "../../../../hooks/useMapColors";
 import { onEachFeature } from "./ShapesClick";
 import { useShapesData } from "./useShapesData";
 import MapSplashLoader from "./loading/MapSplashLoader";
@@ -34,6 +35,9 @@ const ShapesLayer = ({
     const map = useMap();
     const initialSelectionDoneRef = useRef(!initialPlacement);
     const { isInitialLoading, isFetchingShapes, level, parcelles } = useShapesData(mapBounds, currentZoom, onShapesChange);
+    const shapeStyles = useMapShapeStyles();
+
+    useEffect(() => setShapeStyles(shapeStyles), [shapeStyles]);
 
     useEffect(() => {
         if (!parcelles || !initialCoordinates || initialSelectionDoneRef.current) return;
@@ -47,8 +51,8 @@ const ShapesLayer = ({
     }, [parcelles, initialCoordinates, onParcelleSelect, selectedIdRef]);
 
     const parcelStyle = useCallback(
-        (feature?: Feature) => (feature?.id === selectedIdRef.current ? selectedShapeStyle : defaultShapeStyle),
-        [selectedIdRef],
+        (feature?: Feature) => (feature?.id === selectedIdRef.current ? shapeStyles.selected : shapeStyles.default),
+        [selectedIdRef, shapeStyles],
     );
 
     return (
@@ -63,7 +67,7 @@ const ShapesLayer = ({
                     <GeoJSON
                         key={`${level}-${getShapeKey(data)}`}
                         data={data}
-                        style={isParcelles ? parcelStyle : defaultShapeStyle}
+                        style={isParcelles ? parcelStyle : shapeStyles.default}
                         onEachFeature={(feature, layer) => onEachFeature(feature, layer, map, onParcelleSelect, isParcelles ? selectedIdRef : undefined)}
                     />
                 );

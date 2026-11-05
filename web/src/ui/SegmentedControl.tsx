@@ -34,7 +34,7 @@ export default function SegmentedControl<Value extends string>({ id, label, valu
             onClick={() => onChange(option.value)}
             className={`relative flex-1 rounded-md font-medium ${SIZES[size].item} transition-colors cursor-pointer ${isActive ? "text-gray-900 dark:text-white" : "text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"}`}
           >
-            {isActive && <motion.span layoutId={id} transition={{ duration: 0.2, ease: "easeOut" }} className="glass-selected absolute inset-0 rounded-md" />}
+            {isActive && <motion.span layoutId={id} layoutDependency={isActive} transition={{ duration: 0.2, ease: "easeOut" }} className="glass-selected absolute inset-0 rounded-md" />}
             <span className="relative">{option.label}</span>
           </button>
         );

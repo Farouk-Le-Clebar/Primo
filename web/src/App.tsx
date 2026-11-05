@@ -33,6 +33,7 @@ const ParcelsTab = lazyPage(() => import("./pages/projects/components/parcels/Pa
 const Members = lazyPage(() => import("./pages/projects/components/Members"));
 const DocumentsTab = lazyPage(() => import("./pages/projects/components/documents/DocumentsTab"));
 const NotesTab = lazyPage(() => import("./pages/projects/components/notes/NotesTab"));
+const AddressesTab = lazyPage(() => import("./pages/projects/components/addresses/AddressesTab"));
 const DashboardPanel = lazyPanel(() => import("./pages/map/components/layers/Dashboard/DashboardPanel"));
 const ProjectsPanel = lazyPanel(() => import("./pages/map/components/layers/Projects/ProjectsPanel"));
 const ProjectsEmptyState = lazyPage(() => import("./pages/map/components/layers/Projects/ProjectsEmptyState"));
@@ -69,6 +70,7 @@ export default function App() {
                 <Route path="members" element={Members} />
                 <Route path="documents" element={DocumentsTab} />
                 <Route path="notes" element={NotesTab} />
+                <Route path="addresses" element={AddressesTab} />
               </Route>
             </Route>
             <Route path="feedback" element={FeedbackPanel} />

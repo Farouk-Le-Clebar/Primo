@@ -5,6 +5,8 @@ import InfraCard, { InfraCardSkeleton } from "./InfraCard";
 import InfraSelector from "./InfraSelector";
 import PoisKpis from "./PoisKpis";
 import PoisToolbar from "./PoisToolbar";
+import { useCustomAddresses } from "./useCustomAddresses";
+import { isCustomCode } from "./customAddresses";
 import { usePoisProximity } from "./usePoisProximity";
 import type { FeatureLike } from "./utils";
 
@@ -12,13 +14,25 @@ const GRID_CLASS = "primo-stagger grid grid-cols-1 items-stretch gap-4 xl:grid-c
 
 export default function PoisWidget({ feature }: ParcelWidgetProps) {
   const currentFeature = feature as FeatureLike | undefined;
-  const proximity = usePoisProximity(currentFeature);
-  const { loading, hasCalculated, selectedTypes, displayedCodes, computed, grayNotFound } = proximity;
+  const customAddresses = useCustomAddresses();
+  const proximity = usePoisProximity(currentFeature, customAddresses.context);
+  const { loading, hasCalculated, selectedTypes, displayedCodes, computed, grayNotFound, setTypes } = proximity;
+
+  const handleAddressProjectChange = (projectId: string) => {
+    setTypes(selectedTypes.filter(isCustomCode), false);
+    customAddresses.setProjectId(projectId);
+  };
 
   return (
     <div className="flex w-full flex-col gap-4 font-inter lg:gap-6">
       {hasCalculated && !loading && <PoisKpis {...proximity} />}
-      <ParcelAnalysisLayout summary={<InfraSelector {...proximity} canCalculate={Boolean(currentFeature?.geometry)} />}>
+      <ParcelAnalysisLayout summary={<InfraSelector
+            {...proximity}
+            canCalculate={Boolean(currentFeature?.geometry)}
+            customCategory={customAddresses.category}
+            addressProjectId={customAddresses.projectId}
+            onAddressProjectChange={handleAddressProjectChange}
+          />}>
         {loading ? (
           <div className={GRID_CLASS}>
             {selectedTypes.map((code) => (

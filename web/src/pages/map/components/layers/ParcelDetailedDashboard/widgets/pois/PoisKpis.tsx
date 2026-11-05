@@ -39,7 +39,7 @@ export default function PoisKpis({ displayedCodes, computed, globalScore }: Pois
     {
       label: "Plus proche",
       value: formatDistance(nearest?.distance),
-      hint: nearest ? (INFRA_TYPE_BY_CODE.get(nearest.code)?.label ?? nearest.code) : "Aucune infrastructure",
+      hint: nearest ? (INFRA_TYPE_BY_CODE.get(nearest.code)?.label ?? computed.get(nearest.code)?.type_label ?? nearest.code) : "Aucune infrastructure",
       icon: Navigation,
       tone: KPI_TONES.amber,
     },
