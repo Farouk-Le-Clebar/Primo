@@ -23,6 +23,7 @@ const AdminList = lazyPage(() => import("./pages/admin/components/AdminList/Admi
 const FeedbacksList = lazyPage(() => import("./pages/admin/components/Feedback/FeedbacksList"));
 const OnboardingRoot = lazyPage(() => import("./pages/onBoarding/OnboardingRoot"));
 const EmailVerify = lazyPage(() => import("./pages/mailling/EmailVerify"));
+const ProjectInvitation = lazyPage(() => import("./pages/mailling/ProjectInvitation"));
 const PostRegisterEmailVerify = lazyPage(() => import("./pages/mailling/PostRegisterEmailVerify"));
 const ResetPassword = lazyPage(() => import("./pages/mailling/ResetPassword"));
 const SendEmailResetPassword = lazyPage(() => import("./pages/mailling/SendEmailResetPassword"));
@@ -43,6 +44,7 @@ export default function App() {
 
       <Routes>
         <Route path="/verify" element={EmailVerify} />
+        <Route path={ROUTES.projectInvitation} element={ProjectInvitation} />
         <Route path="/reset/password" element={ResetPassword} />
         <Route path="/auth" element={AuthLayout}>
           <Route index element={AuthRoot} />
