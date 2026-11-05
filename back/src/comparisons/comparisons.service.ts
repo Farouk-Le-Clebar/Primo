@@ -3,6 +3,7 @@ import { BadRequestException, Injectable, Logger, NotFoundException } from '@nes
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
+import { ProjectNotes } from '../database/project-notes.entity';
 import { ProjectPlotComparison } from '../database/project-plot-comparison.entity';
 import { ProjectPlots } from '../database/project-plots.entity';
 import { CreateComparisonDto } from './comparison.dto';
@@ -24,6 +25,8 @@ export class ComparisonsService {
         private comparisonsRepository: Repository<ProjectPlotComparison>,
         @InjectRepository(ProjectPlots)
         private projectPlotsRepository: Repository<ProjectPlots>,
+        @InjectRepository(ProjectNotes)
+        private notesRepository: Repository<ProjectNotes>,
         private configService: ConfigService,
     ) { }
 
@@ -44,6 +47,7 @@ export class ComparisonsService {
             throw new NotFoundException('Parcelle introuvable dans ce projet.');
 
         const question = dto.question?.trim() || null;
+        const notes = await this.notesRepository.find({ where: { projectId }, order: { updatedAt: 'DESC' } });
         const comparison = await this.comparisonsRepository.save(this.comparisonsRepository.create({
             projectId: projectId,
             plotAId: plotA.id,
@@ -54,7 +58,7 @@ export class ComparisonsService {
             question: question,
             status: 'pending',
             model: this.configService.get<string>('OPENROUTER_MODEL') ?? null,
-            inputSnapshot: buildComparisonPayload(plotA, plotB, question),
+            inputSnapshot: buildComparisonPayload(plotA, plotB, question, notes),
         }));
 
         // The model takes several seconds to answer: the client polls the comparison until it leaves "pending".
