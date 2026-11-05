@@ -16,10 +16,11 @@ import { DpeModule } from 'src/dpe/dpe.module';
 import { AutorisationsModule } from 'src/autorisations/autorisations.module';
 import { ProximiteModule } from 'src/proximite/proximite.module';
 import { ProjectPlotComparison } from 'src/database/project-plot-comparison.entity';
+import { NotificationModule } from 'src/notification/notification.module';
 import { PlotEnrichmentService } from './plot-enrichment.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Projects, ProjectPlots, ProjectMembers, ProjectInvite, ProjectDocuments, ProjectPlotComparison, User]), JwtModule, MailModule, StorageModule, DvfModule, DpeModule, AutorisationsModule, ProximiteModule],
+  imports: [TypeOrmModule.forFeature([Projects, ProjectPlots, ProjectMembers, ProjectInvite, ProjectDocuments, ProjectPlotComparison, User]), JwtModule, MailModule, StorageModule, DvfModule, DpeModule, AutorisationsModule, ProximiteModule, NotificationModule],
   controllers: [ProjectsController],
   providers: [ProjectsService, PlotEnrichmentService],
   exports: [ProjectsService]
