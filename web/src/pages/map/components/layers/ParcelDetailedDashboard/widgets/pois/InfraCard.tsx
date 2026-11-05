@@ -29,8 +29,8 @@ function InfraCard({ code, result, muted = false }: InfraCardProps) {
           {distance}
         </ScoreRing>
         <div className="min-w-0 flex-1">
-          <span className="text-[11px] font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">{family}</span>
-          <h4 className="truncate text-sm font-semibold text-gray-900 dark:text-white">{title}</h4>
+          <span className="inline-block rounded-full border border-gray-200 px-2 py-px text-[10px] font-medium uppercase tracking-wider text-gray-500 dark:border-white/15 dark:text-gray-400">{family}</span>
+          <h4 title={title} className="mt-1 truncate text-sm font-semibold text-gray-900 dark:text-white">{title}</h4>
           <p className="truncate text-xs text-gray-500 dark:text-gray-400" title={name ?? undefined}>
             {result ? (name ?? "Nom non renseigné") : "Aucune infrastructure trouvée"}
           </p>
