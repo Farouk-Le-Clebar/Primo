@@ -121,24 +121,24 @@ export class MailService {
         }
     }
 
-    async sendProjectInvitationEmail(email: string, projectName: string, inviterName: string, verificationToken: string) {
-        try {
-            const user = await this.userRepo.findOne({ where: { email } });
-            if (!user)
-                throw new NotFoundException('User not found');
+    async sendProjectInvitationEmail(email: string, projectName: string, inviterName: string, invitationToken: string) {
+        const invitationUrl = process.env.PROJECT_INVITATION_URL;
+        if (!invitationUrl)
+            throw new InternalServerErrorException('PROJECT_INVITATION_URL is not configured');
 
+        try {
             await axios.post(
                 process.env.BREVO_API_URL || '',
                 {
                     to: [
                         {
-                            email: user.email,
+                            email,
                         },
                     ],
                     templateId: 6,
                     params: {
-                        ACCEPT_URL: `${process.env.EMAIL_VERIFICATION_URL}?token=${verificationToken}`,
-                        DECLINE_URL: `${process.env.EMAIL_VERIFICATION_URL}?token=${verificationToken}&decline=true`,
+                        ACCEPT_URL: `${invitationUrl}?token=${invitationToken}`,
+                        DECLINE_URL: `${invitationUrl}?token=${invitationToken}&decline=true`,
                         INVITER_NAME: inviterName,
                         PROJECT_NAME: projectName,
                     },
@@ -149,14 +149,9 @@ export class MailService {
                     },
                 }
             );
-
-            await this.verifiedUserRepo.update(
-                { userId: user.id },
-                { emailSent: true, lastEmailDate: new Date() }
-            );
         } catch (error) {
-            console.error('Error sending verification email:', error);
-            throw new InternalServerErrorException('Failed to send verification email');
+            console.error('Error sending project invitation email:', error);
+            throw new InternalServerErrorException('Failed to send project invitation email');
         }
     }
 
