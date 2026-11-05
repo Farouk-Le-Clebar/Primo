@@ -1,6 +1,7 @@
 import axios from "axios";
 import type { AddPlotToProjectPayload } from "../types/project/plots";
 import type { CreateComparisonPayload, PlotComparison } from "../types/project/comparisons";
+import type { CreateProjectAddressPayload, ProjectAddress } from "../types/project/addresses";
 import type { DocumentUploadResponse, ProjectDocument, StorageUsage } from "../types/project/documents";
 const apiUrl = window?._env_?.API_URL;
 const token = localStorage.getItem("token");
@@ -288,5 +289,41 @@ export const deletePlotComparison = async (projectId: string, comparisonId: stri
         .then((response) => response.data)
         .catch((error) => {
             throw error.response?.data ?? error;
+        });
+}
+
+export const getAddressesOfProject = async (projectId: string): Promise<ProjectAddress[]> => {
+    return axios.get(`${apiUrl}/projects/${projectId}/addresses`, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
+        .then((response) => response.data)
+        .catch((error) => {
+            throw error;
+        });
+}
+
+export const addAddressToProject = async (projectId: string, payload: CreateProjectAddressPayload): Promise<ProjectAddress> => {
+    return axios.post(`${apiUrl}/projects/${projectId}/addresses`, payload, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
+        .then((response) => response.data)
+        .catch((error) => {
+            throw error;
+        });
+}
+
+export const deleteAddressFromProject = async (projectId: string, addressId: string) => {
+    return axios.delete(`${apiUrl}/projects/${projectId}/addresses/${addressId}`, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
+        .then((response) => response.data)
+        .catch((error) => {
+            throw error;
         });
 }

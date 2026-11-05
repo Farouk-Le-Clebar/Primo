@@ -7,6 +7,7 @@ import L from "leaflet";
 import MapBounds from "./layers/MapBounds";
 import ShapesLayer from "./layers/ShapesLayer";
 import PoiLayer from "./layers/POI/PoiLayer";
+import ProjectAddressLayer from "./layers/POI/ProjectAddressLayer";
 import { MIN_ZOOM_FOR_POIS, POI_CONFIGS } from "./PoiConfig";
 import LocationHandler from "./layers/LocationHandler";
 import NoScrollZone from "../wrapper/NoScrollZone";
@@ -43,6 +44,7 @@ const Layers = ({ initialPlacement, initialCoordinates }: LayersProps) => {
     const [viewport, setViewport] = useState<Viewport>({ bounds: null, zoom: map.getZoom() });
     const [shapes, setShapes] = useState<DataType>(EMPTY_SHAPES);
     const [enabledPoiTypes, setEnabledPoiTypes] = useState<string[]>(DEFAULT_POI_TYPES);
+    const [addressProjectId, setAddressProjectId] = useState("");
     const [isDashboardOpen, setIsDashboardOpen] = useState(false);
     const [isMapPanelOpen, setIsMapPanelOpen] = useState(false);
 
@@ -87,6 +89,8 @@ const Layers = ({ initialPlacement, initialCoordinates }: LayersProps) => {
                 enabledPoiTypes={enabledPoiTypes}
                 hidden={isMapCovered}
             />
+
+            <ProjectAddressLayer projectId={addressProjectId} hidden={isMapCovered} />
 
             <div className="map-overlay fixed inset-0 z-[1001] flex flex-col pointer-events-none">
                 <header className="absolute inset-x-0 top-0 z-[1004] pointer-events-none">
@@ -140,6 +144,8 @@ const Layers = ({ initialPlacement, initialCoordinates }: LayersProps) => {
                             onTogglePoi={handleTogglePoi}
                             currentZoom={viewport.zoom}
                             minZoomForPois={MIN_ZOOM_FOR_POIS}
+                            addressProjectId={addressProjectId}
+                            onAddressProjectChange={setAddressProjectId}
                         />
                     </NoScrollZone>
                 </div>}

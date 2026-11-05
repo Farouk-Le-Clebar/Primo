@@ -1,12 +1,15 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { FAMILLE_LABELS, POI_CONFIGS, type PoiFamille } from "../../PoiConfig";
-import { ChevronRight, Check, Plus } from "lucide-react";
+import { ChevronRight, Check } from "lucide-react";
+import ProjectAddressesFooter from "./ProjectAddressesFooter";
 
 interface PoiWidgetProps {
     enabledPoiTypes: string[];
     onTogglePoi: (type: string, enabled: boolean) => void;
     currentZoom: number;
     minZoomForPois: number;
+    addressProjectId: string;
+    onAddressProjectChange: (projectId: string) => void;
 }
 
 /**
@@ -66,9 +69,6 @@ function buildCategoriesFromConfig(): PoiCategory[] {
 // Hauteur fix de la card
 const LIST_HEIGHT = "h-[240px]";
 
-// Rayon du rectangle "Ajoutez vos adresses"
-const FOOTER_RADIUS = "rounded-xl";
-
 // Séparateur fin entre chaque élément principal (catégories / choix uniques uniquement).
 const ROW_DIVIDER =
     "relative after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-[70%] after:border-b after:border-gray-100 dark:after:border-white/10";
@@ -94,6 +94,8 @@ const PoiWidget = ({
     onTogglePoi,
     currentZoom,
     minZoomForPois,
+    addressProjectId,
+    onAddressProjectChange,
 }: PoiWidgetProps) => {
     const [expanded, setExpanded] = useState<Record<string, boolean>>({});
     const listRef = useRef<HTMLDivElement>(null);
@@ -244,20 +246,7 @@ const PoiWidget = ({
                 {isScrollable && (
                     <div className="pointer-events-none absolute -top-4 inset-x-0 h-4 bg-gradient-to-b from-transparent to-white dark:to-[#0A0A0A]" />
                 )}
-                <div className="p-2 bg-white dark:bg-[#0A0A0A]">
-                    <button
-                        className={`w-full px-4 py-2.5 flex items-center justify-center gap-2 bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors cursor-pointer ${FOOTER_RADIUS}`}
-                    >
-                        <Plus
-                            size={14}
-                            className="text-gray-500 dark:text-gray-400"
-                            strokeWidth={2}
-                        />
-                        <span className="text-xs font-medium text-gray-600 dark:text-gray-300">
-                            Ajoutez vos adresses
-                        </span>
-                    </button>
-                </div>
+                <ProjectAddressesFooter projectId={addressProjectId} onProjectChange={onAddressProjectChange} />
             </div>
         </div>
     );

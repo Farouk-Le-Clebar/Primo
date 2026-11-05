@@ -29,6 +29,7 @@ import { ComparisonsModule } from './comparisons/comparisons.module';
 import { ProjectPlotComparison } from './database/project-plot-comparison.entity';
 import { ProximiteModule } from './proximite/proximite.module';
 import { ProjectDocuments } from './database/project-documents.entity';
+import { ProjectAddress } from './database/project-address.entity';
 import { JwtModule } from '@nestjs/jwt/dist/jwt.module';
 import { ProjectInvite } from './database/project-invite.entity';
 import { AutorisationsModule } from './autorisations/autorisations.module';
@@ -47,7 +48,7 @@ import { AutorisationsModule } from './autorisations/autorisations.module';
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DATABASE,
-      entities: [User, SearchHistory, Projects, DvfMutation, DpeEntity, Notification, VerifiedUser, ResetPassword, UserStatistics, Feedback, ProjectPlots, ProjectMembers, ProjectDocuments, ProjectInvite, ProjectPlotComparison],
+      entities: [User, SearchHistory, Projects, DvfMutation, DpeEntity, Notification, VerifiedUser, ResetPassword, UserStatistics, Feedback, ProjectPlots, ProjectMembers, ProjectDocuments, ProjectInvite, ProjectPlotComparison, ProjectAddress],
       synchronize: true,
     }),
     TypeOrmModule.forRoot({
