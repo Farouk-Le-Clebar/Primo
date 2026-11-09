@@ -220,18 +220,17 @@ const beta = [
       return;
     }
 
-    // No agency code (direct visit): fall back to a pre-filled email, like the home page contact form.
-    if (!agence) {
-      const lines = [d.message, '', d.nom, d.telephone, d.email, d.creneau && `Créneau : ${d.creneau}`];
-      location.href = `mailto:${root.dataset.mail}?subject=${encodeURIComponent(`Rappel Primo — ${d.nom}`)}&body=${encodeURIComponent(lines.filter((l) => l !== undefined).join('\n'))}`;
-      status.textContent = 'Votre messagerie s’ouvre avec la demande prête à envoyer.';
-      return;
-    }
-
     button.disabled = true;
     status.textContent = 'Envoi…';
     try {
-      const res = await post('contact', d);
+      // No agency code (direct visit): the request lands in the panel's "Messages" section instead.
+      const res = agence
+        ? await post('contact', d)
+        : await fetch(`${api}/api/public/message`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
+            body: JSON.stringify({ source: 'bienvenue', ...d }),
+          });
       if (!res.ok) throw new Error();
       form.reset();
       status.textContent = 'Merci ! On vous recontacte très vite.';
