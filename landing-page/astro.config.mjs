@@ -12,7 +12,7 @@ export default defineConfig({
   trailingSlash: 'always',
   // Internal links are fetched on hover / tap, so blog and legal pages open instantly.
   prefetch: { prefetchAll: true, defaultStrategy: 'hover' },
-  integrations: [react(), mdx(), sitemap({ filter: (page) => !page.includes('/404/') })],
+  integrations: [react(), mdx(), sitemap({ filter: (page) => !page.includes('/404/') && !page.includes('/bienvenue/') })],
 
   vite: {
     plugins: [tailwindcss()],
