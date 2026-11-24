@@ -1,6 +1,6 @@
 import { BarChart } from "@tremor/react";
 import type { UserStatistic } from "../../../../../types/admin";
-import BentoCard from "../../../../map/components/layers/Dashboard/BentoCard";
+import BentoCard from "../../shared/BentoCard";
 import { dailySeries } from "../../shared/statistics";
 
 export default function UserConnectionChart({ stats }: { stats: UserStatistic[] }) {

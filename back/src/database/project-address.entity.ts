@@ -27,6 +27,12 @@ export class ProjectAddress {
   @Column({ type: 'text', nullable: true })
   description: string | null;
 
+  @Column({ type: 'varchar', length: 120, nullable: true })
+  name: string | null;
+
+  @Column({ type: 'varchar', length: 32, nullable: true })
+  category: string | null;
+
   @Column({ type: 'varchar', length: 255, nullable: true })
   createdBy: string | null;
 

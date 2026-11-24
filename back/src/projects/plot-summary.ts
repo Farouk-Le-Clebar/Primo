@@ -35,8 +35,12 @@ function summarizeDvf(dvf: Row | null) {
         return null;
     const sales: Row[] = dvf.historique ?? [];
     const last = latest(sales, sale => asDate(sale.date_mutation));
+    const lastLines = last ? sales.filter(sale => sale.id_mutation === last.id_mutation) : [];
+    const builtSurface = lastLines.reduce((sum, sale) => sum + (asNumber(sale.surface_reelle_bati) ?? 0), 0);
+    const lastValue = last ? asNumber(last.valeur_fonciere) : null;
     return {
         count: sales.length,
+        lastPricePerM2: lastValue && builtSurface > 0 ? Math.round(lastValue / builtSurface) : null,
         lastDate: last ? asDate(last.date_mutation) : null,
         lastValue: last ? asNumber(last.valeur_fonciere) : null,
         lastNature: last ? asText(last.nature_mutation) : null,
@@ -143,8 +147,20 @@ function summarizeProximity(proximity: Row[] | null) {
 }
 
 // Compact digest of everything stored for a parcel: small enough to ship for dozens of parcels at once.
+function summarizeCoproprietes(coproprietes: Row[] | null) {
+    if (!coproprietes)
+        return null;
+    const attached = coproprietes.filter(copro => copro.rattachement !== 'parcelle_eloignee');
+    return {
+        count: attached.length,
+        lots: attached.reduce((sum, copro) => sum + (asNumber(copro.nombre_lots) ?? 0), 0),
+        aided: attached.filter(copro => copro.copro_aidee === true).length,
+    };
+}
+
 export function buildPlotSummary(plot: ProjectPlots) {
     return {
+        coproprietes: summarizeCoproprietes(plot.coproprietes),
         dvf: summarizeDvf(plot.dvf),
         dpe: summarizeDpe(plot.dpe),
         permits: summarizePermits(plot.urbanPermits),

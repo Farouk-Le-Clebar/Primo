@@ -20,6 +20,12 @@ export class ProjectNotes {
     @Column({ type: 'int', default: 1 })
     version: number;
 
+    @Column({ type: 'boolean', default: false })
+    isPinned: boolean;
+
+    @Column({ type: 'uuid', nullable: true })
+    plotId: string | null;
+
     @Column({ type: 'varchar', length: 255, nullable: true })
     createdBy: string | null;
 

@@ -30,11 +30,11 @@ const SendEmailResetPassword = lazyPage(() => import("./pages/mailling/SendEmail
 const FeedbackPanel = lazyPanel(() => import("./pages/feedback/FeedbackPanel"));
 const DashboardProjects = lazyPage(() => import("./pages/projects/components/dashboard/Dashboard"));
 const ParcelsTab = lazyPage(() => import("./pages/projects/components/parcels/ParcelsTab"));
-const Members = lazyPage(() => import("./pages/projects/components/Members"));
+const Members = lazyPage(() => import("./pages/projects/components/members/MembersTab"));
 const DocumentsTab = lazyPage(() => import("./pages/projects/components/documents/DocumentsTab"));
 const NotesTab = lazyPage(() => import("./pages/projects/components/notes/NotesTab"));
+const MilestonesTab = lazyPage(() => import("./pages/projects/components/milestones/MilestonesTab"));
 const AddressesTab = lazyPage(() => import("./pages/projects/components/addresses/AddressesTab"));
-const DashboardPanel = lazyPanel(() => import("./pages/map/components/layers/Dashboard/DashboardPanel"));
 const ProjectsPanel = lazyPanel(() => import("./pages/map/components/layers/Projects/ProjectsPanel"));
 const ProjectsEmptyState = lazyPage(() => import("./pages/map/components/layers/Projects/ProjectsEmptyState"));
 const ProjectWorkspace = lazyPage(() => import("./pages/map/components/layers/Projects/ProjectWorkspace"));
@@ -60,7 +60,6 @@ export default function App() {
           <Route path={ROUTES.onboarding} element={OnboardingRoot} />
 
           <Route path={ROUTES.map} element={<Map />}>
-            <Route path="dashboard" element={DashboardPanel} />
             <Route path="projects" element={ProjectsPanel}>
               <Route index element={ProjectsEmptyState} />
               <Route path=":projectId" element={ProjectWorkspace}>
@@ -70,6 +69,7 @@ export default function App() {
                 <Route path="members" element={Members} />
                 <Route path="documents" element={DocumentsTab} />
                 <Route path="notes" element={NotesTab} />
+                <Route path="milestones" element={MilestonesTab} />
                 <Route path="addresses" element={AddressesTab} />
               </Route>
             </Route>

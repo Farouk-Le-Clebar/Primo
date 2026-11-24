@@ -1,6 +1,8 @@
 import { useState, type ReactNode } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { AlertTriangle, ArrowLeftRight, Check, Clock, Loader2, Sparkles, Trophy, X } from "lucide-react";
+import { AlertTriangle, ArrowLeftRight, Check, Clock, Loader2, Sparkles, Trophy } from "lucide-react";
+import Modal from "../../../../ui/Modal";
+import ModalButton from "../../../../ui/ModalButton";
 import toast from "react-hot-toast";
 import { createPlotComparison, getPlotComparison } from "../../../../requests/projects";
 import type { PlotComparison, PlotSide } from "../../../../types/project/comparisons";
@@ -176,23 +178,18 @@ const ComparisonDialog = ({ projectId, plots, comparisonId: initialComparisonId,
         refetchInterval: (query) => (query.state.data?.status === "pending" ? POLL_INTERVAL_MS : false),
     });
 
-    return (
-        <div className="fixed inset-x-0 bottom-0 top-14 z-30 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm dark:bg-black/80" onClick={onClose}>
-            <div
-                className="flex max-h-full w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white text-gray-800 shadow-xl dark:border-white/10 dark:bg-[#171717] dark:text-gray-200"
-                onClick={(event) => event.stopPropagation()}
-            >
-                <header className="flex items-center justify-between gap-4 border-b border-gray-100 px-5 py-4 dark:border-white/5">
-                    <div className="flex items-center gap-2">
-                        <ArrowLeftRight className="h-4 w-4 text-gray-500" />
-                        <h2 className="text-base font-semibold text-gray-900 dark:text-white">Comparaison de parcelles</h2>
-                    </div>
-                    <button onClick={onClose} className="cursor-pointer rounded-md p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-white/5 dark:hover:text-white" title="Fermer">
-                        <X className="h-4 w-4" />
-                    </button>
-                </header>
+    const footer = !comparisonId && plots ? (
+        <>
+            <ModalButton variant="secondary" onClick={onClose}>Annuler</ModalButton>
+            <ModalButton icon={Check} isLoading={isStarting} onClick={() => startComparison()}>Lancer la comparaison</ModalButton>
+        </>
+    ) : comparison?.status === "pending" ? (
+        <span className="mr-auto flex items-center gap-2 text-xs text-[#82828c]"><Clock className="h-3.5 w-3.5" /> Créée le {formatDate(comparison.createdAt)}</span>
+    ) : undefined;
 
-                <div className="flex-1 overflow-y-auto px-5 py-4 scrollbar-custom">
+    return (
+        <Modal title="Comparaison de parcelles" subtitle="L’IA tranche entre deux parcelles du projet." icon={ArrowLeftRight} size="lg" onClose={onClose} footer={footer}>
+            <div>
                     {!comparisonId && plots ? (
                         <div className="space-y-5">
                             <div className="flex flex-col gap-3 sm:flex-row">
@@ -235,29 +232,7 @@ const ComparisonDialog = ({ projectId, plots, comparisonId: initialComparisonId,
                         <div className="flex justify-center py-12"><Loader2 className="h-6 w-6 animate-spin text-gray-400" /></div>
                     )}
                 </div>
-
-                {!comparisonId && plots && (
-                    <footer className="flex items-center justify-end gap-3 border-t border-gray-100 px-5 py-3 dark:border-white/5">
-                        <button onClick={onClose} className="cursor-pointer rounded-lg px-3 py-2 text-xs font-medium text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-white/5">
-                            Annuler
-                        </button>
-                        <button
-                            onClick={() => startComparison()}
-                            disabled={isStarting}
-                            className="flex cursor-pointer items-center gap-2 rounded-lg bg-[#111111] px-3 py-2 text-xs font-medium text-white transition-colors hover:bg-gray-800 disabled:cursor-default disabled:opacity-50 dark:bg-white dark:text-black dark:hover:bg-[#e8e8e8]"
-                        >
-                            {isStarting ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Check className="h-3.5 w-3.5" />}
-                            Lancer la comparaison
-                        </button>
-                    </footer>
-                )}
-                {comparison?.status === "pending" && (
-                    <footer className="flex items-center gap-2 border-t border-gray-100 px-5 py-3 text-xs text-gray-500 dark:border-white/5 dark:text-[#999999]">
-                        <Clock className="h-3.5 w-3.5" /> Créée le {formatDate(comparison.createdAt)}
-                    </footer>
-                )}
-            </div>
-        </div>
+        </Modal>
     );
 };
 

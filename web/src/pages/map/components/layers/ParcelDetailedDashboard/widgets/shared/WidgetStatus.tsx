@@ -1,3 +1,5 @@
+import { CloudOff, RotateCw, SearchX, type LucideIcon } from "lucide-react";
+import EmptyState from "../../../../../../../ui/EmptyState";
 import LoadingPrimoLogo from "../../../../../../../components/animations/LoadingPrimoLogo";
 
 export function WidgetLoading({ label }: { label: string }) {
@@ -11,22 +13,20 @@ export function WidgetLoading({ label }: { label: string }) {
 
 type WidgetEmptyProps = {
   message: string;
+  title?: string;
+  icon?: LucideIcon;
   onRetry?: () => void;
 };
 
-export function WidgetEmpty({ message, onRetry }: WidgetEmptyProps) {
+export function WidgetEmpty({ message, title, icon, onRetry }: WidgetEmptyProps) {
   return (
-    <div className="rounded-xl border border-dashed border-gray-200 bg-gray-50 py-8 text-center font-inter text-sm text-[#878D96] dark:border-white/10 dark:bg-[#171717] dark:text-gray-400">
-      {message}
-      {onRetry && (
-        <button
-          onClick={onRetry}
-          className="mt-3 block w-full font-medium text-emerald-700 underline dark:text-emerald-400"
-        >
-          Réessayer
-        </button>
-      )}
-    </div>
+    <EmptyState
+      icon={icon ?? (onRetry ? CloudOff : SearchX)}
+      title={title ?? (onRetry ? "Service momentanément indisponible" : "Rien à signaler ici")}
+      description={message}
+      action={onRetry ? { label: "Réessayer", onClick: onRetry, icon: RotateCw } : undefined}
+      size="sm"
+    />
   );
 }
 

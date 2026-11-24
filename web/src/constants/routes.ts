@@ -1,6 +1,5 @@
 export const ROUTES = {
   map: "/",
-  dashboard: "/dashboard",
   projects: "/projects",
   project: (projectId: string) => `/projects/${projectId}`,
   admin: "/admin",

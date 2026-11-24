@@ -1,4 +1,6 @@
-import { IsBoolean, IsEmail, IsInt, IsNotEmpty, IsPositive, IsString, IsUUID, MaxLength } from "class-validator";
+import { IsBoolean, IsEmail, IsIn, IsInt, IsNotEmpty, IsOptional, IsPositive, IsString, IsUUID, MaxLength } from "class-validator";
+
+export const DOCUMENT_CATEGORIES = ["mandat", "diagnostic", "plan", "photo", "autre"] as const;
 
 export type CreateProjectDto = {
     name: string;
@@ -54,4 +56,22 @@ export class RequestDocumentUploadDto {
   @IsInt()
   @IsPositive()
   size: number;
+
+  @IsOptional()
+  @IsIn(DOCUMENT_CATEGORIES)
+  category?: string;
+
+  @IsOptional()
+  @IsUUID()
+  plotId?: string;
+}
+
+export class UpdateDocumentMetaDto {
+  @IsOptional()
+  @IsIn(DOCUMENT_CATEGORIES)
+  category?: string;
+
+  @IsOptional()
+  @IsUUID()
+  plotId?: string | null;
 }

@@ -31,7 +31,8 @@ export type ProjectPlotResponse = {
 };
 
 export type PlotSummary = {
-    dvf: { count: number; lastDate: string | null; lastValue: number | null; lastNature: string | null; lastLocalType: string | null } | null;
+    coproprietes: { count: number; lots: number; aided: number } | null;
+    dvf: { count: number; lastPricePerM2: number | null; lastDate: string | null; lastValue: number | null; lastNature: string | null; lastLocalType: string | null } | null;
     dpe: {
         count: number;
         distribution: Record<string, number>;
@@ -56,6 +57,11 @@ export type ProjectPlotWithSummary = ProjectPlotResponse & {
     section: string | null;
     parcelNumber: string | null;
     surfaceM2: number | null;
+    centroidLatitude: number | null;
+    centroidLongitude: number | null;
+    addedBy: string | null;
+    addedAt: string | null;
+    addedByName: string | null;
     enrichedAt: string | null;
     enrichmentErrors: Record<string, string> | null;
     summary: PlotSummary;
