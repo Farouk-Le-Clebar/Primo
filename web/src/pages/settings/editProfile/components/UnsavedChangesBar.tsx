@@ -16,7 +16,7 @@ export default function UnsavedChangesBar({ isVisible, isPending, onDiscard, onS
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 24 }}
           transition={{ type: "spring", stiffness: 380, damping: 30 }}
-          className="glass fixed bottom-6 left-1/2 z-40 flex w-[calc(100%-2rem)] max-w-md -translate-x-1/2 items-center gap-3 rounded-xl border border-black/5 py-2 pr-2 pl-4 shadow-2xl dark:border-white/10"
+          className="glass fixed bottom-[calc(5rem+env(safe-area-inset-bottom))] left-1/2 md:bottom-6 z-40 flex w-[calc(100%-2rem)] max-w-md -translate-x-1/2 items-center gap-3 rounded-xl border border-black/5 py-2 pr-2 pl-4 shadow-2xl dark:border-white/10"
         >
           <span className="h-2 w-2 shrink-0 animate-pulse rounded-full bg-amber-500 motion-reduce:animate-none" aria-hidden="true" />
           <p className="flex-1 truncate text-sm text-gray-700 dark:text-gray-200">Modifications non enregistrées</p>

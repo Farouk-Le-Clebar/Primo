@@ -5,8 +5,9 @@ import { computeProximite } from "../../../../../../../requests/proximite";
 import { DEFAULT_SORT_ORDER, DEFAULT_TYPES, NEXT_SORT_ORDER, type SortOrder } from "./constants";
 import { extractResults, getErrorMessage, getParcelCache, indexResultsByType } from "./results";
 import { computeGlobalScore, sortCodes, type ComputedResults, type FeatureLike } from "./utils";
+import { getParcelCenter, isCustomCode, toCustomResult, type CustomAddressContext } from "./customAddresses";
 
-export function usePoisProximity(feature: FeatureLike | undefined) {
+export function usePoisProximity(feature: FeatureLike | undefined, customAddresses: CustomAddressContext) {
   const [selectedTypes, setSelectedTypes] = useState<string[]>([...DEFAULT_TYPES]);
   const [computed, setComputed] = useState<ComputedResults>(new Map());
   const [loading, setLoading] = useState(false);
@@ -55,7 +56,12 @@ export function usePoisProximity(feature: FeatureLike | undefined) {
     if (!selectedTypes.length) return setError("Sélectionnez au moins un type d’infrastructure.");
 
     const cache = getParcelCache(parcelKey);
-    const typesToFetch = isUpToDate ? selectedTypes : selectedTypes.filter((code) => !cache.has(code));
+    const center = getParcelCenter(feature);
+    selectedTypes.filter(isCustomCode).forEach((code) => {
+      const address = customAddresses.byCode.get(code);
+      cache.set(code, address && center ? toCustomResult(code, address, center, customAddresses.projectName) : null);
+    });
+    const typesToFetch = (isUpToDate ? selectedTypes : selectedTypes.filter((code) => !cache.has(code))).filter((code) => !isCustomCode(code));
     const publish = () => setComputed(new Map(selectedTypes.map((code) => [code, cache.get(code) ?? null])));
 
     setError(null);
@@ -76,7 +82,7 @@ export function usePoisProximity(feature: FeatureLike | undefined) {
     } finally {
       if (!controller.signal.aborted) setLoading(false);
     }
-  }, [feature, parcelKey, selectedTypes, isUpToDate]);
+  }, [feature, parcelKey, selectedTypes, isUpToDate, customAddresses]);
 
   return {
     selectedTypes,

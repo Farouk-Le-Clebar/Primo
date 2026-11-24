@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { ChevronDown } from "lucide-react";
 
 import type { InfraCategory } from "./constants";
@@ -9,9 +10,10 @@ type CategorySectionProps = {
   onToggleExpanded: (label: string) => void;
   onToggleType: (code: string) => void;
   onSetTypes: (codes: string[], selected: boolean) => void;
+  children?: ReactNode;
 };
 
-export default function CategorySection({ category, selectedTypes, isExpanded, onToggleExpanded, onToggleType, onSetTypes }: CategorySectionProps) {
+export default function CategorySection({ category, selectedTypes, isExpanded, onToggleExpanded, onToggleType, onSetTypes, children }: CategorySectionProps) {
   const codes = category.types.map((type) => type.code);
   const selectedCount = codes.filter((code) => selectedTypes.includes(code)).length;
   const allSelected = codes.length > 0 && selectedCount === codes.length;
@@ -44,15 +46,16 @@ export default function CategorySection({ category, selectedTypes, isExpanded, o
       </div>
       {isExpanded && (
         <div className="primo-page-enter ml-6 mt-1 space-y-1.5 pb-1">
+          {children}
           {category.types.map((type) => (
-            <label key={type.code} className="flex cursor-pointer items-center gap-2 text-xs text-gray-600 dark:text-gray-300">
+            <label key={type.code} title={type.label} className="flex cursor-pointer items-center gap-2 text-xs text-gray-600 dark:text-gray-300">
               <input
                 type="checkbox"
                 checked={selectedTypes.includes(type.code)}
                 onChange={() => onToggleType(type.code)}
                 className="h-3.5 w-3.5 accent-emerald-600"
               />
-              {type.label}
+              <span className="truncate">{type.label}</span>
             </label>
           ))}
         </div>

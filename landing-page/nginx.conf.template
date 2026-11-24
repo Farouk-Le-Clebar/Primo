@@ -21,6 +21,9 @@ server {
   location = /home/Home { return 301 /; }
   location = /home/Home/ { return 301 /; }
 
+  # Mail campaign QR codes: primo-data.fr/r/<code> -> personalised welcome page.
+  location ~ "^/r/([A-Za-z0-9]{4,12})/?$" { return 302 /bienvenue/?c=$1; }
+
   location / {
     try_files $uri $uri/ =404;
   }

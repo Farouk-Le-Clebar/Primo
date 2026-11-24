@@ -17,7 +17,7 @@ export class ProjectMembers {
     @Column({ type: 'varchar', length: 255, default: 'member' })
     role: string;
 
-    @Column({ type: 'boolean', default: true })
+    @Column({ type: 'boolean', default: false })
     isPending: boolean;
 
     @Column({ type: 'timestamp', nullable: true })

@@ -1,5 +1,5 @@
 import L from "leaflet";
-import { defaultShapeStyle as defaultStyle, hoverShapeStyle as hoverStyle, selectedShapeStyle as selectedStyle } from "../../../../utils/map";
+import { getShapeStyles } from "../../../../utils/map";
 
 export let selectedLayer: L.Path | null = null;
 
@@ -17,7 +17,7 @@ export const onEachFeature = (
             }
 
             if (selectedLayer) {
-                selectedLayer.setStyle(defaultStyle);
+                selectedLayer.setStyle(getShapeStyles().default);
                 selectedLayer.closePopup();
             }
 
@@ -36,7 +36,7 @@ export const onEachFeature = (
                 );
 
                 if (distance < 50 && actualZoom >= 18) {
-                    target.setStyle(selectedStyle);
+                    target.setStyle(getShapeStyles().selected);
                     selectedLayer = target;
 
                     if (onParcelleSelect) {
@@ -64,9 +64,9 @@ export const onEachFeature = (
                     });
                     map.once('moveend', () => {
                         if (selectedLayer) {
-                            selectedLayer.setStyle(defaultStyle);
+                            selectedLayer.setStyle(getShapeStyles().default);
                         }
-                        target.setStyle(selectedStyle);
+                        target.setStyle(getShapeStyles().selected);
                         selectedLayer = target;
 
                         if (onParcelleSelect) {
@@ -79,16 +79,16 @@ export const onEachFeature = (
         mouseover: (e: L.LeafletMouseEvent) => {
             const target = e.target as L.Path;
             if (target !== selectedLayer) {
-                target.setStyle(hoverStyle);
+                target.setStyle(getShapeStyles().hover);
             }
         },
         mouseout: (e: L.LeafletMouseEvent) => {
             const target = e.target as L.Path & { feature?: GeoJSON.Feature };
             const currentId = selectedIdRef?.current;
             if (target === selectedLayer || target.feature?.id === currentId) {
-                target.setStyle(selectedStyle);
+                target.setStyle(getShapeStyles().selected);
             } else {
-                target.setStyle(defaultStyle);
+                target.setStyle(getShapeStyles().default);
             }
         }
     });
@@ -96,7 +96,7 @@ export const onEachFeature = (
 
 export const resetSelection = () => {
     if (selectedLayer) {
-        selectedLayer.setStyle(defaultStyle);
+        selectedLayer.setStyle(getShapeStyles().default);
         selectedLayer.closePopup();
         selectedLayer = null;
     }

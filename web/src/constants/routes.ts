@@ -1,6 +1,5 @@
 export const ROUTES = {
   map: "/",
-  dashboard: "/dashboard",
   projects: "/projects",
   project: (projectId: string) => `/projects/${projectId}`,
   admin: "/admin",
@@ -9,6 +8,7 @@ export const ROUTES = {
   profile: "/profile",
   feedback: "/feedback",
   onboarding: "/onboarding",
+  projectInvitation: "/project/invitation",
 } as const;
 
 export const LEGACY_MAP_PREFIX = "/search";

@@ -1,6 +1,8 @@
 import axios from "axios";
 import type { AddPlotToProjectPayload } from "../types/project/plots";
-import type { DocumentUploadResponse, ProjectDocument, StorageUsage } from "../types/project/documents";
+import type { CreateComparisonPayload, PlotComparison } from "../types/project/comparisons";
+import type { CreateProjectAddressPayload, ProjectAddress } from "../types/project/addresses";
+import type { DocumentMeta, DocumentUploadResponse, ProjectDocument, StorageUsage } from "../types/project/documents";
 const apiUrl = window?._env_?.API_URL;
 const token = localStorage.getItem("token");
 
@@ -154,8 +156,8 @@ export const getDocumentsOfProject = async (projectId: string): Promise<ProjectD
         });
 }
 
-export const getStorageUsage = async (): Promise<StorageUsage> => {
-    return axios.get(`${apiUrl}/projects/storage`, {
+export const getStorageUsage = async (projectId: string): Promise<StorageUsage> => {
+    return axios.get(`${apiUrl}/projects/${projectId}/storage`, {
         headers: {
             Authorization: `Bearer ${token}`
         }
@@ -167,11 +169,12 @@ export const getStorageUsage = async (): Promise<StorageUsage> => {
 }
 
 // The file goes straight to Cloudflare R2 through a presigned URL, never through our backend.
-export const uploadDocumentToProject = async (projectId: string, file: File, onProgress?: (percent: number) => void) => {
+export const uploadDocumentToProject = async (projectId: string, file: File, onProgress?: (percent: number) => void, meta: DocumentMeta = {}) => {
     const { documentId, uploadUrl }: DocumentUploadResponse = await axios.post(`${apiUrl}/projects/${projectId}/documents/upload-url`, {
         documentName: file.name,
         mimetype: file.type,
         size: file.size,
+        ...meta,
     }, {
         headers: {
             Authorization: `Bearer ${token}`
@@ -232,6 +235,102 @@ export const getDocumentViewUrl = async (projectId: string, documentId: string):
 
 export const deleteDocumentFromProject = async (projectId: string, documentId: string) => {
     return axios.delete(`${apiUrl}/projects/${projectId}/documents/${documentId}`, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
+        .then((response) => response.data)
+        .catch((error) => {
+            throw error.response.data;
+        });
+}
+
+export const createPlotComparison = async (projectId: string, payload: CreateComparisonPayload): Promise<PlotComparison> => {
+    return axios.post(`${apiUrl}/projects/${projectId}/comparisons`, payload, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
+        .then((response) => response.data)
+        .catch((error) => {
+            throw error.response?.data ?? error;
+        });
+}
+
+export const getPlotComparisons = async (projectId: string): Promise<PlotComparison[]> => {
+    return axios.get(`${apiUrl}/projects/${projectId}/comparisons`, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
+        .then((response) => response.data)
+        .catch((error) => {
+            throw error.response?.data ?? error;
+        });
+}
+
+export const getPlotComparison = async (projectId: string, comparisonId: string): Promise<PlotComparison> => {
+    return axios.get(`${apiUrl}/projects/${projectId}/comparisons/${comparisonId}`, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
+        .then((response) => response.data)
+        .catch((error) => {
+            throw error.response?.data ?? error;
+        });
+}
+
+export const deletePlotComparison = async (projectId: string, comparisonId: string) => {
+    return axios.delete(`${apiUrl}/projects/${projectId}/comparisons/${comparisonId}`, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
+        .then((response) => response.data)
+        .catch((error) => {
+            throw error.response?.data ?? error;
+        });
+}
+
+export const getAddressesOfProject = async (projectId: string): Promise<ProjectAddress[]> => {
+    return axios.get(`${apiUrl}/projects/${projectId}/addresses`, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
+        .then((response) => response.data)
+        .catch((error) => {
+            throw error;
+        });
+}
+
+export const addAddressToProject = async (projectId: string, payload: CreateProjectAddressPayload): Promise<ProjectAddress> => {
+    return axios.post(`${apiUrl}/projects/${projectId}/addresses`, payload, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
+        .then((response) => response.data)
+        .catch((error) => {
+            throw error;
+        });
+}
+
+export const deleteAddressFromProject = async (projectId: string, addressId: string) => {
+    return axios.delete(`${apiUrl}/projects/${projectId}/addresses/${addressId}`, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
+        .then((response) => response.data)
+        .catch((error) => {
+            throw error;
+        });
+}
+
+export const updateDocumentMeta = async (projectId: string, documentId: string, meta: DocumentMeta): Promise<ProjectDocument> => {
+    return axios.patch(`${apiUrl}/projects/${projectId}/documents/${documentId}/meta`, meta, {
         headers: {
             Authorization: `Bearer ${token}`
         }

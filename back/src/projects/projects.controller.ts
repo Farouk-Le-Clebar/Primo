@@ -1,8 +1,8 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Req, UseGuards } from '@nestjs/common';
 import { ProjectsService } from './projects.service';
 import { JwtAuthGuard } from 'src/guard/jwt-auth.guard';
-import type { AddPlotToProjectDto, CreateProjectDto, InviteUserDto } from './project.type';
-import { RequestDocumentUploadDto } from './project.type';
+import type { AddPlotToProjectDto, CreateProjectDto } from './project.type';
+import { InvitationTokenDto, InviteUserDto, RequestDocumentUploadDto, RespondInvitationByTokenDto, RespondInvitationDto, UpdateDocumentMetaDto } from './project.type';
 import { ProjectGuard } from 'src/guard/project.guard';
 
 @Controller('projects')
@@ -25,12 +25,10 @@ export class ProjectsController {
         return this.projectsService.getProjects(userId);
     }
 
-    // Declared before ":projectId" so "storage" is not captured as a project id.
-    @UseGuards(JwtAuthGuard)
-    @Get("storage")
-    async getStorageUsage(@Req() req) {
-        const userId = req.user.id;
-        return this.projectsService.getStorageUsage(userId);
+    @UseGuards(JwtAuthGuard, ProjectGuard)
+    @Get(":projectId/storage")
+    async getStorageUsage(@Param("projectId") projectId: string) {
+        return this.projectsService.getStorageUsage(projectId);
     }
 
     @UseGuards(JwtAuthGuard, ProjectGuard)
@@ -73,6 +71,24 @@ export class ProjectsController {
     async toggleFavorite(@Req() req, @Param("projectId") projectId: string) {
         const userId = req.user.id;
         return this.projectsService.toggleFavorite(projectId, userId);
+    }
+
+    // Public routes: the token received by e-mail is the credential (same model as /mail/verify).
+    @Post("invitation/verify")
+    async getInvitation(@Body() body: InvitationTokenDto) {
+        return this.projectsService.getInvitationByToken(body.token);
+    }
+
+    @Post("invitation/respond")
+    async respondToInvitationByToken(@Body() body: RespondInvitationByTokenDto) {
+        return this.projectsService.respondToInvitationByToken(body.token, body.accept);
+    }
+
+    // No ProjectGuard: a pending member has no access to the project until the invitation is accepted.
+    @UseGuards(JwtAuthGuard)
+    @Patch(":projectId/members/:memberId/respond")
+    async respondToInvitation(@Req() req, @Param("projectId") projectId: string, @Param("memberId") memberId: string, @Body() body: RespondInvitationDto) {
+        return this.projectsService.respondToInvitation(projectId, memberId, req.user.id, body.accept);
     }
 
     @UseGuards(JwtAuthGuard, ProjectGuard)
@@ -125,6 +141,12 @@ export class ProjectsController {
     @Get(":projectId/documents/:documentId/view")
     async getDocumentViewUrl(@Param("projectId") projectId: string, @Param("documentId") documentId: string) {
         return this.projectsService.getDocumentDownloadUrl(projectId, documentId, 'inline');
+    }
+
+    @UseGuards(JwtAuthGuard, ProjectGuard)
+    @Patch(":projectId/documents/:documentId/meta")
+    async updateDocumentMeta(@Param("projectId") projectId: string, @Param("documentId") documentId: string, @Body() body: UpdateDocumentMetaDto) {
+        return this.projectsService.updateDocumentMeta(projectId, documentId, body);
     }
 
     @UseGuards(JwtAuthGuard, ProjectGuard)

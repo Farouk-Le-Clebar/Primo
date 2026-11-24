@@ -58,10 +58,21 @@
 @utility glass {
     background-color: rgba(255, 255, 255, 0.78);
     backdrop-filter: blur(24px) saturate(180%);
-    -webkit-backdrop-filter: blur(24px) saturate(180%);
 
     @variant dark {
         background-color: rgba(28, 28, 30, 0.82);
+    }
+}
+
+@utility primo-card {
+    background-color: var(--color-tremor-background);
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+
+    @variant dark {
+        background-color: var(--color-dark-tremor-background);
+        border-color: rgba(255, 255, 255, 0.1);
     }
 }
 
@@ -73,6 +84,14 @@
     }
 }
 
+@utility scrollbar-none {
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}
+
 .selection-locked path.leaflet-interactive {
     pointer-events: none;
 }
@@ -80,6 +99,24 @@
 @layer base {
     .leaflet-container .map-overlay a {
         color: inherit;
+    }
+
+    /* Tailwind v4 no longer sets a pointer cursor on buttons: restore it for every interactive control. */
+    button:not(:disabled),
+    [role="button"]:not([aria-disabled="true"]),
+    summary,
+    select:not(:disabled),
+    label[for],
+    input[type="checkbox"]:not(:disabled),
+    input[type="radio"]:not(:disabled),
+    input[type="file"]:not(:disabled),
+    input[type="range"]:not(:disabled) {
+        cursor: pointer;
+    }
+
+    button:disabled,
+    [role="button"][aria-disabled="true"] {
+        cursor: not-allowed;
     }
 }
 
@@ -171,4 +208,9 @@ nav a:visited,
     background: var(--poi-dot-color, #64748b);
     border: 1px solid rgba(255, 255, 255, 0.95);
     box-shadow: 0 1px 3px rgba(15, 23, 42, 0.22);
+}
+
+#headlessui-portal-root {
+  position: relative;
+  z-index: 10000;
 }

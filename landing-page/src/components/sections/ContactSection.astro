@@ -1,8 +1,8 @@
 ---
-// Simple contact form. No form backend yet: submitting opens the visitor's mail app with a
-// pre-filled message. Swap the submit handler for an API call later.
+// Contact form. Messages are sent to the tracking panel (OUTREACH.API_URL, "Messages" section);
+// if the panel can't be reached, the visitor's mail app opens with the message pre-filled instead.
 import { ArrowUpRight, Mail } from 'lucide-react';
-import { CONTACT_EMAIL as EMAIL } from '../../config/constants';
+import { CONTACT_EMAIL as EMAIL, OUTREACH } from '../../config/constants';
 ---
 
 <section id="contact" class="section shell contact-sec">
@@ -14,7 +14,7 @@ import { CONTACT_EMAIL as EMAIL } from '../../config/constants';
         <Mail size={16} /> {EMAIL}
       </a>
     </div>
-    <form class="contact-form reveal" data-contact={EMAIL} novalidate>
+    <form class="contact-form reveal" data-contact={EMAIL} data-api={OUTREACH.API_URL} novalidate>
       <div class="contact-row">
         <label>
           <span>Nom</span>
@@ -28,6 +28,9 @@ import { CONTACT_EMAIL as EMAIL } from '../../config/constants';
       <label>
         <span>Message</span>
         <textarea name="message" rows="5" required placeholder="Votre message"></textarea>
+      </label>
+      <label class="hp" aria-hidden="true">
+        Site <input name="site" type="text" tabindex="-1" autocomplete="off" />
       </label>
       <div class="contact-foot">
         <p class="contact-status" data-contact-status role="status"></p>
@@ -43,7 +46,17 @@ import { CONTACT_EMAIL as EMAIL } from '../../config/constants';
   const form = document.querySelector<HTMLFormElement>('[data-contact]');
   if (form) {
     const status = form.querySelector<HTMLElement>('[data-contact-status]')!;
-    form.addEventListener('submit', (e) => {
+    const button = form.querySelector<HTMLButtonElement>('button[type=submit]')!;
+    const api = form.dataset.api!.replace(/\/$/, '');
+
+    const openMail = (d: FormData) => {
+      const subject = `Contact depuis primo-data.fr — ${d.get('name')}`;
+      const body = `${d.get('message')}\n\n${d.get('name')}\n${d.get('email')}`;
+      window.location.href = `mailto:${form.dataset.contact}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      status.textContent = 'Votre messagerie s’ouvre avec le message prêt à envoyer.';
+    };
+
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
       if (!form.checkValidity()) {
         form.classList.add('was-checked');
@@ -51,10 +64,37 @@ import { CONTACT_EMAIL as EMAIL } from '../../config/constants';
         return;
       }
       const d = new FormData(form);
-      const subject = `Contact depuis primo-data.fr — ${d.get('name')}`;
-      const body = `${d.get('message')}\n\n${d.get('name')}\n${d.get('email')}`;
-      window.location.href = `mailto:${form.dataset.contact}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-      status.textContent = 'Votre messagerie s’ouvre avec le message prêt à envoyer.';
+      button.disabled = true;
+      status.textContent = 'Envoi…';
+      try {
+        // text/plain keeps it a CORS "simple request": no preflight.
+        const res = await fetch(`${api}/api/public/message`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
+          body: JSON.stringify({
+            source: 'accueil',
+            nom: d.get('name'),
+            email: d.get('email'),
+            message: d.get('message'),
+            site: d.get('site'),
+          }),
+        });
+        if (!res.ok) throw new Error(String(res.status));
+        form.reset();
+        form.classList.remove('was-checked');
+        status.textContent = 'Merci ! Votre message est bien parti, on vous répond très vite.';
+      } catch {
+        openMail(d);
+      } finally {
+        button.disabled = false;
+      }
     });
   }
 </script>
+
+<style>
+  .hp {
+    position: absolute;
+    left: -9999px;
+  }
+</style>

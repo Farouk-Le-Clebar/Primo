@@ -1,91 +1,62 @@
-import { X } from "lucide-react";
 import { useState } from "react";
-import { createPortal } from "react-dom";
-import Button from "../../../ui/Button";
-import { useMutation } from "@tanstack/react-query";
-import { inviteUserToProject } from "../../../requests/projects";
-import LoadingPrimoLogo from "../../../components/animations/LoadingPrimoLogo";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Mail, UserPlus } from "lucide-react";
 import toast from "react-hot-toast";
+import { inviteUserToProject } from "../../../requests/projects";
+import Modal from "../../../ui/Modal";
+import ModalButton from "../../../ui/ModalButton";
+import FormField, { FIELD_CLASS } from "../../../ui/FormField";
 
 type InviteMembersModalProps = {
-    onClose: () => void;
-    projectId: string;
+  onClose: () => void;
+  projectId: string;
 };
 
-const InviteMembersModal = ({ onClose, projectId }: InviteMembersModalProps) => {
-    const [email, setEmail] = useState("");
+type RequestError = { message?: string };
 
-    const { mutate: inviteUserMutation, isPending } = useMutation({
-        mutationFn: () => inviteUserToProject(projectId, email),
-        onSuccess: () => {
-            onClose();
-            toast.success("Un email a été envoyé à l'utilisateur !");
-        },
-        onError: (err: any) => {
-            onClose();
-            toast.error(err.message);
-        }
-    });
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const FORM_ID = "invite-member-form";
 
-    return createPortal(
-        <div className="fixed inset-0 bg-black/60 dark:bg-black/80 dark:border-white/5 backdrop-blur-sm flex items-center justify-center z-[9999] px-4">
-            <div className="bg-white dark:bg-[#171717] w-full max-w-lg rounded-2xl shadow-2xl flex flex-col">
-                <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100 dark:border-white/5">
-                    <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100">
-                        Ajouter un collaborateur
-                    </h2>
-                    <button
-                        onClick={onClose}
-                        className="cursor-pointer p-2 text-gray-400 dark:text-gray-500 rounded-full outline-none"
-                    >
-                        <X size={20} />
-                    </button>
-                </div>
+export default function InviteMembersModal({ onClose, projectId }: InviteMembersModalProps) {
+  const queryClient = useQueryClient();
+  const [email, setEmail] = useState("");
+  const isValid = EMAIL_PATTERN.test(email.trim());
+  const { mutate, isPending } = useMutation({
+    mutationFn: () => inviteUserToProject(projectId, email.trim()),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["project", projectId, "members"] });
+      toast.success("Invitation envoyée");
+      onClose();
+    },
+    onError: (error: RequestError) => toast.error(error?.message ?? "Invitation impossible"),
+  });
 
-                <div className="p-6 md:p-8 flex flex-col gap-6">
-                    <div className="flex flex-col gap-2.5">
-                        <label htmlFor="memberEmail" className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Adresse e-mail du membre <span className="text-red-500">*</span>
-                        </label>
-                        <input
-                            id="memberEmail"
-                            type="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            placeholder="ex: jean.dupont@email.com"
-                            className="w-full p-3 text-sm rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-[#0A0A0A] text-gray-800 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500 outline-none focus:outline-none focus:ring-0 focus:border-gray-200 dark:focus:border-white/10"
-                        />
-                        <p className="text-xs text-gray-500 dark:text-amber-500 mt-1">
-                            Attention, la personne ajoutée aura accès à l'intégralité du projet.
-                        </p>
-                    </div>
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    if (isValid) mutate();
+  };
 
-                    {isPending ? (
-                        <div className='flex items-center justify-center w-full h-10 bg-transparent dark:bg-[#0A0A0A] transition-colors duration-200'>
-                            <LoadingPrimoLogo className="h-6 w-6 dark:invert" />
-                        </div>
-                    ) : (
-                        <div className="mt-4">
-                            <Button
-                                backgroundColor="bg-black dark:bg-white"
-                                backgroundHoverColor="hover:bg-black/85 hover:dark:bg-white/80"
-                                className="w-full text-white dark:text-black"
-                                textHoverColor="hover:text-white dark:hover:text-black"
-                                textSize="text-base"
-                                onClick={() => {
-                                    inviteUserMutation();
-                                }}
-                                disabled={!email.trim() || !email.includes("@")}
-                            >
-                                Ajouter
-                            </Button>
-                        </div>
-                    )}
-                </div>
-            </div>
-        </div>,
-        document.body
-    );
-};
-
-export default InviteMembersModal;
+  return (
+    <Modal
+      title="Inviter un membre"
+      subtitle="Il verra les nouveautés du projet dès sa connexion."
+      icon={UserPlus}
+      onClose={onClose}
+      footer={
+        <>
+          <ModalButton variant="secondary" onClick={onClose}>Annuler</ModalButton>
+          <ModalButton type="submit" form={FORM_ID} icon={UserPlus} isLoading={isPending} disabled={!isValid}>Envoyer l’invitation</ModalButton>
+        </>
+      }
+    >
+      <form id={FORM_ID} onSubmit={handleSubmit}>
+        <FormField label="Adresse e-mail" htmlFor="invite-email" hint="La personne invitée aura accès à l’intégralité du projet.">
+          <div className="relative">
+            <Mail className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#82828c]" />
+            <input id="invite-email" autoFocus type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="adresse@email.fr" className={`${FIELD_CLASS} pl-9`} />
+          </div>
+        </FormField>
+      </form>
+    </Modal>
+  );
+}

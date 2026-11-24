@@ -1,3 +1,5 @@
+import { SearchX } from "lucide-react";
+import EmptyState from "../../../../../../ui/EmptyState";
 import React from "react";
 import { Loader2 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
@@ -57,9 +59,7 @@ export const WidgetCard = ({
             <span className="text-sm">{loadingText}</span>
           </div>
         ) : isEmpty ? (
-          <div className="flex items-center justify-center gap-2 text-gray-400 py-4 text-center">
-            <span className="text-sm">{emptyText}</span>
-          </div>
+          <EmptyState icon={SearchX} title="Rien à signaler ici" description={emptyText} size="sm" framed={false} />
         ) : (
           children
         )}

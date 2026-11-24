@@ -1,7 +1,7 @@
 import { MapContainer, TileLayer, GeoJSON, useMap } from "react-leaflet";
 import L from "leaflet";
 import { useEffect, useMemo } from "react";
-import { selectedShapeStyle } from "../../../../utils/map";
+import { useMapShapeStyles } from "../../../../hooks/useMapColors";
 
 type PlotProps = {
     plot: any;
@@ -21,6 +21,7 @@ const FitGeoJSON = ({ data }: { data: any }) => {
 };
 
 const PlotMap = ({ plot }: PlotProps) => {
+    const shapeStyles = useMapShapeStyles();
     const geometry = useMemo(() => {
         if (!plot.geometry) return null;
 
@@ -49,7 +50,7 @@ const PlotMap = ({ plot }: PlotProps) => {
             {geometry && (
                 <>
                     <FitGeoJSON data={geometry} />
-                    <GeoJSON data={geometry} style={selectedShapeStyle} />
+                    <GeoJSON data={geometry} style={shapeStyles.selected} />
                 </>
             )}
         </MapContainer>

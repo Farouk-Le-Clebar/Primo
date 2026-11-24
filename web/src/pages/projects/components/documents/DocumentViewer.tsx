@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import { createPortal } from "react-dom";
 import { useQuery } from "@tanstack/react-query";
-import { Download, X } from "lucide-react";
+import { Download, FileText } from "lucide-react";
+import Modal from "../../../../ui/Modal";
+import ModalButton from "../../../../ui/ModalButton";
 import LoadingPrimoLogo from "../../../../components/animations/LoadingPrimoLogo";
 import { getDocumentViewUrl } from "../../../../requests/projects";
 import type { ProjectDocument } from "../../../../types/project/documents";
@@ -109,37 +110,23 @@ const DocumentViewer = ({ projectId, document, onClose, onDownload }: DocumentVi
         }
     };
 
-    return createPortal(
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 dark:bg-black/80 backdrop-blur-sm p-6" onClick={onClose}>
-            <div
-                className="flex flex-col w-full max-w-6xl h-full bg-white dark:bg-[#171717] rounded-2xl shadow-2xl border border-gray-100 dark:border-white/5 overflow-hidden"
-                onClick={(e) => e.stopPropagation()}
-            >
-                <div className="flex items-center justify-between gap-4 px-6 py-4 border-b border-gray-100 dark:border-white/5">
-                    <span className="font-medium text-gray-900 dark:text-white truncate" title={document.documentName}>
-                        {document.documentName}
-                    </span>
-                    <div className="flex items-center gap-1 shrink-0">
-                        <button className="w-9 h-9 flex cursor-pointer items-center justify-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
-                            onClick={onDownload}
-                            title="Télécharger"
-                        >
-                            <Download className="w-5 h-5 text-gray-700 dark:text-gray-300" />
-                        </button>
-                        <button className="w-9 h-9 flex cursor-pointer items-center justify-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
-                            onClick={onClose}
-                            title="Fermer"
-                        >
-                            <X className="w-5 h-5 text-gray-700 dark:text-gray-300" />
-                        </button>
-                    </div>
-                </div>
-                <div className="flex-1 min-h-0 bg-gray-100 dark:bg-[#0A0A0A]">
-                    {renderContent()}
-                </div>
-            </div>
-        </div>,
-        window.document.body
+    return (
+        <Modal
+            title={document.documentName}
+            subtitle="Aperçu du document"
+            icon={FileText}
+            size="xl"
+            bodyClassName="h-[72vh] px-0! pb-0!"
+            onClose={onClose}
+            footer={
+                <>
+                    <ModalButton variant="secondary" onClick={onClose}>Fermer</ModalButton>
+                    <ModalButton icon={Download} onClick={onDownload}>Télécharger</ModalButton>
+                </>
+            }
+        >
+            <div className="h-full bg-[#1c1c1e]/4 dark:bg-black/30">{renderContent()}</div>
+        </Modal>
     );
 };
 

@@ -594,8 +594,12 @@ html[data-theme='dark'] .hp-btn {
     opacity 0.25s;
   filter: drop-shadow(0 2px 3px #0004);
 }
-.hp-cursor.down {
-  scale: 0.82;
+.hp-cursor path {
+  transform-origin: 4px 2.5px;
+  transition: transform 0.14s;
+}
+.hp-cursor.down path {
+  transform: scale(0.82);
 }
 .hp-ripple {
   position: absolute;
@@ -1391,9 +1395,9 @@ html[data-theme='dark'] .hp-ws-welcome em {
   border-radius: 50%;
   background: var(--hp-ui-2);
 }
-/* demo cursor is positioned from JS each frame: only the press "scale" stays as a CSS transition */
+/* JS positions the cursor; the press animation scales only its drawing, keeping the tip in place. */
 .hp-stage > .hp-cursor {
-  transition: scale 0.14s;
+  transition: none;
   transform: translate(1140px, 660px);
   opacity: 0;
 }

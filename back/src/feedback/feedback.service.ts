@@ -4,12 +4,14 @@ import { Repository } from 'typeorm';
 import { Feedback } from '../database/feedback.entity';
 import { CreateFeedbackDto } from './dto/create-feedback.dto';
 import { User } from '../database/user.entity';
+import { UserNotifier } from '../notification/user-notifier';
 
 @Injectable()
 export class FeedbackService {
   constructor(
     @InjectRepository(Feedback)
     private feedbackRepo: Repository<Feedback>,
+    private userNotifier: UserNotifier,
   ) { }
 
   async create(dto: CreateFeedbackDto, user: User) {
@@ -17,7 +19,9 @@ export class FeedbackService {
       ...dto,
       user: user,
     });
-    return await this.feedbackRepo.save(feedback);
+    const saved = await this.feedbackRepo.save(feedback);
+    await this.userNotifier.feedbackReceived(saved.title, `${user.firstName} ${user.surName}`.trim());
+    return saved;
   }
 
   async findAll() {

@@ -18,11 +18,12 @@ const vendorChunk = (id: string) => {
 }
 
 // https://vite.dev/config/
-export default defineConfig({
+export default defineConfig(({ command }) => ({
   plugins: [react(), tailwindcss(), svgr()],
+  esbuild: { drop: command === "build" ? ["console", "debugger"] : [] },
   build: {
     rollupOptions: {
       output: { manualChunks: vendorChunk },
     },
   },
-})
+}))

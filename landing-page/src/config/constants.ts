@@ -9,6 +9,14 @@ export const EXTERNAL_LINKS = {
   EMAIL: `mailto:${CONTACT_EMAIL}`,
 } as const;
 
+// Tracking panel: /bienvenue/ (target of the mail campaign QR codes) reports scans, clicks and callback
+// requests to it, and every site contact form posts there. Both values are read at build time (PUBLIC_* variables).
+export const OUTREACH = {
+  API_URL: import.meta.env.PUBLIC_OUTREACH_API_URL || 'https://primo-suivi.vercel.app',
+  // Booking link (Calendly, cal.com…). Empty: only the callback form is offered.
+  BOOKING_URL: import.meta.env.PUBLIC_BOOKING_URL || '',
+} as const;
+
 // Landing page sections, shared by the landing header and the navbar / footer of the other pages.
 export const NAV_ITEMS = [
   { id: 'fonctionnalites', label: 'Fonctionnalités' },

@@ -2,15 +2,21 @@ import { memo, useCallback, useState } from "react";
 
 import PanelCard from "../shared/PanelCard";
 import CategorySection from "./CategorySection";
-import { DEFAULT_EXPANDED_CATEGORIES, INFRA_CATEGORIES } from "./constants";
+import CustomCategorySection from "./CustomCategorySection";
+import { DEFAULT_EXPANDED_CATEGORIES, INFRA_CATEGORIES, type InfraCategory } from "./constants";
 import type { PoisProximityState } from "./usePoisProximity";
 
 type InfraSelectorProps = Pick<
   PoisProximityState,
   "selectedTypes" | "loading" | "isUpToDate" | "error" | "toggleType" | "setTypes" | "resetTypes" | "clearTypes" | "calculate"
-> & { canCalculate: boolean };
+> & {
+  canCalculate: boolean;
+  customCategory: InfraCategory;
+  addressProjectId: string;
+  onAddressProjectChange: (projectId: string) => void;
+};
 
-function InfraSelector({ selectedTypes, loading, isUpToDate, canCalculate, error, toggleType, setTypes, resetTypes, clearTypes, calculate }: InfraSelectorProps) {
+function InfraSelector({ selectedTypes, loading, isUpToDate, canCalculate, error, toggleType, setTypes, resetTypes, clearTypes, calculate, customCategory, addressProjectId, onAddressProjectChange }: InfraSelectorProps) {
   const [expanded, setExpanded] = useState<string[]>(DEFAULT_EXPANDED_CATEGORIES);
   const selectedCount = selectedTypes.length;
 
@@ -40,6 +46,16 @@ function InfraSelector({ selectedTypes, loading, isUpToDate, canCalculate, error
             onSetTypes={setTypes}
           />
         ))}
+        <CustomCategorySection
+          category={customCategory}
+          projectId={addressProjectId}
+          onProjectChange={onAddressProjectChange}
+          selectedTypes={selectedTypes}
+          isExpanded={expanded.includes(customCategory.label)}
+          onToggleExpanded={toggleExpanded}
+          onToggleType={toggleType}
+          onSetTypes={setTypes}
+        />
       </ul>
       <button
         type="button"

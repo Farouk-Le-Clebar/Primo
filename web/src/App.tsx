@@ -23,15 +23,18 @@ const AdminList = lazyPage(() => import("./pages/admin/components/AdminList/Admi
 const FeedbacksList = lazyPage(() => import("./pages/admin/components/Feedback/FeedbacksList"));
 const OnboardingRoot = lazyPage(() => import("./pages/onBoarding/OnboardingRoot"));
 const EmailVerify = lazyPage(() => import("./pages/mailling/EmailVerify"));
+const ProjectInvitation = lazyPage(() => import("./pages/mailling/ProjectInvitation"));
 const PostRegisterEmailVerify = lazyPage(() => import("./pages/mailling/PostRegisterEmailVerify"));
 const ResetPassword = lazyPage(() => import("./pages/mailling/ResetPassword"));
 const SendEmailResetPassword = lazyPage(() => import("./pages/mailling/SendEmailResetPassword"));
 const FeedbackPanel = lazyPanel(() => import("./pages/feedback/FeedbackPanel"));
 const DashboardProjects = lazyPage(() => import("./pages/projects/components/dashboard/Dashboard"));
 const ParcelsTab = lazyPage(() => import("./pages/projects/components/parcels/ParcelsTab"));
-const Members = lazyPage(() => import("./pages/projects/components/Members"));
+const Members = lazyPage(() => import("./pages/projects/components/members/MembersTab"));
 const DocumentsTab = lazyPage(() => import("./pages/projects/components/documents/DocumentsTab"));
-const DashboardPanel = lazyPanel(() => import("./pages/map/components/layers/Dashboard/DashboardPanel"));
+const NotesTab = lazyPage(() => import("./pages/projects/components/notes/NotesTab"));
+const MilestonesTab = lazyPage(() => import("./pages/projects/components/milestones/MilestonesTab"));
+const AddressesTab = lazyPage(() => import("./pages/projects/components/addresses/AddressesTab"));
 const ProjectsPanel = lazyPanel(() => import("./pages/map/components/layers/Projects/ProjectsPanel"));
 const ProjectsEmptyState = lazyPage(() => import("./pages/map/components/layers/Projects/ProjectsEmptyState"));
 const ProjectWorkspace = lazyPage(() => import("./pages/map/components/layers/Projects/ProjectWorkspace"));
@@ -43,6 +46,7 @@ export default function App() {
 
       <Routes>
         <Route path="/verify" element={EmailVerify} />
+        <Route path={ROUTES.projectInvitation} element={ProjectInvitation} />
         <Route path="/reset/password" element={ResetPassword} />
         <Route path="/auth" element={AuthLayout}>
           <Route index element={AuthRoot} />
@@ -56,7 +60,6 @@ export default function App() {
           <Route path={ROUTES.onboarding} element={OnboardingRoot} />
 
           <Route path={ROUTES.map} element={<Map />}>
-            <Route path="dashboard" element={DashboardPanel} />
             <Route path="projects" element={ProjectsPanel}>
               <Route index element={ProjectsEmptyState} />
               <Route path=":projectId" element={ProjectWorkspace}>
@@ -65,6 +68,9 @@ export default function App() {
                 <Route path="plots" element={ParcelsTab} />
                 <Route path="members" element={Members} />
                 <Route path="documents" element={DocumentsTab} />
+                <Route path="notes" element={NotesTab} />
+                <Route path="milestones" element={MilestonesTab} />
+                <Route path="addresses" element={AddressesTab} />
               </Route>
             </Route>
             <Route path="feedback" element={FeedbackPanel} />

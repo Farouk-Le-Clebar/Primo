@@ -1,149 +1,86 @@
-import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
-import PlotMap from "./PlotMap";
-import LoadingPrimoLogo from "../../../../components/animations/LoadingPrimoLogo";
-import { useNavigate, useParams } from "react-router-dom";
-import { Check, ExternalLink, ExternalLinkIcon, Trash2, X } from "lucide-react";
-import toast from "react-hot-toast";
-import Button from "../../../../ui/Button";
-import { useState } from "react";
-import L from "leaflet";
-import { deletePlotFromProject, getPlotsOfProject } from "../../../../requests/projects";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { Map as MapIcon, MapPinPlus, SearchX } from "lucide-react";
+import EmptyState from "../../../../ui/EmptyState";
 import { ROUTES } from "../../../../constants/routes";
+import { useQuery } from "@tanstack/react-query";
+import { getProjectById } from "../../../../requests/projects";
+import type { ProjectPlotWithSummary } from "../../../../types/project/plots";
+import type { ProjectResponse } from "../../../../types/project/projects";
+import { useProjectPlots } from "../dashboard/useProjectData";
+import ComparisonDialog from "./ComparisonDialog";
+import ParcelDrawer from "./ParcelDrawer";
+import ParcelsSummary from "./ParcelsSummary";
+import ParcelsTable from "./ParcelsTable";
+import ParcelsToolbar from "./ParcelsToolbar";
+import { exportPlotsCsv } from "./exportPlots";
+import { useParcelsFilters } from "./useParcelsFilters";
+import { useParcelsSelection } from "./useParcelsSelection";
 
-const ParcelsTab = () => {
-    const queryClient = useQueryClient();
-    const [validationDeleteOpen, setValidationDeleteOpen] = useState(false);
-    const [idToDelete, setIdToDelete] = useState<string | null>(null);
-    const { projectId } = useParams();
+export default function ParcelsTab() {
+  const { projectId } = useParams<{ projectId: string }>();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const { data: plots = [], isPending } = useProjectPlots(projectId);
+  const { data: project } = useQuery<ProjectResponse>({ queryKey: ["project", projectId], queryFn: () => getProjectById(projectId!), enabled: !!projectId });
+  const filters = useParcelsFilters(plots);
+  const selection = useParcelsSelection(projectId, plots);
+  const navigate = useNavigate();
+  const openId = searchParams.get("plot");
+  const opened = plots.find((plot) => plot.id === openId) ?? null;
 
-    const { data: parcels, isLoading, isPending } = useQuery({
-        queryKey: ["projectPlots", projectId],
-        queryFn: () => getPlotsOfProject(projectId!),
-        refetchOnWindowFocus: false,
-    });
+  const handleOpen = (id: string | null) => setSearchParams(id ? { plot: id } : {}, { replace: true });
+  const handleExport = () => exportPlotsCsv(filters.visible, project?.name ?? "parcelles");
+  const handleResetFilters = () => {
+    filters.setFilter("all");
+    filters.setQuery("");
+  };
+  const emptyState = plots.length === 0 ? (
+    <EmptyState icon={MapPinPlus} title="Votre projet n’a pas encore de parcelle" description="Sélectionnez une parcelle sur la carte puis « Ajouter à un projet » : prix DVF, DPE, PLU et risques seront calculés automatiquement." action={{ label: "Ouvrir la carte", onClick: () => navigate(ROUTES.map), icon: MapIcon }} />
+  ) : (
+    <EmptyState icon={SearchX} title="Aucune parcelle ne correspond" description="Essayez un autre filtre ou une autre recherche." secondaryAction={{ label: "Réinitialiser les filtres", onClick: handleResetFilters }} size="sm" framed={false} />
+  );
 
-    const { mutate: removePlotFromProject, isPending: isRemovingPlot } = useMutation({
-        mutationFn: (plotId: string) => deletePlotFromProject(plotId),
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["projectPlots", projectId] });
-            toast.success("Parcelle supprimée du projet.");
-            setIdToDelete(null);
-            setValidationDeleteOpen(false);
-        },
-        onError: (err: any) => {
-            toast.error(err.response.data.message);
-        }
-    });
+  if (isPending || !projectId)
+    return <div className="primo-card h-[420px] animate-pulse motion-reduce:animate-none" />;
 
-    const navigate = useNavigate();
-
-    const handleRemovePlot = (id: string) => {
-        removePlotFromProject(id);
-    };
-
-    const handleMapClick = (plot: any) => {
-        const geoJsonLayer = L.geoJSON(plot.geometry);
-        const center = geoJsonLayer.getBounds().getCenter();
-        const x = center.lng;
-        const y = center.lat;
-        navigate(ROUTES.map, { state: { centerOn: [y, x] } });
-    };
-
-    return (
-        <div className="flex-1 w-full p-4 h-full overflow-y-auto scrollbar-custom">
-            {isLoading || isPending || isRemovingPlot ? (
-                <div className="absolute inset-0 z-1000 flex items-center justify-center dark:invert">
-                    <LoadingPrimoLogo
-                        className="h-10 w-10"
-                    />
-                </div>
-            ) : null}
-            {parcels && parcels.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                    {parcels?.map((plot: any) => (
-                        <div
-                            key={plot.id}
-                            className="bg-white border border-gray-200 dark:border-gray-600/40 dark:bg-[#171717] rounded-xl shadow-sm overflow-hidden flex flex-col hover:shadow-md transition-shadow"
-                        >
-                            <button
-                                className="cursor-pointer h-48 w-full bg-gray-100 flex items-center justify-center overflow-hidden"
-                                onClick={() => handleMapClick(plot)}
-                            >
-                                <PlotMap plot={plot} />
-                            </button>
-
-                            <div className="p-4 flex flex-row justify-between">
-                                <div className="flex flex-col gap-1.5 text-left">
-                                    <button
-                                        className="font-semibold flex flex-row gap-1 items-center text-gray-800 dark:text-gray-300 text-sm line-clamp-2 cursor-pointer hover:underline"
-                                        title={plot.adress}
-                                        onClick={() => handleMapClick(plot)}
-                                    >
-                                        {plot.adress} <ExternalLink className="w-3 h-3" />
-                                    </button>
-
-                                    {plot.plotId && (
-                                        <div className="text-xs text-gray-500 mt-1 dark:text-gray-400">
-                                            <span className="font-medium mr-1 text-gray-600 dark:text-gray-400">ID:</span>
-                                            {plot.plotId}
-                                        </div>
-                                    )}
-                                    {plot.plotBanId && (
-                                        <div className="text-xs text-gray-500 dark:text-gray-400">
-                                            <span className="font-medium mr-1 text-gray-600 dark:text-gray-400">BAN:</span>
-                                            {plot.plotBanId}
-                                        </div>
-                                    )}
-                                </div>
-                                {validationDeleteOpen && idToDelete === plot.id ? (
-                                    <div className="flex items-center justify-center gap-2">
-                                        <button className="rounded-full p-0.5 hover:bg-gray-300 hover:text-white hover:border-none dark:hover:bg-gray-600 dark:hover:text-white dark:hover:border-none cursor-pointer border border-gray-400 text-gray-400"
-                                            onClick={() => { setIdToDelete(null); setValidationDeleteOpen(false); }}
-                                        >
-                                            <X className="w-5 h-5" />
-                                        </button>
-                                        <button
-                                            className="rounded-full bg-red-600 p-0.5 hover:bg-red-700 cursor-pointer text-white"
-                                            onClick={() => {
-                                                handleRemovePlot(plot.id);
-                                            }}
-                                        >
-                                            <Check className="w-5 h-5" />
-                                        </button>
-                                    </div>
-                                ) : (
-                                    <button
-                                        className="cursor-pointer text-gray-500 hover:text-gray-600"
-                                        onClick={() => { setIdToDelete(plot.id); setValidationDeleteOpen(true); }}
-                                    >
-                                        <Trash2 className="w-5 h-5" />
-                                    </button>
-                                )}
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            ) : !isLoading && !isPending && !isRemovingPlot ? (
-                <div className="h-full w-full flex flex-col items-center justify-center text-gray-500">
-                    <p>Aucune parcelle liée à ce projet.</p>
-                    <Button
-                        className="mt-4"
-                        width="w-65"
-                        height="h-10"
-                        backgroundColor="bg-black dark:bg-white"
-                        backgroundHoverColor="hover:bg-gray-700 dark:hover:bg-gray-300"
-                        textSize="text-base"
-                        onClick={() => navigate(ROUTES.map)}
-                    >
-                        <div className="flex flex-row items-center justify-center gap-1 text-white dark:text-black">
-                            <p>Ajouter une parcelle</p>
-                            <ExternalLinkIcon className="w-4 h-4" />
-                        </div>
-                    </Button>
-                </div>
-            ) : null}
-        </div>
-    );
-};
-
-export default ParcelsTab;
+  return (
+    <div className="flex flex-col gap-4">
+      <ParcelsToolbar
+        chips={filters.chips}
+        filter={filters.filter}
+        onFilterChange={filters.setFilter}
+        query={filters.query}
+        onQueryChange={filters.setQuery}
+        compareCount={selection.comparePlots.length}
+        onCompare={() => selection.setComparing(true)}
+        onExport={handleExport}
+      />
+      <ParcelsTable
+        plots={filters.visible}
+        compareIds={selection.compareIds}
+        sortKey={filters.sortKey}
+        direction={filters.direction}
+        onSort={filters.sortBy}
+        onToggleCompare={selection.toggleCompare}
+        onOpen={handleOpen}
+        emptyState={emptyState}
+      />
+      <ParcelsSummary plots={plots} compareCount={selection.comparePlots.length} />
+      {selection.comparing && selection.comparePlots.length === 2 && (
+        <ComparisonDialog
+          projectId={projectId}
+          plots={selection.comparePlots as [ProjectPlotWithSummary, ProjectPlotWithSummary]}
+          onClose={() => selection.setComparing(false)}
+        />
+      )}
+      {opened && (
+        <ParcelDrawer
+          plot={opened}
+          isDeleting={selection.isRemoving}
+          onClose={() => handleOpen(null)}
+          onShowOnMap={() => selection.showOnMap(opened)}
+          onDelete={() => selection.removePlot(opened.id, () => handleOpen(null))}
+        />
+      )}
+    </div>
+  );
+}

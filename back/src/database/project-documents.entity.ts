@@ -26,6 +26,12 @@ export class ProjectDocuments {
     @Column({ type: 'varchar', length: 255, nullable: true })
     uploadedBy: string | null;
 
+    @Column({ type: 'varchar', length: 32, nullable: true })
+    category: string | null;
+
+    @Column({ type: 'uuid', nullable: true })
+    plotId: string | null;
+
     @Column({ type: 'boolean', default: false })
     isUploaded: boolean;
 

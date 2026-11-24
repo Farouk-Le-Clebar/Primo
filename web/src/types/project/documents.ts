@@ -6,7 +6,15 @@ export type ProjectDocument = {
     documentType: string;
     size: number;
     createdAt: string;
+    category: DocumentCategory | null;
+    plotId: string | null;
+    uploadedBy: string | null;
+    uploaderName: string | null;
 };
+
+export type DocumentCategory = "mandat" | "diagnostic" | "plan" | "photo" | "autre";
+
+export type DocumentMeta = { category?: DocumentCategory; plotId?: string | null };
 
 export type StorageUsage = {
     used: number;

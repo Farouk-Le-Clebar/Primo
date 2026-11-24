@@ -1,3 +1,5 @@
+import { History, SearchX } from "lucide-react";
+import EmptyState from "../../../../../ui/EmptyState";
 import type { MapSearchItem, MapSearchStatus } from "./useMapSearchItems";
 import MapSearchRow from "./MapSearchRow";
 
@@ -40,9 +42,11 @@ export default function MapSearchResults({ status, items, query, activeIndex, is
     );
   if (!items.length)
     return (
-      <p className={MESSAGE}>
-        {status === "history" ? "Vos recherches apparaîtront ici." : `Aucune adresse trouvée pour « ${query} ».`}
-      </p>
+      status === "history" ? (
+        <EmptyState icon={History} title="Aucune recherche récente" description="Tapez une adresse, une commune ou une référence cadastrale." size="sm" framed={false} />
+      ) : (
+        <EmptyState icon={SearchX} title={`Aucune adresse pour « ${query} »`} description="Vérifiez l’orthographe ou essayez avec le code postal." size="sm" framed={false} />
+      )
     );
 
   return (

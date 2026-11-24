@@ -3,12 +3,11 @@ import { ROUTES } from "../constants/routes";
 
 export function useMapPanels() {
   const navigate = useNavigate();
-  const isDashboardOpen = !!useMatch(ROUTES.dashboard);
   const isProjectsOpen = !!useMatch(`${ROUTES.projects}/*`);
   const isAdminOpen = !!useMatch(`${ROUTES.admin}/*`);
   const isFeedbackOpen = !!useMatch(ROUTES.feedback);
   const isProfileOpen = !!useMatch(ROUTES.profile);
-  const isAnyPanelOpen = isDashboardOpen || isProjectsOpen || isAdminOpen || isFeedbackOpen || isProfileOpen;
+  const isAnyPanelOpen = isProjectsOpen || isAdminOpen || isFeedbackOpen || isProfileOpen;
 
   const showMap = () => {
     if (isAnyPanelOpen) navigate(ROUTES.map);
@@ -18,12 +17,10 @@ export function useMapPanels() {
   return {
     showMap,
     isAnyPanelOpen,
-    isDashboardOpen,
     isProjectsOpen,
     isAdminOpen,
     isFeedbackOpen,
     isProfileOpen,
-    toggleDashboard: () => toggle(ROUTES.dashboard, isDashboardOpen),
     toggleProjects: () => toggle(ROUTES.projects, isProjectsOpen),
     toggleAdmin: () => toggle(ROUTES.admin, isAdminOpen),
   };

@@ -1,3 +1,4 @@
+import { UserNotifier } from 'src/notification/user-notifier';
 import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -18,6 +19,7 @@ export class UserService {
     private resetPasswordRepo: Repository<ResetPassword>,
     @InjectRepository(SearchHistory)
     private searchHistoryRepo: Repository<SearchHistory>,
+    private userNotifier: UserNotifier,
   ) { }
 
   async checkEmailExists(email: string): Promise<{ exists: boolean }> {
@@ -172,6 +174,7 @@ export class UserService {
     user.isAdmin = true;
     const updatedUser = await this.userRepo.save(user);
     if (!updatedUser) throw new NotFoundException('Failed to update user permissions');
+    await this.userNotifier.adminGranted(updatedUser.id);
   }
 
   async addSearchHistory(userId: string, label: string, lat: number, lng: number) {

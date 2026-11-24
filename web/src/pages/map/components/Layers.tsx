@@ -7,6 +7,7 @@ import L from "leaflet";
 import MapBounds from "./layers/MapBounds";
 import ShapesLayer from "./layers/ShapesLayer";
 import PoiLayer from "./layers/POI/PoiLayer";
+import ProjectAddressLayer from "./layers/POI/ProjectAddressLayer";
 import { MIN_ZOOM_FOR_POIS, POI_CONFIGS } from "./PoiConfig";
 import LocationHandler from "./layers/LocationHandler";
 import NoScrollZone from "../wrapper/NoScrollZone";
@@ -20,6 +21,7 @@ import { useTheme } from "../../../context/ThemeProvider";
 import { useMapType } from "../../../hooks/useMapType";
 import { useMapFreeze } from "../../../hooks/useMapFreeze";
 import { useParcelSelection } from "../../../hooks/useParcelSelection";
+import { useParcelUrlState } from "../../../hooks/useParcelUrlState";
 
 const ParcelDetailedDashboard = lazy(() => import("./layers/ParcelDetailedDashboard/ParcelDetailedDashboard"));
 
@@ -43,7 +45,8 @@ const Layers = ({ initialPlacement, initialCoordinates }: LayersProps) => {
     const [viewport, setViewport] = useState<Viewport>({ bounds: null, zoom: map.getZoom() });
     const [shapes, setShapes] = useState<DataType>(EMPTY_SHAPES);
     const [enabledPoiTypes, setEnabledPoiTypes] = useState<string[]>(DEFAULT_POI_TYPES);
-    const [isDashboardOpen, setIsDashboardOpen] = useState(false);
+    const [addressProjectId, setAddressProjectId] = useState("");
+    const { isDetailOpen: isDashboardOpen, syncSelection, openDetail, closeDetail } = useParcelUrlState();
     const [isMapPanelOpen, setIsMapPanelOpen] = useState(false);
 
     const isParcelDashboardOpen = !!selectedParcelle && isDashboardOpen && !isMapPanelOpen;
@@ -51,12 +54,12 @@ const Layers = ({ initialPlacement, initialCoordinates }: LayersProps) => {
     useMapFreeze(map, isMapCovered);
 
     const handleViewportChange = useCallback((bounds: L.LatLngBounds, zoom: number) => setViewport({ bounds, zoom }), []);
-    const handleOpenDashboard = useCallback(() => setIsDashboardOpen(true), []);
-    const handleCloseDashboard = useCallback(() => setIsDashboardOpen(false), []);
+    const handleOpenDashboard = openDetail;
+    const handleCloseDashboard = closeDetail;
     const handleSelect = useCallback((bounds: L.LatLngBounds, feature: Feature | undefined, layer: L.Path) => {
-        setIsDashboardOpen(false);
+        if (feature) syncSelection(feature);
         handleParcelleSelect(bounds, feature, layer);
-    }, [handleParcelleSelect]);
+    }, [handleParcelleSelect, syncSelection]);
     const handleTogglePoi = useCallback((type: string, enabled: boolean) => {
         setEnabledPoiTypes(prev => enabled ? [...prev, type] : prev.filter(t => t !== type));
     }, []);
@@ -88,6 +91,8 @@ const Layers = ({ initialPlacement, initialCoordinates }: LayersProps) => {
                 hidden={isMapCovered}
             />
 
+            <ProjectAddressLayer projectId={addressProjectId} hidden={isMapCovered} />
+
             <div className="map-overlay fixed inset-0 z-[1001] flex flex-col pointer-events-none">
                 <header className="absolute inset-x-0 top-0 z-[1004] pointer-events-none">
                     <NoScrollZone>
@@ -116,7 +121,7 @@ const Layers = ({ initialPlacement, initialCoordinates }: LayersProps) => {
                 )}
 
                 {selectedParcelle && !isMapCovered && (
-                    <div className="absolute inset-0 z-[1002] pointer-events-none p-6 flex flex-col justify-end">
+                    <div className="absolute inset-0 z-[1002] pointer-events-none flex flex-col justify-end p-3 pb-[calc(4.75rem+env(safe-area-inset-bottom))] md:p-6">
                         <div className="pointer-events-auto w-full max-w-4xl mx-auto rounded-2xl border border-black/[0.08] shadow-2xl animate-in slide-in-from-bottom-10 glass overflow-hidden dark:border-white/10">
                             <NoScrollZone>
                                 <ParcelInfoPanel
@@ -140,6 +145,8 @@ const Layers = ({ initialPlacement, initialCoordinates }: LayersProps) => {
                             onTogglePoi={handleTogglePoi}
                             currentZoom={viewport.zoom}
                             minZoomForPois={MIN_ZOOM_FOR_POIS}
+                            addressProjectId={addressProjectId}
+                            onAddressProjectChange={setAddressProjectId}
                         />
                     </NoScrollZone>
                 </div>}

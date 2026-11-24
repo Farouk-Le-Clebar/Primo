@@ -1,4 +1,6 @@
-import { IsInt, IsNotEmpty, IsPositive, IsString, MaxLength } from "class-validator";
+import { IsBoolean, IsEmail, IsIn, IsInt, IsNotEmpty, IsOptional, IsPositive, IsString, IsUUID, MaxLength } from "class-validator";
+
+export const DOCUMENT_CATEGORIES = ["mandat", "diagnostic", "plan", "photo", "autre"] as const;
 
 export type CreateProjectDto = {
     name: string;
@@ -12,12 +14,34 @@ export type AddPlotToProjectDto = {
     adress: string;
     coordinates: string;
     geometry: any;
+    parcelProperties?: Record<string, any>;
+    addressProperties?: Record<string, any>;
 };
 
-export type InviteUserDto = {
-    projectId: string;
-    email: string;
-};
+export class InviteUserDto {
+  @IsUUID()
+  projectId: string;
+
+  @IsEmail()
+  @MaxLength(255)
+  email: string;
+}
+
+export class InvitationTokenDto {
+  @IsString()
+  @IsNotEmpty()
+  token: string;
+}
+
+export class RespondInvitationByTokenDto extends InvitationTokenDto {
+  @IsBoolean()
+  accept: boolean;
+}
+
+export class RespondInvitationDto {
+  @IsBoolean()
+  accept: boolean;
+}
 
 export class RequestDocumentUploadDto {
   @IsString()
@@ -32,4 +56,22 @@ export class RequestDocumentUploadDto {
   @IsInt()
   @IsPositive()
   size: number;
+
+  @IsOptional()
+  @IsIn(DOCUMENT_CATEGORIES)
+  category?: string;
+
+  @IsOptional()
+  @IsUUID()
+  plotId?: string;
+}
+
+export class UpdateDocumentMetaDto {
+  @IsOptional()
+  @IsIn(DOCUMENT_CATEGORIES)
+  category?: string;
+
+  @IsOptional()
+  @IsUUID()
+  plotId?: string | null;
 }

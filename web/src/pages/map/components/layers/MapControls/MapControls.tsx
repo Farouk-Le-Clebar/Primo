@@ -22,6 +22,8 @@ interface MapControlsProps {
     onTogglePoi: (type: string, enabled: boolean) => void;
     currentZoom: number;
     minZoomForPois: number;
+    addressProjectId: string;
+    onAddressProjectChange: (projectId: string) => void;
 }
 
 export default function MapControls({
@@ -33,7 +35,9 @@ export default function MapControls({
     enabledPoiTypes,
     onTogglePoi,
     currentZoom,
-    minZoomForPois
+    minZoomForPois,
+    addressProjectId,
+    onAddressProjectChange
 }: MapControlsProps) {
     const [isPreferenceOpen, setIsPreferenceOpen] = useState(false);
     const [isPoiOpen, setIsPoiOpen] = useState(false);
@@ -46,6 +50,7 @@ export default function MapControls({
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             const target = event.target as Node;
+            if (target instanceof Element && target.closest("#headlessui-portal-root")) return;
 
             if (preferenceRef.current && !preferenceRef.current.contains(target)) {
                 setIsPreferenceOpen(false);
@@ -69,7 +74,7 @@ export default function MapControls({
     };
 
     return (
-        <div className="absolute top-6 right-6 pointer-events-auto flex flex-col gap-2 items-end z-[1002]">
+        <div className="absolute top-4 right-3 pointer-events-auto flex flex-col gap-2 items-end z-[1002] sm:top-6 sm:right-6">
 
             <div className="flex flex-col rounded-xl shadow-md glass border border-black/5 dark:border-white/10 overflow-hidden text-gray-600 dark:text-gray-300">
                 <button
@@ -89,7 +94,7 @@ export default function MapControls({
                 </button>
             </div>
 
-            <div ref={preferenceRef} className="relative flex items-center">
+            <div ref={preferenceRef} data-tour="map-layers" className="relative flex items-center">
                 <div className="absolute right-full mr-3 top-0">
                     <MapPreference
                         isOpen={isPreferenceOpen}
@@ -120,7 +125,7 @@ export default function MapControls({
                 </div>
             </div>
 
-            <div ref={aiRef} className="relative flex items-center">
+            <div ref={aiRef} data-tour="map-ai" className="relative flex items-center">
                 <div className="absolute right-full mr-3 top-0">
                     <div className={`transition-all duration-300 origin-right ${isAiOpen ? "opacity-100 scale-100 pointer-events-auto" : "opacity-0 scale-95 pointer-events-none"
                         }`}>
@@ -145,7 +150,7 @@ export default function MapControls({
                 </div>
             </div>
 
-            <div ref={poiRef} className="relative flex items-center">
+            <div ref={poiRef} data-tour="map-poi" className="relative flex items-center">
                 <div className="absolute right-full mr-3 top-0">
                     <div className={`transition-all duration-300 origin-right ${isPoiOpen ? "opacity-100 scale-100 pointer-events-auto" : "opacity-0 scale-95 pointer-events-none"
                         }`}>
@@ -155,6 +160,8 @@ export default function MapControls({
                                 onTogglePoi={onTogglePoi}
                                 currentZoom={currentZoom}
                                 minZoomForPois={minZoomForPois}
+                                addressProjectId={addressProjectId}
+                                onAddressProjectChange={onAddressProjectChange}
                             />
                         )}
                     </div>
