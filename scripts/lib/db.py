@@ -35,8 +35,8 @@ def literal(text: str) -> str:
 
 
 @contextmanager
-def copy_into(table: str, columns: list[str]) -> Iterator[TextIO]:
-    command = f"\\copy {table} ({', '.join(columns)}) from stdin with (format csv)"
+def copy_into(table: str, columns: list[str], delimiter: str = ",") -> Iterator[TextIO]:
+    command = f"\\copy {table} ({', '.join(columns)}) from stdin with (format csv, delimiter {literal(delimiter)})"
     process = subprocess.Popen(_psql("-c", command), stdin=subprocess.PIPE, text=True, encoding="utf-8")
     assert process.stdin is not None
     try:
@@ -72,3 +72,7 @@ def clear_state(source: str) -> None:
 
 def is_empty(table: str) -> bool:
     return value(f"select not exists (select 1 from {table} limit 1)") == "t"
+
+
+def table_exists(table: str) -> bool:
+    return value(f"select to_regclass({literal(table)}) is not null") == "t"
