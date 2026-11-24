@@ -7,6 +7,7 @@ import DvfBody from "./summary/cards/DvfBody";
 import PermitsBody from "./summary/cards/PermitsBody";
 import PluBody from "./summary/cards/PluBody";
 import RisksBody from "./summary/cards/RisksBody";
+import HabitatSummaryCards from "./summary/HabitatSummaryCards";
 import ParcelKeyFigures from "./summary/ParcelKeyFigures";
 import SummaryCard from "./summary/SummaryCard";
 import { useParcelSummary } from "./summary/useParcelSummary";
@@ -97,6 +98,7 @@ export default function ParcelSummary({ feature, banId, onNavigate }: ParcelSumm
         >
           <PermitsBody permits={permits.data} />
         </SummaryCard>
+        <HabitatSummaryCards feature={feature} onNavigate={onNavigate} />
       </div>
     </div>
   );
