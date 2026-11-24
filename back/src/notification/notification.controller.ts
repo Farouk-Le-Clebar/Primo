@@ -54,7 +54,9 @@ export class NotificationController {
   }
 
   @Post('seed-welcome')
-  async seedWelcome(): Promise<{ sent: number; skipped: number }> {
-    return this.notificationService.sendWelcomeToExistingUsers();
+  async seedWelcome(
+    @Request() req: any,
+  ): Promise<{ sent: number; skipped: number }> {
+    return this.notificationService.sendWelcomeToExistingUsers(req.user.id);
   }
 }

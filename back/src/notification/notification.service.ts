@@ -115,10 +115,13 @@ export class NotificationService {
     });
   }
 
-  async sendWelcomeToExistingUsers(): Promise<{
+  async sendWelcomeToExistingUsers(requesterId: string): Promise<{
     sent: number;
     skipped: number;
   }> {
+    const requester = await this.userRepository.findOneBy({ id: requesterId });
+    if (!requester?.isAdmin)
+      throw new ForbiddenException('Action réservée aux administrateurs.');
     const alreadyNotified = await this.notificationRepository
       .createQueryBuilder('n')
       .select('n.userId')
