@@ -1,3 +1,5 @@
+import { MessageSquareDashed } from "lucide-react";
+import EmptyState from "../../../../ui/EmptyState";
 import { Trash2 } from "lucide-react";
 import {
     Table,
@@ -74,9 +76,7 @@ const FeedbacksTable = ({ feedbacks, isWorking, isDeletePending, onDelete }: Fee
             </Table>
 
             {feedbacks.length === 0 && !isWorking && (
-                <div className="text-center py-10 text-gray-500 dark:text-gray-400 italic">
-                    Aucun retour utilisateur trouvé.
-                </div>
+                <EmptyState icon={MessageSquareDashed} title="Aucun retour pour l’instant" description="Les suggestions et signalements envoyés depuis l’app s’afficheront ici." size="sm" framed={false} />
             )}
         </div>
     );

@@ -28,6 +28,12 @@ export class ProjectPlots {
     @Column({ type: 'text', nullable: true })
     aiNotes: string | null;
 
+    @Column({ type: 'uuid', nullable: true })
+    addedBy: string | null;
+
+    @Column({ type: 'timestamp', nullable: true })
+    addedAt: Date | null;
+
     // Parcel identity (cadastre).
     @Column({ type: 'varchar', length: 5, nullable: true })
     communeCode: string | null;
@@ -74,6 +80,9 @@ export class ProjectPlots {
 
     @Column({ type: 'jsonb', nullable: true, select: false })
     plu: Record<string, any> | null;
+
+    @Column({ type: 'jsonb', nullable: true, select: false })
+    coproprietes: Record<string, any>[] | null;
 
     @Column({ type: 'jsonb', nullable: true, select: false })
     buildings: Record<string, any>[] | null;

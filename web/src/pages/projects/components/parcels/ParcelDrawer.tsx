@@ -65,8 +65,8 @@ const ParcelDrawer = ({ plot, isDeleting, onClose, onShowOnMap, onDelete }: Parc
 
     return (
         <>
-            <div className="fixed inset-x-0 bottom-0 top-14 z-30 bg-black/20 dark:bg-black/40" onClick={onClose} />
-            <aside className="fixed bottom-0 right-0 top-14 z-30 flex w-full max-w-[460px] flex-col border-l border-gray-100 bg-white text-gray-800 shadow-xl dark:border-white/10 dark:bg-[#171717] dark:text-gray-200">
+            <div className="animate-fade-in fixed inset-x-0 top-14 z-30 bottom-[calc(4rem+env(safe-area-inset-bottom))] md:bottom-0 bg-[#1c1c1e]/25 backdrop-blur-[3px] dark:bg-black/50" onClick={onClose} />
+            <aside className="fixed right-0 top-14 z-30 bottom-[calc(4rem+env(safe-area-inset-bottom))] md:bottom-0 flex w-full max-w-[460px] flex-col border-l border-gray-100 bg-white text-gray-800 shadow-xl dark:border-white/10 dark:bg-[#171717] dark:text-gray-200">
                 <header className="flex items-start justify-between gap-4 border-b border-gray-100 px-5 py-4 dark:border-white/5">
                     <div className="min-w-0">
                         <p className="text-xs font-medium text-gray-500 dark:text-[#999999]">Parcelle {cadastralRef(plot)}</p>

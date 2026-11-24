@@ -17,13 +17,15 @@ import { AutorisationsModule } from 'src/autorisations/autorisations.module';
 import { ProximiteModule } from 'src/proximite/proximite.module';
 import { ProjectPlotComparison } from 'src/database/project-plot-comparison.entity';
 import { NotificationModule } from 'src/notification/notification.module';
+import { HabitatModule } from 'src/habitat/habitat.module';
+import { ProjectNotes } from 'src/database/project-notes.entity';
 import { PlotEnrichmentService } from './plot-enrichment.service';
 import { ProjectAddress } from 'src/database/project-address.entity';
 import { ProjectAddressesController } from './project-addresses.controller';
 import { ProjectAddressesService } from './project-addresses.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Projects, ProjectPlots, ProjectMembers, ProjectInvite, ProjectDocuments, ProjectPlotComparison, ProjectAddress, User]), JwtModule, MailModule, StorageModule, DvfModule, DpeModule, AutorisationsModule, ProximiteModule, NotificationModule],
+  imports: [TypeOrmModule.forFeature([Projects, ProjectPlots, ProjectMembers, ProjectInvite, ProjectDocuments, ProjectPlotComparison, ProjectAddress, ProjectNotes, User]), JwtModule, MailModule, StorageModule, DvfModule, DpeModule, AutorisationsModule, ProximiteModule, NotificationModule, HabitatModule],
   controllers: [ProjectsController, ProjectAddressesController],
   providers: [ProjectsService, PlotEnrichmentService, ProjectAddressesService],
   exports: [ProjectsService]

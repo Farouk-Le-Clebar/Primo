@@ -9,6 +9,7 @@ import NavbarLinks from "./NavbarLinks";
 import NavbarActions from "./NavbarActions";
 import MapSearch from "../Search/MapSearch";
 import { useMapPanels } from "../../../../../hooks/useMapPanels";
+import { usePageTour } from "../../../../../hooks/usePageTour";
 import { ROUTES } from "../../../../../constants/routes";
 
 // ICONS
@@ -44,6 +45,7 @@ export default function Navbar({
   const routePanel = useOutlet();
   const { isAnyPanelOpen } = panels;
   const isOverlayOpen = isAnyPanelOpen || isParcelDashboardOpen;
+  usePageTour("map", !isOverlayOpen);
 
   useEffect(() => {
     onPanelsOpenChange?.(isAnyPanelOpen);
@@ -106,21 +108,21 @@ export default function Navbar({
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-40 flex h-14 w-full items-center rounded-none border-b border-black/[0.08] px-6 pointer-events-auto dark:border-white/10">
-        {!isOverlayOpen && <div aria-hidden="true" className="glass absolute inset-0 -z-10" />}
+      <nav className="fixed top-0 left-0 right-0 z-40 flex h-14 w-full items-center rounded-none border-b border-[#1c1c1e]/10 px-3 pointer-events-auto sm:px-6 dark:border-transparent">
+        <div aria-hidden="true" className="absolute inset-0 -z-10 bg-white dark:bg-[#1c1c1e]/82 dark:backdrop-blur-[24px]" />
         <Link
           to={ROUTES.map}
           aria-label="Primo"
-          className="flex shrink-0 items-center gap-2"
+          className="group flex shrink-0 items-center gap-2"
         >
-          <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-black dark:bg-white">
+          <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#1c1c1e] transition-transform duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:rotate-45 dark:bg-white">
             <PrimoIcon className="h-4 w-4 fill-current text-white dark:invert" />
           </span>
-          <span className="text-lg font-semibold tracking-tight text-gray-900 dark:text-white">
+          <span className="hidden text-lg tracking-[-0.45px] text-[#1c1c1e] sm:inline dark:text-white">
             Primo
           </span>
         </Link>
-        <div className="absolute left-1/2 -translate-x-1/2">
+        <div className="absolute left-1/2 hidden -translate-x-1/2 md:block">
           <NavbarLinks
             panels={panels}
             isSearchOpen={isSearchOpen}
@@ -130,6 +132,9 @@ export default function Navbar({
         <div className="ml-auto">
           <NavbarActions />
         </div>
+      </nav>
+      <nav className="fixed inset-x-0 bottom-0 z-40 flex border-t border-[#1c1c1e]/10 bg-white pb-[env(safe-area-inset-bottom)] pointer-events-auto md:hidden dark:border-white/10 dark:bg-[#1c1c1e]">
+        <NavbarLinks panels={panels} isSearchOpen={isSearchOpen} onOpenSearch={handleOpenSearch} stacked />
       </nav>
       {!isParcelDashboardOpen && (
         <MapSearch

@@ -1,7 +1,9 @@
+import { History } from "lucide-react";
+import EmptyState from "../../../../../ui/EmptyState";
 import { useState } from "react";
 import type { UserStatistic } from "../../../../../types/admin";
 import { formatDate } from "../../shared/statistics";
-import BentoCard from "../../../../map/components/layers/Dashboard/BentoCard";
+import BentoCard from "../../shared/BentoCard";
 import {
   Table,
   TableBody,
@@ -93,9 +95,8 @@ export default function UserConnectionsTable({
               <TableRow>
                 <TableCell
                   colSpan={7}
-                  className="text-center py-8 text-gray-500 dark:text-[#999999] italic"
                 >
-                  Aucun historique de connexion trouvé.
+                  <EmptyState icon={History} title="Aucune connexion enregistrée" description="L’historique apparaîtra à la prochaine connexion de cet utilisateur." size="sm" framed={false} />
                 </TableCell>
               </TableRow>
             )}

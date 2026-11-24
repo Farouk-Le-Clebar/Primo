@@ -5,6 +5,8 @@ import ParcelDetailedNavbar from "./ParcelDetailedNavbar";
 import ParcelPageHeader from "./ParcelPageHeader";
 import ParcelTabContent from "./ParcelTabContent";
 import { useLogementTarget } from "./useLogementTarget";
+import { useParcelUrlState } from "../../../../../hooks/useParcelUrlState";
+import { usePageTour } from "../../../../../hooks/usePageTour";
 
 type ParcelDetailedDashboardProps = {
     selectedParcelle: any;
@@ -15,7 +17,8 @@ export default function ParcelDetailedDashboard({
     selectedParcelle,
     onClose,
 }: ParcelDetailedDashboardProps) {
-    const [activeTab, setActiveTab] = useState("synthese");
+    const { activeTab, setActiveTab } = useParcelUrlState();
+    usePageTour("parcel");
 
     const [isSaveOpen, setIsSaveOpen] = useState(false);
     const properties = selectedParcelle?.feature?.properties;
@@ -41,6 +44,7 @@ export default function ParcelDetailedDashboard({
 
             <div
                 key={activeTab}
+                data-tour="parcel-content"
                 className="min-h-0 flex-1 w-full overflow-y-auto px-4 py-4 sm:px-5 sm:py-5 lg:px-6 scrollbar-custom"
             >
                 <div className="w-full">
@@ -49,6 +53,7 @@ export default function ParcelDetailedDashboard({
                         activeTab={activeTab}
                         feature={selectedParcelle?.feature}
                         banId={banId}
+                        address={address}
                         target={target}
                         onTargetChange={setTarget}
                         onOpenTarget={openTarget}

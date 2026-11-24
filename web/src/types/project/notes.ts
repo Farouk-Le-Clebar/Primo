@@ -4,6 +4,9 @@ export type ProjectNote = {
     title: string;
     content: string;
     version: number;
+    isPinned: boolean;
+    plotId: string | null;
+    authorName?: string | null;
     createdBy: string | null;
     updatedBy: string | null;
     createdAt: string;

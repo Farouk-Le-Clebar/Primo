@@ -1,46 +1,41 @@
 import { useMap } from "react-leaflet";
+import { Navigation } from "lucide-react";
+import Modal from "../../../../../ui/Modal";
+import ModalButton from "../../../../../ui/ModalButton";
 
 type ModalRedirectAiCoordinatesProps = {
-    coordinates: string;
-    onClose: () => void;
+  coordinates: string;
+  onClose: () => void;
+};
+
+type AiCoordinates = { lat: number; lon: number; name?: string };
+
+export default function ModalRedirectAiCoordinates({ coordinates, onClose }: ModalRedirectAiCoordinatesProps) {
+  const map = useMap();
+  const target: AiCoordinates = JSON.parse(coordinates);
+
+  const handleRedirect = () => {
+    map.flyTo([target.lat, target.lon], 12, { duration: 2 });
+    onClose();
+  };
+
+  return (
+    <Modal
+      title="Aller à cet endroit ?"
+      subtitle="Proposition de l’assistant Primo"
+      icon={Navigation}
+      size="sm"
+      onClose={onClose}
+      footer={
+        <>
+          <ModalButton variant="secondary" onClick={onClose}>Rester ici</ModalButton>
+          <ModalButton icon={Navigation} onClick={handleRedirect}>Y aller</ModalButton>
+        </>
+      }
+    >
+      <p className="text-sm text-[#52525b] dark:text-[#d4d4d8]">
+        La carte va se déplacer vers <span className="font-semibold text-[#1c1c1e] dark:text-white">{target.name || "ces coordonnées"}</span>.
+      </p>
+    </Modal>
+  );
 }
-
-const ModalRedirectAiCoordinates = ({ coordinates, onClose }: ModalRedirectAiCoordinatesProps) => {
-    const coordsObj = JSON.parse(coordinates);
-    const map = useMap();
-
-    const handleRedirect = () => {
-        map.flyTo([coordsObj.lat, coordsObj.lon], 12, {
-            duration: 2
-        });
-        onClose();
-    }
-
-    return (
-        <div className="font-UberMove text-gray-800 fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-            <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-                <h2 className="text-2xl font-bold mb-4">Redirection</h2>
-                <p className="mb-4 text-sm">
-                    L'IA Primo souhaite vous rediriger vers <span className="font-semibold">{coordsObj.name || "ces coordonnées"}</span>
-                </p>
-
-                <div className="flex justify-end">
-                    <button
-                        className="cursor-pointer px-4 py-2 bg-[#388160] text-white rounded-lg hover:bg-[#2a6b4a] transition-colors duration-200"
-                        onClick={handleRedirect}
-                    >
-                        Accepter
-                    </button>
-                    <button
-                        className="cursor-pointer ml-2 px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors duration-200"
-                        onClick={onClose}
-                    >
-                        Refuser
-                    </button>
-                </div>
-            </div>
-        </div>
-    );
-}
-
-export default ModalRedirectAiCoordinates;

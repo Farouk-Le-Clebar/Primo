@@ -1,5 +1,5 @@
 import { AreaChart, BarChart } from "@tremor/react";
-import BentoCard from "../../../map/components/layers/Dashboard/BentoCard";
+import BentoCard from "../shared/BentoCard";
 
 type SeriesPoint = { date: string; Total: number };
 

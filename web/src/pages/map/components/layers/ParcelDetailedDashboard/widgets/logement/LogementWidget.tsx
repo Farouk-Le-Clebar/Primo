@@ -8,6 +8,7 @@ import { rentalOutlook } from "./climateLaw";
 import LogementBuilding from "./LogementBuilding";
 import LogementKpis from "./LogementKpis";
 import LogementMatches from "./LogementMatches";
+import LogementRental from "./LogementRental";
 import LogementTargetForm from "./LogementTargetForm";
 import LogementUnits from "./LogementUnits";
 import { matchDpe, matchDvf } from "./matching";
@@ -33,6 +34,8 @@ export default function LogementWidget({ feature, banId, target, onTargetChange 
   const bestDpe = dpeMatches[0]?.item ?? null;
   const surface = parseSurface(target.surface) ?? bestDpe?.surface ?? null;
   const valuation = useMemo(() => estimateValue(dvfRecords, surface, target.type), [dvfRecords, surface, target.type]);
+  const pieces = dvfMatches[0]?.item.locals.find((local) => local.rooms)?.rooms ?? null;
+  const year = Number(bestDpe?.raw.annee_construction) || null;
 
   if (isLoading) return <WidgetLoading label="Rassemblement des données du logement…" />;
 
@@ -51,6 +54,7 @@ export default function LogementWidget({ feature, banId, target, onTargetChange 
           <>
             <p className="text-sm font-semibold text-gray-900 dark:text-white">{targetSummary(target)}</p>
             <LogementMatches dpeMatches={dpeMatches} dvfMatches={dvfMatches} />
+            <LogementRental feature={feature} target={target} surface={surface} pieces={pieces} year={year} value={valuation?.mid ?? null} />
             <LogementBuilding buildings={buildings} dpeEntries={dpeMatches.map((m) => m.item)} />
             <SourceNote>
               Rapprochements automatiques à partir des DPE (ADEME), des ventes DVF et de la BD TOPO : à

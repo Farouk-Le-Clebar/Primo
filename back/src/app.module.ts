@@ -6,6 +6,10 @@ import { Projects } from './database/project.entity';
 import { Notification } from './database/notification.entity';
 import { DvfMutation } from './database/dvf.entity';
 import { DpeEntity } from './database/dpe.entity';
+import { Copropriete } from './database/copropriete.entity';
+import { RplsLogement } from './database/rpls.entity';
+import { LoyerCommune } from './database/loyer-commune.entity';
+import { EncadrementLoyer } from './database/encadrement-loyer.entity';
 import { AddokProxyMiddleware } from './api/addok.middleware';
 import { AuthModule } from './auth/auth.module';
 import { GeoServerProxyMiddleware } from './api/geoserver.middleware';
@@ -15,6 +19,8 @@ import { NotificationModule } from './notification/notification.module';
 import { FeedbackModule } from './feedback/feedback.module';
 import { DvfModule } from './dvf/dvf.module';
 import { DpeModule } from './dpe/dpe.module';
+import { HabitatModule } from './habitat/habitat.module';
+import { EnvironnementModule } from './environnement/environnement.module';
 import { VerifiedUser } from './database/verified-users.entity';
 import { MailModule } from './mail/mail.module';
 import { UserStatistics } from './database/user-statistics.entity';
@@ -35,6 +41,8 @@ import { ProjectInvite } from './database/project-invite.entity';
 import { AutorisationsModule } from './autorisations/autorisations.module';
 import { ProjectNotes } from './database/project-notes.entity';
 import { NotesModule } from './notes/notes.module';
+import { ProjectMilestones } from './database/project-milestones.entity';
+import { MilestonesModule } from './milestones/milestones.module';
 
 @Module({
   imports: [
@@ -50,29 +58,64 @@ import { NotesModule } from './notes/notes.module';
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DATABASE,
-      entities: [User, SearchHistory, Projects, DvfMutation, DpeEntity, Notification, VerifiedUser, ResetPassword, UserStatistics, Feedback, ProjectPlots, ProjectMembers, ProjectDocuments, ProjectInvite, ProjectPlotComparison, ProjectNotes, ProjectAddress],
+      entities: [
+        User,
+        SearchHistory,
+        Projects,
+        DvfMutation,
+        DpeEntity,
+        Copropriete,
+        RplsLogement,
+        LoyerCommune,
+        EncadrementLoyer,
+        Notification,
+        VerifiedUser,
+        ResetPassword,
+        UserStatistics,
+        Feedback,
+        ProjectPlots,
+        ProjectMembers,
+        ProjectDocuments,
+        ProjectInvite,
+        ProjectPlotComparison,
+        ProjectNotes,
+        ProjectMilestones,
+        ProjectAddress,
+      ],
       synchronize: true,
     }),
     TypeOrmModule.forRoot({
       name: 'bdtopo',
       type: 'postgres',
-        
+
       host: process.env.POSTGRES_HOST,
-        
+
       port: process.env.POSTGRES_PORT
         ? parseInt(process.env.POSTGRES_PORT, 10)
         : 5432,
-        
+
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
-        
+
       database: process.env.BDTOPO_DATABASE ?? 'bdtopo',
-        
+
       entities: [],
       synchronize: false,
-
     }),
-    TypeOrmModule.forFeature([User, SearchHistory, Projects, DvfMutation, DpeEntity, Notification, VerifiedUser, ResetPassword, UserStatistics, Feedback, ProjectPlots, ProjectMembers]),
+    TypeOrmModule.forFeature([
+      User,
+      SearchHistory,
+      Projects,
+      DvfMutation,
+      DpeEntity,
+      Notification,
+      VerifiedUser,
+      ResetPassword,
+      UserStatistics,
+      Feedback,
+      ProjectPlots,
+      ProjectMembers,
+    ]),
     JwtModule.registerAsync({
       imports: [ConfigModule],
       global: true,
@@ -82,12 +125,29 @@ import { NotesModule } from './notes/notes.module';
         signOptions: { expiresIn: '1h' },
       }),
     }),
-    TypeOrmModule.forFeature([User, SearchHistory, Projects, DvfMutation, DpeEntity, Notification, VerifiedUser, ResetPassword, UserStatistics, Feedback, ProjectPlots, ProjectMembers, ProjectDocuments, ProjectInvite]),
+    TypeOrmModule.forFeature([
+      User,
+      SearchHistory,
+      Projects,
+      DvfMutation,
+      DpeEntity,
+      Notification,
+      VerifiedUser,
+      ResetPassword,
+      UserStatistics,
+      Feedback,
+      ProjectPlots,
+      ProjectMembers,
+      ProjectDocuments,
+      ProjectInvite,
+    ]),
     AuthModule,
     UserModule,
     MapColorsModule,
     DvfModule,
     DpeModule,
+    HabitatModule,
+    EnvironnementModule,
     AutorisationsModule,
     NotificationModule,
     FeedbackModule,
@@ -96,6 +156,7 @@ import { NotesModule } from './notes/notes.module';
     AiModule,
     ComparisonsModule,
     NotesModule,
+    MilestonesModule,
     ProximiteModule,
   ],
 })

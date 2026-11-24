@@ -1,15 +1,49 @@
+import type { Geometry } from "geojson";
 import axios from "axios";
 import { getAuthHeaders } from "../utils/auth";
 
 const apiUrl = window?._env_?.API_URL;
 
+export type NotificationType =
+    | "PROJECT_INVITATION"
+    | "PROJECT_UPDATE"
+    | "PROJECT_ACTIVITY"
+    | "DOCUMENT_UPDATE"
+    | "SYSTEM";
+
+export type NotificationMetadata = {
+    kind?: "plot" | "note" | "document" | "member" | "milestone";
+    projectId?: string;
+    projectName?: string;
+    actorName?: string;
+    inviterName?: string;
+    memberId?: string;
+    plotRef?: string;
+    address?: string | null;
+    surfaceM2?: number | null;
+    zone?: string | null;
+    dpe?: string | null;
+    geometry?: Geometry | string | null;
+    title?: string;
+    excerpt?: string;
+    noteId?: string;
+    milestoneId?: string;
+    comparisonId?: string;
+    tab?: string;
+    documentId?: string;
+    fileName?: string;
+    mimetype?: string;
+    size?: number;
+    role?: string;
+};
+
 export interface NotificationResponse {
     id: string;
     userId: string;
-    type: string;
+    type: NotificationType;
     title: string;
     message: string;
-    metadata: Record<string, any> | null;
+    metadata: NotificationMetadata | null;
     isRead: boolean;
     createdAt: string;
 }

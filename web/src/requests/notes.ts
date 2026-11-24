@@ -47,3 +47,11 @@ export const deleteProjectNote = async (projectId: string, noteId: string) => {
             throw error.response?.data ?? error;
         });
 }
+
+export const updateProjectNoteMeta = async (projectId: string, noteId: string, payload: { isPinned?: boolean; plotId?: string | null }): Promise<ProjectNote> => {
+    return axios.patch(`${apiUrl}/projects/${projectId}/notes/${noteId}/meta`, payload, { headers })
+        .then((response) => response.data)
+        .catch((error) => {
+            throw error.response?.data ?? error;
+        });
+};

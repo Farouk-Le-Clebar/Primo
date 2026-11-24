@@ -1,215 +1,97 @@
-import { Table, TableBody, TableCell, TableHead, TableHeaderCell, TableRow, TextInput, Card, Title, Text, ProgressBar } from '@tremor/react';
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useRef, useState } from "react";
+import EmptyState from "../../../../ui/EmptyState";
 import { useParams } from "react-router-dom";
-import { Search, Trash, X, Check, Download, Eye, FileText, FileImage, File } from "lucide-react";
-import { useState } from 'react';
-import { toast } from 'react-hot-toast';
-import LoadingPrimoLogo from "../../../../components/animations/LoadingPrimoLogo";
-import { deleteDocumentFromProject, getDocumentDownloadUrl, getDocumentsOfProject, getStorageUsage } from "../../../../requests/projects";
-import type { ProjectDocument } from "../../../../types/project/documents";
-import AddDocument from './AddDocument';
-import DocumentViewer from './DocumentViewer';
+import { FileUp, Search, SearchX, Upload } from "lucide-react";
+import FilterChips from "../ui/FilterChips";
+import { useProjectPlots } from "../dashboard/useProjectData";
+import { plotTitle } from "../shared/plotInsights";
+import DocumentDropzone, { ACCEPTED_TYPES } from "./DocumentDropzone";
+import DocumentPreview from "./DocumentPreview";
+import DocumentPreviewEmpty from "./DocumentPreviewEmpty";
+import DocumentRow from "./DocumentRow";
+import DocumentViewer from "./DocumentViewer";
+import { useDocuments } from "./useDocuments";
 
-const formatSize = (size: number) => {
-    if (size < 1024)
-        return `${size} o`;
-    if (size < 1024 * 1024)
-        return `${(size / 1024).toFixed(1)} Ko`;
-    if (size < 1024 * 1024 * 1024)
-        return `${(size / (1024 * 1024)).toFixed(1)} Mo`;
-    return `${(size / (1024 * 1024 * 1024)).toFixed(1)} Go`;
-};
+const HEAD = "shrink-0 text-[11px] font-semibold text-[#82828c]";
 
-const DocumentIcon = ({ documentType }: { documentType: string }) => {
-    const className = "w-5 h-5 text-gray-500 dark:text-gray-400 shrink-0";
-    if (documentType === "image")
-        return <FileImage className={className} />;
-    if (documentType === "pdf" || documentType === "document")
-        return <FileText className={className} />;
-    return <File className={className} />;
-};
+export default function DocumentsTab() {
+  const { projectId } = useParams<{ projectId: string }>();
+  const docs = useDocuments(projectId);
+  const { data: plots = [] } = useProjectPlots(projectId);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [viewing, setViewing] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const selected = docs.documents.find((document) => document.id === selectedId) ?? docs.visible[0] ?? null;
+  const plotLabel = (plotId: string | null) => {
+    const plot = plots.find((item) => item.id === plotId);
+    return plot ? plotTitle(plot) : null;
+  };
 
-const DocumentsTab = () => {
-    const { projectId } = useParams();
-    const [searchQuery, setSearchQuery] = useState("");
-    const [idToDelete, setIdToDelete] = useState<string | null>(null);
-    const [viewedDocument, setViewedDocument] = useState<ProjectDocument | null>(null);
-    const queryClient = useQueryClient();
+  const handleFiles = (files: File[]) => files.forEach((file) => docs.upload.mutate(file));
 
-    const { data: documents, isPending } = useQuery({
-        queryKey: ['project', projectId, 'documents'],
-        queryFn: () => getDocumentsOfProject(projectId!),
-        enabled: !!projectId,
-    });
+  if (docs.isPending || !projectId) return <div className="primo-card h-[420px] animate-pulse motion-reduce:animate-none" />;
 
-    const { data: storageUsage } = useQuery({
-        queryKey: ['user', 'storage'],
-        queryFn: getStorageUsage,
-    });
-
-    const storagePercent = storageUsage ? Math.min(100, (storageUsage.used / storageUsage.quota) * 100) : 0;
-
-    const { mutate: deleteDocumentMutation } = useMutation({
-        mutationFn: (documentId: string) => deleteDocumentFromProject(projectId!, documentId),
-        onSuccess: () => {
-            setIdToDelete(null);
-            queryClient.invalidateQueries({ queryKey: ['project', projectId, 'documents'] });
-            queryClient.invalidateQueries({ queryKey: ['user', 'storage'] });
-            toast.success("Document supprimé avec succès !");
-        },
-        onError: (err: Error) => {
-            setIdToDelete(null);
-            toast.error(err.message);
-        }
-    });
-
-    const downloadDocument = async (documentId: string) => {
-        try {
-            const url = await getDocumentDownloadUrl(projectId!, documentId);
-            window.open(url, "_blank", "noopener,noreferrer");
-        } catch (err) {
-            toast.error((err as Error).message);
-        }
-    };
-
-    const filteredDocuments = documents?.filter((document: ProjectDocument) =>
-        document.documentName.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-
-    if (isPending) {
-        return (
-            <div className='flex items-center justify-center w-full h-full bg-transparent dark:bg-[#0A0A0A] transition-colors duration-200'>
-                <LoadingPrimoLogo className="h-10 w-10 dark:invert" />
+  return (
+    <div className="flex flex-col gap-4">
+      <div className="flex flex-wrap items-center gap-2">
+        <FilterChips chips={docs.chips} active={docs.filter} onChange={docs.setFilter} layoutId="document-filters" />
+        <span className="flex-1" />
+        <label className="flex h-[34px] w-[198px] items-center gap-2 rounded-lg border border-[#1c1c1e]/12 bg-tremor-background px-3 text-[#82828c] dark:border-white/12 dark:bg-dark-tremor-background">
+          <Search className="h-3.5 w-3.5 shrink-0" />
+          <input value={docs.query} onChange={(event) => docs.setQuery(event.target.value)} placeholder="Nom du fichier…" className="min-w-0 flex-1 bg-transparent text-[13px] text-[#1c1c1e] outline-none placeholder:text-[#82828c] dark:text-white" />
+        </label>
+        <label className="group flex cursor-pointer items-center gap-1.5 rounded-lg bg-[#1c1c1e] px-3.5 py-2 text-[13px] font-semibold text-white transition-transform hover:scale-[1.02] active:scale-95 dark:bg-white dark:text-[#1c1c1e]">
+          <Upload className="h-3.5 w-3.5 transition-transform group-hover:-translate-y-0.5" />
+          Déposer
+          <input ref={fileInputRef} type="file" accept={ACCEPTED_TYPES} multiple className="hidden" onChange={(event) => handleFiles([...(event.target.files ?? [])])} />
+        </label>
+      </div>
+      <div className="grid grid-cols-1 items-start gap-4 xl:grid-cols-[minmax(0,1fr)_420px]">
+        <div className="primo-card animate-rise-in overflow-x-auto p-2">
+          <div className={docs.visible.length > 0 ? "min-w-[760px]" : ""}>
+            <div className={`gap-3 px-2.5 py-3 ${docs.visible.length > 0 ? "flex" : "hidden md:flex"}`}>
+              <span className={`flex-1 ${HEAD}`}>Fichier</span>
+              <span className={`w-[100px] ${HEAD}`}>Catégorie</span>
+              <span className={`w-[150px] ${HEAD}`}>Parcelle liée</span>
+              <span className={`w-[68px] ${HEAD}`}>Taille</span>
+              <span className={`w-[120px] ${HEAD}`}>Déposé par</span>
+              <span className="w-7" />
             </div>
-        );
-    }
-
-    return (
-        <div className="flex flex-col w-full h-full p-4 pl-10 pr-10 overflow-hidden bg-transparent dark:bg-[#0A0A0A] transition-colors duration-200">
-            <Card className="w-full h-80/100 scrollbar-custom flex-1 flex flex-col rounded-xl border border-gray-100 dark:border-white/5 transition-colors duration-200 ring-0 dark:ring-0">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-                    <div>
-                        <Title className="text-gray-900 dark:text-white flex items-center gap-2">
-                            Documents du projet
-                        </Title>
-                        <Text className="text-gray-500 dark:text-gray-400">
-                            Fichiers partagés avec les membres du projet (PDF, DOCX, PNG, JPG · 20 Mo max).
-                        </Text>
-                        {storageUsage && (
-                            <div className="mt-3 w-full sm:w-72">
-                                <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mb-1">
-                                    <span>Votre stockage</span>
-                                    <span>{formatSize(storageUsage.used)} / {formatSize(storageUsage.quota)}</span>
-                                </div>
-                                <ProgressBar value={storagePercent} color={storagePercent >= 90 ? "red" : "gray"} />
-                            </div>
-                        )}
-                    </div>
-
-                    <div className="flex items-center gap-3 w-full sm:w-auto">
-                        <div className="w-full sm:w-72">
-                            <TextInput
-                                icon={Search}
-                                placeholder="Rechercher un document..."
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                className="dark:bg-[#0A0A0A] dark:border-white/10 dark:text-white"
-                            />
-                        </div>
-                        <AddDocument projectId={projectId!} />
-                    </div>
-                </div>
-
-                <Table className="mt-2">
-                    <TableHead>
-                        <TableRow className="border-b border-gray-200 dark:border-white/5">
-                            <TableHeaderCell className="text-gray-500 dark:text-gray-400 text-left">Nom</TableHeaderCell>
-                            <TableHeaderCell className="text-gray-500 dark:text-gray-400 text-center">Taille</TableHeaderCell>
-                            <TableHeaderCell className="text-gray-500 dark:text-gray-400 text-center">Ajouté le</TableHeaderCell>
-                            <TableHeaderCell className="text-gray-500 dark:text-gray-400 text-right">Actions</TableHeaderCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {filteredDocuments?.map((document: ProjectDocument) => (
-                            <TableRow key={document.id} className="hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors cursor-default border-b border-gray-100 dark:border-white/5 last:border-none">
-                                <TableCell className="font-medium text-gray-900 dark:text-gray-200 text-left">
-                                    <button className="flex items-center gap-3 cursor-pointer hover:underline text-left"
-                                        onClick={() => setViewedDocument(document)}
-                                        title={`Ouvrir ${document.documentName}`}
-                                    >
-                                        <DocumentIcon documentType={document.documentType} />
-                                        <span className="truncate max-w-[400px]">{document.documentName}</span>
-                                    </button>
-                                </TableCell>
-                                <TableCell className="text-gray-600 dark:text-gray-400 text-center">
-                                    {formatSize(document.size)}
-                                </TableCell>
-                                <TableCell className="text-gray-600 dark:text-gray-400 text-center">
-                                    {new Date(document.createdAt).toLocaleDateString('fr-FR')}
-                                </TableCell>
-                                <TableCell className="text-right">
-                                    <div className="flex items-center justify-end gap-1 min-w-[124px] min-h-[36px]">
-                                        {idToDelete === document.id ? (
-                                            <div className="flex items-center justify-center gap-2">
-                                                <button className="w-6 h-6 flex items-center justify-center rounded-full hover:bg-gray-300 hover:text-white transition-colors hover:border-none cursor-pointer border border-gray-400 text-gray-400"
-                                                    onClick={() => setIdToDelete(null)}
-                                                    title="Annuler"
-                                                >
-                                                    <X className="w-5 h-5" />
-                                                </button>
-                                                <button
-                                                    className="w-6 h-6 flex items-center justify-center rounded-full bg-red-600 hover:bg-red-700 transition-colors cursor-pointer text-white"
-                                                    onClick={() => deleteDocumentMutation(document.id)}
-                                                    title="Confirmer la suppression"
-                                                >
-                                                    <Check className="w-5 h-5" />
-                                                </button>
-                                            </div>
-                                        ) : (
-                                            <>
-                                                <button className="w-9 h-9 flex cursor-pointer items-center justify-center p-2 outline-none focus:outline-none hover:scale-110 active:scale-95 transition-transform"
-                                                    onClick={() => setViewedDocument(document)}
-                                                    title="Aperçu"
-                                                >
-                                                    <Eye className='w-5 h-5 text-gray-700 dark:text-gray-300' />
-                                                </button>
-                                                <button className="w-9 h-9 flex cursor-pointer items-center justify-center p-2 outline-none focus:outline-none hover:scale-110 active:scale-95 transition-transform"
-                                                    onClick={() => downloadDocument(document.id)}
-                                                    title="Télécharger"
-                                                >
-                                                    <Download className='w-5 h-5 text-gray-700 dark:text-gray-300' />
-                                                </button>
-                                                <button className="w-9 h-9 flex cursor-pointer items-center justify-center p-2 outline-none focus:outline-none hover:scale-110 active:scale-95 transition-transform"
-                                                    onClick={() => setIdToDelete(document.id)}
-                                                    title="Supprimer le document"
-                                                >
-                                                    <Trash className='w-5 h-5 text-red-700' />
-                                                </button>
-                                            </>
-                                        )}
-                                    </div>
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-
-                {filteredDocuments?.length === 0 && (
-                    <div className="text-center py-10 text-gray-500 dark:text-gray-400 italic">
-                        {searchQuery ? "Aucun document ne correspond à votre recherche." : "Aucun document pour le moment."}
-                    </div>
-                )}
-            </Card>
-            {viewedDocument &&
-                <DocumentViewer
-                    projectId={projectId!}
-                    document={viewedDocument}
-                    onClose={() => setViewedDocument(null)}
-                    onDownload={() => downloadDocument(viewedDocument.id)}
+            {docs.visible.length === 0 && (docs.documents.length === 0 ? (
+              <div className="p-2"><EmptyState icon={FileUp} title="Aucun document partagé" description="Mandats, diagnostics, plans ou photos : déposez-les ici pour que toute l’équipe y ait accès." action={{ label: "Déposer un fichier", onClick: () => fileInputRef.current?.click(), icon: Upload }} /></div>
+            ) : (
+              <EmptyState icon={SearchX} title="Aucun document pour ce filtre" size="sm" framed={false} secondaryAction={{ label: "Voir tous les documents", onClick: () => { docs.setFilter("all"); docs.setQuery(""); } }} />
+            ))}
+            <div className="flex flex-col gap-0.5">
+              {docs.visible.map((document, index) => (
+                <DocumentRow
+                  key={document.id}
+                  document={document}
+                  index={index}
+                  plotLabel={plotLabel(document.plotId)}
+                  selected={selected?.id === document.id}
+                  onSelect={() => setSelectedId(document.id)}
+                  onCategory={(category) => docs.updateMeta.mutate({ id: document.id, meta: { category } })}
+                  onDelete={() => docs.remove.mutate(document.id)}
                 />
-            }
+              ))}
+            </div>
+            <DocumentDropzone progress={docs.progress} onFiles={handleFiles} />
+          </div>
         </div>
-    );
+        {!selected && <DocumentPreviewEmpty projectId={projectId} hasDocuments={docs.documents.length > 0} />}
+        {selected && (
+          <DocumentPreview
+            projectId={projectId}
+            document={selected}
+            plots={plots}
+            onOpen={() => setViewing(true)}
+            onDownload={() => void docs.download(selected)}
+            onLinkPlot={(plotId) => docs.updateMeta.mutate({ id: selected.id, meta: { plotId } })}
+          />
+        )}
+      </div>
+      {viewing && selected && <DocumentViewer projectId={projectId} document={selected} onClose={() => setViewing(false)} onDownload={() => void docs.download(selected)} />}
+    </div>
+  );
 }
-
-export default DocumentsTab;

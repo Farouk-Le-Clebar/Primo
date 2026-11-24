@@ -38,10 +38,10 @@ export default function ParcelSearchModal({ isOpen, onClose, navigationData, onN
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[2000] flex items-start justify-center pt-[15vh] px-4 animate-in fade-in duration-150" onClick={onClose}>
-      <div className="absolute inset-0 bg-black/60 dark:bg-black/80" />
-      <div className="relative w-full max-w-[600px] bg-white dark:bg-[#111111] rounded-xl shadow-2xl border border-gray-200 dark:border-[#232323] overflow-hidden" onClick={e => e.stopPropagation()}>
-        <div className="flex items-center px-4 py-3.5 border-b border-gray-100 dark:border-[#232323]">
+    <div className="animate-fade-in fixed inset-0 z-[2000] flex items-start justify-center px-4 pt-[15vh]" onClick={onClose}>
+      <div className="absolute inset-0 bg-[#1c1c1e]/40 backdrop-blur-[6px] dark:bg-black/60" />
+      <div className="animate-rise-in relative w-full max-w-[600px] overflow-hidden rounded-2xl border border-[#1c1c1e]/8 bg-white shadow-[0_16px_40px_rgba(0,0,0,0.16)] dark:border-white/10 dark:bg-[#1c1c1e] dark:shadow-[0_16px_40px_rgba(0,0,0,0.5)]" onClick={e => e.stopPropagation()}>
+        <div className="flex items-center px-4 py-3.5 border-b border-[#1c1c1e]/8 dark:border-white/8">
           <Search className="text-gray-400 dark:text-gray-500 mr-3" size={20} />
           <input
             autoFocus

@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
+import { User } from 'src/database/user.entity';
 import { ProjectAddress } from 'src/database/project-address.entity';
 import { CreateProjectAddressDto } from './project-address.dto';
 
@@ -9,13 +10,19 @@ export class ProjectAddressesService {
   constructor(
     @InjectRepository(ProjectAddress)
     private projectAddressRepository: Repository<ProjectAddress>,
+    @InjectRepository(User)
+    private usersRepository: Repository<User>,
   ) {}
 
-  async getAddressesOfProject(projectId: string): Promise<ProjectAddress[]> {
-    return this.projectAddressRepository.find({
+  async getAddressesOfProject(projectId: string): Promise<(ProjectAddress & { createdByName: string | null })[]> {
+    const addresses = await this.projectAddressRepository.find({
       where: { projectId },
       order: { createdAt: 'ASC' },
     });
+    const authorIds = [...new Set(addresses.map((address) => address.createdBy).filter((id): id is string => !!id))];
+    const authors = authorIds.length ? await this.usersRepository.findBy({ id: In(authorIds) }) : [];
+    const names = new Map(authors.map((author) => [author.id, `${author.firstName} ${author.surName}`.trim()]));
+    return addresses.map((address) => ({ ...address, createdByName: address.createdBy ? names.get(address.createdBy) ?? null : null }));
   }
 
   async addAddressToProject(
@@ -29,6 +36,8 @@ export class ProjectAddressesService {
       latitude: dto.latitude,
       longitude: dto.longitude,
       description: dto.description?.trim() || null,
+      name: dto.name?.trim() || null,
+      category: dto.category ?? null,
       createdBy: userId,
     });
     return this.projectAddressRepository.save(address);

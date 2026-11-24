@@ -20,11 +20,12 @@ export default function UserProfileS() {
   return (
     <div className="relative" ref={dropdownRef}>
       <button
+        data-tour="user-menu"
         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
         aria-expanded={isDropdownOpen}
-        className={`flex h-10 max-w-56 items-center gap-2.5 rounded-lg pl-1 pr-2 transition-colors duration-150 cursor-pointer ${isDropdownOpen ? "glass-selected" : "hover:bg-black/[0.04] dark:hover:bg-white/[0.06]"}`}
+        className={`group flex h-10 max-w-56 items-center gap-2.5 rounded-lg pl-1 pr-2 transition-colors duration-150 cursor-pointer ${isDropdownOpen ? "glass-selected" : "hover:bg-black/[0.04] dark:hover:bg-white/[0.06]"}`}
       >
-        <div className="h-8 w-8 shrink-0 overflow-hidden rounded-md bg-white ring-1 ring-black/5 dark:ring-white/10">
+        <div className="h-8 w-8 shrink-0 overflow-hidden rounded-full border border-emerald-400/60 bg-emerald-500/28 shadow-[0_0_0_1px_rgba(255,255,255,0.1)] transition-transform duration-200 group-hover:scale-105">
           {isExternalUrl ? (
             <img
               src={profilePictureValue}
@@ -37,14 +38,14 @@ export default function UserProfileS() {
           )}
         </div>
         <div className="hidden min-w-0 flex-col items-start text-left lg:flex">
-          <span className="w-full truncate text-sm font-medium leading-tight text-gray-900 dark:text-white">
+          <span className="w-full truncate text-sm font-medium leading-[17.5px] text-[#1c1c1e] dark:text-white">
             {user.firstName || "Utilisateur"}
           </span>
-          <span className="w-full truncate text-xs leading-tight text-gray-500 dark:text-gray-400">
+          <span className="w-full truncate text-xs leading-[15px] text-[#99a1af]">
             {user.email || "email@exemple.com"}
           </span>
         </div>
-        <ChevronUpDownIcon className="h-4 w-4 shrink-0 text-gray-400" aria-hidden="true" />
+        <ChevronUpDownIcon className="h-4 w-4 shrink-0 text-[#99a1af]" aria-hidden="true" />
       </button>
 
       <AnimatePresence>

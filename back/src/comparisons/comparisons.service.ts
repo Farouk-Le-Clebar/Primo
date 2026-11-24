@@ -6,6 +6,7 @@ import { In, Repository } from 'typeorm';
 import { ProjectNotes } from '../database/project-notes.entity';
 import { ProjectPlotComparison } from '../database/project-plot-comparison.entity';
 import { ProjectPlots } from '../database/project-plots.entity';
+import { UserNotifier } from '../notification/user-notifier';
 import { CreateComparisonDto } from './comparison.dto';
 import { buildComparisonPayload, buildOpenRouterRequest, parseComparisonResult } from './comparison.payload';
 
@@ -27,6 +28,7 @@ export class ComparisonsService {
         private projectPlotsRepository: Repository<ProjectPlots>,
         @InjectRepository(ProjectNotes)
         private notesRepository: Repository<ProjectNotes>,
+        private userNotifier: UserNotifier,
         private configService: ConfigService,
     ) { }
 
@@ -102,11 +104,19 @@ export class ComparisonsService {
                 errorMessage: null,
                 completedAt: new Date(),
             });
+            await this.notifyRequester(comparisonId, true);
         } catch (error) {
             const message = this.describeError(error);
             this.logger.error(`Comparaison ${comparisonId} échouée : ${message}`);
             await this.comparisonsRepository.update(comparisonId, { status: 'failed', errorMessage: message, completedAt: new Date() });
+            await this.notifyRequester(comparisonId, false);
         }
+    }
+
+    private async notifyRequester(comparisonId: string, succeeded: boolean): Promise<void> {
+        const comparison = await this.comparisonsRepository.findOneBy({ id: comparisonId });
+        if (comparison?.createdBy)
+            await this.userNotifier.comparisonFinished(comparison.createdBy, comparison.projectId, comparison.id, succeeded);
     }
 
     // Never exposes request headers (the API key lives there).

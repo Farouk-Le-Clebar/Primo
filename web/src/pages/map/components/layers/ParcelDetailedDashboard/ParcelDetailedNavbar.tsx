@@ -50,6 +50,7 @@ export default function ParcelDetailedNavbar({
 
         <div className="flex items-center justify-end gap-2 flex-1">
           <button
+            data-tour="parcel-add"
             onClick={onAddToProject}
             aria-label="Ajouter à un projet"
             className="flex items-center gap-2 rounded-lg bg-gray-900 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-gray-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 dark:bg-white dark:text-black dark:hover:bg-gray-200 shrink-0"
@@ -58,6 +59,7 @@ export default function ParcelDetailedNavbar({
             <span className="hidden sm:inline">Ajouter à un projet</span>
           </button>
           <button
+            data-tour="parcel-close"
             onClick={onClose}
             aria-label="Retour à la carte"
             className="flex shrink-0 items-center gap-2 px-3 py-1.5 border border-emerald-200 dark:border-[#262626] rounded-lg text-xs font-semibold text-emerald-800 dark:text-white bg-[#F8F9FB] dark:bg-[#262626] hover:bg-emerald-100 dark:hover:bg-[#0A0A0A] transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600"

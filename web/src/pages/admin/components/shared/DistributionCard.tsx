@@ -1,5 +1,7 @@
+import { BarChart3 } from "lucide-react";
+import EmptyState from "../../../../ui/EmptyState";
 import { BarList } from "@tremor/react";
-import BentoCard from "../../../map/components/layers/Dashboard/BentoCard";
+import BentoCard from "./BentoCard";
 
 type DistributionCardProps = {
   title: string;
@@ -22,7 +24,7 @@ export default function DistributionCard({ title, description, data, color = "vi
       {visible.length ? (
         <BarList className="mt-4" data={visible} color={color} showAnimation={false} valueFormatter={formatValue} />
       ) : (
-        <p className="flex h-40 items-center justify-center text-sm text-gray-500">Aucune activité enregistrée.</p>
+        <EmptyState icon={BarChart3} title="Aucune activité enregistrée" description="Les données apparaîtront dès les premières utilisations." size="sm" framed={false} />
       )}
     </BentoCard>
   );

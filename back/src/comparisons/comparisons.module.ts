@@ -5,11 +5,12 @@ import { ProjectPlotComparison } from 'src/database/project-plot-comparison.enti
 import { ProjectNotes } from 'src/database/project-notes.entity';
 import { ProjectPlots } from 'src/database/project-plots.entity';
 import { ProjectsModule } from 'src/projects/projects.module';
+import { NotificationModule } from 'src/notification/notification.module';
 import { ComparisonsController } from './comparisons.controller';
 import { ComparisonsService } from './comparisons.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ProjectPlotComparison, ProjectPlots, ProjectNotes]), JwtModule, ProjectsModule],
+  imports: [TypeOrmModule.forFeature([ProjectPlotComparison, ProjectPlots, ProjectNotes]), JwtModule, ProjectsModule, NotificationModule],
   controllers: [ComparisonsController],
   providers: [ComparisonsService],
 })

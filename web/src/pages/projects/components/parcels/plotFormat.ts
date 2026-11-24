@@ -26,14 +26,15 @@ export const zoneLabel = (plot: ProjectPlotWithSummary) => plot.summary?.plu?.zo
 // DPE F and G are the "passoires thermiques".
 export const isEnergySieve = (plot: ProjectPlotWithSummary) => ["F", "G"].includes(plot.summary?.dpe?.lastLabel ?? "");
 
-export type SortKey = "address" | "surface" | "lastSale" | "dpe" | "risks";
+export type SortKey = "address" | "surface" | "price" | "lastSale" | "dpe" | "risks";
 export type SortDirection = "asc" | "desc";
 
 const sortValue = (plot: ProjectPlotWithSummary, key: SortKey): string | number | null => {
     switch (key) {
         case "address": return plot.adress?.toLowerCase() ?? null;
         case "surface": return plot.surfaceM2;
-        case "lastSale": return plot.summary?.dvf?.lastValue ?? null;
+        case "price": return plot.summary?.dvf?.lastPricePerM2 ?? null;
+        case "lastSale": return plot.summary?.dvf?.lastDate ?? null;
         case "dpe": return plot.summary?.dpe?.lastLabel ?? null;
         case "risks": return plot.summary?.risks?.count ?? null;
     }

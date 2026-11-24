@@ -1,6 +1,6 @@
 import { Card } from "@tremor/react";
 import type { LucideIcon } from "lucide-react";
-import { colorClasses } from "../../../dashboard/components/StatsCards";
+import { colorClasses } from "./statColors";
 
 type AdminStatCardProps = {
   label: string;

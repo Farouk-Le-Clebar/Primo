@@ -5,6 +5,7 @@ import { DpeService } from '../dpe/dpe.service';
 import { DvfService } from '../dvf/dvf.service';
 import { AutorisationsService } from '../autorisations/autorisations.service';
 import { ProximiteService } from '../proximite/proximite.service';
+import { CoproprieteService } from 'src/habitat/copropriete.service';
 import { PlotEnrichmentErrors, ProjectPlots } from '../database/project-plots.entity';
 
 const NATIONAL_WFS_URL = 'https://data.geopf.fr/wfs/ows';
@@ -48,7 +49,7 @@ type EnrichmentInput = {
     parcelProperties?: Record<string, any>;
     addressProperties?: Record<string, any>;
 };
-export type PlotEnrichment = Partial<Omit<ProjectPlots, 'id' | 'projectId' | 'plotId' | 'plotBanId' | 'coordinates' | 'adress' | 'geometry' | 'aiNotes'>>;
+export type PlotEnrichment = Partial<Omit<ProjectPlots, 'id' | 'projectId' | 'plotId' | 'plotBanId' | 'coordinates' | 'adress' | 'geometry' | 'aiNotes' | 'addedBy' | 'addedAt'>>;
 
 // Collects what each dataset returned; a failing source never blocks the others.
 @Injectable()
@@ -61,6 +62,7 @@ export class PlotEnrichmentService {
         private readonly dpeService: DpeService,
         private readonly autorisationsService: AutorisationsService,
         private readonly proximiteService: ProximiteService,
+        private readonly coproprieteService: CoproprieteService,
     ) { }
 
     // The front sends the geometry as a JSON string.
@@ -85,6 +87,7 @@ export class PlotEnrichmentService {
             dvf: this.orNull(this.dvfService.getHistoriqueByParcelle(parcelId)),
             dpe: input.plotBanId ? this.orNull(this.dpeService.getDpeByBan(input.plotBanId)) : Promise.resolve(null),
             urbanPermits: this.autorisationsService.getByParcelle(parcelId),
+            coproprietes: geometry ? this.coproprieteService.findByParcelle(parcelId, JSON.stringify(geometry)) : Promise.resolve(null),
             plu: geometry && department ? this.fetchPlu(geometry, department) : Promise.resolve(null),
             buildings: geometry && department ? this.fetchBuildings(geometry, department) : Promise.resolve(null),
             risks: communeCode && department ? this.fetchRisks(communeCode, department) : Promise.resolve(null),

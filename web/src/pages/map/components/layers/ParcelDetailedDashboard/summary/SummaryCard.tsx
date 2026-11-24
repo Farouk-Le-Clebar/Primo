@@ -1,3 +1,4 @@
+import { SearchX } from "lucide-react";
 import type { ReactNode } from "react";
 import { Card } from "@tremor/react";
 import { ArrowUpRight } from "lucide-react";
@@ -74,8 +75,10 @@ export default function SummaryCard({
           </div>
         ) : missing ? (
           <div className="my-auto">
-            <p className="text-2xl font-semibold text-gray-300 dark:text-gray-600">—</p>
-            <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">{empty}</p>
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#1c1c1e]/5 text-[#82828c] dark:bg-white/6">
+              <SearchX className="h-4 w-4" strokeWidth={1.5} />
+            </span>
+            <p className="mt-2.5 text-xs leading-relaxed text-[#82828c]">{empty}</p>
           </div>
         ) : (
           children

@@ -5,7 +5,7 @@ import toast from 'react-hot-toast';
 
 import { getAllFeedbacks, deleteFeedback } from "../../../../requests/feedback"; 
 import FeedbacksTable from "./FeedbacksTable";
-import BentoCard from "../../../map/components/layers/Dashboard/BentoCard";
+import BentoCard from "../shared/BentoCard";
 import AdminSearchInput from "../shared/AdminSearchInput";
 
 const FeedbacksList = () => {

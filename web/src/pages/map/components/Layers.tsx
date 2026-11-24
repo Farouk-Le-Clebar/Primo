@@ -21,6 +21,7 @@ import { useTheme } from "../../../context/ThemeProvider";
 import { useMapType } from "../../../hooks/useMapType";
 import { useMapFreeze } from "../../../hooks/useMapFreeze";
 import { useParcelSelection } from "../../../hooks/useParcelSelection";
+import { useParcelUrlState } from "../../../hooks/useParcelUrlState";
 
 const ParcelDetailedDashboard = lazy(() => import("./layers/ParcelDetailedDashboard/ParcelDetailedDashboard"));
 
@@ -45,7 +46,7 @@ const Layers = ({ initialPlacement, initialCoordinates }: LayersProps) => {
     const [shapes, setShapes] = useState<DataType>(EMPTY_SHAPES);
     const [enabledPoiTypes, setEnabledPoiTypes] = useState<string[]>(DEFAULT_POI_TYPES);
     const [addressProjectId, setAddressProjectId] = useState("");
-    const [isDashboardOpen, setIsDashboardOpen] = useState(false);
+    const { isDetailOpen: isDashboardOpen, syncSelection, openDetail, closeDetail } = useParcelUrlState();
     const [isMapPanelOpen, setIsMapPanelOpen] = useState(false);
 
     const isParcelDashboardOpen = !!selectedParcelle && isDashboardOpen && !isMapPanelOpen;
@@ -53,12 +54,12 @@ const Layers = ({ initialPlacement, initialCoordinates }: LayersProps) => {
     useMapFreeze(map, isMapCovered);
 
     const handleViewportChange = useCallback((bounds: L.LatLngBounds, zoom: number) => setViewport({ bounds, zoom }), []);
-    const handleOpenDashboard = useCallback(() => setIsDashboardOpen(true), []);
-    const handleCloseDashboard = useCallback(() => setIsDashboardOpen(false), []);
+    const handleOpenDashboard = openDetail;
+    const handleCloseDashboard = closeDetail;
     const handleSelect = useCallback((bounds: L.LatLngBounds, feature: Feature | undefined, layer: L.Path) => {
-        setIsDashboardOpen(false);
+        if (feature) syncSelection(feature);
         handleParcelleSelect(bounds, feature, layer);
-    }, [handleParcelleSelect]);
+    }, [handleParcelleSelect, syncSelection]);
     const handleTogglePoi = useCallback((type: string, enabled: boolean) => {
         setEnabledPoiTypes(prev => enabled ? [...prev, type] : prev.filter(t => t !== type));
     }, []);
@@ -120,7 +121,7 @@ const Layers = ({ initialPlacement, initialCoordinates }: LayersProps) => {
                 )}
 
                 {selectedParcelle && !isMapCovered && (
-                    <div className="absolute inset-0 z-[1002] pointer-events-none p-6 flex flex-col justify-end">
+                    <div className="absolute inset-0 z-[1002] pointer-events-none flex flex-col justify-end p-3 pb-[calc(4.75rem+env(safe-area-inset-bottom))] md:p-6">
                         <div className="pointer-events-auto w-full max-w-4xl mx-auto rounded-2xl border border-black/[0.08] shadow-2xl animate-in slide-in-from-bottom-10 glass overflow-hidden dark:border-white/10">
                             <NoScrollZone>
                                 <ParcelInfoPanel

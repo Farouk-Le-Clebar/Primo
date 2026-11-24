@@ -3,8 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../database/user.entity';
-import { NotificationType } from '../database/notification.entity';
-import { NotificationService } from '../notification/notification.service';
+import { UserNotifier } from '../notification/user-notifier';
 import * as bcrypt from 'bcrypt';
 import { OAuth2Client } from 'google-auth-library';
 import { MailService } from '../mail/mail.service';
@@ -18,7 +17,7 @@ export class AuthService {
     private userRepository: Repository<User>,
     private mailService: MailService,
     private jwtService: JwtService,
-    private notificationService: NotificationService,
+    private userNotifier: UserNotifier,
   ) {
     this.googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID || 'CLIENT_ID');
   }
@@ -38,14 +37,7 @@ export class AuthService {
 
     await this.userRepository.save(user);
 
-    // Notification de bienvenue !!! à changer une fois qu'on a panel admin -> on enverra des notifications depuis ce panel.
-    await this.notificationService.createNotification(
-      user.id,
-      NotificationType.SYSTEM,
-      'Bienvenue sur Primo ! 🎉',
-      'Nous sommes ravis de vous accueillir. Commencez par créer votre premier projet pour explorer toutes les fonctionnalités.',
-      { welcomeNotification: true },
-    );
+    await this.userNotifier.welcome(user.id, user.firstName);
 
     const verificationToken = await this.mailService.generateNewVerificationToken(email);
     await this.mailService.sendVerificationEmail(email, verificationToken);
@@ -122,6 +114,7 @@ export class AuthService {
         });
         await this.userRepository.save(user);
         isNewUser = true;
+        await this.userNotifier.welcome(user.id, user.firstName);
       }
 
       const jwtPayload = { sub: user.id, email: user.email };

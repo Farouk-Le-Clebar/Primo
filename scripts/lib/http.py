@@ -1,5 +1,6 @@
 import csv
 import io
+import json
 import sys
 import time
 import urllib.parse
@@ -8,6 +9,7 @@ from typing import Iterator
 
 MAX_RETRIES = 8
 ADEME_API = "https://data.ademe.fr/data-fair/api/v1/datasets"
+DATAGOUV_API = "https://www.data.gouv.fr/api/1"
 
 
 def open_url(url: str, method: str = "GET", timeout: int = 180):
@@ -40,3 +42,16 @@ def ademe_rows(dataset: str, fields: list[str], query: str) -> Iterator[dict[str
         for values in reader:
             yield dict(zip(fields, values))
         url = link.split(";")[0].strip("<> ") if 'rel="next"' in link or "rel=next" in link else None
+
+
+def fetch_json(url: str):
+    with open_url(url) as response:
+        return json.loads(response.read().decode("utf-8"))
+
+
+def datagouv_dataset(dataset: str) -> dict:
+    return fetch_json(f"{DATAGOUV_API}/datasets/{dataset}/")
+
+
+def datagouv_search(query: str) -> list[dict]:
+    return fetch_json(f"{DATAGOUV_API}/datasets/?{urllib.parse.urlencode({'q': query, 'page_size': 50})}")["data"]

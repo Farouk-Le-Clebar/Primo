@@ -1,7 +1,8 @@
 import { memo, useCallback, useEffect, useRef } from "react";
 import { GeoJSON, useMap } from "react-leaflet";
-import type { Feature } from "geojson";
+import type { Feature, Point } from "geojson";
 import L from "leaflet";
+import { booleanPointInPolygon, point } from "@turf/turf";
 import { getShapeKey, setShapeStyles, type DataType, type ShapeLevel } from "../../../../utils/map";
 import { useMapShapeStyles } from "../../../../hooks/useMapColors";
 import { onEachFeature } from "./ShapesClick";
@@ -21,6 +22,12 @@ type ShapesLayerProps = {
 };
 
 const SHAPE_LEVELS: ShapeLevel[] = ["departements", "city", "divisions", "parcelles"];
+
+const isPointInLayer = (target: Feature<Point>, layer: L.Polygon): boolean => {
+    const geometry = layer.feature?.geometry;
+    if (geometry?.type !== "Polygon" && geometry?.type !== "MultiPolygon") return false;
+    return booleanPointInPolygon(target, geometry);
+};
 
 const ShapesLayer = ({
     shapes,
@@ -42,8 +49,8 @@ const ShapesLayer = ({
     useEffect(() => {
         if (!parcelles || !initialCoordinates || initialSelectionDoneRef.current) return;
         initialSelectionDoneRef.current = true;
-        const latlng = L.latLng(initialCoordinates[0], initialCoordinates[1]);
-        const layer = L.geoJSON(parcelles).getLayers().find((l) => l instanceof L.Polygon && l.getBounds().contains(latlng));
+        const target = point([initialCoordinates[1], initialCoordinates[0]]);
+        const layer = L.geoJSON(parcelles).getLayers().find((l) => l instanceof L.Polygon && isPointInLayer(target, l));
         if (layer instanceof L.Polygon && layer.feature) {
             onParcelleSelect(layer.getBounds(), layer.feature as Feature, layer);
             selectedIdRef.current = layer.feature.id?.toString() ?? null;

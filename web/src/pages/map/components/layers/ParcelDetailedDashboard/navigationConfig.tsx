@@ -1,4 +1,4 @@
-import { ClipboardCheck, DoorOpen, FileText, Home, LayoutDashboard, MapPin, Scale, ShieldAlert, Zap } from "lucide-react";
+import { Building, ClipboardCheck, Factory, Wifi, Coins, DoorOpen, FileText, Home, KeyRound, LayoutDashboard, MapPin, Scale, ShieldAlert, Thermometer, Zap } from "lucide-react";
 
 export const NAVIGATION = [
   { id: "synthese", label: "Synthèse", type: "single", icon: LayoutDashboard },
@@ -11,6 +11,14 @@ export const NAVIGATION = [
       { id: "autorisations", label: "Autorisations d’urbanisme", icon: ClipboardCheck },
     ] 
   },
+  {
+    id: "habitat", label: "Habitat", type: "dropdown",
+    items: [
+      { id: "copropriete", label: "Copropriété", icon: Building },
+      { id: "logements-sociaux", label: "Logements sociaux", icon: KeyRound },
+      { id: "loyers", label: "Loyers & rendement", icon: Coins },
+    ]
+  },
   { 
     id: "urbanisme", label: "Foncier", type: "dropdown", 
     items: [
@@ -22,7 +30,10 @@ export const NAVIGATION = [
     id: "environnement", label: "Environnement", type: "dropdown",
     items: [
       { id: "georisques", label: "Géorisques", icon: ShieldAlert },
-      { id: "pois", label: "Points d’intérêt", icon: MapPin }
+      { id: "pollution", label: "Pollution", icon: Factory },
+      { id: "pois", label: "Points d’intérêt", icon: MapPin },
+      { id: "meteo", label: "Météo", icon: Thermometer },
+      { id: "connexion", label: "Connexion", icon: Wifi }
     ]
   }
 ];
@@ -34,8 +45,14 @@ export const TAB_TITLES: Record<string, string> = {
   batiments: "Bâtiments",
   dpe: "Performance énergétique",
   autorisations: "Autorisations d’urbanisme",
+  copropriete: "Copropriété",
+  "logements-sociaux": "Logements sociaux",
+  loyers: "Loyers & rendement locatif",
   plu: "Urbanisme & réglementation",
   dvf: "Transactions immobilières",
   georisques: "Risques naturels & technologiques",
   pois: "Points d’intérêt à proximité",
+  meteo: "Climat & météo",
+  pollution: "Pollution des sols & de l’air",
+  connexion: "Connexion internet & mobile",
 };

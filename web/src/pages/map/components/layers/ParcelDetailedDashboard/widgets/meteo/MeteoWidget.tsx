@@ -1,94 +1,43 @@
-import { useEffect } from "react";
-import { useMutation } from "@tanstack/react-query";
-import { Thermometer, Droplets, Sun, Snowflake } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 
-// COMPONENTS
-import { WidgetCard } from "../WidgetCard";
-import { StatBlock, MetricItem, IconStat } from "../WiddgetItems";
-import type { ParcelWidgetProps } from "../../types";
-
-// REQUESTS
 import { getAverageMeteoForParcel } from "../../../../../../../requests/geoserver/worldClim";
+import ParcelAnalysisLayout from "../../ParcelAnalysisLayout";
+import type { ParcelWidgetProps } from "../../types";
+import { parcelDepartment } from "../buildings/useParcelBuildings";
+import { SourceNote, WidgetEmpty, WidgetLoading } from "../shared/WidgetStatus";
+import MeteoDetails from "./MeteoDetails";
+import MeteoKpis from "./MeteoKpis";
 
 export default function MeteoWidget({ feature }: ParcelWidgetProps) {
-  const { mutate, data, isPending } = useMutation({
-    mutationFn: async ({ geometry, departement }: { geometry: any; departement: string }) => {
-      return await getAverageMeteoForParcel(geometry, departement);
-    }
+  const departement = parcelDepartment(feature);
+  const geometry = feature?.geometry;
+  const { data, isLoading, isError, refetch } = useQuery({
+    queryKey: ["meteo", String(feature?.id), departement],
+    queryFn: () => getAverageMeteoForParcel(geometry, departement),
+    enabled: !!geometry && !!departement,
+    staleTime: 300000,
+    retry: false,
   });
 
-  useEffect(() => {
-    if (!feature?.geometry) return;
+  if (isLoading) return <WidgetLoading label="Chargement des données climatiques…" />;
 
-    const featureId = String(feature.id);
-    const departement = featureId.split('_')[1]?.split('.')[0] || "";
-
-    if (!('coordinates' in feature.geometry)) return;
-
-    mutate({ geometry: feature.geometry, departement });
-  }, [feature, mutate]);
+  if (isError || !data)
+    return (
+      <WidgetEmpty
+        message={isError ? "Les données climatiques sont momentanément indisponibles." : "Aucune donnée climatique pour ce secteur."}
+        onRetry={isError ? () => void refetch() : undefined}
+      />
+    );
 
   return (
-    <WidgetCard
-      title="Météo"
-      subtitle="Moyennes climatiques sur 30 ans"
-      icon={Thermometer}
-      iconColorClass="bg-orange-50 text-orange-600"
-      loading={isPending}
-      loadingText="Chargement des données climatiques..."
-      isEmpty={!data}
-      emptyText="Aucune donnée climatique disponible"
-    >
-      <div className="space-y-4">
-        <div className="px-4 py-3 bg-gray-50 border border-gray-100 rounded-lg flex flex-col gap-2 text-xs">
-          <div className="grid grid-cols-2 gap-4">
-            <StatBlock 
-              label="Temp. annuelle" 
-              value={data?.temp_moy_annuelle ? `${data.temp_moy_annuelle.toFixed(1)}°C` : "—"} 
-            />
-            <StatBlock 
-              label="Précip. annuelles" 
-              value={data?.prec_annuelles ? `${data.prec_annuelles.toFixed(0)} mm` : "—"} 
-            />
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 gap-px bg-gray-200 border border-gray-200 rounded-lg overflow-hidden">
-          <MetricItem 
-            icon={<Sun size={12} className="text-orange-500" />} 
-            label="Été moy." 
-            value={data?.temp_moy_ete ? `${data.temp_moy_ete.toFixed(1)}°C` : "-"} 
-          />
-          <MetricItem 
-            icon={<Sun size={12} className="text-red-500" />} 
-            label="Été max" 
-            value={data?.temp_max_abs_ete ? `${data.temp_max_abs_ete.toFixed(1)}°C` : "-"} 
-          />
-          <MetricItem 
-            icon={<Snowflake size={12} className="text-blue-500" />} 
-            label="Hiver moy." 
-            value={data?.temp_moy_hiver ? `${data.temp_moy_hiver.toFixed(1)}°C` : "-"} 
-          />
-          <MetricItem 
-            icon={<Snowflake size={12} className="text-cyan-500" />} 
-            label="Hiver min" 
-            value={data?.temp_min_abs_hiver ? `${data.temp_min_abs_hiver.toFixed(1)}°C` : "-"} 
-          />
-        </div>
-
-        <div className="grid grid-cols-2 gap-4 pt-2">
-          <IconStat 
-            icon={<Droplets size={12} className="text-amber-500" />} 
-            label="Pluie été" 
-            value={data?.prec_ete_total ? `${data.prec_ete_total.toFixed(0)} mm` : "—"} 
-          />
-          <IconStat 
-            icon={<Droplets size={12} className="text-blue-500" />} 
-            label="Pluie hiver" 
-            value={data?.prec_hiver_total ? `${data.prec_hiver_total.toFixed(0)} mm` : "—"} 
-          />
-        </div>
-      </div>
-    </WidgetCard>
+    <div className="flex w-full flex-col gap-4 font-inter lg:gap-6">
+      <MeteoKpis data={data} />
+      <ParcelAnalysisLayout summary={<MeteoDetails data={data} kind="temperature" />}>
+        <MeteoDetails data={data} kind="precipitation" />
+        <SourceNote>
+          Source : WorldClim, normales climatiques 1970-2000 moyennées sur les mailles autour de la parcelle.
+        </SourceNote>
+      </ParcelAnalysisLayout>
+    </div>
   );
 }

@@ -1,4 +1,4 @@
-import { IsInt, IsOptional, IsString, MaxLength, Min } from 'class-validator';
+import { IsBoolean, IsInt, IsOptional, IsString, IsUUID, MaxLength, Min } from 'class-validator';
 
 export const NOTE_TITLE_MAX_LENGTH = 255;
 export const NOTE_CONTENT_MAX_LENGTH = 50000;
@@ -20,4 +20,14 @@ export class UpdateNoteDto extends CreateNoteDto {
     @IsInt()
     @Min(1)
     version: number;
+}
+
+export class UpdateNoteMetaDto {
+    @IsOptional()
+    @IsBoolean()
+    isPinned?: boolean;
+
+    @IsOptional()
+    @IsUUID()
+    plotId?: string | null;
 }

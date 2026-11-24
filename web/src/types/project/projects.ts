@@ -6,4 +6,5 @@ export type ProjectResponse = {
     isFavorite: boolean;
     notes: string;
     numberOfPlots: number;
+    numberOfMembers?: number;
 }

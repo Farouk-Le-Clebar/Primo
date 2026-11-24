@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, ParseUUIDPipe, Patch, Post, Req, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/guard/jwt-auth.guard';
 import { ProjectGuard } from 'src/guard/project.guard';
-import { CreateNoteDto, UpdateNoteDto } from './note.dto';
+import { CreateNoteDto, UpdateNoteDto, UpdateNoteMetaDto } from './note.dto';
 import { NotesService } from './notes.service';
 
 @UseGuards(JwtAuthGuard, ProjectGuard)
@@ -19,6 +19,11 @@ export class NotesController {
     @Post()
     async createNote(@Req() req, @Param('projectId') projectId: string, @Body() dto: CreateNoteDto) {
         return this.notesService.createNote(projectId, dto, req.user.id);
+    }
+
+    @Patch(':noteId/meta')
+    async updateNoteMeta(@Param('projectId') projectId: string, @Param('noteId', ParseUUIDPipe) noteId: string, @Body() dto: UpdateNoteMetaDto) {
+        return this.notesService.updateNoteMeta(projectId, noteId, dto);
     }
 
     @Patch(':noteId')
