@@ -21,15 +21,15 @@ export default function ParcelInfoPanel({ selectedParcelle, onOpenDashboard }: P
 
   return (
     <aside className="flex flex-col w-full h-full rounded-xl overflow-hidden pointer-events-auto">
-      <div className="px-6 py-4  shrink-0">
-        <div className="flex items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
+      <div className="px-4 py-4 shrink-0 sm:px-6">
+        <div className="flex items-center justify-between gap-3 sm:gap-4">
+          <div className="flex min-w-0 items-center gap-2">
             <span className="h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
-            <h2 className="font-inter font-semibold text-lg text-[#111111] dark:text-white truncate">
+            <h2 className="font-inter font-semibold text-base text-[#111111] sm:text-lg dark:text-white truncate">
               Parcelle {parcelId.replace('Parcelle ', '')}
             </h2>
           </div>
-          <div className="flex flex-row gap-2">
+          <div className="flex shrink-0 flex-row gap-2">
             <Tooltip content="Ajouter au projet">
               <button
                 onClick={() => setAddPlotModalOpen(true)}
@@ -40,10 +40,11 @@ export default function ParcelInfoPanel({ selectedParcelle, onOpenDashboard }: P
             </Tooltip>
             <button
               onClick={onOpenDashboard}
+              aria-label="Analyse complète"
               className="h-[36px] px-4 bg-[#111111] dark:bg-white hover:bg-gray-800 dark:hover:bg-[#e8e8e8] text-white dark:text-black rounded-lg flex items-center justify-center gap-2 transition-colors shadow-sm cursor-pointer"
             >
               <ExternalLink size={14} />
-              <span className="font-inter font-medium text-xs">Analyse complète</span>
+              <span className="hidden font-inter font-medium text-xs sm:inline">Analyse complète</span>
             </button>
           </div>
         </div>

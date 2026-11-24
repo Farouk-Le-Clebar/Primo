@@ -24,7 +24,7 @@ export default function ParcelNavigation({ activeTab, setActiveTab, onOpenSearch
   }, []);
 
   return (
-    <nav aria-label="Analyse de la parcelle" className="order-last flex w-full flex-wrap items-center gap-1 lg:order-none lg:w-auto bg-gray-100 dark:bg-[#262626] p-0.5 rounded-lg" ref={containerRef}>
+    <nav data-tour="parcel-nav" aria-label="Analyse de la parcelle" className="order-last flex w-full flex-wrap items-center gap-1 lg:order-none lg:w-auto bg-gray-100 dark:bg-[#262626] p-0.5 rounded-lg" ref={containerRef}>
       {NAVIGATION.map((cat) => {
         const activeItem = cat.type === "dropdown" && cat.items ? cat.items.find(i => i.id === activeTab) : null;
         const isCatActive = activeTab === cat.id || !!activeItem;
@@ -76,7 +76,7 @@ export default function ParcelNavigation({ activeTab, setActiveTab, onOpenSearch
       })}
 
       <div className="h-4 w-[1px] bg-gray-300 mx-0.5" />
-      <button aria-label="Rechercher dans l’analyse" onClick={onOpenSearch} className="cursor-pointer dark:text-white p-1.5 text-gray-500 hover:text-gray-900 hover:bg-white rounded-md transition-all border border-transparent hover:border-gray-200">
+      <button data-tour="parcel-search" aria-label="Rechercher dans l’analyse" onClick={onOpenSearch} className="cursor-pointer dark:text-white p-1.5 text-gray-500 hover:text-gray-900 hover:bg-white rounded-md transition-all border border-transparent hover:border-gray-200">
         <Search size={14} />
       </button>
     </nav>

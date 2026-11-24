@@ -1,3 +1,5 @@
+import { ShieldOff } from "lucide-react";
+import EmptyState from "../../../../ui/EmptyState";
 import { useQuery } from "@tanstack/react-query";
 import { Loader2, Plus } from "lucide-react";
 import { useState } from "react";
@@ -14,7 +16,7 @@ import {
 import { getAdmins } from "../../../../requests/admin";
 import type { UserType } from "../../../../types/admin";
 import AddAdminModal from "./AddAdminModal";
-import BentoCard from "../../../map/components/layers/Dashboard/BentoCard";
+import BentoCard from "../shared/BentoCard";
 
 const AdminList = () => {
     const [addAdminModalOpen, setAddAdminModalOpen] = useState(false);
@@ -33,7 +35,7 @@ const AdminList = () => {
                     {isLoading && <Loader2 className="h-4 w-4 animate-spin text-gray-400" />}
                     <button
                         onClick={() => setAddAdminModalOpen(true)}
-                        className="inline-flex h-8 items-center gap-1.5 rounded-lg bg-black px-3 text-sm font-medium text-white transition-opacity duration-150 hover:opacity-80 cursor-pointer dark:bg-white dark:text-black"
+                        className="inline-flex h-8 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-lg bg-black px-3 text-sm font-medium text-white transition-opacity duration-150 hover:opacity-80 cursor-pointer dark:bg-white dark:text-black"
                     >
                         <Plus className="h-4 w-4" aria-hidden="true" />
                         Ajouter un admin
@@ -71,9 +73,7 @@ const AdminList = () => {
                     </TableBody>
                 </Table>
                 {admins.length === 0 && !isLoading && (
-                    <div className="text-center py-10 text-gray-500 dark:text-gray-400 italic">
-                        Aucun administrateur trouvé.
-                    </div>
+                    <EmptyState icon={ShieldOff} title="Aucun administrateur trouvé" description="Promouvez un collaborateur pour partager la gestion de Primo." action={{ label: "Ajouter un administrateur", onClick: () => setAddAdminModalOpen(true) }} size="sm" framed={false} />
                 )}
             </div>
             <AddAdminModal 

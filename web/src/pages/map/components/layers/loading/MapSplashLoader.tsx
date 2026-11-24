@@ -11,6 +11,7 @@ export default function MapSplashLoader({ isVisible }: MapSplashLoaderProps) {
       {isVisible && (
         <motion.div
           key="map-splash"
+          data-map-splash
           exit={{ opacity: 0, scale: 1.02 }}
           transition={{ duration: 0.4, ease: "easeOut" }}
           className="fixed inset-0 z-[1100] flex items-center justify-center bg-[#FAFAFA] dark:bg-[#0A0A0A]"

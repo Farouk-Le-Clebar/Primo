@@ -56,7 +56,8 @@ export default function MapSearch({ isOpen, onOpenChange, onAdressSelect }: MapS
   return (
     <div
       ref={ref}
-      className="glass absolute top-20 left-6 z-30 w-[min(440px,calc(100vw-3rem))] overflow-hidden rounded-xl border border-black/[0.08] shadow-xl pointer-events-auto dark:border-white/10"
+      data-tour="map-search"
+      className="glass absolute top-[4.5rem] left-3 z-30 w-[min(440px,calc(100vw-4.75rem))] sm:top-20 sm:left-6 overflow-hidden rounded-xl border border-black/[0.08] shadow-xl pointer-events-auto dark:border-white/10"
     >
       <div className={`flex items-center gap-2.5 px-3 transition-[padding] duration-150 ${isOpen ? "py-2.5" : "py-1.5"}`}>
         <MagnifyingGlassIcon className="h-4 w-4 shrink-0 text-gray-900 dark:text-white" aria-hidden="true" />
@@ -89,7 +90,7 @@ export default function MapSearch({ isOpen, onOpenChange, onAdressSelect }: MapS
             <XMarkIcon className="h-4 w-4" aria-hidden="true" />
           </button>
         ) : (
-          <kbd className={KBD}>{SHORTCUT}</kbd>
+          <kbd className={`hidden sm:inline-flex ${KBD}`}>{SHORTCUT}</kbd>
         )}
       </div>
       <AnimatePresence initial={false}>
@@ -112,7 +113,7 @@ export default function MapSearch({ isOpen, onOpenChange, onAdressSelect }: MapS
                 onRetry={() => void state.search.refetch()}
               />
             </div>
-            <div className="flex items-center gap-4 border-t border-black/[0.06] px-4 py-2.5 text-xs text-gray-500 dark:border-white/10 dark:text-gray-400">
+            <div className="hidden items-center gap-4 border-t border-black/[0.06] px-4 py-2.5 sm:flex text-xs text-gray-500 dark:border-white/10 dark:text-gray-400">
               {HINTS.map(([key, label]) => (
                 <span key={key} className="flex items-center gap-1.5">
                   <kbd className={KBD}>{key}</kbd>
