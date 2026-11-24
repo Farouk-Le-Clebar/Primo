@@ -2,7 +2,7 @@ import { BadRequestException, ConflictException, ForbiddenException, GoneExcepti
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, In, MoreThan } from 'typeorm';
 import { Projects } from 'src/database/project.entity';
-import { AddPlotToProjectDto, CreateProjectDto, InviteUserDto, RequestDocumentUploadDto } from './project.type';
+import { AddPlotToProjectDto, CreateProjectDto, InviteUserDto, RequestDocumentUploadDto, UpdateDocumentMetaDto } from './project.type';
 import { ProjectPlots } from 'src/database/project-plots.entity';
 import { ProjectMembers } from 'src/database/project-members.entity';
 import { User } from 'src/database/user.entity';
@@ -10,6 +10,8 @@ import { randomBytes, randomUUID } from 'crypto';
 import { ProjectInvite } from 'src/database/project-invite.entity';
 import { NotificationType } from 'src/database/notification.entity';
 import { NotificationService } from 'src/notification/notification.service';
+import { ProjectActivityNotifier } from 'src/notification/project-activity.notifier';
+import { UserNotifier } from 'src/notification/user-notifier';
 import { MailService } from 'src/mail/mail.service';
 import { ProjectDocuments } from 'src/database/project-documents.entity';
 import { StorageService } from 'src/storage/storage.service';
@@ -17,11 +19,13 @@ import { ProjectPlotComparison } from 'src/database/project-plot-comparison.enti
 import { PlotEnrichmentService } from './plot-enrichment.service';
 import { ProjectAddressesService } from './project-addresses.service';
 import { buildPlotSummary } from './plot-summary';
+import { countMemberContributions } from './member-contributions';
+import { ProjectNotes } from 'src/database/project-notes.entity';
 
 // Invitation links stay valid for 48 hours.
 const INVITATION_VALIDITY_MS = 48 * 60 * 60 * 1000;
 const MAX_DOCUMENT_SIZE = 20 * 1024 * 1024;
-const USER_STORAGE_QUOTA = 1024 * 1024 * 1024;
+const PROJECT_STORAGE_QUOTA = 125 * 1024 * 1024;
 // Presigned upload URLs expire after 5 minutes, so older pending uploads can no longer complete.
 const PENDING_UPLOAD_WINDOW_MS = 10 * 60 * 1000;
 
@@ -49,9 +53,13 @@ export class ProjectsService {
         private projectDocumentsRepository: Repository<ProjectDocuments>,
         @InjectRepository(ProjectPlotComparison)
         private comparisonsRepository: Repository<ProjectPlotComparison>,
+        @InjectRepository(ProjectNotes)
+        private notesRepository: Repository<ProjectNotes>,
 
         private mailService: MailService,
         private notificationService: NotificationService,
+        private activityNotifier: ProjectActivityNotifier,
+        private userNotifier: UserNotifier,
         private storageService: StorageService,
         private plotEnrichmentService: PlotEnrichmentService,
         private projectAddressesService: ProjectAddressesService,
@@ -190,6 +198,8 @@ export class ProjectsService {
             coordinates: addPlotToProjectDto.coordinates,
             adress: addPlotToProjectDto.adress,
             geometry: addPlotToProjectDto.geometry,
+            addedBy: userId,
+            addedAt: new Date(),
             ...await this.plotEnrichmentService.enrich({
                 plotId: addPlotToProjectDto.plotId,
                 plotBanId: addPlotToProjectDto.plotBanId,
@@ -204,6 +214,16 @@ export class ProjectsService {
         if (response) {
             project.numberOfPlots += 1;
             await this.projectsRepository.save(project);
+            const summary = buildPlotSummary(response);
+            await this.activityNotifier.notify(project.id, userId, 'plot', {
+                plotId: response.id,
+                plotRef: response.plotId,
+                address: response.adress ?? null,
+                surfaceM2: response.surfaceM2,
+                zone: summary.plu?.zones[0] ?? null,
+                dpe: summary.dpe?.lastLabel ?? null,
+                geometry: response.geometry ?? null,
+            });
         }
     }
 
@@ -249,14 +269,20 @@ export class ProjectsService {
 
         const plots = await this.projectPlotsRepository
             .createQueryBuilder('plot')
-            .addSelect(['plot.dvf', 'plot.dpe', 'plot.urbanPermits', 'plot.plu', 'plot.buildings', 'plot.risks', 'plot.climate', 'plot.proximity'])
+            .addSelect(['plot.dvf', 'plot.dpe', 'plot.urbanPermits', 'plot.plu', 'plot.coproprietes', 'plot.buildings', 'plot.risks', 'plot.climate', 'plot.proximity'])
             .where('plot.projectId = :projectId', { projectId })
+            .orderBy('plot.addedAt', 'DESC', 'NULLS LAST')
             .getMany();
 
+        const authorIds = [...new Set(plots.map(plot => plot.addedBy).filter((id): id is string => !!id))];
+        const authors = authorIds.length ? await this.usersRepository.findBy({ id: In(authorIds) }) : [];
+        const authorNames = new Map(authors.map(author => [author.id, `${author.firstName} ${author.surName}`.trim()]));
+
         // The raw snapshots can be large: only a digest goes to the client.
-        return plots.map(({ dvf, dpe, urbanPermits, plu, buildings, risks, climate, proximity, cadastreProperties, addressProperties, ...plot }) => ({
+        return plots.map(({ dvf, dpe, urbanPermits, plu, coproprietes, buildings, risks, climate, proximity, cadastreProperties, addressProperties, ...plot }) => ({
             ...plot,
-            summary: buildPlotSummary({ dvf, dpe, urbanPermits, plu, buildings, risks, climate, proximity } as ProjectPlots),
+            addedByName: plot.addedBy ? authorNames.get(plot.addedBy) ?? null : null,
+            summary: buildPlotSummary({ dvf, dpe, urbanPermits, plu, coproprietes, buildings, risks, climate, proximity } as ProjectPlots),
         }));
     }
 
@@ -422,8 +448,11 @@ export class ProjectsService {
             member.joinedAt = new Date();
             await this.projectMembersRepository.save(member);
             await this.projectsRepository.increment({ id: member.projectId }, 'numberOfMembers', 1);
+            await this.activityNotifier.notify(member.projectId, member.userId, 'member', { role: member.role });
         } else {
             await this.projectMembersRepository.delete({ id: member.id });
+            const project = await this.projectsRepository.findOneBy({ id: member.projectId });
+            await this.userNotifier.invitationDeclined(member.projectId, project?.name ?? invite?.projectName ?? 'Projet', member.userId);
         }
 
         if (!invite)
@@ -447,6 +476,11 @@ export class ProjectsService {
             where: { projectId: projectId },
             order: { isAdmin: "DESC", joinedAt: "ASC" },
         });
+        const contributions = await countMemberContributions(
+            { plots: this.projectPlotsRepository, notes: this.notesRepository, documents: this.projectDocumentsRepository },
+            projectId,
+        );
+        const invites = await this.projectInviteRepository.findBy({ projectId, status: 'pending' });
 
         for (const member of members) {
             const user = await this.usersRepository.findOneBy({ id: member.userId });
@@ -457,7 +491,11 @@ export class ProjectsService {
                 surName: user.surName,
                 email: user.email,
                 profilePicture: user.profilePicture,
+                lastConnection: user.lastConnection,
             };
+            member['contributions'] = contributions.get(member.userId) ?? 0;
+            const invite = invites.find(pending => pending.memberId === member.id);
+            member['invite'] = invite ? { inviterName: invite.inviterName, expiresAt: invite.expiresAt } : null;
         }
 
         for (const member of members) {
@@ -538,21 +576,42 @@ export class ProjectsService {
         } else {
             project.numberOfMembers -= 1;
             await this.projectsRepository.save(project);
+            if (memberToRemove.userId !== userId)
+                await this.userNotifier.removedFromProject(memberToRemove.userId, project.name, userId);
         }
     }
 
     async getDocumentsOfProject(projectId: string) {
-        return this.projectDocumentsRepository.find({
+        const documents = await this.projectDocumentsRepository.find({
             where: { projectId: projectId, isUploaded: true },
             order: { createdAt: "DESC" },
         });
+        const uploaderIds = [...new Set(documents.map(document => document.uploadedBy).filter((id): id is string => !!id))];
+        const uploaders = uploaderIds.length ? await this.usersRepository.findBy({ id: In(uploaderIds) }) : [];
+        const names = new Map(uploaders.map(user => [user.id, `${user.firstName} ${user.surName}`.trim()]));
+        return documents.map(({ storageKey, ...document }) => ({
+            ...document,
+            uploaderName: document.uploadedBy ? names.get(document.uploadedBy) ?? null : null,
+        }));
     }
 
-    async getUsedStorage(userId: string, excludedDocumentId?: string): Promise<number> {
+    async updateDocumentMeta(projectId: string, documentId: string, dto: UpdateDocumentMetaDto) {
+        const document = await this.projectDocumentsRepository.findOneBy({ id: documentId, projectId });
+        if (!document)
+            throw new NotFoundException('Document introuvable.');
+        if (dto.category !== undefined)
+            document.category = dto.category;
+        if (dto.plotId !== undefined)
+            document.plotId = dto.plotId;
+        const { storageKey, ...saved } = await this.projectDocumentsRepository.save(document);
+        return saved;
+    }
+
+    async getUsedStorage(projectId: string, excludedDocumentId?: string): Promise<number> {
         const documents = await this.projectDocumentsRepository.find({
             where: [
-                { uploadedBy: userId, isUploaded: true },
-                { uploadedBy: userId, isUploaded: false, createdAt: MoreThan(new Date(Date.now() - PENDING_UPLOAD_WINDOW_MS)) },
+                { projectId: projectId, isUploaded: true },
+                { projectId: projectId, isUploaded: false, createdAt: MoreThan(new Date(Date.now() - PENDING_UPLOAD_WINDOW_MS)) },
             ],
             select: { id: true, size: true },
         });
@@ -562,8 +621,8 @@ export class ProjectsService {
             .reduce((total, document) => total + document.size, 0);
     }
 
-    async getStorageUsage(userId: string) {
-        return { used: await this.getUsedStorage(userId), quota: USER_STORAGE_QUOTA };
+    async getStorageUsage(projectId: string) {
+        return { used: await this.getUsedStorage(projectId), quota: PROJECT_STORAGE_QUOTA };
     }
 
     async requestDocumentUpload(projectId: string, requestDocumentUploadDto: RequestDocumentUploadDto, userId: string) {
@@ -575,9 +634,9 @@ export class ProjectsService {
         if (requestDocumentUploadDto.size > MAX_DOCUMENT_SIZE)
             throw new BadRequestException('Le fichier dépasse la taille maximale de 20 Mo.');
 
-        const usedStorage = await this.getUsedStorage(userId);
-        if (usedStorage + requestDocumentUploadDto.size > USER_STORAGE_QUOTA)
-            throw new BadRequestException('Vous avez atteint votre limite de stockage de 1 Go.');
+        const usedStorage = await this.getUsedStorage(projectId);
+        if (usedStorage + requestDocumentUploadDto.size > PROJECT_STORAGE_QUOTA)
+            throw new BadRequestException('Ce projet a atteint sa limite de stockage de 125 Mo.');
 
         const id = randomUUID();
         const storageKey = `projects/${projectId}/${id}`;
@@ -587,6 +646,8 @@ export class ProjectsService {
             documentName: requestDocumentUploadDto.documentName,
             mimetype: requestDocumentUploadDto.mimetype,
             documentType: allowedType.documentType,
+            category: requestDocumentUploadDto.category ?? null,
+            plotId: requestDocumentUploadDto.plotId ?? null,
             size: requestDocumentUploadDto.size,
             storageKey: storageKey,
             uploadedBy: userId,
@@ -619,17 +680,24 @@ export class ProjectsService {
             throw new BadRequestException('Le fichier dépasse la taille maximale de 20 Mo.');
         }
 
-        // The size declared at upload-url time is not trusted: re-check the quota with the real size.
-        const usedStorage = document.uploadedBy ? await this.getUsedStorage(document.uploadedBy, document.id) : 0;
-        if (usedStorage + size > USER_STORAGE_QUOTA) {
+        const usedStorage = await this.getUsedStorage(projectId, document.id);
+        if (usedStorage + size > PROJECT_STORAGE_QUOTA) {
             await this.deleteStoredObject(document.storageKey);
             await this.projectDocumentsRepository.delete({ id: document.id });
-            throw new BadRequestException('Vous avez atteint votre limite de stockage de 1 Go.');
+            throw new BadRequestException('Ce projet a atteint sa limite de stockage de 125 Mo.');
         }
 
         document.size = size;
         document.isUploaded = true;
-        return this.projectDocumentsRepository.save(document);
+        const saved = await this.projectDocumentsRepository.save(document);
+        if (document.uploadedBy)
+            await this.activityNotifier.notify(projectId, document.uploadedBy, 'document', {
+                documentId: saved.id,
+                fileName: saved.documentName,
+                mimetype: saved.mimetype,
+                size,
+            });
+        return saved;
     }
 
     async getDocumentDownloadUrl(projectId: string, documentId: string, disposition: 'inline' | 'attachment' = 'attachment') {
