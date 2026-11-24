@@ -1,0 +1,170 @@
+.driver-popover.primo-tour {
+  --tour-bg: #ffffff;
+  --tour-fg: #1c1c1e;
+  --tour-muted: #6b6b73;
+  --tour-border: rgba(28, 28, 30, 0.08);
+  --tour-track: rgba(28, 28, 30, 0.08);
+  --tour-accent: #10b981;
+  min-width: 280px;
+  max-width: min(340px, calc(100vw - 24px));
+  padding: 18px 18px 14px;
+  border-radius: 16px;
+  border: 1px solid var(--tour-border);
+  background: var(--tour-bg);
+  color: var(--tour-fg);
+  box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.28), 0 0 0 1px rgba(0, 0, 0, 0.02);
+}
+
+.dark .driver-popover.primo-tour {
+  --tour-bg: #1c1c1e;
+  --tour-fg: #fafafa;
+  --tour-muted: #a1a1aa;
+  --tour-border: rgba(255, 255, 255, 0.1);
+  --tour-track: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.04);
+}
+
+.driver-popover.primo-tour * {
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
+.driver-popover.primo-tour.primo-tour-centered {
+  max-width: min(380px, calc(100vw - 24px));
+}
+
+.primo-tour .driver-popover-title {
+  padding-right: 24px;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.35;
+  color: var(--tour-fg);
+}
+
+.primo-tour .driver-popover-description {
+  margin-top: 6px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--tour-muted);
+}
+
+.primo-tour .driver-popover-description b {
+  font-weight: 600;
+  color: var(--tour-fg);
+}
+
+.primo-tour .driver-popover-description kbd {
+  padding: 1px 6px;
+  border: 1px solid var(--tour-border);
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--tour-fg);
+}
+
+.primo-tour .driver-popover-footer .driver-popover-btn-disabled {
+  display: none !important;
+}
+
+.primo-tour .driver-popover-close-btn {
+  top: 10px;
+  right: 10px;
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  font-size: 16px;
+  line-height: 26px;
+  color: var(--tour-muted);
+  transition: background-color 0.15s, color 0.15s;
+}
+
+.primo-tour .driver-popover-close-btn:hover,
+.primo-tour .driver-popover-close-btn:focus-visible {
+  background: var(--tour-track);
+  color: var(--tour-fg);
+}
+
+.primo-tour .driver-popover-footer {
+  margin-top: 16px;
+  gap: 8px;
+}
+
+.primo-tour .driver-popover-progress-text {
+  font-size: 11px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--tour-muted);
+}
+
+.primo-tour .driver-popover-footer button {
+  padding: 7px 12px;
+  border: 1px solid var(--tour-border);
+  border-radius: 9px;
+  background: transparent;
+  color: var(--tour-fg);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  text-shadow: none;
+  transition: background-color 0.15s, transform 0.15s;
+}
+
+.primo-tour .driver-popover-footer button:hover {
+  background: var(--tour-track);
+}
+
+.primo-tour .driver-popover-footer button:active {
+  transform: scale(0.96);
+}
+
+.primo-tour .driver-popover-footer .driver-popover-next-btn {
+  border-color: var(--tour-fg);
+  background: var(--tour-fg);
+  color: var(--tour-bg);
+}
+
+.primo-tour .driver-popover-footer .driver-popover-next-btn:hover {
+  background: var(--tour-fg);
+  opacity: 0.88;
+}
+
+.primo-tour .driver-popover-navigation-btns button + button {
+  margin-left: 6px;
+}
+
+.primo-tour .driver-popover-arrow {
+  border-width: 6px;
+  border-color: var(--tour-bg);
+}
+
+.primo-tour .driver-popover-arrow-side-left {
+  border-right-color: transparent;
+  border-bottom-color: transparent;
+  border-top-color: transparent;
+}
+
+.primo-tour .driver-popover-arrow-side-right {
+  border-left-color: transparent;
+  border-bottom-color: transparent;
+  border-top-color: transparent;
+}
+
+.primo-tour .driver-popover-arrow-side-top {
+  border-right-color: transparent;
+  border-bottom-color: transparent;
+  border-left-color: transparent;
+}
+
+.primo-tour .driver-popover-arrow-side-bottom {
+  border-left-color: transparent;
+  border-top-color: transparent;
+  border-right-color: transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .driver-fade .driver-overlay,
+  .driver-fade .driver-popover {
+    animation: none;
+  }
+}
