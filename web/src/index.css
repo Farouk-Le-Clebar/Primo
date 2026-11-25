@@ -3,6 +3,7 @@
 @import "./styles/fonts.css";
 @import "./styles/animations.css";
 @import "./styles/tremor.css";
+@import "./styles/standalone.css";
 
 @source "../node_modules/@tremor/react";
 

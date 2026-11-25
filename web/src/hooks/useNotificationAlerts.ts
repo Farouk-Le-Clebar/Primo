@@ -6,6 +6,7 @@ import { getNewsKind, NEWS_KINDS } from "../components/navbar/components/newsPop
 import { openNewsPopup } from "../components/navbar/components/newsPopup/newsPreferences";
 import type { NotificationResponse } from "../requests/notificationRequests";
 import { playNotificationSound, unlockNotificationSound } from "../utils/notificationSound";
+import { onServiceWorkerMessage, showSystemNotification } from "../utils/serviceWorker";
 
 const FRESH_ON_LOAD_MS = 2 * 60 * 1000;
 
@@ -21,19 +22,21 @@ const describe = (fresh: NotificationResponse[]): AlertContent => {
   return { title: notification.title || NEWS_KINDS[kind].label, body: sentence || notification.message, tag: notification.id };
 };
 
+const focusNewsPopup = () => {
+  window.focus();
+  openNewsPopup();
+};
+
 const showDesktopNotification = ({ title, body, tag }: AlertContent) => {
-  const notification = new Notification(title, { body, tag, icon: "/favicon.ico" });
-  notification.onclick = () => {
-    window.focus();
-    openNewsPopup();
-    notification.close();
-  };
+  void showSystemNotification(title, { body, tag, icon: "/icons/icon-192.png" }, focusNewsPopup);
 };
 
 export function useNotificationAlerts(notifications: NotificationResponse[], isLoading: boolean): void {
   const knownIds = useRef<Set<string> | null>(null);
 
   useEffect(() => unlockNotificationSound(), []);
+
+  useEffect(() => onServiceWorkerMessage("open-news", focusNewsPopup), []);
 
   useEffect(() => {
     if (isLoading) return;

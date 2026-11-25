@@ -6,6 +6,8 @@ import ModalButton from "../../../../ui/ModalButton";
 import LoadingPrimoLogo from "../../../../components/animations/LoadingPrimoLogo";
 import { getDocumentViewUrl } from "../../../../requests/projects";
 import type { ProjectDocument } from "../../../../types/project/documents";
+import { canDisplayPdfInline } from "../../../../utils/displayMode";
+import PdfOpenFallback from "./PdfOpenFallback";
 
 type DocumentViewerProps = {
     projectId: string;
@@ -102,6 +104,7 @@ const DocumentViewer = ({ projectId, document, onClose, onDownload }: DocumentVi
                     </div>
                 );
             case "pdf":
+                if (!canDisplayPdfInline()) return <PdfOpenFallback url={url} name={document.documentName} />;
                 return <iframe src={url} title={document.documentName} className="w-full h-full border-none" />;
             case "document":
                 return <DocxViewer url={url} />;

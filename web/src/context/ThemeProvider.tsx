@@ -2,6 +2,12 @@ import { createContext, useContext, useEffect, useState } from "react";
 
 export type Theme = "dark" | "light" | "system";
 
+const THEME_COLORS: Record<Exclude<Theme, "system">, string> = { light: "#ffffff", dark: "#000000" };
+
+const applyThemeColor = (resolvedTheme: Exclude<Theme, "system">) => {
+  document.querySelector('meta[name="theme-color"]')?.setAttribute("content", THEME_COLORS[resolvedTheme]);
+};
+
 type ThemeProviderProps = {
   children: React.ReactNode;
   defaultTheme?: Theme;
@@ -40,10 +46,12 @@ export function ThemeProvider({
         ? "dark"
         : "light";
       root.classList.add(systemTheme);
+      applyThemeColor(systemTheme);
       return;
     }
 
     root.classList.add(theme);
+    applyThemeColor(theme);
   }, [theme]);
 
   const value = {
