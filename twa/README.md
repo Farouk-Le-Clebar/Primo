@@ -12,10 +12,12 @@ APK Android de Primo : une Trusted Web Activity générée par [Bubblewrap](http
 ```bash
 cd twa
 npx @bubblewrap/cli build
-cp app-release-signed.apk ../landing-page/public/downloads/primo.apk
+cp app-release-signed.apk ../web/public/downloads/primo.apk
 ```
 
 Incrémenter `appVersionCode` et `appVersion` dans `twa-manifest.json` avant chaque nouvelle version.
+
+L'APK est servi sur `https://app.primo-data.fr/apk` (lien de l'ATP, cf. `web/nginx.conf.template`).
 
 ## Barre d'URL
 
