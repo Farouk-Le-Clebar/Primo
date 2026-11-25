@@ -6,6 +6,7 @@ import { getDocumentViewUrl } from "../../../../requests/projects";
 import type { ProjectDocument } from "../../../../types/project/documents";
 import type { ProjectPlotWithSummary } from "../../../../types/project/plots";
 import { formatVisitDate } from "../../../../utils/relativeTime";
+import { canDisplayPdfInline } from "../../../../utils/displayMode";
 import Tag from "../ui/Tag";
 import { plotTitle } from "../shared/plotInsights";
 import { CATEGORY_LABELS, categoryOf, formatFileSize, isNewDocument } from "./documentMeta";
@@ -43,8 +44,8 @@ export default function DocumentPreview({ projectId, document, plots, onOpen, on
       </div>
       <button onClick={onOpen} className="group relative h-[247px] overflow-hidden rounded-lg bg-[#1c1c1e]/4 dark:bg-white/5">
         {viewUrl && document.documentType === "image" && <img src={viewUrl} alt={document.documentName} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />}
-        {viewUrl && document.documentType === "pdf" && <iframe src={`${viewUrl}#toolbar=0&view=FitH`} title={document.documentName} className="pointer-events-none h-full w-full" />}
-        {!viewUrl && <FileText className="absolute inset-0 m-auto h-10 w-10 text-[#82828c] transition-transform group-hover:scale-110" strokeWidth={1.25} />}
+        {viewUrl && document.documentType === "pdf" && canDisplayPdfInline() && <iframe src={`${viewUrl}#toolbar=0&view=FitH`} title={document.documentName} className="pointer-events-none h-full w-full" />}
+        {(!viewUrl || (document.documentType === "pdf" && !canDisplayPdfInline())) && <FileText className="absolute inset-0 m-auto h-10 w-10 text-[#82828c] transition-transform group-hover:scale-110" strokeWidth={1.25} />}
         <span className="absolute inset-0 flex items-center justify-center bg-black/0 text-xs font-semibold text-white opacity-0 transition-all group-hover:bg-black/30 group-hover:opacity-100">Ouvrir</span>
       </button>
       <p className="truncate text-sm font-bold text-[#1c1c1e] dark:text-[#fafafa]">{document.documentName}</p>

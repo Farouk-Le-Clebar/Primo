@@ -1,0 +1,21 @@
+html,
+body {
+  overscroll-behavior-y: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (display-mode: standalone) {
+  body {
+    -webkit-touch-callout: none;
+  }
+
+  button,
+  a,
+  nav,
+  [role="button"],
+  [role="tab"],
+  [role="menuitem"] {
+    -webkit-user-select: none;
+    user-select: none;
+  }
+}

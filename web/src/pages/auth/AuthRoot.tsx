@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { useGoogleLogin } from "@react-oauth/google";
+import { startGoogleRedirect, useGoogleRedirectToken } from "../../hooks/useGoogleRedirectLogin";
+import { isStandaloneApp } from "../../utils/displayMode";
 
 // COMPONENTS
 import { checkUserByMail } from "../../requests/UserRequests";
@@ -62,6 +64,11 @@ export default function AuthRoot() {
       setErrorMessage("La popup Google a été fermée ou a échoué.");
     },
   });
+
+  const handleGoogleRedirectError = useCallback(() => setErrorMessage("Échec de la connexion avec Google. Veuillez réessayer."), []);
+  useGoogleRedirectToken(googleMutate, handleGoogleRedirectError);
+
+  const handleGoogleClick = () => (isStandaloneApp() ? startGoogleRedirect() : handleGoogleConnect());
 
   const handleContinue = () => {
     if (!email) {
@@ -135,7 +142,7 @@ export default function AuthRoot() {
         </div>
         
         <button
-          onClick={() => handleGoogleConnect()}
+          onClick={handleGoogleClick}
           disabled={isCheckingEmail || isGoogleLoading}
           className="flex cursor-pointer items-center justify-center bg-black dark:bg-[#171717] text-white dark:text-white border border-transparent dark:border-[#262626] px-6 py-3 rounded-lg hover:bg-gray-800 dark:hover:bg-[#262626] transition-colors w-full disabled:opacity-70 disabled:cursor-not-allowed"
         >
