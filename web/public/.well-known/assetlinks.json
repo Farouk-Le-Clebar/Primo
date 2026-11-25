@@ -1,0 +1,10 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "fr.primodata.app",
+      "sha256_cert_fingerprints": ["53:A6:36:4C:64:89:18:23:13:B9:E6:2A:51:1C:BA:A3:42:E5:86:96:2F:C1:42:4B:E9:7B:7A:3A:CB:53:05:44"]
+    }
+  }
+]

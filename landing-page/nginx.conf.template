@@ -36,6 +36,14 @@ server {
     try_files $uri =404;
   }
 
+  location /downloads/ {
+    types { application/vnd.android.package-archive apk; }
+    add_header Cache-Control "no-cache" always;
+    add_header Content-Disposition "attachment" always;
+    add_header X-Content-Type-Options nosniff;
+    try_files $uri =404;
+  }
+
   location = /env-config.js {
     add_header Cache-Control "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0" always;
   }

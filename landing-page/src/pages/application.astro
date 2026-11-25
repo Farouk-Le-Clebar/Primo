@@ -1,0 +1,81 @@
+---
+import Layout from '@layouts/Layout.astro';
+import Navbar from '@components/navbar/Navbar';
+import Footer from '@components/footer/Footer.astro';
+import { Download, ShieldCheck, Smartphone, Apple } from 'lucide-react';
+import { EXTERNAL_LINKS } from '@config/constants';
+import { ANDROID_STEPS } from '@/data/androidInstall';
+---
+
+<Layout
+  title="Application Android Primo | Téléchargement"
+  description="Téléchargez l’application Android Primo : toutes les données cadastrales, foncières et d’urbanisme de vos parcelles, dans votre poche."
+>
+  <div class="flex flex-col min-h-screen">
+    <Navbar client:idle />
+
+    <main class="grow">
+      <section class="bg-linear-to-b from-green-50 to-white py-20">
+        <div class="container mx-auto px-6 text-center">
+          <Smartphone className="h-12 w-12 text-green-600 mx-auto mb-6" strokeWidth={1.5} />
+          <h1 class="text-4xl md:text-5xl font-bold mb-6">
+            Primo sur <span class="text-green-600">Android</span>
+          </h1>
+          <p class="text-gray-700 text-lg max-w-2xl mx-auto leading-relaxed mb-10">
+            Retrouvez toute l’application Primo sur votre téléphone : carte, parcelles, projets et notifications.
+          </p>
+          <a
+            href={EXTERNAL_LINKS.ANDROID_APK}
+            download="primo.apk"
+            class="inline-flex items-center gap-3 bg-green-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-green-700 transition-all hover:scale-105 shadow-lg"
+          >
+            <Download className="h-5 w-5" />
+            Télécharger l’APK
+          </a>
+          <p class="text-sm text-gray-500 mt-4">Android 7.0 ou plus récent · Google Chrome recommandé</p>
+        </div>
+      </section>
+
+      <section class="py-16 bg-white">
+        <div class="max-w-3xl mx-auto px-6">
+          <h2 class="text-2xl md:text-3xl font-bold text-center mb-10">Installation en 3 étapes</h2>
+          <ol class="space-y-6">
+            {
+              ANDROID_STEPS.map((step, index) => (
+                <li class="flex gap-5 items-start bg-gray-50 border border-gray-100 rounded-xl p-6">
+                  <span class="shrink-0 h-9 w-9 rounded-full bg-green-600 text-white font-bold flex items-center justify-center">
+                    {index + 1}
+                  </span>
+                  <div>
+                    <h3 class="font-semibold text-lg mb-1">{step.title}</h3>
+                    <p class="text-gray-600 leading-relaxed">{step.text}</p>
+                  </div>
+                </li>
+              ))
+            }
+          </ol>
+          <div class="flex gap-3 items-start mt-8 text-sm text-gray-600">
+            <ShieldCheck className="h-5 w-5 text-green-600 shrink-0" />
+            <p>
+              L’application est signée par Primo. Android peut afficher un avertissement car elle n’est pas encore
+              distribuée via le Play Store : c’est normal.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="py-16 bg-gray-50">
+        <div class="max-w-3xl mx-auto px-6 text-center">
+          <Apple className="h-8 w-8 text-gray-700 mx-auto mb-4" strokeWidth={1.5} />
+          <h2 class="text-2xl font-bold mb-4">Sur iPhone</h2>
+          <p class="text-gray-600 leading-relaxed">
+            Ouvrez <a href={EXTERNAL_LINKS.APP_URL} class="text-green-600 font-semibold">app.primo-data.fr</a> dans
+            Safari, appuyez sur « Partager » puis « Sur l’écran d’accueil ».
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <Footer />
+  </div>
+</Layout>
