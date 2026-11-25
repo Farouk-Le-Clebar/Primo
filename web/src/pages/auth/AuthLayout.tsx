@@ -1,5 +1,6 @@
 import { Outlet, useLocation } from "react-router-dom";
 import LogoPrimo from "../../assets/logos/logoPrimoBlack.svg";
+import AndroidAppBanner from "./AndroidAppBanner";
 
 export default function AuthLayout() {
   const location = useLocation();
@@ -31,6 +32,7 @@ export default function AuthLayout() {
 
       <div className="w-full max-w-md sm:max-w-lg md:max-w-116">
         <Outlet />
+        <AndroidAppBanner />
       </div>
     </div>
   );

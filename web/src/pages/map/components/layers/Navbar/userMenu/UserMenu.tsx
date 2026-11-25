@@ -1,5 +1,7 @@
 import { useNavigate } from "react-router-dom";
-import { ArrowRightStartOnRectangleIcon, ChatBubbleLeftEllipsisIcon, LifebuoyIcon, SunIcon } from "@heroicons/react/20/solid";
+import { ArrowRightStartOnRectangleIcon, ChatBubbleLeftEllipsisIcon, DevicePhoneMobileIcon, LifebuoyIcon, SunIcon } from "@heroicons/react/20/solid";
+import { canInstallAndroidApp } from "../../../../../../utils/displayMode";
+import { downloadAndroidApp } from "../../../../../../utils/androidApp";
 import { useTheme } from "../../../../../../context/ThemeProvider";
 import type { Theme } from "../../../../../../context/ThemeProvider";
 import SegmentedControl from "../../../../../../ui/SegmentedControl";
@@ -35,6 +37,11 @@ export default function UserMenu({ onClose }: UserMenuProps) {
     onClose();
   };
 
+  const handleDownloadApp = () => {
+    onClose();
+    downloadAndroidApp();
+  };
+
   const handleLogout = () => {
     onClose();
     localStorage.removeItem("token");
@@ -53,6 +60,7 @@ export default function UserMenu({ onClose }: UserMenuProps) {
       <div className={SEPARATOR} />
       <UserMenuItem icon={ChatBubbleLeftEllipsisIcon} label="Retours et suggestions" onClick={() => handleNavigate(ROUTES.feedback)} />
       <UserMenuItem icon={LifebuoyIcon} label="Support" onClick={handleSupport} isExternal />
+      {canInstallAndroidApp() && <UserMenuItem icon={DevicePhoneMobileIcon} label="Télécharger l'app Android" onClick={handleDownloadApp} />}
       <div className={SEPARATOR} />
       <UserMenuItem icon={ArrowRightStartOnRectangleIcon} label="Se déconnecter" onClick={handleLogout} isDanger />
     </div>

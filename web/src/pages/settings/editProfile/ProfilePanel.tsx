@@ -13,6 +13,7 @@ import ProfileHero from "./components/ProfileHero";
 import IdentitySection from "./components/IdentitySection";
 import PreferencesSection from "./components/PreferencesSection";
 import SecuritySection from "./components/SecuritySection";
+import MobileAppSection from "./components/MobileAppSection";
 import UnsavedChangesBar from "./components/UnsavedChangesBar";
 
 const ENTER = { initial: { opacity: 0, y: 10 }, animate: { opacity: 1, y: 0 } };
@@ -71,6 +72,7 @@ export default function ProfilePanel() {
                       onOpenMapColors={section.open}
                       shouldFocusMapColors={section.hasOpened}
                     />
+                    <MobileAppSection />
                     <SecuritySection
                       email={account.email}
                       isResetPending={account.isResetPending}

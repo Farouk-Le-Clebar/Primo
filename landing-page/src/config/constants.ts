@@ -4,7 +4,7 @@ export const EXTERNAL_LINKS = {
   BETA_FORM:
     'https://docs.google.com/forms/d/e/1FAIpQLSdJmNDDhunKox0XS8WZWfG2Wof7ue87fxCvxv_ch98r98cA-g/viewform?usp=header',
   APP_URL: 'https://app.primo-data.fr/',
-  ANDROID_APK: '/downloads/primo.apk',
+  ANDROID_APK: 'https://app.primo-data.fr/apk',
   LINKEDIN: 'https://www.linkedin.com/company/primo-data-app/',
   INSTAGRAM: 'https://www.instagram.com/primo.app/',
   EMAIL: `mailto:${CONTACT_EMAIL}`,

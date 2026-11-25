@@ -19,6 +19,15 @@ server {
     add_header Service-Worker-Allowed "/" always;
   }
 
+  location = /apk {
+    default_type application/vnd.android.package-archive;
+    types { }
+    add_header Content-Disposition 'attachment; filename="primo.apk"' always;
+    add_header Cache-Control "no-cache" always;
+    add_header X-Content-Type-Options nosniff always;
+    try_files /downloads/primo.apk =404;
+  }
+
   location = /manifest.webmanifest {
     default_type application/manifest+json;
     types { }
