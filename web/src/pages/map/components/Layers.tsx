@@ -122,7 +122,7 @@ const Layers = ({ initialPlacement, initialCoordinates }: LayersProps) => {
 
                 {selectedParcelle && !isMapCovered && (
                     <div className="absolute inset-0 z-[1002] pointer-events-none flex flex-col justify-end p-3 pb-[calc(4.75rem+env(safe-area-inset-bottom))] md:p-6">
-                        <div className="pointer-events-auto w-full max-w-4xl mx-auto rounded-2xl border border-black/[0.08] shadow-2xl animate-in slide-in-from-bottom-10 glass overflow-hidden dark:border-white/10">
+                        <div className="pointer-events-auto w-full max-w-6xl mx-auto rounded-2xl border border-black/[0.08] shadow-2xl animate-in slide-in-from-bottom-10 glass overflow-hidden dark:border-white/10">
                             <NoScrollZone>
                                 <ParcelInfoPanel
                                     selectedParcelle={selectedParcelle}
