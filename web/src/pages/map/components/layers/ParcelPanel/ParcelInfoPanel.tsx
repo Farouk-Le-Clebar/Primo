@@ -1,12 +1,14 @@
-import { MapPin, ExternalLink, Plus } from "lucide-react";
 import { lazy, Suspense, useState } from "react";
 
-import { Tooltip } from "../../../../../ui/Tooltip";
+import type { SelectedParcelle } from "../../../../../hooks/useParcelSelection";
+import PreviewActions from "./preview/PreviewActions";
+import PreviewMetrics from "./preview/PreviewMetrics";
+import { useParcelPreview } from "./preview/useParcelPreview";
 
 const AddPlotToProjectModal = lazy(() => import("./AddPlotToProjectModal"));
 
 type ParcelInfoPanelProps = {
-  selectedParcelle: any;
+  selectedParcelle: SelectedParcelle | null;
   onOpenDashboard: () => void;
 };
 
@@ -14,60 +16,47 @@ export default function ParcelInfoPanel({ selectedParcelle, onOpenDashboard }: P
   const [addPlotModalOpen, setAddPlotModalOpen] = useState(false);
   const feature = selectedParcelle?.feature;
   const properties = feature?.properties;
-  const geometry = feature?.geometry;
-  const parcelId = properties?.id || "Parcelle inconnue";
-  const address = selectedParcelle?.addokData?.features?.[0]?.properties?.label || "Adresse non renseignée";
-  if (!selectedParcelle?.feature) return null;
+  const addressFeature = selectedParcelle?.addokData?.features?.[0];
+  const addressGeometry = addressFeature?.geometry;
+  const addressCoordinates = addressGeometry?.type === "Point" ? addressGeometry.coordinates : [];
+  const banId: string | undefined = addressFeature?.properties?.id;
+  const parcelId: string = properties?.id || "Parcelle inconnue";
+  const address: string = addressFeature?.properties?.label || "Adresse non renseignée";
+  const { area, ...preview } = useParcelPreview(feature, banId);
+  const handleOpenAddPlot = () => setAddPlotModalOpen(true);
+  const handleCloseAddPlot = () => setAddPlotModalOpen(false);
+  if (!feature) return null;
 
   return (
-    <aside className="flex flex-col w-full h-full rounded-xl overflow-hidden pointer-events-auto">
-      <div className="px-4 py-4 shrink-0 sm:px-6">
-        <div className="flex items-center justify-between gap-3 sm:gap-4">
-          <div className="flex min-w-0 items-center gap-2">
-            <span className="h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
-            <h2 className="font-inter font-semibold text-base text-[#111111] sm:text-lg dark:text-white truncate">
-              Parcelle {parcelId.replace('Parcelle ', '')}
-            </h2>
-          </div>
-          <div className="flex shrink-0 flex-row gap-2">
-            <Tooltip content="Ajouter au projet">
-              <button
-                onClick={() => setAddPlotModalOpen(true)}
-                className="h-[36px] px-3 bg-[#111111] dark:bg-white hover:bg-gray-800 dark:hover:bg-[#e8e8e8] text-white dark:text-black rounded-lg flex items-center justify-center gap-2 transition-colors shadow-sm cursor-pointer"
-                >
-                <Plus size={14} />
-              </button>
-            </Tooltip>
-            <button
-              onClick={onOpenDashboard}
-              aria-label="Analyse complète"
-              className="h-[36px] px-4 bg-[#111111] dark:bg-white hover:bg-gray-800 dark:hover:bg-[#e8e8e8] text-white dark:text-black rounded-lg flex items-center justify-center gap-2 transition-colors shadow-sm cursor-pointer"
-            >
-              <ExternalLink size={14} />
-              <span className="hidden font-inter font-medium text-xs sm:inline">Analyse complète</span>
-            </button>
-          </div>
-        </div>
-
-        <div className="mt-2 flex items-center gap-1.5 text-gray-500 dark:text-gray-400">
-          <MapPin size={13} className="shrink-0" />
-          <span className="font-inter font-medium text-xs truncate">{address}</span>
-        </div>
+    <aside className="pointer-events-auto flex font-inter w-full flex-wrap items-center gap-x-2 gap-y-3 px-4 py-3.5 md:flex-nowrap md:py-4 md:pl-6 md:pr-4">
+      <div className="order-1 min-w-0 flex-1 md:w-56 md:flex-none md:pr-4">
+        <h2 className="truncate font-inter text-lg font-semibold tracking-tight text-[#111111] dark:text-white">
+          {parcelId.replace("Parcelle ", "")}
+        </h2>
+        <p className="truncate font-inter text-xs text-gray-500 dark:text-white/50">
+          {address} · {area}
+        </p>
+      </div>
+      <div className="order-3 -mx-4 w-[calc(100%+2rem)] border-t border-black/[0.06] pt-3 md:order-2 md:mx-0 md:w-auto md:min-w-0 md:flex-1 md:border-l md:border-t-0 md:pt-0 dark:border-white/[0.08]">
+        <PreviewMetrics {...preview} />
+      </div>
+      <div className="order-2 md:order-3 md:pl-2">
+        <PreviewActions onAddToProject={handleOpenAddPlot} onOpenDashboard={onOpenDashboard} />
       </div>
       {addPlotModalOpen && (
         <Suspense fallback={null}>
-        <AddPlotToProjectModal
-          onClose={() => setAddPlotModalOpen(false)}
-          plotData={{
-            plotId: parcelId,
-            plotBanId: selectedParcelle?.addokData?.features?.[0]?.properties?.id,
-            adress: address,
-            coordinates: `${selectedParcelle?.addokData?.features?.[0]?.geometry?.coordinates[0]},${selectedParcelle?.addokData?.features?.[0]?.geometry?.coordinates[1]}`,
-            geometry,
-            parcelProperties: properties,
-            addressProperties: selectedParcelle?.addokData?.features?.[0]?.properties,
-          }}
-        />
+          <AddPlotToProjectModal
+            onClose={handleCloseAddPlot}
+            plotData={{
+              plotId: parcelId,
+              plotBanId: banId ?? "",
+              adress: address,
+              coordinates: `${addressCoordinates[0]},${addressCoordinates[1]}`,
+              geometry: feature.geometry,
+              parcelProperties: properties ?? undefined,
+              addressProperties: addressFeature?.properties ?? undefined,
+            }}
+          />
         </Suspense>
       )}
     </aside>
